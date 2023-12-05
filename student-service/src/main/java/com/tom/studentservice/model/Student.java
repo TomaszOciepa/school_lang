@@ -1,0 +1,28 @@
+package com.tom.studentservice.model;
+
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "Student")
+@Getter
+@Setter
+public class Student {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String firstName;
+    private String lastName;
+    @Email
+    private String email;
+    private Status status;
+    private List<MyCourse> myCourseList = new ArrayList<>();
+
+}
