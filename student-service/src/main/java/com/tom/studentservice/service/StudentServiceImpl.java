@@ -1,5 +1,7 @@
 package com.tom.studentservice.service;
 
+import com.tom.studentservice.exception.StudentError;
+import com.tom.studentservice.exception.StudentException;
 import com.tom.studentservice.model.Status;
 import com.tom.studentservice.model.Student;
 import com.tom.studentservice.repo.StudentRepository;
@@ -16,12 +18,21 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<Student> getAllStudents(Status status) {
+
+        if (status != null) {
+            return studentRepository.findAllByStatus(status);
+        }
         return studentRepository.findAll();
     }
 
     @Override
     public Student getStudentById(Long id) {
-        return null;
+        Student student =  studentRepository.findById(id)
+                .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
+        if(!Status.ACTIVE.equals(student.getStatus())){
+            throw new StudentException(StudentError.STUDENT_IS_NOT_ACTIVE);
+        }
+        return student;
     }
 
     @Override

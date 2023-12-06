@@ -3,6 +3,7 @@ package com.tom.studentservice.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,9 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "Student")
+@Table(name = "STUDENT")
 @Getter
 @Setter
+@AllArgsConstructor
 public class Student {
 
     @Id
@@ -23,6 +25,11 @@ public class Student {
     @Email
     private String email;
     private Status status;
-    private List<MyCourse> myCourseList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student")
+    private List<MyCourse> myCourses;
+
+    public Student() {
+    }
 
 }
