@@ -27,9 +27,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student getStudentById(Long id) {
-        Student student =  studentRepository.findById(id)
+        Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
-        if(!Status.ACTIVE.equals(student.getStatus())){
+        if (!Status.ACTIVE.equals(student.getStatus())) {
             throw new StudentException(StudentError.STUDENT_IS_NOT_ACTIVE);
         }
         return student;
@@ -37,27 +37,65 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student getStudentByEmail(String email) {
-        return null;
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
+        if (!Status.ACTIVE.equals(student.getStatus())) {
+            throw new StudentException(StudentError.STUDENT_IS_NOT_ACTIVE);
+        }
+        return student;
     }
 
     @Override
     public Student addStudent(Student student) {
-        return null;
+        validateStudentEmailExists(student.getEmail());
+        student.setStatus(Status.ACTIVE);
+        return studentRepository.save(student);
+    }
+
+    private void validateStudentEmailExists(String email) {
+        if (studentRepository.existsByEmail(email)) {
+            throw new StudentException(StudentError.STUDENT_EMAIL_ALREADY_EXISTS);
+        }
     }
 
     @Override
     public Student putStudent(Long id, Student student) {
-        return null;
+        return studentRepository.findById(id)
+                .map(studentFromDb -> {
+                    if (studentFromDb.getEmail().equals(student.getEmail())
+                            && studentRepository.existsByEmail(student.getEmail())) {
+                        throw new StudentException(StudentError.STUDENT_EMAIL_ALREADY_EXISTS);
+                    }
+                    studentFromDb.setFirstName(student.getFirstName());
+                    studentFromDb.setLastName(student.getLastName());
+                    studentFromDb.setStatus(student.getStatus());
+                    return studentRepository.save(studentFromDb);
+                }).orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
     }
 
     @Override
     public Student patchStudent(Long id, Student student) {
-        return null;
+        Student studentFromDb = studentRepository.findById(id)
+                .orElseThrow(()-> new StudentException(StudentError.STUDENT_NOT_FOUND));
+
+        if(student.getFirstName() != null){
+            studentFromDb.setFirstName(student.getFirstName());
+        }
+        if(student.getLastName() != null){
+            studentFromDb.setLastName(student.getLastName());
+        }
+        if(student.getStatus() != null){
+            studentFromDb.setStatus(student.getStatus());
+        }
+        return studentRepository.save(studentFromDb);
     }
 
     @Override
     public void deleteStudent(Long id) {
-
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
+        student.setStatus(Status.INACTIVE);
+        studentRepository.save(student);
     }
 
     @Override
@@ -72,6 +110,6 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<Student> getStudentsByEmails(List<String> emails) {
-        return null;
+        return studentRepository.findAllByEmailIn(emails);
     }
 }

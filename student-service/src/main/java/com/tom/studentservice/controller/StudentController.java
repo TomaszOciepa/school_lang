@@ -16,13 +16,42 @@ public class StudentController {
     private final StudentService studentService;
 
     @GetMapping
-    public List<Student> getAllStudents(@RequestParam(required = false)Status status){
+    public List<Student> getAllStudents(@RequestParam(required = false) Status status) {
         return studentService.getAllStudents(status);
     }
 
     @GetMapping("/{id}")
-    public Student getStudentById(@PathVariable Long id){
+    public Student getStudentById(@PathVariable Long id) {
         return studentService.getStudentById(id);
     }
 
+    @GetMapping("/email")
+    public Student getStudentByEmail(@RequestParam String email) {
+        return studentService.getStudentByEmail(email);
+    }
+
+    @PostMapping
+    public Student addStudent(@RequestBody Student student) {
+        return studentService.addStudent(student);
+    }
+
+    @PostMapping("/{id}")
+    public Student putStudent(@PathVariable Long id, @RequestBody Student student) {
+        return studentService.putStudent(id, student);
+    }
+
+    @PatchMapping("/{id}")
+    public Student patchStudent(@PathVariable Long id, @RequestBody Student student) {
+        return studentService.patchStudent(id, student);
+    }
+
+    @DeleteMapping
+    public void deleteStudent(@PathVariable Long id) {
+        studentService.deleteStudent(id);
+    }
+
+    @PostMapping("/emails")
+    public List<Student> getStudentsByEmails(@RequestBody List<String> emails) {
+        return studentService.getStudentsByEmails(emails);
+    }
 }

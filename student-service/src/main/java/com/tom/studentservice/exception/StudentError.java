@@ -3,7 +3,8 @@ package com.tom.studentservice.exception;
 public enum StudentError {
 
     STUDENT_NOT_FOUND("Student does not exists."),
-    STUDENT_IS_NOT_ACTIVE("Student is not Active.");
+    STUDENT_IS_NOT_ACTIVE("Student is not Active."),
+    STUDENT_EMAIL_ALREADY_EXISTS("Student email already exists.");
 
     private String message;
 
