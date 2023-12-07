@@ -35,7 +35,7 @@ public class StudentController {
         return studentService.addStudent(student);
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public Student putStudent(@PathVariable Long id, @RequestBody Student student) {
         return studentService.putStudent(id, student);
     }
