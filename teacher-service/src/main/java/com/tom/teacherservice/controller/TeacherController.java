@@ -26,7 +26,7 @@ public class TeacherController {
     }
 
     @GetMapping("/email")
-    public Teacher getTeacherByEmail(@PathVariable String email) {
+    public Teacher getTeacherByEmail(@RequestParam String email) {
         return teacherService.getTeacherByEmail(email);
     }
 
