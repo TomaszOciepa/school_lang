@@ -51,6 +51,7 @@ public class CourseServiceImpl implements CourseService {
                     courseFromDb.setStatus(course.getStatus());
                     courseFromDb.setParticipantsLimit(course.getParticipantsLimit());
                     courseFromDb.setParticipantsNumber(course.getParticipantsNumber());
+                    courseFromDb.setLessonsNumber(course.getLessonsNumber());
                     courseFromDb.setStartDate(course.getStartDate());
                     courseFromDb.setEndDate(course.getEndDate());
                     return courseRepository.save(courseFromDb);
@@ -72,6 +73,9 @@ public class CourseServiceImpl implements CourseService {
                     }
                     if(course.getParticipantsLimit() != null){
                         courseFromDb.setParticipantsLimit(course.getParticipantsLimit());
+                    }
+                    if(course.getLessonsNumber() != null){
+                        courseFromDb.setLessonsNumber(course.getLessonsNumber());
                     }
                     if(course.getStartDate() != null){
                         courseFromDb.setStartDate(course.getStartDate());

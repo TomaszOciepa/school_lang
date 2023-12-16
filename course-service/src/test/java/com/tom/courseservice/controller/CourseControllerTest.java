@@ -27,11 +27,11 @@ class CourseControllerTest {
 
     List<Course> prepareCourseData() {
         return Arrays.asList(
-                new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L,
+                new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
                         LocalDateTime.of(2023, 12, 5, 0, 0),
                         LocalDateTime.of(2024, 03, 12, 0, 0),
                         Arrays.asList(), Arrays.asList()),
-                new Course("1111", "Kurs Niemiecki", Status.ACTIVE, 20L, 0L,
+                new Course("1111", "Kurs Niemiecki", Status.ACTIVE, 20L, 0L, 12L,
                         LocalDateTime.of(2023, 12, 8, 0, 0),
                         LocalDateTime.of(2024, 02, 12, 0, 0),
                         Arrays.asList(), Arrays.asList())
@@ -39,7 +39,7 @@ class CourseControllerTest {
     }
 
     Course prepareCourse() {
-        return new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L,
+        return new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
                 LocalDateTime.of(2023, 12, 5, 0, 0),
                 LocalDateTime.of(2024, 03, 12, 0, 0),
                 Arrays.asList(), Arrays.asList());
