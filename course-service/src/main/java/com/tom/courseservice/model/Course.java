@@ -22,6 +22,7 @@ public class Course {
     private Status status;
     private Long ParticipantsLimit;
     private Long ParticipantsNumber;
+    private Long LessonsNumber;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private List<CourseStudents> courseStudents = new ArrayList<>();
