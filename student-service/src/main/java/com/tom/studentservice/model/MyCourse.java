@@ -21,17 +21,26 @@ public class MyCourse {
     private LocalDateTime enrollmentDate;
     private String courseName;
 
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    @JsonBackReference
+    private Student student;
+    public MyCourse() {
+    }
+
     public MyCourse(String courseName, Student student) {
         this.enrollmentDate = LocalDateTime.now();
         this.courseName = courseName;
         this.student = student;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "student_id")
-    @JsonBackReference
-    private Student student;
-
-    public MyCourse() {
+    @Override
+    public String toString() {
+        return "MyCourse{" +
+                "id=" + id +
+                ", enrollmentDate=" + enrollmentDate +
+                ", courseName='" + courseName + '\'' +
+                ", student=" + student +
+                '}';
     }
 }

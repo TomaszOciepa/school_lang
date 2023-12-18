@@ -14,4 +14,7 @@ public interface StudentServiceClient {
 
     @PostMapping("/student/enroll/{studentId}/course/{courseName}")
     void courseEnrollment(@PathVariable Long studentId, @PathVariable String courseName);
+
+    @PostMapping("/student/un-enroll/{studentId}/course/{courseName}")
+    void courseUnEnrollment(@PathVariable Long studentId, @PathVariable String courseName);
 }

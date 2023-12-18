@@ -111,12 +111,12 @@ public class CourseServiceImpl implements CourseService {
     }
 
     private void validateStudentBeforeCourseEnrollment(Course course, StudentDto studentDto) {
-        if(!Status.ACTIVE.equals(studentDto.getStatus())){
+        if (!Status.ACTIVE.equals(studentDto.getStatus())) {
             throw new CourseException(CourseError.STUDENT_IS_NOT_ACTIVE);
         }
-        if(course.getCourseStudents()
+        if (course.getCourseStudents()
                 .stream()
-                .anyMatch((member -> studentDto.getId().equals(member.getStudentId())))){
+                .anyMatch((member -> studentDto.getId().equals(member.getStudentId())))) {
             throw new CourseException(CourseError.STUDENT_ALREADY_ENROLLED);
         }
     }
@@ -129,8 +129,17 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void studentRemoveFromCourse(String courseId, String studentId) {
+    public void studentRemoveFromCourse(String courseId, Long studentId) {
+        Course courseFromDb = getCourseById(courseId);
+        List<CourseStudents> courseStudentsList = courseFromDb.getCourseStudents();
+        boolean removed = courseStudentsList.removeIf(student -> studentId.equals(student.getStudentId()));
 
+        if (!removed) {
+            throw new CourseException(CourseError.STUDENT_IS_NOT_FOUND);
+        }
+        courseFromDb.setCourseStudents(courseStudentsList);
+        courseRepository.save(courseFromDb);
+        studentServiceClient.courseUnEnrollment(studentId, courseFromDb.getName());
     }
 
     @Override

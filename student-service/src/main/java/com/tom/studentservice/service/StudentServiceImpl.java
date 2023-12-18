@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -79,15 +80,15 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student patchStudent(Long id, Student student) {
         Student studentFromDb = studentRepository.findById(id)
-                .orElseThrow(()-> new StudentException(StudentError.STUDENT_NOT_FOUND));
+                .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
 
-        if(student.getFirstName() != null){
+        if (student.getFirstName() != null) {
             studentFromDb.setFirstName(student.getFirstName());
         }
-        if(student.getLastName() != null){
+        if (student.getLastName() != null) {
             studentFromDb.setLastName(student.getLastName());
         }
-        if(student.getStatus() != null){
+        if (student.getStatus() != null) {
             studentFromDb.setStatus(student.getStatus());
         }
         return studentRepository.save(studentFromDb);
@@ -109,9 +110,15 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void courseUnEnrollStudent(Long StudentId, String courseName) {
-
+    public void courseUnEnrollStudent(Long studentId, String courseName) {
+        List<MyCourse> myCoursesList = myCourseRepository.findByStudentId(studentId);
+        MyCourse myCourse = myCoursesList.stream()
+                .filter(course -> courseName.equals(course.getCourseName()))
+                .findFirst()
+                .orElseThrow(() -> new StudentException(StudentError.COURSE_NAME_NOT_FOUND));
+        myCourseRepository.delete(myCourse);
     }
+
 
     @Override
     public List<Student> getStudentsByEmails(List<String> emails) {

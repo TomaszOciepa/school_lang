@@ -52,4 +52,11 @@ public class CourseController {
 
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{courseId}/student/{studentId}")
+    public ResponseEntity<?> studentCourseUnEnrollment(@PathVariable String courseId, @PathVariable Long studentId){
+        courseService.studentRemoveFromCourse(courseId, studentId);
+
+        return ResponseEntity.ok().build();
+    }
 }

@@ -58,4 +58,9 @@ public class StudentController {
     public void courseEnrollment(@PathVariable Long studentId, @PathVariable String courseName){
         studentService.courseEnrollment(studentId, courseName);
     }
+
+    @PostMapping("/un-enroll/{studentId}/course/{courseName}")
+    public void courseUnEnrollment(@PathVariable Long studentId, @PathVariable String courseName){
+        studentService.courseUnEnrollStudent(studentId, courseName);
+    }
 }
