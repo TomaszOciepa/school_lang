@@ -4,6 +4,7 @@ import com.tom.courseservice.model.Course;
 import com.tom.courseservice.model.Status;
 import com.tom.courseservice.service.CourseService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,5 +44,12 @@ public class CourseController {
     @DeleteMapping("/{id}")
     void deleteCourse(@PathVariable String id){
         courseService.deleteCourse(id);
+    }
+
+    @PostMapping("/{courseId}/student/{studentId}")
+    public ResponseEntity<?> studentCourseEnrollment(@PathVariable String courseId, @PathVariable Long studentId){
+        courseService.studentCourseEnrollment(courseId, studentId);
+
+        return ResponseEntity.ok().build();
     }
 }

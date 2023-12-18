@@ -20,12 +20,19 @@ public class Course {
     private String id;
     private String name;
     private Status status;
-    private Long ParticipantsLimit;
-    private Long ParticipantsNumber;
-    private Long LessonsNumber;
+    private Long participantsLimit;
+    private Long participantsNumber;
+    private Long lessonsNumber;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private List<CourseStudents> courseStudents = new ArrayList<>();
     private List<CourseTeachers> courseTeachers = new ArrayList<>();
+
+    public void incrementParticipantsNumber(){
+        participantsNumber++;
+        if (getParticipantsNumber().equals(getParticipantsLimit())){
+            setStatus(Status.FULL);
+        }
+    }
 
 }

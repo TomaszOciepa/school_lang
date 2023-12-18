@@ -13,7 +13,7 @@ public interface CourseService {
     Course putCourse(String id, Course course);
     Course patchCourse(String id, Course course);
     void deleteCourse(String id);
-    void studentCourseEnrollment(String courseId, String studentId);
+    void studentCourseEnrollment(String courseId, Long studentId);
     void studentRemoveFromCourse(String courseId, String studentId);
     void teacherCourseEnrollment(String courseId, String teacherId);
     void teacherRemoveFromCourse(String courseId, String teacherId);

@@ -1,12 +1,14 @@
 package com.tom.studentservice.model;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,7 +28,8 @@ public class Student {
     private Status status;
 
     @OneToMany(mappedBy = "student")
-    private List<MyCourse> myCourses;
+    @JsonManagedReference
+    private List<MyCourse> myCourses = new ArrayList<>();
 
     public Student() {
     }

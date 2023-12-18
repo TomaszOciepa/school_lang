@@ -2,8 +2,10 @@ package com.tom.studentservice.service;
 
 import com.tom.studentservice.exception.StudentError;
 import com.tom.studentservice.exception.StudentException;
+import com.tom.studentservice.model.MyCourse;
 import com.tom.studentservice.model.Status;
 import com.tom.studentservice.model.Student;
+import com.tom.studentservice.repo.MyCourseRepository;
 import com.tom.studentservice.repo.StudentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import java.util.List;
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
+    private final MyCourseRepository myCourseRepository;
 
     @Override
     public List<Student> getAllStudents(Status status) {
@@ -99,8 +102,10 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void courseEnrollment(Long StudentId, String courseName) {
-
+    public void courseEnrollment(Long studentId, String courseName) {
+        Student studentFromDb = getStudentById(studentId);
+        MyCourse myCourse = new MyCourse(courseName, studentFromDb);
+        myCourseRepository.save(myCourse);
     }
 
     @Override
