@@ -35,6 +35,14 @@ public class Course {
         }
     }
 
+    public void decrementParticipantsNumber(){
+        participantsNumber--;
+        if (status.equals(Status.FULL)){
+            setStatus(Status.ACTIVE);
+        }
+    }
+
+
     public Course() {
     }
 }

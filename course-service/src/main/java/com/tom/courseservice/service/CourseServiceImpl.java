@@ -138,6 +138,7 @@ public class CourseServiceImpl implements CourseService {
             throw new CourseException(CourseError.STUDENT_IS_NOT_FOUND);
         }
         courseFromDb.setCourseStudents(courseStudentsList);
+        courseFromDb.decrementParticipantsNumber();
         courseRepository.save(courseFromDb);
         studentServiceClient.courseUnEnrollment(studentId, courseFromDb.getName());
     }
