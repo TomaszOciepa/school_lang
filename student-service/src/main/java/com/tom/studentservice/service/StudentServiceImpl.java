@@ -101,4 +101,9 @@ public class StudentServiceImpl implements StudentService {
     public List<Student> getStudentsByEmails(List<String> emails) {
         return studentRepository.findAllByEmailIn(emails);
     }
+
+    @Override
+    public List<Student> getStudentsByIdNumber(List<Long> idNumbers) {
+        return studentRepository.findAllByIdIn(idNumbers);
+    }
 }

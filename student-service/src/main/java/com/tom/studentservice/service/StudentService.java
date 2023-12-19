@@ -15,5 +15,6 @@ public interface StudentService {
     Student patchStudent(Long id, Student student);
     void deleteStudent(Long id);
     List<Student> getStudentsByEmails(List<String> emails);
+    List<Student> getStudentsByIdNumber(List<Long> idNumbers);
 
 }

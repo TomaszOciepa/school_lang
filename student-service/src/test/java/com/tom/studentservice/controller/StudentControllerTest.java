@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,14 +29,14 @@ class StudentControllerTest {
 
     private List<Student> prepareStudentsData() {
         List<Student> mockStudents = Arrays.asList(
-                new Student(1L, "Tomasz", "Kowalski", "tom@wp.pl", Status.ACTIVE, new ArrayList<>()),
-                new Student(2L, "Mango", "Nowak", "mangi@wp.pl", Status.INACTIVE, new ArrayList<>())
+                new Student(1L, "Tomasz", "Kowalski", "tom@wp.pl", Status.ACTIVE),
+                new Student(2L, "Mango", "Nowak", "mangi@wp.pl", Status.INACTIVE)
         );
         return mockStudents;
     }
 
     private Student prepareStudent() {
-        Student mockStudent = new Student(1L, "Jan", "Nowak", "jan@wp.pl", Status.ACTIVE, new ArrayList<>());
+        Student mockStudent = new Student(1L, "Jan", "Nowak", "jan@wp.pl", Status.ACTIVE);
         return mockStudent;
     }
 
@@ -249,6 +248,19 @@ class StudentControllerTest {
         given(studentService.getStudentsByEmails(mockStudentsEmailsList)).willReturn(mockStudentList);
         //when
         List<Student> result = studentController.getStudentsByEmails(mockStudentsEmailsList);
+        //then
+        assertEquals(mockStudentList, result);
+    }
+
+    @Test
+    void getStudentsByIdNumber() {
+        MockitoAnnotations.openMocks(this);
+        //given
+        List<Student> mockStudentList = prepareStudentsData();
+        List<Long> mockStudentsIdNumberList= Arrays.asList(1L, 2L);
+        given(studentService.getStudentsByIdNumber(mockStudentsIdNumberList)).willReturn(mockStudentList);
+        //when
+        List<Student> result = studentController.getStudentsByIdNumber(mockStudentsIdNumberList);
         //then
         assertEquals(mockStudentList, result);
     }

@@ -54,4 +54,9 @@ public class StudentController {
     public List<Student> getStudentsByEmails(@RequestBody List<String> emails) {
         return studentService.getStudentsByEmails(emails);
     }
+
+    @PostMapping("/idNumbers")
+    public List<Student> getStudentsByIdNumber(@RequestBody List<Long> idNumbers) {
+        return studentService.getStudentsByIdNumber(idNumbers);
+    }
 }

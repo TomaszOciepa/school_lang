@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -176,5 +177,19 @@ public class CourseServiceImpl implements CourseService {
         }
         courseFromDb.setCourseTeachers(courseTeacherList);
         courseRepository.save(courseFromDb);
+    }
+
+    @Override
+    public List<StudentDto> getCourseMembers(String courseId) {
+        Course course = getCourseById(courseId);
+        List<CourseStudents> courseStudents = course.getCourseStudents();
+        if (courseStudents.isEmpty()) {
+            throw new CourseException(CourseError.COURSE_STUDENT_LIST_IS_EMPTY);
+        }
+        List<Long> idNumbers = courseStudents.stream()
+                .map(CourseStudents::getStudentId)
+                .collect(Collectors.toList());
+
+        return studentServiceClient.getStudentsByIdNumber(idNumbers);
     }
 }

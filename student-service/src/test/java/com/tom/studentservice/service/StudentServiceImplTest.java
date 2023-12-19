@@ -30,14 +30,14 @@ class StudentServiceImplTest {
 
     private List<Student> prepareStudentsData() {
         List<Student> mockStudents = Arrays.asList(
-                new Student(1L, "Tomasz", "Kowalski", "tom@wp.pl", Status.ACTIVE, new ArrayList<>()),
-                new Student(2L, "Mango", "Nowak", "mangi@wp.pl", Status.INACTIVE, new ArrayList<>())
+                new Student(1L, "Tomasz", "Kowalski", "tom@wp.pl", Status.ACTIVE),
+                new Student(2L, "Mango", "Nowak", "mangi@wp.pl", Status.INACTIVE)
         );
         return mockStudents;
     }
 
     private Student prepareStudent() {
-        Student mockStudent = new Student(1L, "Jan", "Nowak", "jan@wp.pl", Status.ACTIVE, new ArrayList<>());
+        Student mockStudent = new Student(1L, "Jan", "Nowak", "jan@wp.pl", Status.ACTIVE);
         return mockStudent;
     }
 
@@ -266,16 +266,6 @@ class StudentServiceImplTest {
         assertThrows(StudentException.class, () -> studentServiceImpl.deleteStudent(mockId));
     }
 
-//    @Test
-//    void courseEnrollment() {
-//
-//
-//    }
-////
-//    @Test
-//    void courseUnEnrollStudent() {
-//    }
-
     @Test
     void getStudentsByEmails() {
         MockitoAnnotations.openMocks(this);
@@ -285,6 +275,19 @@ class StudentServiceImplTest {
         given(studentRepository.findAllByEmailIn(mockStudentsEmailsList)).willReturn(mockStudentList);
         //when
         List<Student> result = studentServiceImpl.getStudentsByEmails(mockStudentsEmailsList);
+        //then
+        assertEquals(mockStudentList, result);
+    }
+
+    @Test
+    void getStudentsByIdNumber() {
+        MockitoAnnotations.openMocks(this);
+        //given
+        List<Student> mockStudentList = prepareStudentsData();
+        List<Long> mockStudentsIdNumberList = Arrays.asList(1L, 2L);
+        given(studentRepository.findAllByIdIn(mockStudentsIdNumberList)).willReturn(mockStudentList);
+        //when
+        List<Student> result = studentServiceImpl.getStudentsByIdNumber(mockStudentsIdNumberList);
         //then
         assertEquals(mockStudentList, result);
     }

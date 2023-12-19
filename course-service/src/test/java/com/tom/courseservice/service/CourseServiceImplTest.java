@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -58,6 +59,12 @@ class CourseServiceImplTest {
 
     StudentDto prepareStudent() {
         return new StudentDto(1L, "Tomek", "Kowalski", "kow@wp.pl", Status.ACTIVE);
+    }
+
+    List<StudentDto> prepareStudentList(){
+        return Arrays.asList(
+                new StudentDto(1L, "Tomek", "Kowalski", "kow@wp.pl", Status.ACTIVE)
+        );
     }
 
     TeacherDto prepareTeacher() {
@@ -283,7 +290,6 @@ class CourseServiceImplTest {
         Course courseMock = prepareCourse();
         TeacherDto teacherMock = prepareTeacher();
         Long teacherIdMock = 1L;
-        CourseTeachers courseStudents = new CourseTeachers(teacherMock.getId());
         given(courseRepository.findById(courseIdMock)).willReturn(Optional.ofNullable(courseMock));
         given(teacherServiceClient.getTeacherById(teacherIdMock)).willReturn(teacherMock);
         //when

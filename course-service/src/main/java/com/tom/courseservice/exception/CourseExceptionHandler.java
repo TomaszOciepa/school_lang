@@ -14,7 +14,8 @@ public class CourseExceptionHandler {
     public ResponseEntity<ErrorInfo> handleException(CourseException e) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
-        if (CourseError.COURSE_NOT_FOUND.equals(e.getCourseError())) {
+        if (CourseError.COURSE_NOT_FOUND.equals(e.getCourseError())
+                || CourseError.COURSE_STUDENT_LIST_IS_EMPTY.equals(e.getCourseError())) {
             httpStatus = HttpStatus.NOT_FOUND;
         } else if (CourseError.COURSE_NAME_ALREADY_EXISTS.equals(e.getCourseError())
                 || CourseError.STUDENT_ALREADY_ENROLLED.equals(e.getCourseError())
@@ -33,7 +34,7 @@ public class CourseExceptionHandler {
     }
 
     @ExceptionHandler(FeignException.class)
-    public ResponseEntity<?> handleFeignException(FeignException e){
+    public ResponseEntity<?> handleFeignException(FeignException e) {
         return ResponseEntity.status(e.status()).body(new JSONObject(e.contentUTF8()).toMap());
     }
 }

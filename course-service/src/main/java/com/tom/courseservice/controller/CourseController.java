@@ -2,6 +2,7 @@ package com.tom.courseservice.controller;
 
 import com.tom.courseservice.model.Course;
 import com.tom.courseservice.model.Status;
+import com.tom.courseservice.model.dto.StudentDto;
 import com.tom.courseservice.service.CourseService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -71,4 +72,10 @@ public class CourseController {
         courseService.teacherRemoveFromCourse(courseId, teacherId);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/members/{courseId}")
+    public List<StudentDto> getCourseMembers(@PathVariable String courseId){
+        return courseService.getCourseMembers(courseId);
+    }
+
 }
