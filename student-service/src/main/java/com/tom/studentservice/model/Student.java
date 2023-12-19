@@ -1,13 +1,10 @@
 package com.tom.studentservice.model;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Entity
 @Table(name = "STUDENT")
@@ -24,9 +21,6 @@ public class Student {
     @Email
     private String email;
     private Status status;
-
-    @OneToMany(mappedBy = "student")
-    private List<MyCourse> myCourses;
 
     public Student() {
     }

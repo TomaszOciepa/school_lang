@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 @Service
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
@@ -76,15 +75,15 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student patchStudent(Long id, Student student) {
         Student studentFromDb = studentRepository.findById(id)
-                .orElseThrow(()-> new StudentException(StudentError.STUDENT_NOT_FOUND));
+                .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
 
-        if(student.getFirstName() != null){
+        if (student.getFirstName() != null) {
             studentFromDb.setFirstName(student.getFirstName());
         }
-        if(student.getLastName() != null){
+        if (student.getLastName() != null) {
             studentFromDb.setLastName(student.getLastName());
         }
-        if(student.getStatus() != null){
+        if (student.getStatus() != null) {
             studentFromDb.setStatus(student.getStatus());
         }
         return studentRepository.save(studentFromDb);
@@ -96,16 +95,6 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
         student.setStatus(Status.INACTIVE);
         studentRepository.save(student);
-    }
-
-    @Override
-    public void courseEnrollment(Long StudentId, String courseName) {
-
-    }
-
-    @Override
-    public void courseUnEnrollStudent(Long StudentId, String courseName) {
-
     }
 
     @Override

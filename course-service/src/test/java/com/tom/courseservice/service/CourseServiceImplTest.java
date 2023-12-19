@@ -3,7 +3,9 @@ package com.tom.courseservice.service;
 import com.tom.courseservice.exception.CourseError;
 import com.tom.courseservice.exception.CourseException;
 import com.tom.courseservice.model.Course;
+import com.tom.courseservice.model.CourseStudents;
 import com.tom.courseservice.model.Status;
+import com.tom.courseservice.model.dto.StudentDto;
 import com.tom.courseservice.repo.CourseRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -11,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +27,8 @@ class CourseServiceImplTest {
 
     @Mock
     private CourseRepository courseRepository;
+    @Mock
+    private StudentServiceClient studentServiceClient;
     @InjectMocks
     private CourseServiceImpl courseServiceImpl;
 
@@ -44,7 +49,11 @@ class CourseServiceImplTest {
         return new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
                 LocalDateTime.of(2023, 12, 5, 0, 0),
                 LocalDateTime.of(2024, 03, 12, 0, 0),
-                Arrays.asList(), Arrays.asList());
+                new ArrayList<>(), new ArrayList<>());
+    }
+
+    StudentDto prepareStudent() {
+        return new StudentDto(1L, "Tomek", "Kowalski", "kow@wp.pl", Status.ACTIVE);
     }
 
     @Test
@@ -94,7 +103,7 @@ class CourseServiceImplTest {
         given(courseRepository.findById(mockId)).willThrow(mockException);
         //when
         //then
-        assertThrows(CourseException.class, ()-> courseServiceImpl.getCourseById(mockId));
+        assertThrows(CourseException.class, () -> courseServiceImpl.getCourseById(mockId));
     }
 
     @Test
@@ -119,7 +128,7 @@ class CourseServiceImplTest {
         given(courseRepository.existsByName(mockCourse.getName())).willThrow(mockException);
         //when
         //then
-        assertThrows(CourseException.class, ()-> courseServiceImpl.addCourse(mockCourse));
+        assertThrows(CourseException.class, () -> courseServiceImpl.addCourse(mockCourse));
     }
 
     @Test
@@ -146,7 +155,7 @@ class CourseServiceImplTest {
         given(courseRepository.findById(mockId)).willThrow(mockException);
         //when
         //then
-        assertThrows(CourseException.class, ()-> courseServiceImpl.putCourse(mockId, mockCourse));
+        assertThrows(CourseException.class, () -> courseServiceImpl.putCourse(mockId, mockCourse));
     }
 
     @Test
@@ -159,7 +168,7 @@ class CourseServiceImplTest {
         given(courseRepository.findById(mockId)).willThrow(mockException);
         //when
         //then
-        assertThrows(CourseException.class, ()-> courseServiceImpl.putCourse(mockId, mockCourse));
+        assertThrows(CourseException.class, () -> courseServiceImpl.putCourse(mockId, mockCourse));
     }
 
     @Test
@@ -186,7 +195,7 @@ class CourseServiceImplTest {
         given(courseRepository.findById(mockId)).willThrow(mockException);
         //when
         //then
-        assertThrows(CourseException.class, ()-> courseServiceImpl.patchCourse(mockId, mokCourse));
+        assertThrows(CourseException.class, () -> courseServiceImpl.patchCourse(mockId, mokCourse));
     }
 
     @Test
@@ -215,15 +224,47 @@ class CourseServiceImplTest {
         given(courseRepository.findById(mockId)).willThrow(mockException);
         //when
         //then
-        assertThrows(CourseException.class, ()-> courseServiceImpl.deleteCourse(mockId));
+        assertThrows(CourseException.class, () -> courseServiceImpl.deleteCourse(mockId));
     }
 
     @Test
     void studentCourseEnrollment() {
+        MockitoAnnotations.openMocks(this);
+        //given
+        String courseIdMock = "1111";
+        Course courseMock = prepareCourse();
+        StudentDto studentMock = prepareStudent();
+        Long studentIdMock = 1L;
+        CourseStudents courseStudents = new CourseStudents(studentMock.getId());
+        given(courseRepository.findById(courseIdMock)).willReturn(Optional.ofNullable(courseMock));
+        given(studentServiceClient.getStudentById(studentIdMock)).willReturn(studentMock);
+        //when
+        courseServiceImpl.studentCourseEnrollment(courseIdMock, studentIdMock);
+        //then
+        verify(courseRepository, times(1)).findById(courseIdMock);
+        verify(studentServiceClient, times(1)).getStudentById(studentIdMock);
+        verify(courseRepository, times(1)).save(courseMock);
     }
 
     @Test
     void studentRemoveFromCourse() {
+        MockitoAnnotations.openMocks(this);
+        //given
+        StudentDto studentMock = prepareStudent();
+        Long studentIdMock = 1L;
+        CourseStudents courseStudentsMock = new CourseStudents(studentMock.getId());
+        String courseIdMock = "1111";
+        Course courseMock = prepareCourse();
+        courseMock.getCourseStudents().add(courseStudentsMock);
+        courseMock.incrementParticipantsNumber();
+        given(courseRepository.findById(courseIdMock)).willReturn(Optional.ofNullable(courseMock));
+        //when
+        courseServiceImpl.studentRemoveFromCourse(courseIdMock, studentIdMock);
+        //then
+        verify(courseRepository, times(1)).findById(courseIdMock);
+        verify(courseRepository, times(1)).save(courseMock);
+        assertEquals(0, courseMock.getParticipantsNumber());
+        assertTrue(courseMock.getCourseStudents().isEmpty());
     }
 
     @Test

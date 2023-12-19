@@ -10,10 +10,10 @@ import java.time.LocalDateTime;
 @Setter
 public class CourseStudents {
 
-    private String studentId;
+    private Long studentId;
     private LocalDateTime enrollmentDate;
 
-    public CourseStudents(@NotNull String studentId) {
+    public CourseStudents(@NotNull Long studentId) {
         this.studentId = studentId;
         this.enrollmentDate = LocalDateTime.now();
     }

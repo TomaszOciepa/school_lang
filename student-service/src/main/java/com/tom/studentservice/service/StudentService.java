@@ -14,8 +14,6 @@ public interface StudentService {
     Student putStudent(Long id, Student student);
     Student patchStudent(Long id, Student student);
     void deleteStudent(Long id);
-    void courseEnrollment(Long studentId, String courseName);
-    void courseUnEnrollStudent(Long studentId, String courseName);
     List<Student> getStudentsByEmails(List<String> emails);
 
 }
