@@ -192,4 +192,18 @@ public class CourseServiceImpl implements CourseService {
 
         return studentServiceClient.getStudentsByIdNumber(idNumbers);
     }
+
+    @Override
+    public List<TeacherDto> getCourseTeachers(String courseId) {
+        Course course = getCourseById(courseId);
+        List<CourseTeachers> courseTeachers = course.getCourseTeachers();
+        if (courseTeachers.isEmpty()) {
+            throw new CourseException(CourseError.COURSE_TEACHER_LIST_IS_EMPTY);
+        }
+        List<Long> idNumbers = courseTeachers.stream()
+                .map(CourseTeachers::getTeacherId)
+                .collect(Collectors.toList());
+
+        return teacherServiceClient.getTeachersByIdNumber(idNumbers);
+    }
 }

@@ -50,4 +50,9 @@ public class TeacherController {
         teacherService.deleteTeacher(id);
     }
 
+    @PostMapping("/idNumbers")
+    public List<Teacher> getTeachersByIdNumber(@RequestBody List<Long> idNumbers) {
+        return teacherService.getTeachersByIdNumber(idNumbers);
+    }
+
 }

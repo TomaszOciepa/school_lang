@@ -3,6 +3,7 @@ package com.tom.courseservice.controller;
 import com.tom.courseservice.model.Course;
 import com.tom.courseservice.model.Status;
 import com.tom.courseservice.model.dto.StudentDto;
+import com.tom.courseservice.model.dto.TeacherDto;
 import com.tom.courseservice.service.CourseService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -78,4 +79,8 @@ public class CourseController {
         return courseService.getCourseMembers(courseId);
     }
 
+    @PostMapping("/teacher/{courseId}")
+    public List<TeacherDto> getCourseTeachers(@PathVariable String courseId){
+        return courseService.getCourseTeachers(courseId);
+    }
 }
