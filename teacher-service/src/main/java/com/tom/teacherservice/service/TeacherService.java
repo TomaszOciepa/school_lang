@@ -20,4 +20,6 @@ public interface TeacherService {
     Teacher patchTeacher(Long id, Teacher teacher);
 
     void deleteTeacher(Long id);
+    List<Teacher> getTeachersByIdNumber(List<Long> idNumbers);
+
 }

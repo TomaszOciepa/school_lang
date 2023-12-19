@@ -3,6 +3,7 @@ package com.tom.courseservice.service;
 import com.tom.courseservice.model.Course;
 import com.tom.courseservice.model.Status;
 import com.tom.courseservice.model.dto.StudentDto;
+import com.tom.courseservice.model.dto.TeacherDto;
 
 import java.util.List;
 
@@ -19,4 +20,5 @@ public interface CourseService {
     void teacherCourseEnrollment(String courseId, Long teacherId);
     void teacherRemoveFromCourse(String courseId, Long teacherId);
     List<StudentDto> getCourseMembers(String courseId);
+    List<TeacherDto> getCourseTeachers(String courseId);
 }
