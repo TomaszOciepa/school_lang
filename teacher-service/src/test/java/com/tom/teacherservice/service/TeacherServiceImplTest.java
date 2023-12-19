@@ -248,4 +248,17 @@ class TeacherServiceImplTest {
         assertEquals(Status.INACTIVE, mockTeacher.getStatus());
     }
 
+    @Test
+    void getTeachersByIdNumber() {
+        MockitoAnnotations.openMocks(this);
+        //given
+        List<Teacher> mockTeacherList = prepareTeachersData();
+        List<Long> mockTeachersIdNumberList = Arrays.asList(1L, 2L);
+        given(teacherRepository.findAllByIdIn(mockTeachersIdNumberList)).willReturn(mockTeacherList);
+        //when
+        List<Teacher> result = teacherServiceImpl.getTeachersByIdNumber(mockTeachersIdNumberList);
+        //then
+        assertEquals(mockTeacherList, result);
+    }
+
 }

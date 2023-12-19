@@ -139,4 +139,17 @@ class TeacherControllerTest {
         //then
         verify(teacherService, times(1)).deleteTeacher(teacherId);
     }
+
+    @Test
+    void getTeachersByIdNumber() {
+        MockitoAnnotations.openMocks(this);
+        //given
+        List<Teacher> mockTeacherList = prepareTeachersData();
+        List<Long> mockTeacherIdNumberList= Arrays.asList(1L, 2L);
+        given(teacherService.getTeachersByIdNumber(mockTeacherIdNumberList)).willReturn(mockTeacherList);
+        //when
+        List<Teacher> result = teacherController.getTeachersByIdNumber(mockTeacherIdNumberList);
+        //then
+        assertEquals(mockTeacherList, result);
+    }
 }
