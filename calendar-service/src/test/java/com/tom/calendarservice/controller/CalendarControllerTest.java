@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,11 +29,11 @@ class CalendarControllerTest {
                 new Calendar("1111D", "Lekcja Angielskiego",
                         LocalDateTime.of(2023, 12, 5, 16, 00),
                         LocalDateTime.of(2023, 12, 5, 17, 00),
-                        "1", "212", "2223", "Opis lekcji"),
+                        1L, "212", "Opis lekcji", new ArrayList<>()),
                 new Calendar("1111D", "Lekcja Niemieckiego",
                         LocalDateTime.of(2023, 12, 15, 16, 00),
                         LocalDateTime.of(2023, 12, 15, 17, 00),
-                        "1", "212", "2223", "Opis lekcji")
+                        1L, "212", "Opis lekcji", new ArrayList<>())
         );
     }
 
@@ -40,7 +41,7 @@ class CalendarControllerTest {
         return new Calendar("1111D", "Lekcja Angielskiego",
                 LocalDateTime.of(2023, 12, 5, 16, 00),
                 LocalDateTime.of(2023, 12, 5, 17, 00),
-                "1", "212", "2223", "Opis lekcji");
+                1L, "212", "Opis lekcji", new ArrayList<>());
     }
 
     @Test

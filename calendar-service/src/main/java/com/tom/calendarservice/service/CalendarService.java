@@ -2,6 +2,7 @@ package com.tom.calendarservice.service;
 
 
 import com.tom.calendarservice.model.Calendar;
+import com.tom.calendarservice.model.EventRequest;
 
 import java.util.List;
 
@@ -18,6 +19,8 @@ public interface CalendarService {
     Calendar patchLesson(String id, Calendar calendar);
 
     void deleteLesson(String id);
+
+    Calendar addEvent(EventRequest eventRequest);
 
 
 }
