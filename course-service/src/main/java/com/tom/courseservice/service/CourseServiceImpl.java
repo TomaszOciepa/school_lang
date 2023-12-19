@@ -4,19 +4,23 @@ import com.tom.courseservice.exception.CourseError;
 import com.tom.courseservice.exception.CourseException;
 import com.tom.courseservice.model.Course;
 import com.tom.courseservice.model.CourseStudents;
+import com.tom.courseservice.model.CourseTeachers;
 import com.tom.courseservice.model.Status;
 import com.tom.courseservice.model.dto.StudentDto;
+import com.tom.courseservice.model.dto.TeacherDto;
 import com.tom.courseservice.repo.CourseRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final StudentServiceClient studentServiceClient;
+    private final TeacherServiceClient teacherServiceClient;
 
     @Override
     public List<Course> findAllByStatus(Status status) {
@@ -141,12 +145,36 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void teacherCourseEnrollment(String courseId, String teacherId) {
+    public void teacherCourseEnrollment(String courseId, Long teacherId) {
+        Course course = getCourseById(courseId);
+        validateCourseStatus(course);
+        TeacherDto teacherDto = teacherServiceClient.getTeacherById(teacherId);
+        validateTeacherBeforeCourseEnrollment(course, teacherDto);
+        CourseTeachers courseTeachers = new CourseTeachers(teacherDto.getId());
+        course.getCourseTeachers().add(courseTeachers);
+        courseRepository.save(course);
+    }
 
+    private void validateTeacherBeforeCourseEnrollment(Course course, TeacherDto teacherDto) {
+        if (!Status.ACTIVE.equals(teacherDto.getStatus())) {
+            throw new CourseException(CourseError.TEACHER_IS_NOT_ACTIVE);
+        }
+        if (course.getCourseTeachers()
+                .stream()
+                .anyMatch((member -> teacherDto.getId().equals(member.getTeacherId())))) {
+            throw new CourseException(CourseError.TEACHER_ALREADY_ENROLLED);
+        }
     }
 
     @Override
-    public void teacherRemoveFromCourse(String courseId, String teacherId) {
-
+    public void teacherRemoveFromCourse(String courseId, Long teacherId) {
+        Course courseFromDb = getCourseById(courseId);
+        List<CourseTeachers> courseTeacherList = courseFromDb.getCourseTeachers();
+        boolean removed = courseTeacherList.removeIf(teacher -> teacherId.equals(teacher.getTeacherId()));
+        if (!removed) {
+            throw new CourseException(CourseError.TEACHER_NO_ON_THE_LIST_OF_ENROLL);
+        }
+        courseFromDb.setCourseTeachers(courseTeacherList);
+        courseRepository.save(courseFromDb);
     }
 }

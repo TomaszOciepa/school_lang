@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
 @Table(name = "TEACHER")
 @Getter
@@ -23,9 +21,6 @@ public class Teacher {
     @Email
     private String email;
     private Status status;
-
-    @OneToMany(mappedBy = "teacher")
-    private List<MyCourse> myCourse;
 
     public Teacher() {
     }

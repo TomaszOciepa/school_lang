@@ -27,14 +27,14 @@ class TeacherControllerTest {
 
     private List<Teacher> prepareTeachersData() {
         List<Teacher> mockTeachers = Arrays.asList(
-                new Teacher(1L, "Robert", "Kubica", "rob@wp.pl", Status.ACTIVE, new ArrayList<>()),
-                new Teacher(2L, "Krzysztof", "Hołowczyc", "hol@wp.pl", Status.INACTIVE, new ArrayList<>())
+                new Teacher(1L, "Robert", "Kubica", "rob@wp.pl", Status.ACTIVE),
+                new Teacher(2L, "Krzysztof", "Hołowczyc", "hol@wp.pl", Status.INACTIVE)
         );
         return mockTeachers;
     }
 
     private Teacher prepareTeacher() {
-        Teacher mockStudent = new Teacher(1L, "Robert", "Kubica", "rob@wp.pl", Status.ACTIVE, new ArrayList<>());
+        Teacher mockStudent = new Teacher(1L, "Robert", "Kubica", "rob@wp.pl", Status.ACTIVE);
         return mockStudent;
     }
 

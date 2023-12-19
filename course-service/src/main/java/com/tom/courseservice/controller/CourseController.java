@@ -59,4 +59,16 @@ public class CourseController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/{courseId}/teacher/{teacherId}")
+    public ResponseEntity<?> teacherCourseEnrollment(@PathVariable String courseId, @PathVariable Long teacherId){
+        courseService.teacherCourseEnrollment(courseId, teacherId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{courseId}/teacher/{teacherId}")
+    public ResponseEntity<?> teacherCourseUnEnrollment(@PathVariable String courseId, @PathVariable Long teacherId){
+        courseService.teacherRemoveFromCourse(courseId, teacherId);
+        return ResponseEntity.ok().build();
+    }
 }
