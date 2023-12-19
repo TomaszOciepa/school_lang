@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 @Service
 @AllArgsConstructor
 public class CourseServiceImpl implements CourseService {
@@ -105,7 +104,6 @@ public class CourseServiceImpl implements CourseService {
         validateStudentBeforeCourseEnrollment(course, studentDto);
         course.incrementParticipantsNumber();
         CourseStudents courseStudents = new CourseStudents(studentDto.getId());
-        studentServiceClient.courseEnrollment(studentId, course.getName());
         course.getCourseStudents().add(courseStudents);
         courseRepository.save(course);
     }
@@ -135,12 +133,11 @@ public class CourseServiceImpl implements CourseService {
         boolean removed = courseStudentsList.removeIf(student -> studentId.equals(student.getStudentId()));
 
         if (!removed) {
-            throw new CourseException(CourseError.STUDENT_IS_NOT_FOUND);
+            throw new CourseException(CourseError.STUDENT_NO_ON_THE_LIST_OF_ENROLL);
         }
         courseFromDb.setCourseStudents(courseStudentsList);
         courseFromDb.decrementParticipantsNumber();
         courseRepository.save(courseFromDb);
-        studentServiceClient.courseUnEnrollment(studentId, courseFromDb.getName());
     }
 
     @Override

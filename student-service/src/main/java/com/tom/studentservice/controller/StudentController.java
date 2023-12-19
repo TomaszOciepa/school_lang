@@ -54,13 +54,4 @@ public class StudentController {
     public List<Student> getStudentsByEmails(@RequestBody List<String> emails) {
         return studentService.getStudentsByEmails(emails);
     }
-    @PostMapping("/enroll/{studentId}/course/{courseName}")
-    public void courseEnrollment(@PathVariable Long studentId, @PathVariable String courseName){
-        studentService.courseEnrollment(studentId, courseName);
-    }
-
-    @PostMapping("/un-enroll/{studentId}/course/{courseName}")
-    public void courseUnEnrollment(@PathVariable Long studentId, @PathVariable String courseName){
-        studentService.courseUnEnrollStudent(studentId, courseName);
-    }
 }
