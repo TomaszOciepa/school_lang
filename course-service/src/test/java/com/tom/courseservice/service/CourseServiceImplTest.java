@@ -4,8 +4,10 @@ import com.tom.courseservice.exception.CourseError;
 import com.tom.courseservice.exception.CourseException;
 import com.tom.courseservice.model.Course;
 import com.tom.courseservice.model.CourseStudents;
+import com.tom.courseservice.model.CourseTeachers;
 import com.tom.courseservice.model.Status;
 import com.tom.courseservice.model.dto.StudentDto;
+import com.tom.courseservice.model.dto.TeacherDto;
 import com.tom.courseservice.repo.CourseRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -29,6 +31,8 @@ class CourseServiceImplTest {
     private CourseRepository courseRepository;
     @Mock
     private StudentServiceClient studentServiceClient;
+    @Mock
+    private TeacherServiceClient teacherServiceClient;
     @InjectMocks
     private CourseServiceImpl courseServiceImpl;
 
@@ -54,6 +58,10 @@ class CourseServiceImplTest {
 
     StudentDto prepareStudent() {
         return new StudentDto(1L, "Tomek", "Kowalski", "kow@wp.pl", Status.ACTIVE);
+    }
+
+    TeacherDto prepareTeacher() {
+        return new TeacherDto(1L, "Klaudia", "Nowak", "kla@wp.pl", Status.ACTIVE);
     }
 
     @Test
@@ -269,9 +277,39 @@ class CourseServiceImplTest {
 
     @Test
     void teacherCourseEnrollment() {
+        MockitoAnnotations.openMocks(this);
+        //given
+        String courseIdMock = "1111";
+        Course courseMock = prepareCourse();
+        TeacherDto teacherMock = prepareTeacher();
+        Long teacherIdMock = 1L;
+        CourseTeachers courseStudents = new CourseTeachers(teacherMock.getId());
+        given(courseRepository.findById(courseIdMock)).willReturn(Optional.ofNullable(courseMock));
+        given(teacherServiceClient.getTeacherById(teacherIdMock)).willReturn(teacherMock);
+        //when
+        courseServiceImpl.teacherCourseEnrollment(courseIdMock, teacherIdMock);
+        //then
+        verify(courseRepository, times(1)).findById(courseIdMock);
+        verify(teacherServiceClient, times(1)).getTeacherById(teacherIdMock);
+        verify(courseRepository, times(1)).save(courseMock);
     }
 
     @Test
     void teacherRemoveFromCourse() {
+        MockitoAnnotations.openMocks(this);
+        //given
+        TeacherDto teacherMock = prepareTeacher();
+        Long teacherIdMock = 1L;
+        CourseTeachers courseTeachersMock = new CourseTeachers(teacherMock.getId());
+        String courseIdMock = "1111";
+        Course courseMock = prepareCourse();
+        courseMock.getCourseTeachers().add(courseTeachersMock);
+        given(courseRepository.findById(courseIdMock)).willReturn(Optional.ofNullable(courseMock));
+        //when
+        courseServiceImpl.teacherRemoveFromCourse(courseIdMock, teacherIdMock);
+        //then
+        verify(courseRepository, times(1)).findById(courseIdMock);
+        verify(courseRepository, times(1)).save(courseMock);
+        assertTrue(courseMock.getCourseTeachers().isEmpty());
     }
 }

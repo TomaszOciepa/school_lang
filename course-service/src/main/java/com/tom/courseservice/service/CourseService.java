@@ -15,6 +15,6 @@ public interface CourseService {
     void deleteCourse(String id);
     void studentCourseEnrollment(String courseId, Long studentId);
     void studentRemoveFromCourse(String courseId, Long studentId);
-    void teacherCourseEnrollment(String courseId, String teacherId);
-    void teacherRemoveFromCourse(String courseId, String teacherId);
+    void teacherCourseEnrollment(String courseId, Long teacherId);
+    void teacherRemoveFromCourse(String courseId, Long teacherId);
 }

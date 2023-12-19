@@ -20,8 +20,4 @@ public interface TeacherService {
     Teacher patchTeacher(Long id, Teacher teacher);
 
     void deleteTeacher(Long id);
-
-    void courseEnrollment(Long teacherId, String courseName);
-
-    void courseUnEnrollTeacher(Long teacherId, String courseName);
 }

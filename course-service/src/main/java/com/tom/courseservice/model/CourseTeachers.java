@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 @Setter
 public class CourseTeachers {
 
-    private String teacherId;
+    private Long teacherId;
     private LocalDateTime enrollmentData;
 
-    public CourseTeachers(@NotNull String teacherId) {
+    public CourseTeachers(@NotNull Long teacherId) {
         this.teacherId = teacherId;
         this.enrollmentData = LocalDateTime.now();
     }

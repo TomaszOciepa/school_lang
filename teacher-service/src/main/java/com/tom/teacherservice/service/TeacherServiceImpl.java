@@ -97,13 +97,4 @@ public class TeacherServiceImpl implements TeacherService {
         teacherRepository.save(teacher);
     }
 
-    @Override
-    public void courseEnrollment(Long teacherId, String courseName) {
-
-    }
-
-    @Override
-    public void courseUnEnrollTeacher(Long teacherId, String courseName) {
-
-    }
 }
