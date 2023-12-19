@@ -14,7 +14,8 @@ public class StudentDto {
     private String email;
     private Status status;
 
-    public StudentDto(String firstName, String lastName, String email, Status status) {
+    public StudentDto(Long id, String firstName, String lastName, String email, Status status) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
