@@ -1,5 +1,7 @@
 package com.tom.calendarservice.exception;
 
+import feign.FeignException;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,5 +19,10 @@ public class CalendarExceptionHandler {
         }
 
         return ResponseEntity.status(httpStatus).body(new ErrorInfo(e.getCalendarError().getMessage()));
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<?> handleFeignException(FeignException e) {
+        return ResponseEntity.status(e.status()).body(new JSONObject(e.contentUTF8()).toMap());
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Document
 @Getter
@@ -19,8 +20,20 @@ public class Calendar {
     private String eventName;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private String studentId;
-    private String teacherId;
+    private Long teacherId;
     private String courseId;
     private String description;
+    private List<Long> studentIdList;
+
+    public Calendar(String eventName, LocalDateTime startDate, LocalDateTime endDate, Long teacherId, String courseId, String description, List<Long> studentIdList) {
+        this.eventName = eventName;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.teacherId = teacherId;
+        this.courseId = courseId;
+        this.description = description;
+        this.studentIdList = studentIdList;
+    }
+    public Calendar() {
+    }
 }

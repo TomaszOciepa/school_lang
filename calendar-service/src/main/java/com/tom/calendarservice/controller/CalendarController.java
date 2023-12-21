@@ -1,6 +1,7 @@
 package com.tom.calendarservice.controller;
 
 import com.tom.calendarservice.model.Calendar;
+import com.tom.calendarservice.model.EventRequest;
 import com.tom.calendarservice.service.CalendarService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -42,5 +43,25 @@ public class CalendarController {
     @DeleteMapping("/{id}")
     public void deleteLessonsById(@PathVariable String id) {
         calendarService.deleteLesson(id);
+    }
+
+    @PostMapping("/add-event")
+    public Calendar addEvent(@RequestBody EventRequest eventRequest){
+        return calendarService.addEvent(eventRequest);
+    }
+
+    @GetMapping("/student-lessons/{studentId}")
+    public List<Calendar> getLessonByStudentId(@PathVariable Long studentId) {
+        return calendarService.getLessonsByStudentId(studentId);
+    }
+
+    @GetMapping("/teacher-lessons/{teacherId}")
+    public List<Calendar> getLessonByTeacherId(@PathVariable Long teacherId) {
+        return calendarService.getLessonsByTeacherId(teacherId);
+    }
+
+    @GetMapping("/course-lessons/{courseId}")
+    public List<Calendar> getLessonsByCourseId(@PathVariable String courseId) {
+        return calendarService.getLessonsByCourseId(courseId);
     }
 }
