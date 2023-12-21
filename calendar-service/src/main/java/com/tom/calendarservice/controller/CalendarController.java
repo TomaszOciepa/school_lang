@@ -49,4 +49,14 @@ public class CalendarController {
     public Calendar addEvent(@RequestBody EventRequest eventRequest){
         return calendarService.addEvent(eventRequest);
     }
+
+    @GetMapping("/student-lessons/{studentId}")
+    public List<Calendar> getLessonByStudentId(@PathVariable Long studentId) {
+        return calendarService.getLessonsByStudentId(studentId);
+    }
+
+    @GetMapping("/teacher-lessons/{teacherId}")
+    public List<Calendar> getLessonByTeacherId(@PathVariable Long teacherId) {
+        return calendarService.getLessonsByTeacherId(teacherId);
+    }
 }

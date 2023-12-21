@@ -115,4 +115,22 @@ public class CalendarServiceImpl implements CalendarService {
 
         return calendarRepository.save(newEvent);
     }
+
+    @Override
+    public List<Calendar> getLessonsByStudentId(Long studentId) {
+        List<Calendar> lessons = calendarRepository.getLessonsByStudentId(studentId);
+        if (lessons.isEmpty()){
+            throw new CalendarException(CalendarError.CALENDAR_LESSONS_NOT_FOUND);
+        }
+        return lessons;
+    }
+
+    @Override
+    public List<Calendar> getLessonsByTeacherId(Long teacherId) {
+        List<Calendar> lessons = calendarRepository.getLessonsByTeacherId(teacherId);
+        if(lessons.isEmpty()){
+            throw new CalendarException(CalendarError.CALENDAR_LESSONS_NOT_FOUND);
+        }
+        return lessons;
+    }
 }

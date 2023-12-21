@@ -21,6 +21,10 @@ public interface CalendarService {
     void deleteLesson(String id);
 
     Calendar addEvent(EventRequest eventRequest);
+    List<Calendar> getLessonsByStudentId(Long studentId);
+    List<Calendar> getLessonsByTeacherId(Long teacher);
+
+
 
 
 }
