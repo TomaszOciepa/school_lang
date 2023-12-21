@@ -133,4 +133,13 @@ public class CalendarServiceImpl implements CalendarService {
         }
         return lessons;
     }
+
+    @Override
+    public List<Calendar> getLessonsByCourseId(String courseId) {
+        List<Calendar> lessons = calendarRepository.getLessonsByCourseId(courseId);
+        if(lessons.isEmpty()){
+            throw new CalendarException(CalendarError.CALENDAR_LESSONS_NOT_FOUND);
+        }
+        return lessons;
+    }
 }

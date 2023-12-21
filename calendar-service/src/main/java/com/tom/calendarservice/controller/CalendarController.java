@@ -59,4 +59,9 @@ public class CalendarController {
     public List<Calendar> getLessonByTeacherId(@PathVariable Long teacherId) {
         return calendarService.getLessonsByTeacherId(teacherId);
     }
+
+    @GetMapping("/course-lessons/{courseId}")
+    public List<Calendar> getLessonsByCourseId(@PathVariable String courseId) {
+        return calendarService.getLessonsByCourseId(courseId);
+    }
 }

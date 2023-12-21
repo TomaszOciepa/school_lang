@@ -12,4 +12,6 @@ public interface CalendarRepository extends MongoRepository<Calendar, String> {
     List<Calendar> getLessonsByStudentId(Long studentId);
     @Query("{'teacherId': ?0}")
     List<Calendar> getLessonsByTeacherId(Long teacherId);
+    @Query("{'courseId': ?0}")
+    List<Calendar> getLessonsByCourseId(String courseId);
 }
