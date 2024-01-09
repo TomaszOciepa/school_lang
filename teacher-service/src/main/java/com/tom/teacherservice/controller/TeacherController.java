@@ -4,6 +4,8 @@ import com.tom.teacherservice.model.Status;
 import com.tom.teacherservice.model.Teacher;
 import com.tom.teacherservice.service.TeacherService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,11 +18,18 @@ public class TeacherController {
     private final TeacherService teacherService;
 
     @GetMapping
+    public String all() {
+        return "Hello teacher";
+    }
+
+//    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/all")
     public List<Teacher> getAllTeacher(@RequestParam(required = false) Status status) {
         return teacherService.getAllTeacher(status);
     }
 
-    @GetMapping("/{id}")
+
+    @GetMapping("/id/{id}")
     public Teacher getTeacherById(@PathVariable Long id) {
         return teacherService.getTeacherById(id);
     }
