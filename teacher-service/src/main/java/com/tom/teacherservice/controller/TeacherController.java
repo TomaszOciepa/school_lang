@@ -4,8 +4,6 @@ import com.tom.teacherservice.model.Status;
 import com.tom.teacherservice.model.Teacher;
 import com.tom.teacherservice.service.TeacherService;
 import lombok.AllArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
