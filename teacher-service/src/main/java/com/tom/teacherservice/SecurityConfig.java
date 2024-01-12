@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class SecurityConfig {
 //    private final KeycloakLogoutHandler keycloakLogoutHandler;
 //
@@ -29,8 +29,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((request) -> request
                         .requestMatchers("/teacher").permitAll()
-                        .requestMatchers("/teacher/all").hasRole("admin")
-                        .requestMatchers("/teacher/id/**").hasRole("user")
+                        .requestMatchers("/teacher/all").hasAnyRole("user", "admin")
+                        .requestMatchers("/teacher/id/**").hasRole("admin")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 //                .oauth2Login();

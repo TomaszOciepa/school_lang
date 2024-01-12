@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const routes: Routes = [
   {
     path: '',
     loadChildren: () =>
       import('./modules/home/home.module').then((m) => m.HomeModule),
+    title: 'Lang School',
   },
 
   {
@@ -14,7 +16,9 @@ const routes: Routes = [
       import('./modules/teachers/teachers.module').then(
         (m) => m.TeachersModule
       ),
+    title: 'nauczyciele',
   },
+  { path: '**', component: PageNotFoundComponent, title: 'Page not found 404' },
 ];
 
 @NgModule({

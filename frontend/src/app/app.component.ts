@@ -47,29 +47,8 @@ export class AppComponent implements OnInit {
     this.oAuthService.logOut();
   }
 
-  claims: any;
-
-  getClaims() {
-    console.log('Claims: ' + this.oAuthService.getIdentityClaims());
-
-    this.claims = this.oAuthService.getIdentityClaims();
-    console.log('moze zadziala: ' + this.claims.name);
-  }
-
   getIdentity() {
     this.token = this.oAuthService.getAccessToken();
     console.log('token: ' + this.token);
-  }
-
-  getTeacher() {
-    this.http
-      .get('http://localhost:8092/teacher/all', {
-        headers: {
-          Authorization: `Bearer ${this.oAuthService.getAccessToken()}`,
-        },
-      })
-      .subscribe((result) => {
-        console.log('result: ' + JSON.stringify(result));
-      });
   }
 }

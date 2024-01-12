@@ -1,0 +1,32 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">lp.</th>
+      <th scope="col">Imię</th>
+      <th scope="col">Nazwisko</th>
+      <th scope="col">E-mail</th>
+      <th scope="col">Status</th>
+      <th scope="col">szczegóły</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let teacher of teachersList; index as i">
+      <tr>
+        <th scope="row">{{ i + 1 }}</th>
+        <td>{{ teacher.firstName }}</td>
+        <td>{{ teacher.lastName }}</td>
+        <td>{{ teacher.email }}</td>
+        <td>{{ teacher.status }}</td>
+        <td>
+          <button
+            type="button"
+            class="btn btn-info"
+            (click)="details(teacher.id)"
+          >
+            zobacz
+          </button>
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+</table>

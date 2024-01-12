@@ -1,18 +1,17 @@
 <app-header></app-header>
 
-<H1> Siema FRONTEND</H1>
+<div class="container">
+  <H1> Siema FRONTEND</H1>
 
-<button (click)="login()">Login</button>
+  <button (click)="login()">Login</button>
 
-<button (click)="getIdentity()">get token</button>
+  <button (click)="getIdentity()">get token</button>
 
-<button (click)="loout()">Logout</button>
-
-<p>Token: {{ token }}</p>
-
-<button (click)="getClaims()">Claims</button>
-
-<button (click)="getTeacher()">get teachers</button>
+  <button (click)="loout()">Logout</button>
+  <div class="container-sm">
+    <p>Token: {{ token }}</p>
+  </div>
+</div>
 
 <div class="container">
   <router-outlet></router-outlet>
