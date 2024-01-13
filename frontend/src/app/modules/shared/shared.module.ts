@@ -1,10 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MaterialModule } from './material/material.module';
+import { AlertComponent } from './components/alert/alert.component';
 
 @NgModule({
-  declarations: [],
-  imports: [CommonModule],
-  exports: [CommonModule, FormsModule],
+  declarations: [AlertComponent],
+  exports: [
+    CommonModule,
+    FormsModule,
+    MaterialModule,
+    ReactiveFormsModule,
+    AlertComponent,
+  ],
 })
 export class SharedModule {}

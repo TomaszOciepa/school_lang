@@ -33,22 +33,8 @@ export class AppComponent implements OnInit {
     });
     this.oAuthService.tokenValidationHandler = new JwksValidationHandler();
     this.oAuthService.loadDiscoveryDocumentAndTryLogin();
+
     // this.oAuthService.loadDiscoveryDocumentAndLogin();
     // this.oAuthService.loadDiscoveryDocument();
-  }
-
-  token!: String;
-
-  login() {
-    this.oAuthService.initImplicitFlow();
-  }
-
-  loout() {
-    this.oAuthService.logOut();
-  }
-
-  getIdentity() {
-    this.token = this.oAuthService.getAccessToken();
-    console.log('token: ' + this.token);
   }
 }
