@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
 
 @Component({
   selector: 'app-logout',
@@ -7,8 +6,6 @@ import { OAuthService } from 'angular-oauth2-oidc';
   styleUrls: ['./logout.component.css'],
 })
 export class LogoutComponent implements OnInit {
-  constructor(private oAuthService: OAuthService) {}
-  ngOnInit(): void {
-    this.oAuthService.logOut();
-  }
+  constructor() {}
+  ngOnInit(): void {}
 }

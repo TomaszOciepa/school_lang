@@ -1,10 +1,16 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ErrorHandler,
+  ViewChild,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { Teacher } from 'src/app/modules/core/models/teacher.model';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-teachers-table',
@@ -24,9 +30,13 @@ export class TeachersTableComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private teacherService: TeacherService, private router: Router) {}
+  constructor(
+    private readonly keycloak: KeycloakService,
+    private teacherService: TeacherService,
+    private router: Router
+  ) {}
 
-  ngAfterViewInit(): void {
+  async ngAfterViewInit(): Promise<void> {
     this.teacherService.getTeacher().subscribe({
       next: (clients) => {
         console.log(clients);
@@ -34,7 +44,7 @@ export class TeachersTableComponent implements AfterViewInit {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },
-      error: (err) => {
+      error: (err: ErrorHandler) => {
         console.log(err);
       },
     });

@@ -23,6 +23,8 @@
     "angular-oauth2-oidc": "^17.0.1",
     "angular-oauth2-oidc-jwks": "^17.0.0",
     "bootstrap": "^5.3.2",
+    "keycloak-angular": "^14.1.0",
+    "keycloak-js": "^22.0.5",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"

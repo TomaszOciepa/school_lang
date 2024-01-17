@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-login',
@@ -7,9 +7,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
-  constructor(private oAuthService: OAuthService) {}
+  constructor() {}
 
-  ngOnInit(): void {
-    this.oAuthService.initImplicitFlow();
-  }
+  ngOnInit(): void {}
 }

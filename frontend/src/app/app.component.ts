@@ -1,8 +1,6 @@
-import { JsonPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
-import { JwksValidationHandler } from 'angular-oauth2-oidc-jwks';
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-root',
@@ -11,30 +9,26 @@ import { JwksValidationHandler } from 'angular-oauth2-oidc-jwks';
 })
 export class AppComponent implements OnInit {
   title = 'frontend';
+  // public isLoggedIn = false;
+  // public userProfile: KeycloakProfile | null = null;
 
-  constructor(private oAuthService: OAuthService, private http: HttpClient) {
-    this.configureOAuth();
+  constructor(
+    private readonly keycloak: KeycloakService,
+    private http: HttpClient
+  ) {}
+
+  public async ngOnInit() {
+    // this.isLoggedIn = await this.keycloak.isLoggedIn();
+    // if (this.isLoggedIn) {
+    //   this.userProfile = await this.keycloak.loadUserProfile();
+    // }
   }
-  ngOnInit(): void {}
 
-  private configureOAuth() {
-    this.oAuthService.configure({
-      requireHttps: false,
-      clientId: 'my-front-mango',
-      redirectUri: window.location.origin,
-      userinfoEndpoint:
-        'http://localhost:8030/realms/mango/protocol/openid-connect/userinfo',
-      postLogoutRedirectUri: 'http://localhost:4200/',
-      responseType: 'code',
-      scope: 'openid profile email',
-      issuer: 'http://localhost:8030/realms/mango',
-      tokenEndpoint:
-        'http://localhost:8030/realms/mango/protocol/openid-connect/token',
-    });
-    this.oAuthService.tokenValidationHandler = new JwksValidationHandler();
-    this.oAuthService.loadDiscoveryDocumentAndTryLogin();
+  // public login() {
+  //   this.keycloak.login();
+  // }
 
-    // this.oAuthService.loadDiscoveryDocumentAndLogin();
-    // this.oAuthService.loadDiscoveryDocument();
-  }
+  // public logout() {
+  //   this.keycloak.logout();
+  // }
 }

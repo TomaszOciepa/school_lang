@@ -3,8 +3,27 @@
     <span>Lang School</span>
     <span class="spacer"></span>
     <button mat-button routerLink="/">Strona główna</button>
-    <button mat-button routerLink="teachers">Nauczyciele</button>
-    <button mat-button routerLink="auth/login">Logowanie</button>
-    <button mat-button routerLink="auth/logout">Wyloguj</button>
+    <button mat-button routerLink="teachers" *ngIf="isLoggedIn && isAdmin">
+      Nauczyciele
+    </button>
+    <button
+      *ngIf="!isLoggedIn"
+      mat-button
+      routerLink="auth/login"
+      (click)="login()"
+    >
+      Logowanie
+    </button>
+    <p *ngIf="isLoggedIn">
+      {{ userProfile?.firstName }} {{ userProfile?.lastName }}
+    </p>
+    <button
+      *ngIf="isLoggedIn"
+      mat-button
+      routerLink="auth/logout"
+      (click)="logout()"
+    >
+      Wyloguj
+    </button>
   </mat-toolbar>
 </nav>
