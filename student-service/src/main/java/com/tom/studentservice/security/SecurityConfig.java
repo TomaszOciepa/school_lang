@@ -1,4 +1,5 @@
-package com.tom.teacherservice.security;
+package com.tom.studentservice.security;
+
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
