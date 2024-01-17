@@ -1,0 +1,18 @@
+<div class="mt-3" *ngIf="teacher">
+  <div>
+    <p>Usuń nauczyciela:</p>
+    <button mat-raised-button color="warn" (click)="openDialog()">Usuń</button>
+  </div>
+  <div>
+    <p>Edytuj nauczyciela:</p>
+    <button mat-raised-button color="primary" (click)="openEditDialog()">
+      Edytuj
+    </button>
+  </div>
+  <h4>Dane nauczyciela:</h4>
+  <!-- <div *ngIf="teacher != null"> -->
+  <p>{{ teacher.firstName }} {{ teacher.lastName }}</p>
+  <p>{{ teacher.email }}</p>
+  <p>{{ teacher.status }}</p>
+  <!-- </div> -->
+</div>

@@ -1,4 +1,4 @@
-package com.tom.teacherservice;
+package com.tom.teacherservice.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,13 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 
-@Component
-public class KeycloakLogoutHandler implements LogoutHandler
+//@Component
+public class KeycloakLogoutHandler
+        implements LogoutHandler
 {
 
     private static final Logger logger = LoggerFactory.getLogger(KeycloakLogoutHandler.class);

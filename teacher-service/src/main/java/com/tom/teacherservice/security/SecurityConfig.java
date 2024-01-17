@@ -1,8 +1,8 @@
-package com.tom.teacherservice;
+package com.tom.teacherservice.security;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,30 +13,26 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class SecurityConfig {
-    private final KeycloakLogoutHandler keycloakLogoutHandler;
-
-
+//    private final KeycloakLogoutHandler keycloakLogoutHandler;
+//
+//
     @Bean
     public SecurityFilterChain filter(HttpSecurity http) throws Exception {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakRoleConverter());
 
 
-        http.cors(c -> c.disable())
+        http.cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((request) -> request
-                        .requestMatchers("/teacher").permitAll()
-                        .requestMatchers("/teacher/all").hasRole("admin")
-                        .requestMatchers("/teacher/id/**").hasRole("user")
+//                        .requestMatchers("/teacher").permitAll()
+//                        .requestMatchers("/teacher/all").hasAnyRole("user", "admin")
+//                        .requestMatchers("/teacher/id/**").hasRole("admin")
                         .anyRequest().authenticated())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2Login()
-                .and()
-                .logout()
-                .addLogoutHandler(keycloakLogoutHandler)
-                .logoutSuccessUrl("/");
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//                .oauth2Login();
 
 
         http.oauth2ResourceServer(
