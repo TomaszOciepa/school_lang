@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
-import { PostUser, User } from '../models/teacher.model';
+import { PostUser, User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -11,25 +11,23 @@ export class StudentService {
   apiUrl = environment.apiUrlStudents;
   constructor(private http: HttpClient) {}
 
-  getTeacher(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl + '/teacher?status=ACTIVE');
+  getStudent(): Observable<User[]> {
+    return this.http.get<User[]>(this.apiUrl + '?status=ACTIVE');
   }
 
-  getTeacherById(id: number): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/teacher/${id}`);
+  getStudentById(id: number): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/${id}`);
   }
 
-  addNewTeacher(newTeacher: PostUser): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/teacher`, newTeacher);
+  addNewStudent(newStudent: PostUser): Observable<User> {
+    return this.http.post<User>(this.apiUrl, newStudent);
   }
 
-  deleteTeacherById(id: number): Observable<Record<string, never>> {
-    return this.http.delete<Record<string, never>>(
-      `${this.apiUrl}/teacher/${id}`
-    );
+  deleteStudentById(id: number): Observable<Record<string, never>> {
+    return this.http.delete<Record<string, never>>(`${this.apiUrl}/${id}`);
   }
 
-  patchTeacher(id: number, editedTeacher: PostUser): Observable<User> {
-    return this.http.patch<User>(`${this.apiUrl}/teacher/${id}`, editedTeacher);
+  patchStudent(id: number, editedStudent: PostUser): Observable<User> {
+    return this.http.patch<User>(`${this.apiUrl}/${id}`, editedStudent);
   }
 }

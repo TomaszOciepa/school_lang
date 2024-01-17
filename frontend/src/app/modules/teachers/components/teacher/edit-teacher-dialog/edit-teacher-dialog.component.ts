@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { User } from 'src/app/modules/core/models/teacher.model';
+import { User } from 'src/app/modules/core/models/user.model';
 
 @Component({
   selector: 'app-edit-teacher-dialog',

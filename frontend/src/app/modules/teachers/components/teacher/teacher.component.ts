@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
-import { User } from 'src/app/modules/core/models/teacher.model';
+import { User } from 'src/app/modules/core/models/user.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteTeacherDialogComponent } from './delete-teacher-dialog/delete-teacher-dialog.component';

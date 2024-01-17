@@ -10,7 +10,13 @@
     >
       Nauczyciele
     </button>
-    <button mat-button routerLink="students">Uczniowie</button>
+    <button
+      mat-button
+      routerLink="students"
+      *ngIf="(isLoggedIn && isAdmin) || (isLoggedIn && isUser)"
+    >
+      Uczniowie
+    </button>
     <button
       *ngIf="!isLoggedIn"
       mat-button

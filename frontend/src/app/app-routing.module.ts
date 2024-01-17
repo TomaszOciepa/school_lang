@@ -16,6 +16,10 @@ const routes: Routes = [
       import('./modules/students/students.module').then(
         (m) => m.StudentsModule
       ),
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['admin', 'user'],
+    },
     title: 'Uczniowie',
   },
   {

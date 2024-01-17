@@ -10,7 +10,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { KeycloakService } from 'keycloak-angular';
-import { User } from 'src/app/modules/core/models/teacher.model';
+import { User } from 'src/app/modules/core/models/user.model';
 
 @Component({
   selector: 'app-teachers-table',
@@ -30,11 +30,7 @@ export class TeachersTableComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(
-    private readonly keycloak: KeycloakService,
-    private teacherService: TeacherService,
-    private router: Router
-  ) {}
+  constructor(private teacherService: TeacherService) {}
 
   async ngAfterViewInit(): Promise<void> {
     this.teacherService.getTeacher().subscribe({

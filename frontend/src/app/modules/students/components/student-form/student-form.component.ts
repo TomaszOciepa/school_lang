@@ -1,28 +1,29 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+
 import { Observer } from 'rxjs';
 import { PostUserForm, User } from 'src/app/modules/core/models/user.model';
 import { FormsService } from 'src/app/modules/core/services/forms.service';
-import { TeacherService } from 'src/app/modules/core/services/teacher.service';
+import { StudentService } from 'src/app/modules/core/services/student.service';
 
 @Component({
-  selector: 'app-teacher-form',
-  templateUrl: './teacher-form.component.html',
-  styleUrls: ['./teacher-form.component.css'],
+  selector: 'app-student-form',
+  templateUrl: './student-form.component.html',
+  styleUrls: ['./student-form.component.css'],
 })
-export class TeacherFormComponent implements OnInit {
-  teacherForm!: FormGroup<PostUserForm>;
+export class StudentFormComponent {
+  studentForm!: FormGroup<PostUserForm>;
   @Input() editMode = false;
-  @Input() teacher!: User;
+  @Input() student!: User;
   @Output() closeDialog = new EventEmitter<void>();
   observer: Observer<unknown> = {
-    next: (teacher) => {
+    next: (student) => {
       if (this.editMode) {
         this.emitCLoseDialog();
       }
-      console.log('Zapisano do bazy: ' + teacher);
-      this.router.navigate(['/teachers']);
+      console.log('Zapisano do bazy: ' + student);
+      this.router.navigate(['/students']);
     },
     error: (err) => {
       console.log(err);
@@ -32,7 +33,7 @@ export class TeacherFormComponent implements OnInit {
 
   constructor(
     private formService: FormsService,
-    private teacherService: TeacherService,
+    private studentService: StudentService,
     private router: Router
   ) {}
 
@@ -41,12 +42,12 @@ export class TeacherFormComponent implements OnInit {
   }
 
   get controls() {
-    return this.teacherForm.controls;
+    return this.studentForm.controls;
   }
 
   private initForm() {
-    this.teacherForm = new FormGroup({
-      firstName: new FormControl(this.editMode ? this.teacher.firstName : '', {
+    this.studentForm = new FormGroup({
+      firstName: new FormControl(this.editMode ? this.student.firstName : '', {
         nonNullable: true,
         validators: [
           Validators.required,
@@ -54,7 +55,7 @@ export class TeacherFormComponent implements OnInit {
           Validators.maxLength(20),
         ],
       }),
-      lastName: new FormControl(this.editMode ? this.teacher.lastName : '', {
+      lastName: new FormControl(this.editMode ? this.student.lastName : '', {
         nonNullable: true,
         validators: [
           Validators.required,
@@ -62,7 +63,7 @@ export class TeacherFormComponent implements OnInit {
           Validators.maxLength(20),
         ],
       }),
-      email: new FormControl(this.editMode ? this.teacher.email : '', {
+      email: new FormControl(this.editMode ? this.student.email : '', {
         nonNullable: true,
         validators: [Validators.required, Validators.email],
       }),
@@ -73,15 +74,15 @@ export class TeacherFormComponent implements OnInit {
     return this.formService.getErrorMessage(control);
   }
 
-  onAddTeacher() {
+  onAddStudent() {
     if (this.editMode) {
-      this.teacherService
-        .patchTeacher(this.teacher.id, this.teacherForm.getRawValue())
+      this.studentService
+        .patchStudent(this.student.id, this.studentForm.getRawValue())
         .subscribe(this.observer);
       return;
     }
-    this.teacherService
-      .addNewTeacher(this.teacherForm.getRawValue())
+    this.studentService
+      .addNewStudent(this.studentForm.getRawValue())
       .subscribe(this.observer);
   }
 
