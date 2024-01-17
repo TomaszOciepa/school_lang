@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Teacher } from 'src/app/modules/core/models/teacher.model';
+import { User } from 'src/app/modules/core/models/teacher.model';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 
 @Component({
@@ -10,12 +10,12 @@ import { TeacherService } from 'src/app/modules/core/services/teacher.service';
   styleUrls: ['./delete-teacher-dialog.component.css'],
 })
 export class DeleteTeacherDialogComponent implements OnInit {
-  teacher!: Teacher;
+  teacher!: User;
   errorMessage = '';
 
   constructor(
     private dialogRef: MatDialogRef<DeleteTeacherDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) private data: { teacher: Teacher },
+    @Inject(MAT_DIALOG_DATA) private data: { teacher: User },
     private teacherService: TeacherService,
     private router: Router
   ) {}

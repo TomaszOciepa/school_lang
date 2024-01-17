@@ -5,12 +5,12 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { Teacher } from 'src/app/modules/core/models/teacher.model';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { KeycloakService } from 'keycloak-angular';
+import { User } from 'src/app/modules/core/models/teacher.model';
 
 @Component({
   selector: 'app-teachers-table',
@@ -25,7 +25,7 @@ export class TeachersTableComponent implements AfterViewInit {
     'email',
     'buttons',
   ];
-  dataSource!: MatTableDataSource<Teacher>;
+  dataSource!: MatTableDataSource<User>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -40,7 +40,7 @@ export class TeachersTableComponent implements AfterViewInit {
     this.teacherService.getTeacher().subscribe({
       next: (clients) => {
         console.log(clients);
-        this.dataSource = new MatTableDataSource<Teacher>(clients);
+        this.dataSource = new MatTableDataSource<User>(clients);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },

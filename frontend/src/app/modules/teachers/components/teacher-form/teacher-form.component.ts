@@ -2,11 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observer } from 'rxjs';
-import {
-  PostTeacher,
-  PostTeacherForm,
-  Teacher,
-} from 'src/app/modules/core/models/teacher.model';
+import { PostUserForm, User } from 'src/app/modules/core/models/teacher.model';
 import { FormsService } from 'src/app/modules/core/services/forms.service';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 
@@ -16,9 +12,9 @@ import { TeacherService } from 'src/app/modules/core/services/teacher.service';
   styleUrls: ['./teacher-form.component.css'],
 })
 export class TeacherFormComponent implements OnInit {
-  teacherForm!: FormGroup<PostTeacherForm>;
+  teacherForm!: FormGroup<PostUserForm>;
   @Input() editMode = false;
-  @Input() teacher!: Teacher;
+  @Input() teacher!: User;
   @Output() closeDialog = new EventEmitter<void>();
   observer: Observer<unknown> = {
     next: (teacher) => {

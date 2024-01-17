@@ -1,6 +1,6 @@
 import { FormControl } from '@angular/forms';
 
-export interface TeacherResponse {
+export interface UserResponse {
   id: number;
   firstName: string;
   lastName: string;
@@ -8,9 +8,9 @@ export interface TeacherResponse {
   status: boolean;
 }
 
-export type PostTeacher = Omit<TeacherResponse, 'id' | 'status'>;
+export type PostUser = Omit<UserResponse, 'id' | 'status'>;
 
-export class Teacher implements TeacherResponse {
+export class User implements UserResponse {
   constructor(
     public id: number,
     public firstName: string,
@@ -20,7 +20,7 @@ export class Teacher implements TeacherResponse {
   ) {}
 }
 
-export interface PostTeacherForm {
+export interface PostUserForm {
   firstName: FormControl<string>;
   lastName: FormControl<string>;
   email: FormControl<string>;

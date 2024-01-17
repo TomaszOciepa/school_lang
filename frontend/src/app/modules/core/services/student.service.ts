@@ -1,15 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PostUser, User } from '../models/teacher.model';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
+import { PostUser, User } from '../models/teacher.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class TeacherService {
-  apiUrl = environment.apiUrlTeacher;
-
+export class StudentService {
+  apiUrl = environment.apiUrlStudents;
   constructor(private http: HttpClient) {}
 
   getTeacher(): Observable<User[]> {

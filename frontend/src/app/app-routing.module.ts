@@ -11,6 +11,14 @@ const routes: Routes = [
     title: 'Lang School',
   },
   {
+    path: 'students',
+    loadChildren: () =>
+      import('./modules/students/students.module').then(
+        (m) => m.StudentsModule
+      ),
+    title: 'Uczniowie',
+  },
+  {
     path: 'teachers',
     loadChildren: () =>
       import('./modules/teachers/teachers.module').then(
