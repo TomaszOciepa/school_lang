@@ -13,11 +13,11 @@ export class TeacherService {
   constructor(private http: HttpClient) {}
 
   getTeacher(): Observable<Teacher[]> {
-    return this.http.get<Teacher[]>(this.apiUrl + '/teacher/all?status=ACTIVE');
+    return this.http.get<Teacher[]>(this.apiUrl + '/teacher?status=ACTIVE');
   }
 
   getTeacherById(id: number): Observable<Teacher> {
-    return this.http.get<Teacher>(`${this.apiUrl}/teacher/id/${id}`);
+    return this.http.get<Teacher>(`${this.apiUrl}/teacher/${id}`);
   }
 
   addNewTeacher(newTeacher: PostTeacher): Observable<Teacher> {

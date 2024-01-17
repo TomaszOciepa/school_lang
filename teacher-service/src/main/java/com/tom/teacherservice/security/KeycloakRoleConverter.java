@@ -1,4 +1,4 @@
-package com.tom.teacherservice;
+package com.tom.teacherservice.security;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;

@@ -11,6 +11,7 @@ export class HeaderComponent implements OnInit {
   public isLoggedIn = false;
   public userProfile: KeycloakProfile | null = null;
   public isAdmin: boolean = false;
+  public isUser: boolean = false;
 
   constructor(private readonly keycloak: KeycloakService) {}
 
@@ -21,9 +22,14 @@ export class HeaderComponent implements OnInit {
       this.userProfile = await this.keycloak.loadUserProfile();
 
       const isAdmin = this.keycloak.isUserInRole('admin');
+      const isUser = this.keycloak.isUserInRole('user');
 
       if (isAdmin) {
         this.isAdmin = isAdmin;
+      }
+
+      if (isUser) {
+        this.isUser = isUser;
       }
     }
   }

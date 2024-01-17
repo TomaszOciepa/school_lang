@@ -4,6 +4,7 @@ import com.tom.teacherservice.model.Status;
 import com.tom.teacherservice.model.Teacher;
 import com.tom.teacherservice.service.TeacherService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,48 +17,49 @@ public class TeacherController {
 
     private final TeacherService teacherService;
 
+    @PreAuthorize("hasRole('admin')")
     @GetMapping
-    public String all() {
-        return "Hello teacher";
-    }
-
-//    @PreAuthorize("hasRole('USER')")
-    @GetMapping("/all")
     public List<Teacher> getAllTeacher(@RequestParam(required = false) Status status) {
         return teacherService.getAllTeacher(status);
     }
 
-
-    @GetMapping("/id/{id}")
+    @PreAuthorize("hasRole('admin')")
+    @GetMapping("/{id}")
     public Teacher getTeacherById(@PathVariable Long id) {
         return teacherService.getTeacherById(id);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @GetMapping("/email")
     public Teacher getTeacherByEmail(@RequestParam String email) {
         return teacherService.getTeacherByEmail(email);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @PostMapping
     public Teacher addTeacher(@RequestBody Teacher teacher) {
         return teacherService.addTeacher(teacher);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @PutMapping("/{id}")
     public Teacher putTeacher(@PathVariable Long id, @RequestBody Teacher teacher) {
         return teacherService.putTeacher(id, teacher);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @PatchMapping("/{id}")
     public Teacher patchTeacher(@PathVariable Long id, @RequestBody Teacher teacher) {
         return teacherService.patchTeacher(id, teacher);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/{id}")
     public void deleteTeacher(@PathVariable Long id){
         teacherService.deleteTeacher(id);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @PostMapping("/idNumbers")
     public List<Teacher> getTeachersByIdNumber(@RequestBody List<Long> idNumbers) {
         return teacherService.getTeachersByIdNumber(idNumbers);
