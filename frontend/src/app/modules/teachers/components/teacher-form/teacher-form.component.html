@@ -1,0 +1,54 @@
+<div class="teacher-form-wrapper mt-3">
+  <h2 *ngIf="!editMode">Dodaj nauczyciela:</h2>
+  <form [formGroup]="teacherForm" (ngSubmit)="onAddTeacher()">
+    <div>
+      <mat-form-field>
+        <mat-label>Imię</mat-label>
+        <input matInput formControlName="firstName" />
+        <mat-error *ngIf="controls.firstName.invalid">{{
+          getErrorMessage(controls.firstName)
+        }}</mat-error>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-label>Nazwisko</mat-label>
+        <input matInput formControlName="lastName" />
+        <mat-error *ngIf="controls.lastName.invalid">{{
+          getErrorMessage(controls.lastName)
+        }}</mat-error>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-label>Adres e-mail</mat-label>
+        <input matInput placeholder="test@gmail.com" formControlName="email" />
+        <mat-error *ngIf="controls.email.invalid">{{
+          getErrorMessage(controls.email)
+        }}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="d-flex justify-content-end">
+      <button
+        type="button"
+        mat-raised-button
+        color="warn"
+        *ngIf="editMode"
+        (click)="emitCLoseDialog()"
+      >
+        Anuluj
+      </button>
+      <button
+        class="mx-1"
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="teacherForm.invalid"
+      >
+        {{ editMode ? "Edytuj" : "Dodaj nowego nauczyciela" }}
+      </button>
+    </div>
+    <!-- <app-alert *ngIf="errorMessage" [text]="errorMessage"></app-alert> -->
+  </form>
+</div>
