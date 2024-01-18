@@ -11,6 +11,16 @@ const routes: Routes = [
     title: 'Lang School',
   },
   {
+    path: 'courses',
+    loadChildren: () =>
+      import('./modules/courses/courses.module').then((m) => m.CoursesModule),
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['admin', 'user'],
+    },
+    title: 'Kursy',
+  },
+  {
     path: 'students',
     loadChildren: () =>
       import('./modules/students/students.module').then(
