@@ -17,24 +17,10 @@
     >
       Uczniowie
     </button>
-    <button
-      *ngIf="!isLoggedIn"
-      mat-button
-      routerLink="auth/login"
-      (click)="login()"
-    >
-      Logowanie
-    </button>
+    <button *ngIf="!isLoggedIn" mat-button (click)="login()">Logowanie</button>
     <p *ngIf="isLoggedIn">
       {{ userProfile?.firstName }} {{ userProfile?.lastName }}
     </p>
-    <button
-      *ngIf="isLoggedIn"
-      mat-button
-      routerLink="auth/logout"
-      (click)="logout()"
-    >
-      Wyloguj
-    </button>
+    <button *ngIf="isLoggedIn" mat-button (click)="logout()">Wyloguj</button>
   </mat-toolbar>
 </nav>
