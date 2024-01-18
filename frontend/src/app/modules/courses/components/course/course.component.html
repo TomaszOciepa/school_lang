@@ -11,37 +11,91 @@
   </div>
   <h4>Informacje o kusie:</h4>
   <table class="table table-striped table-bordered">
-    <thead>
-      <tr>
-        <th scope="col">nazwa</th>
-        <th scope="col">status</th>
-        <th scope="col">data rozpoczęcia</th>
-        <th scope="col">data zakończenia</th>
-      </tr>
-    </thead>
     <tbody>
       <tr>
-        <td>{{ course.name }}</td>
-        <td>{{ course.status }}</td>
-        <td>{{ course.startDate }}</td>
-        <td>{{ course.endDate }}</td>
+        <td><b>nazwa: </b>{{ course.name }}</td>
+        <td><b>status: </b>{{ course.status }}</td>
+        <td><b>data rozpoczęcia: </b>{{ course.startDate }}</td>
+        <td><b>ata zakończenia: </b>{{ course.endDate }}</td>
       </tr>
-    </tbody>
-    <thead>
       <tr>
-        <th scope="col">liczba lekcji</th>
-        <th scope="col">liczba zapisanych uczniów</th>
-        <th scope="col">max liczba uczniów</th>
-        <th>-</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>{{ course.lessonsNumber }}</td>
-        <td>{{ course.participantsNumber }}</td>
-        <td>{{ course.participantsLimit }}</td>
+        <td><b>liczba lekcji: </b>{{ course.lessonsNumber }}</td>
+        <td><b>liczba uczniów: </b>{{ course.participantsNumber }}</td>
+        <td><b>max liczba uczniów: </b>{{ course.participantsLimit }}</td>
         <td>-</td>
       </tr>
     </tbody>
   </table>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div *ngIf="!students">
+        <h3>Brak uczniów</h3>
+      </div>
+      <div *ngIf="students">
+        <h3>Lista uczniów:</h3>
+        <table class="table table-info table-striped">
+          <thead>
+            <tr>
+              <th scope="col">lp.</th>
+              <th scope="col">Imię</th>
+              <th scope="col">Nazwisko</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let student of students; index as i">
+              <th scope="row">{{ i + 1 }}</th>
+              <td>{{ student.firstName }}</td>
+              <td>{{ student.lastName }}</td>
+              <td>
+                <button
+                  mat-raised-button
+                  color="primary"
+                  [routerLink]="'/students/' + student.id"
+                >
+                  szczegóły
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col">
+      <div *ngIf="!teachers">
+        <h3>Brak przypisanych nauczycieli</h3>
+      </div>
+      <div *ngIf="teachers">
+        <h3>Lista nauczycieli</h3>
+        <table class="table table-primary">
+          <thead>
+            <tr>
+              <th scope="col">lp.</th>
+              <th scope="col">Imię</th>
+              <th scope="col">nazwisko</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let teacher of teachers; index as i">
+              <th scope="row">{{ i + 1 }}</th>
+              <td>{{ teacher.firstName }}</td>
+              <td>{{ teacher.lastName }}</td>
+              <td>
+                <button
+                  mat-raised-button
+                  color="primary"
+                  [routerLink]="'/teachers/' + teacher.id"
+                >
+                  szczegóły
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>

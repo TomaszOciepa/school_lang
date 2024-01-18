@@ -5,6 +5,7 @@ import { CourseService } from 'src/app/modules/core/services/course.service';
 import { EditCourseDialogComponent } from './edit-course-dialog/edit-course-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteCourseDialogComponent } from './delete-course-dialog/delete-course-dialog.component';
+import { User } from 'src/app/modules/core/models/user.model';
 
 @Component({
   selector: 'app-course',
@@ -14,6 +15,8 @@ import { DeleteCourseDialogComponent } from './delete-course-dialog/delete-cours
 export class CourseComponent {
   id!: string;
   course!: Course;
+  students!: User[];
+  teachers!: User[];
 
   constructor(
     private courseService: CourseService,
@@ -28,11 +31,35 @@ export class CourseComponent {
     });
 
     this.getCourse(this.id);
+    this.getCourseMembers(this.id);
+    this.getCourseTeachers(this.id);
   }
 
   getCourse(id: string) {
     this.courseService.getCourseById(id).subscribe((response) => {
       this.course = response;
+    });
+  }
+
+  getCourseMembers(courseId: string) {
+    this.courseService.getCourseMembers(courseId).subscribe({
+      next: (student) => {
+        this.students = student;
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+  }
+
+  getCourseTeachers(courseId: string) {
+    this.courseService.getCourseTeachers(courseId).subscribe({
+      next: (teacher) => {
+        this.teachers = teacher;
+      },
+      error: (err) => {
+        console.log(err);
+      },
     });
   }
 
