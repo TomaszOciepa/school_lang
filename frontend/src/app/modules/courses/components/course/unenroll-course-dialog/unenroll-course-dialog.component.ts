@@ -10,32 +10,61 @@ import { CourseService } from 'src/app/modules/core/services/course.service';
   styleUrls: ['./unenroll-course-dialog.component.css'],
 })
 export class UnenrollCourseDialogComponent {
-  student!: User;
+  studentIsEnabled!: boolean;
+  user!: User;
   courseId!: string;
   errorMessage = '';
 
   constructor(
     private dialogRef: MatDialogRef<UnenrollCourseDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) private data: { courseId: string; student: User },
+    @Inject(MAT_DIALOG_DATA)
+    private data: { studentIsEnabled: boolean; courseId: string; user: User },
     private courseService: CourseService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    this.studentIsEnabled = this.data.studentIsEnabled;
     this.courseId = this.data.courseId;
-    this.student = this.data.student;
+    this.user = this.data.user;
   }
 
-  onDelete(courseId: string, studentId: number) {
+  onDelete(userId: number) {
+    if (this.studentIsEnabled) {
+      this.deleteStudent(userId);
+    } else {
+      this.deleteTeacher(userId);
+    }
+  }
+
+  private deleteStudent(studentId: number) {
     this.courseService
-      .studentCourseUnEnrollment(courseId, studentId)
+      .studentCourseUnEnrollment(this.courseId, studentId)
       .subscribe({
         next: () => {
-          this.dialogRef.close();
-          window.location.reload();
+          console.log('haha');
         },
         error: (err) => {
           this.errorMessage = err;
+        },
+        complete: () => {
+          window.location.reload();
+        },
+      });
+  }
+
+  private deleteTeacher(teacherId: number) {
+    this.courseService
+      .teacherCourseUnEnrollment(this.courseId, teacherId)
+      .subscribe({
+        next: () => {
+          console.log('haha');
+        },
+        error: (err) => {
+          this.errorMessage = err;
+        },
+        complete: () => {
+          window.location.reload();
         },
       });
   }

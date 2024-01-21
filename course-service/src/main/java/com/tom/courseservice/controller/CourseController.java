@@ -51,7 +51,6 @@ public class CourseController {
 
     @PostMapping("/{courseId}/student/{studentId}")
     public ResponseEntity<?> studentCourseEnrollment(@PathVariable String courseId, @PathVariable Long studentId){
-        System.out.println("sirma controller");
         courseService.studentCourseEnrollment(courseId, studentId);
 
         return ResponseEntity.ok().build();

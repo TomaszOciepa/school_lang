@@ -21,7 +21,7 @@ export class CourseComponent {
   teachers!: User[];
   courseId!: string;
 
-  listStudentsId!: number[];
+  listUserId!: number[];
 
   constructor(
     private courseService: CourseService,
@@ -87,26 +87,40 @@ export class CourseComponent {
     });
   }
 
-  openEnrollDialog() {
-    if (this.students !== undefined) {
-      this.listStudentsId = this.students.map((student) => student.id);
-    }
+  openEnrollDialog(enrollStudentIsEnable: boolean) {
+    this.selectStudentOrTeacherEnroll(enrollStudentIsEnable);
 
     const dialogRef = this.dialog.open(EnrollCourseDialogComponent, {
       data: {
+        enrollStudentIsEnable: enrollStudentIsEnable,
         courseId: this.course.id,
-        listStudentsId: this.listStudentsId,
+        listUserId: this.listUserId,
       },
       width: '600px',
       maxWidth: '600px',
     });
   }
 
-  openUnEnrollDialog(student: User) {
+  private selectStudentOrTeacherEnroll(enrollStudent: boolean) {
+    if (enrollStudent) {
+      if (this.students !== undefined) {
+        this.listUserId = this.students.map((student) => student.id);
+      }
+    }
+
+    if (!enrollStudent) {
+      if (this.teachers !== undefined) {
+        this.listUserId = this.teachers.map((teacher) => teacher.id);
+      }
+    }
+  }
+
+  openUnEnrollDialog(user: User, studentIsEnabled: boolean) {
     const dialogRef = this.dialog.open(UnenrollCourseDialogComponent, {
       data: {
+        studentIsEnabled: studentIsEnabled,
         courseId: this.course.id,
-        student: student,
+        user: user,
       },
       width: '600px',
       maxWidth: '600px',

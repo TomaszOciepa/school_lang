@@ -34,7 +34,7 @@
         <h3>Brak uczniów</h3>
       </div>
       <div>
-        <button mat-raised-button color="info" (click)="openEnrollDialog()">
+        <button mat-raised-button color="info" (click)="openEnrollDialog(true)">
           dodaj kursanta
         </button>
       </div>
@@ -68,7 +68,7 @@
                 <button
                   mat-raised-button
                   color="warn"
-                  (click)="openUnEnrollDialog(student)"
+                  (click)="openUnEnrollDialog(student, true)"
                 >
                   usuń
                 </button>
@@ -81,6 +81,15 @@
     <div class="col">
       <div *ngIf="!teachers">
         <h3>Brak przypisanych nauczycieli</h3>
+      </div>
+      <div>
+        <button
+          mat-raised-button
+          color="info"
+          (click)="openEnrollDialog(false)"
+        >
+          dodaj nauczyciela
+        </button>
       </div>
       <div *ngIf="teachers">
         <h3>Lista nauczycieli</h3>
@@ -106,6 +115,15 @@
                   [routerLink]="'/teachers/' + teacher.id"
                 >
                   szczegóły
+                </button>
+              </td>
+              <td>
+                <button
+                  mat-raised-button
+                  color="warn"
+                  (click)="openUnEnrollDialog(teacher, false)"
+                >
+                  usuń
                 </button>
               </td>
             </tr>

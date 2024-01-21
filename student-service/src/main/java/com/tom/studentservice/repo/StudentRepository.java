@@ -20,8 +20,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findAllByEmailIn (List<String> emails);
     List<Student> findAllByIdIn(List<Long> idNumbers);
 
-//    List<Student> findAllByIdNotIn(List<Long> idNumbers);
-
     @Query("SELECT s FROM Student s WHERE s.id NOT IN :idNumbers AND s.status = :status")
     List<Student> findAllByIdNotInAndStatus(@Param("idNumbers") List<Long> idNumbers, @Param("status") Status status);
 }

@@ -58,4 +58,23 @@ export class CourseService {
       `${this.apiUrl}/${courseId}/student/${studentId}`
     );
   }
+
+  teacherCourseEnrollment(
+    courseId: string,
+    teacherId: number
+  ): Observable<HttpStatusCode> {
+    return this.http.post<HttpStatusCode>(
+      `${this.apiUrl}/${courseId}/teacher/${teacherId}`,
+      []
+    );
+  }
+
+  teacherCourseUnEnrollment(
+    courseId: string,
+    teacherId: number
+  ): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(
+      `${this.apiUrl}/${courseId}/teacher/${teacherId}`
+    );
+  }
 }

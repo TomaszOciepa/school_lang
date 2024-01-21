@@ -31,4 +31,8 @@ export class TeacherService {
   patchTeacher(id: number, editedTeacher: PostUser): Observable<User> {
     return this.http.patch<User>(`${this.apiUrl}/${id}`, editedTeacher);
   }
+
+  getTeachersByNotIdNumber(id: number[]): Observable<User[]> {
+    return this.http.post<User[]>(this.apiUrl + '/notIdNumbers', id);
+  }
 }

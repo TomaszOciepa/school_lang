@@ -65,4 +65,8 @@ public class TeacherController {
         return teacherService.getTeachersByIdNumber(idNumbers);
     }
 
+    @PostMapping("/notIdNumbers")
+    public List<Teacher> getTeachersByNotIdNumber(@RequestBody List<Long> idNumbers) {
+        return teacherService.findAllByIdNotInAndStatus(idNumbers);
+    }
 }
