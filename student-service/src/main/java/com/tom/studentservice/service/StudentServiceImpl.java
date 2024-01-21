@@ -106,4 +106,16 @@ public class StudentServiceImpl implements StudentService {
     public List<Student> getStudentsByIdNumber(List<Long> idNumbers) {
         return studentRepository.findAllByIdIn(idNumbers);
     }
+
+    @Override
+    public List<Student> getStudentsByNotIdNumber(List<Long> idNumbers) {
+        return studentRepository.findAllByIdIn(idNumbers);
+    }
+
+    @Override
+    public List<Student> findAllByIdNotInAndStatus(List<Long> idNumbers) {
+
+        return studentRepository.findAllByIdNotInAndStatus(idNumbers, Status.ACTIVE);
+    }
+
 }

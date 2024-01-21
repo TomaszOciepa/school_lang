@@ -62,4 +62,10 @@ public class StudentController {
     public List<Student> getStudentsByIdNumber(@RequestBody List<Long> idNumbers) {
         return studentService.getStudentsByIdNumber(idNumbers);
     }
+
+    @PostMapping("/notIdNumbers")
+    public List<Student> getStudentsByNotIdNumber(@RequestBody List<Long> idNumbers) {
+        return studentService.findAllByIdNotInAndStatus(idNumbers);
+    }
+
 }

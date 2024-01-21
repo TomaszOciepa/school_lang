@@ -30,4 +30,8 @@ export class StudentService {
   patchStudent(id: number, editedStudent: PostUser): Observable<User> {
     return this.http.patch<User>(`${this.apiUrl}/${id}`, editedStudent);
   }
+
+  getStudentsByNotIdNumber(id: number[]): Observable<User[]> {
+    return this.http.post<User[]>(this.apiUrl + '/notIdNumbers', id);
+  }
 }

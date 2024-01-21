@@ -33,6 +33,11 @@
       <div *ngIf="!students">
         <h3>Brak uczniów</h3>
       </div>
+      <div>
+        <button mat-raised-button color="info" (click)="openEnrollDialog()">
+          dodaj kursanta
+        </button>
+      </div>
       <div *ngIf="students">
         <h3>Lista uczniów:</h3>
         <table class="table table-info table-striped">
@@ -41,6 +46,7 @@
               <th scope="col">lp.</th>
               <th scope="col">Imię</th>
               <th scope="col">Nazwisko</th>
+              <th scope="col"></th>
               <th scope="col"></th>
             </tr>
           </thead>
@@ -56,6 +62,15 @@
                   [routerLink]="'/students/' + student.id"
                 >
                   szczegóły
+                </button>
+              </td>
+              <td>
+                <button
+                  mat-raised-button
+                  color="warn"
+                  (click)="openUnEnrollDialog(student)"
+                >
+                  usuń
                 </button>
               </td>
             </tr>
@@ -75,6 +90,7 @@
               <th scope="col">lp.</th>
               <th scope="col">Imię</th>
               <th scope="col">nazwisko</th>
+              <th scope="col"></th>
               <th scope="col"></th>
             </tr>
           </thead>

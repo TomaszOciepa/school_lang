@@ -6,6 +6,8 @@ import { EditCourseDialogComponent } from './edit-course-dialog/edit-course-dial
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteCourseDialogComponent } from './delete-course-dialog/delete-course-dialog.component';
 import { User } from 'src/app/modules/core/models/user.model';
+import { EnrollCourseDialogComponent } from './enroll-course-dialog/enroll-course-dialog.component';
+import { UnenrollCourseDialogComponent } from './unenroll-course-dialog/unenroll-course-dialog.component';
 
 @Component({
   selector: 'app-course',
@@ -17,6 +19,9 @@ export class CourseComponent {
   course!: Course;
   students!: User[];
   teachers!: User[];
+  courseId!: string;
+
+  listStudentsId!: number[];
 
   constructor(
     private courseService: CourseService,
@@ -38,6 +43,7 @@ export class CourseComponent {
   getCourse(id: string) {
     this.courseService.getCourseById(id).subscribe((response) => {
       this.course = response;
+      this.courseId = response.id;
     });
   }
 
@@ -75,6 +81,32 @@ export class CourseComponent {
     const dialogRef = this.dialog.open(EditCourseDialogComponent, {
       data: {
         course: this.course,
+      },
+      width: '600px',
+      maxWidth: '600px',
+    });
+  }
+
+  openEnrollDialog() {
+    if (this.students !== undefined) {
+      this.listStudentsId = this.students.map((student) => student.id);
+    }
+
+    const dialogRef = this.dialog.open(EnrollCourseDialogComponent, {
+      data: {
+        courseId: this.course.id,
+        listStudentsId: this.listStudentsId,
+      },
+      width: '600px',
+      maxWidth: '600px',
+    });
+  }
+
+  openUnEnrollDialog(student: User) {
+    const dialogRef = this.dialog.open(UnenrollCourseDialogComponent, {
+      data: {
+        courseId: this.course.id,
+        student: student,
       },
       width: '600px',
       maxWidth: '600px',

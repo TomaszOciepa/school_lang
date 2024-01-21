@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
@@ -38,5 +38,24 @@ export class CourseService {
 
   getCourseTeachers(courseId: string): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/teacher/${courseId}`);
+  }
+
+  studentCourseEnrollment(
+    courseId: string,
+    studentId: number
+  ): Observable<HttpStatusCode> {
+    return this.http.post<HttpStatusCode>(
+      `${this.apiUrl}/${courseId}/student/${studentId}`,
+      []
+    );
+  }
+
+  studentCourseUnEnrollment(
+    courseId: string,
+    studentId: number
+  ): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(
+      `${this.apiUrl}/${courseId}/student/${studentId}`
+    );
   }
 }
