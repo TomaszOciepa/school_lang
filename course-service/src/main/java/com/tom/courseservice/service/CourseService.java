@@ -21,4 +21,5 @@ public interface CourseService {
     void teacherRemoveFromCourse(String courseId, Long teacherId);
     List<StudentDto> getCourseMembers(String courseId);
     List<TeacherDto> getCourseTeachers(String courseId);
+    void isLessonAdditionPossible(String courseId);
 }

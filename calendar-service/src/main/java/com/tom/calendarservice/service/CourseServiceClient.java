@@ -10,4 +10,8 @@ public interface CourseServiceClient {
 
     @GetMapping("/course/{id}")
     CourseDto getCourseById(@PathVariable String id);
+    @GetMapping("/course/isLessonAdditionPossible/{courseId}")
+    void isLessonAdditionPossible(@PathVariable String courseId);
+
+
 }

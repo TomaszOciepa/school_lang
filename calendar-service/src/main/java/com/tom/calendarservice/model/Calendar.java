@@ -3,15 +3,18 @@ package com.tom.calendarservice.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Document
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
 public class Calendar {
 
@@ -22,18 +25,21 @@ public class Calendar {
     private LocalDateTime endDate;
     private Long teacherId;
     private String courseId;
+    private Status status;
     private String description;
-    private List<Long> studentIdList;
+    private List<Long> studentIdList = new ArrayList<>();
 
-    public Calendar(String eventName, LocalDateTime startDate, LocalDateTime endDate, Long teacherId, String courseId, String description, List<Long> studentIdList) {
-        this.eventName = eventName;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.teacherId = teacherId;
-        this.courseId = courseId;
-        this.description = description;
-        this.studentIdList = studentIdList;
-    }
+//    public Calendar(String eventName, LocalDateTime startDate, LocalDateTime endDate, Long teacherId, String courseId, Status status, String description, List<Long> studentIdList) {
+//        this.eventName = eventName;
+//        this.startDate = startDate;
+//        this.endDate = endDate;
+//        this.teacherId = teacherId;
+//        this.courseId = courseId;
+//        this.status = status;
+//        this.description = description;
+//        this.studentIdList = studentIdList;
+//    }
+
     public Calendar() {
     }
 }

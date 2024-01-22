@@ -4,6 +4,8 @@ import com.tom.teacherservice.model.Status;
 import com.tom.teacherservice.model.Teacher;
 import com.tom.teacherservice.service.TeacherService;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,7 @@ import java.util.List;
 @RequestMapping("/teacher")
 public class TeacherController {
 
+    private static Logger logger = LoggerFactory.getLogger(TeacherController.class);
     private final TeacherService teacherService;
 
     @PreAuthorize("hasRole('admin')")
@@ -68,5 +71,11 @@ public class TeacherController {
     @PostMapping("/notIdNumbers")
     public List<Teacher> getTeachersByNotIdNumber(@RequestBody List<Long> idNumbers) {
         return teacherService.findAllByIdNotInAndStatus(idNumbers);
+    }
+
+    @GetMapping("/teacherIsActive/{teacherId}")
+    public void teacherIsActive(@PathVariable Long teacherId){
+        logger.info("teacherIsActive() teacherId: "+teacherId);
+        teacherService.getTeacherById(teacherId);
     }
 }

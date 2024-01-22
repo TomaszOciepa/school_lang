@@ -3,6 +3,7 @@ package com.tom.calendarservice.service;
 import com.tom.calendarservice.exception.CalendarError;
 import com.tom.calendarservice.exception.CalendarException;
 import com.tom.calendarservice.model.Calendar;
+import com.tom.calendarservice.model.Status;
 import com.tom.calendarservice.repo.CalendarRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -33,11 +34,11 @@ class CalendarServiceImplTest {
                 new Calendar("1111D", "Lekcja Angielskiego",
                         LocalDateTime.of(2023, 12, 5, 16, 00),
                         LocalDateTime.of(2023, 12, 5, 17, 00),
-                        1L, "212", "opis lekcji", new ArrayList<>()),
+                        1L, "212", Status.ACTIVE,"opis lekcji", new ArrayList<>()),
                 new Calendar("1111D", "Lekcja Niemieckiego",
                         LocalDateTime.of(2023, 12, 15, 16, 00),
                         LocalDateTime.of(2023, 12, 15, 17, 00),
-                        1L, "212", "opis lekcji", new ArrayList<>())
+                        1L, "212", Status.ACTIVE,"opis lekcji", new ArrayList<>())
         );
     }
 
@@ -45,7 +46,7 @@ class CalendarServiceImplTest {
         return new Calendar("1111D", "Lekcja Angielskiego",
                 LocalDateTime.of(2023, 12, 5, 16, 00),
                 LocalDateTime.of(2023, 12, 5, 17, 00),
-                1L, "212", "opis lekcji", new ArrayList<>());
+                1L, "212", Status.ACTIVE,"opis lekcji", new ArrayList<>());
     }
 
     @Test

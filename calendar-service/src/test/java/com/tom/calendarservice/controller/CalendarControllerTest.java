@@ -1,6 +1,7 @@
 package com.tom.calendarservice.controller;
 
 import com.tom.calendarservice.model.Calendar;
+import com.tom.calendarservice.model.Status;
 import com.tom.calendarservice.service.CalendarService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -29,11 +30,11 @@ class CalendarControllerTest {
                 new Calendar("1111D", "Lekcja Angielskiego",
                         LocalDateTime.of(2023, 12, 5, 16, 00),
                         LocalDateTime.of(2023, 12, 5, 17, 00),
-                        1L, "212", "Opis lekcji", new ArrayList<>()),
+                        1L, "212", Status.ACTIVE, "Opis lekcji", new ArrayList<>()),
                 new Calendar("1111D", "Lekcja Niemieckiego",
                         LocalDateTime.of(2023, 12, 15, 16, 00),
                         LocalDateTime.of(2023, 12, 15, 17, 00),
-                        1L, "212", "Opis lekcji", new ArrayList<>())
+                        1L, "212", Status.ACTIVE, "Opis lekcji", new ArrayList<>())
         );
     }
 
@@ -41,7 +42,7 @@ class CalendarControllerTest {
         return new Calendar("1111D", "Lekcja Angielskiego",
                 LocalDateTime.of(2023, 12, 5, 16, 00),
                 LocalDateTime.of(2023, 12, 5, 17, 00),
-                1L, "212", "Opis lekcji", new ArrayList<>());
+                1L, "212", Status.ACTIVE, "Opis lekcji", new ArrayList<>());
     }
 
     @Test

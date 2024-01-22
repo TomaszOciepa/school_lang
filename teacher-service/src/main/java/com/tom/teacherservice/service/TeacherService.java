@@ -22,4 +22,5 @@ public interface TeacherService {
     void deleteTeacher(Long id);
     List<Teacher> getTeachersByIdNumber(List<Long> idNumbers);
     List<Teacher> findAllByIdNotInAndStatus(List<Long> idNumbers);
+    void teacherIsActive(Long teacherId);
 }

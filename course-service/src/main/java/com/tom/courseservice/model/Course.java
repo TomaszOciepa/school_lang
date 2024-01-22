@@ -24,6 +24,7 @@ public class Course {
     private Long participantsLimit;
     private Long participantsNumber;
     private Long lessonsNumber;
+    private Long finishedLessons;
     private LocalDate startDate;
     private LocalDate endDate;
     private List<CourseStudents> courseStudents = new ArrayList<>();
@@ -43,6 +44,13 @@ public class Course {
         }
     }
 
+    public void incrementFinishedLessons(){
+        finishedLessons++;
+    }
+
+    public void decrementFinishedLessons(){
+        finishedLessons--;
+    }
 
     public Course() {
     }

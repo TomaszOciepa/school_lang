@@ -4,6 +4,8 @@ import com.tom.calendarservice.model.Calendar;
 import com.tom.calendarservice.model.EventRequest;
 import com.tom.calendarservice.service.CalendarService;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/calendar")
 public class CalendarController {
-
+    private static Logger logger = LoggerFactory.getLogger(CalendarController.class);
     private final CalendarService calendarService;
 
     @GetMapping
@@ -26,7 +28,8 @@ public class CalendarController {
     }
 
     @PostMapping
-    public Calendar addLesson(Calendar calendar) {
+    public Calendar addLesson(@RequestBody Calendar calendar) {
+        logger.info("method addLesson() calendar = "+calendar.toString());
         return calendarService.addLesson(calendar);
     }
 
@@ -45,10 +48,10 @@ public class CalendarController {
         calendarService.deleteLesson(id);
     }
 
-    @PostMapping("/add-event")
-    public Calendar addEvent(@RequestBody EventRequest eventRequest){
-        return calendarService.addEvent(eventRequest);
-    }
+//    @PostMapping("/add-event")
+//    public Calendar addEvent(@RequestBody EventRequest eventRequest){
+//        return calendarService.addEvent(eventRequest);
+//    }
 
     @GetMapping("/student-lessons/{studentId}")
     public List<Calendar> getLessonByStudentId(@PathVariable Long studentId) {

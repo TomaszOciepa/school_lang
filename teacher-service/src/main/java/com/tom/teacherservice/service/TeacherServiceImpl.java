@@ -107,4 +107,11 @@ public class TeacherServiceImpl implements TeacherService {
         return teacherRepository.findAllByIdNotInAndStatus(idNumbers, Status.ACTIVE);
     }
 
+    public void teacherIsActive(Long teacherId){
+        Teacher teacher = getTeacherById(teacherId);
+        if (teacher.getStatus().equals(Status.INACTIVE)){
+            throw new TeacherException(TeacherError.TEACHER_IS_NOT_ACTIVE);
+        }
+
+    }
 }

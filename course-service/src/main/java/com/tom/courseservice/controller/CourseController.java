@@ -6,6 +6,8 @@ import com.tom.courseservice.model.dto.StudentDto;
 import com.tom.courseservice.model.dto.TeacherDto;
 import com.tom.courseservice.service.CourseService;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CourseController {
 
+    private static Logger logger = LoggerFactory.getLogger(CourseController.class);
     private final CourseService courseService;
 
     @GetMapping
@@ -83,5 +86,11 @@ public class CourseController {
     @GetMapping("/teacher/{courseId}")
     public List<TeacherDto> getCourseTeachers(@PathVariable String courseId){
         return courseService.getCourseTeachers(courseId);
+    }
+
+    @GetMapping("/isLessonAdditionPossible/{courseId}")
+    public void isLessonAdditionPossible(@PathVariable String courseId){
+        logger.info("isLessonAdditionPossible() courseId: "+courseId);
+        courseService.isLessonAdditionPossible(courseId);
     }
 }

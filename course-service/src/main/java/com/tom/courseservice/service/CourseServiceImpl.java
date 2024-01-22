@@ -44,6 +44,7 @@ public class CourseServiceImpl implements CourseService {
             throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
         }
         course.setParticipantsNumber(0L);
+        course.setFinishedLessons(0L);
         return courseRepository.save(course);
     }
 
@@ -206,5 +207,17 @@ public class CourseServiceImpl implements CourseService {
                 .collect(Collectors.toList());
 
         return teacherServiceClient.getTeachersByIdNumber(idNumbers);
+    }
+
+    public void isLessonAdditionPossible(String courseId){
+        Course courseFromDb = getCourseById(courseId);
+
+        if(courseFromDb.getStatus().equals(Status.INACTIVE) || courseFromDb.getStatus().equals(Status.FINISHED)){
+            throw new CourseException(CourseError.COURSE_IS_NOT_ACTIVE);
+        }
+
+        if (courseFromDb.getFinishedLessons().equals(courseFromDb.getLessonsNumber())){
+            throw new CourseException(CourseError.COURSE_LESSON_LIMIT_REACHED);
+        }
     }
 }
