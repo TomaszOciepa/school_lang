@@ -9,7 +9,7 @@ export class FormsService {
 
   getErrorMessage(control: FormControl) {
     if (control.hasError('required')) {
-      return 'Musisz wpisać jakąś wartość!';
+      return 'Pole jest wymagane!';
     }
 
     if (control.hasError('minlength')) {

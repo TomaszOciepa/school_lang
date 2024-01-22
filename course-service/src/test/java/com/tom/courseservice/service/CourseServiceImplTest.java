@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,20 +41,20 @@ class CourseServiceImplTest {
     List<Course> prepareCourseData() {
         return Arrays.asList(
                 new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
-                        LocalDateTime.of(2023, 12, 5, 0, 0),
-                        LocalDateTime.of(2024, 03, 12, 0, 0),
+                        LocalDate.of(2023, 12, 5),
+                        LocalDate.of(2024, 03, 12),
                         Arrays.asList(), Arrays.asList()),
                 new Course("1111", "Kurs Niemiecki", Status.ACTIVE, 20L, 0L, 12L,
-                        LocalDateTime.of(2023, 12, 8, 0, 0),
-                        LocalDateTime.of(2024, 02, 12, 0, 0),
+                        LocalDate.of(2023, 12, 8),
+                        LocalDate.of(2024, 02, 12),
                         Arrays.asList(), Arrays.asList())
         );
     }
 
     Course prepareCourse() {
         return new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
-                LocalDateTime.of(2023, 12, 5, 0, 0),
-                LocalDateTime.of(2024, 03, 12, 0, 0),
+                LocalDate.of(2023, 12, 5),
+                LocalDate.of(2024, 03, 12),
                 new ArrayList<>(), new ArrayList<>());
     }
 

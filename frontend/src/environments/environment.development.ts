@@ -1,4 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8092',
+  apiUrlStudents: 'http://localhost:8091/student',
+  apiUrlTeacher: 'http://localhost:8092/teacher',
+  apiUrlCourses: 'http://localhost:8093/course',
 };

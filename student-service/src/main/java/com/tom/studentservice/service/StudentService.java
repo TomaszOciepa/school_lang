@@ -2,6 +2,7 @@ package com.tom.studentservice.service;
 
 import com.tom.studentservice.model.Status;
 import com.tom.studentservice.model.Student;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -16,5 +17,6 @@ public interface StudentService {
     void deleteStudent(Long id);
     List<Student> getStudentsByEmails(List<String> emails);
     List<Student> getStudentsByIdNumber(List<Long> idNumbers);
+    List<Student> findAllByIdNotInAndStatus(List<Long> idNumbers);
 
 }

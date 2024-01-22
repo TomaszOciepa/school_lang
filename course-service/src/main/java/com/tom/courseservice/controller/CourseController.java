@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin( origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PATCH})
 @RequestMapping("/course")
 @AllArgsConstructor
 public class CourseController {
@@ -74,12 +75,12 @@ public class CourseController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/members/{courseId}")
+    @GetMapping("/members/{courseId}")
     public List<StudentDto> getCourseMembers(@PathVariable String courseId){
         return courseService.getCourseMembers(courseId);
     }
 
-    @PostMapping("/teacher/{courseId}")
+    @GetMapping("/teacher/{courseId}")
     public List<TeacherDto> getCourseTeachers(@PathVariable String courseId){
         return courseService.getCourseTeachers(courseId);
     }

@@ -43,6 +43,7 @@ public class CourseServiceImpl implements CourseService {
         if (courseRepository.existsByName(course.getName())) {
             throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
         }
+        course.setParticipantsNumber(0L);
         return courseRepository.save(course);
     }
 

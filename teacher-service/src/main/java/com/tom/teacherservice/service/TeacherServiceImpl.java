@@ -102,4 +102,9 @@ public class TeacherServiceImpl implements TeacherService {
         return teacherRepository.findAllByIdIn(idNumbers);
     }
 
+    @Override
+    public List<Teacher> findAllByIdNotInAndStatus(List<Long> idNumbers) {
+        return teacherRepository.findAllByIdNotInAndStatus(idNumbers, Status.ACTIVE);
+    }
+
 }

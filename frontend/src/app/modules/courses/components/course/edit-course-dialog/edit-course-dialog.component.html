@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Edytuj kurs</h1>
+<div mat-dialog-content>
+  <app-course-form
+    [course]="data.course"
+    [editMode]="true"
+    (closeDialog)="closeDialog()"
+  ></app-course-form>
+</div>

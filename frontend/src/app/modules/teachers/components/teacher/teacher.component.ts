@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
-import { Teacher } from 'src/app/modules/core/models/teacher.model';
+import { User } from 'src/app/modules/core/models/user.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteTeacherDialogComponent } from './delete-teacher-dialog/delete-teacher-dialog.component';
@@ -13,7 +13,7 @@ import { EditTeacherDialogComponent } from './edit-teacher-dialog/edit-teacher-d
 })
 export class TeacherDetailsComponent implements OnInit {
   id!: number;
-  teacher!: Teacher;
+  teacher!: User;
 
   constructor(
     private teacherService: TeacherService,

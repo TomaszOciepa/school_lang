@@ -1,39 +1,38 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PostTeacher, Teacher } from '../models/teacher.model';
+import { PostUser, User } from '../models/user.model';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TeacherService {
-  apiUrl = environment.apiUrl;
+  apiUrl = environment.apiUrlTeacher;
 
   constructor(private http: HttpClient) {}
 
-  getTeacher(): Observable<Teacher[]> {
-    return this.http.get<Teacher[]>(this.apiUrl + '/teacher?status=ACTIVE');
+  getTeacher(): Observable<User[]> {
+    return this.http.get<User[]>(this.apiUrl + '?status=ACTIVE');
   }
 
-  getTeacherById(id: number): Observable<Teacher> {
-    return this.http.get<Teacher>(`${this.apiUrl}/teacher/${id}`);
+  getTeacherById(id: number): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/${id}`);
   }
 
-  addNewTeacher(newTeacher: PostTeacher): Observable<Teacher> {
-    return this.http.post<Teacher>(`${this.apiUrl}/teacher`, newTeacher);
+  addNewTeacher(newTeacher: PostUser): Observable<User> {
+    return this.http.post<User>(this.apiUrl, newTeacher);
   }
 
   deleteTeacherById(id: number): Observable<Record<string, never>> {
-    return this.http.delete<Record<string, never>>(
-      `${this.apiUrl}/teacher/${id}`
-    );
+    return this.http.delete<Record<string, never>>(`${this.apiUrl}/${id}`);
   }
 
-  patchTeacher(id: number, editedTeacher: PostTeacher): Observable<Teacher> {
-    return this.http.patch<Teacher>(
-      `${this.apiUrl}/teacher/${id}`,
-      editedTeacher
-    );
+  patchTeacher(id: number, editedTeacher: PostUser): Observable<User> {
+    return this.http.patch<User>(`${this.apiUrl}/${id}`, editedTeacher);
+  }
+
+  getTeachersByNotIdNumber(id: number[]): Observable<User[]> {
+    return this.http.post<User[]>(this.apiUrl + '/notIdNumbers', id);
   }
 }

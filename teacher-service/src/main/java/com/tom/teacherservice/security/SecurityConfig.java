@@ -13,11 +13,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-//@RequiredArgsConstructor
 public class SecurityConfig {
-//    private final KeycloakLogoutHandler keycloakLogoutHandler;
-//
-//
+
     @Bean
     public SecurityFilterChain filter(HttpSecurity http) throws Exception {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
