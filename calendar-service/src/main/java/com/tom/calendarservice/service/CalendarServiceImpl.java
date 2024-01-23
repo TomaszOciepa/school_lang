@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,9 +53,24 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     private Calendar createSingleLesson(Calendar calendar) {
-        logger.info("createSingleLesson()  because courseId is: " + calendar.getCourseId());
+        logger.info("Creating single lesson.");
+        isTeacherActive(calendar.getTeacherId());
+        isTeacherAvailableOnTimeSlot(calendar.getTeacherId(), calendar.getStartDate(), calendar.getEndDate());
         calendar.setStatus(Status.ACTIVE);
         return calendar;
+    }
+
+    private void isTeacherAvailableOnTimeSlot(Long teacherId, LocalDateTime startDate, LocalDateTime endDate) {
+        logger.info("I check if the teacher has a free date");
+        List<Calendar> lessons = getLessonsByTeacherId(teacherId);
+
+        for(Calendar lesson: lessons){
+
+            if(startDate.isBefore(lesson.getEndDate()) && endDate.isAfter(lesson.getStartDate())){
+                logger.info("Teacher is not available at this time slot. Lesson collision.");
+                throw new CalendarException(CalendarError.TEACHER_BUSY_AT_TIME_SLOT);
+            }
+        }
     }
 
     private Calendar createCourseLesson(Calendar calendar) {
@@ -72,7 +88,7 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     private void isTeacherActive(Long teacherId) {
-        logger.info("isTeacherActive() courseId: " + teacherId);
+        logger.info("I check if the teacher {} is active", teacherId);
         teacherServiceClient.teacherIsActive(teacherId);
     }
 
@@ -83,7 +99,7 @@ public class CalendarServiceImpl implements CalendarService {
                     calendarFromDb.setEventName(calendar.getEventName());
                     calendarFromDb.setStartDate(calendar.getStartDate());
                     calendarFromDb.setEndDate(calendar.getEndDate());
-                    calendarFromDb.setStudentIdList(calendar.getStudentIdList());
+                    calendarFromDb.setLessonMembers(calendar.getLessonMembers());
                     calendarFromDb.setTeacherId(calendar.getTeacherId());
                     calendarFromDb.setCourseId(calendar.getCourseId());
                     calendarFromDb.setDescription(calendar.getDescription());
@@ -106,8 +122,8 @@ public class CalendarServiceImpl implements CalendarService {
         if (calendar.getEndDate() != null) {
             calendarFromDB.setEndDate(calendar.getEndDate());
         }
-        if (calendar.getStudentIdList() != null) {
-            calendarFromDB.setStudentIdList(calendar.getStudentIdList());
+        if (calendar.getLessonMembers() != null) {
+            calendarFromDB.setLessonMembers(calendar.getLessonMembers());
         }
         if (calendar.getTeacherId() != null) {
             calendarFromDB.setTeacherId(calendar.getTeacherId());

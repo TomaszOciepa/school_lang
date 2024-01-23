@@ -27,18 +27,7 @@ public class Calendar {
     private String courseId;
     private Status status;
     private String description;
-    private List<Long> studentIdList = new ArrayList<>();
-
-//    public Calendar(String eventName, LocalDateTime startDate, LocalDateTime endDate, Long teacherId, String courseId, Status status, String description, List<Long> studentIdList) {
-//        this.eventName = eventName;
-//        this.startDate = startDate;
-//        this.endDate = endDate;
-//        this.teacherId = teacherId;
-//        this.courseId = courseId;
-//        this.status = status;
-//        this.description = description;
-//        this.studentIdList = studentIdList;
-//    }
+    private List<LessonMembers> lessonMembers = new ArrayList<>();
 
     public Calendar() {
     }

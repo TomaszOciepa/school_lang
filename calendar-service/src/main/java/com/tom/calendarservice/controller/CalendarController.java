@@ -29,7 +29,7 @@ public class CalendarController {
 
     @PostMapping
     public Calendar addLesson(@RequestBody Calendar calendar) {
-        logger.info("method addLesson() calendar = "+calendar.toString());
+        logger.info("Try add new lesson.");
         return calendarService.addLesson(calendar);
     }
 
