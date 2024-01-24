@@ -16,6 +16,11 @@ public class CalendarExceptionHandler {
 
         if (CalendarError.CALENDAR_NOT_FOUND.equals(e.getCalendarError())) {
             httpStatus = HttpStatus.NOT_FOUND;
+        }else if (CalendarError.CALENDAR_LESSONS_NOT_FOUND.equals(e.getCalendarError())) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        }
+        else if (CalendarError.TEACHER_BUSY_AT_TIME_SLOT.equals(e.getCalendarError())) {
+            httpStatus = HttpStatus.CONFLICT;
         }
 
         return ResponseEntity.status(httpStatus).body(new ErrorInfo(e.getCalendarError().getMessage()));
