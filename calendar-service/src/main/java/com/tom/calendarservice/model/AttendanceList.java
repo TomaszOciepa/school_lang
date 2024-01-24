@@ -6,8 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-public class LessonMembers {
+public class AttendanceList {
 
     private Long studentId;
     private boolean isPresent = false;

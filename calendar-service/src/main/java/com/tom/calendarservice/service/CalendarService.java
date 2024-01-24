@@ -2,7 +2,8 @@ package com.tom.calendarservice.service;
 
 
 import com.tom.calendarservice.model.Calendar;
-import com.tom.calendarservice.model.EventRequest;
+import com.tom.calendarservice.model.Dto.CourseDto;
+import com.tom.calendarservice.model.Status;
 
 import java.util.List;
 

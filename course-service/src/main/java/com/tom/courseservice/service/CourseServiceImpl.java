@@ -10,6 +10,8 @@ import com.tom.courseservice.model.dto.StudentDto;
 import com.tom.courseservice.model.dto.TeacherDto;
 import com.tom.courseservice.repo.CourseRepository;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CourseServiceImpl implements CourseService {
 
+    private static Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
     private final CourseRepository courseRepository;
     private final StudentServiceClient studentServiceClient;
     private final TeacherServiceClient teacherServiceClient;
@@ -31,8 +34,11 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository.findAll();
     }
 
-    @Override
-    public Course getCourseById(String id) {
+    public Course findByIdAndStatus(String id, Status status) {
+        if (status != null) {
+            return courseRepository.findByIdAndStatus(id, status)
+                    .orElseThrow(() -> new CourseException(CourseError.COURSE_IS_NOT_ACTIVE));
+        }
 
         return courseRepository.findById(id)
                 .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
@@ -105,7 +111,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void studentCourseEnrollment(String courseId, Long studentId) {
-        Course course = getCourseById(courseId);
+        Course course = findByIdAndStatus(courseId, null);
         validateCourseStatus(course);
         StudentDto studentDto = studentServiceClient.getStudentById(studentId);
         validateStudentBeforeCourseEnrollment(course, studentDto);
@@ -135,7 +141,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void studentRemoveFromCourse(String courseId, Long studentId) {
-        Course courseFromDb = getCourseById(courseId);
+        Course courseFromDb = findByIdAndStatus(courseId, null);
         List<CourseStudents> courseStudentsList = courseFromDb.getCourseStudents();
         boolean removed = courseStudentsList.removeIf(student -> studentId.equals(student.getStudentId()));
 
@@ -149,7 +155,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void teacherCourseEnrollment(String courseId, Long teacherId) {
-        Course course = getCourseById(courseId);
+        Course course = findByIdAndStatus(courseId, null);
         validateCourseStatus(course);
         TeacherDto teacherDto = teacherServiceClient.getTeacherById(teacherId);
         validateTeacherBeforeCourseEnrollment(course, teacherDto);
@@ -171,7 +177,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void teacherRemoveFromCourse(String courseId, Long teacherId) {
-        Course courseFromDb = getCourseById(courseId);
+        Course courseFromDb = findByIdAndStatus(courseId, null);
         List<CourseTeachers> courseTeacherList = courseFromDb.getCourseTeachers();
         boolean removed = courseTeacherList.removeIf(teacher -> teacherId.equals(teacher.getTeacherId()));
         if (!removed) {
@@ -183,7 +189,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<StudentDto> getCourseMembers(String courseId) {
-        Course course = getCourseById(courseId);
+        Course course = findByIdAndStatus(courseId, null);
         List<CourseStudents> courseStudents = course.getCourseStudents();
         if (courseStudents.isEmpty()) {
             throw new CourseException(CourseError.COURSE_STUDENT_LIST_IS_EMPTY);
@@ -197,7 +203,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<TeacherDto> getCourseTeachers(String courseId) {
-        Course course = getCourseById(courseId);
+        Course course = findByIdAndStatus(courseId, null);
         List<CourseTeachers> courseTeachers = course.getCourseTeachers();
         if (courseTeachers.isEmpty()) {
             throw new CourseException(CourseError.COURSE_TEACHER_LIST_IS_EMPTY);
@@ -207,17 +213,5 @@ public class CourseServiceImpl implements CourseService {
                 .collect(Collectors.toList());
 
         return teacherServiceClient.getTeachersByIdNumber(idNumbers);
-    }
-
-    public void isLessonAdditionPossible(String courseId){
-        Course courseFromDb = getCourseById(courseId);
-
-        if(courseFromDb.getStatus().equals(Status.INACTIVE) || courseFromDb.getStatus().equals(Status.FINISHED)){
-            throw new CourseException(CourseError.COURSE_IS_NOT_ACTIVE);
-        }
-
-        if (courseFromDb.getFinishedLessons().equals(courseFromDb.getLessonsNumber())){
-            throw new CourseException(CourseError.COURSE_LESSON_LIMIT_REACHED);
-        }
     }
 }

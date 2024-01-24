@@ -28,8 +28,9 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    Course getCourseById(@PathVariable String id){
-        return courseService.getCourseById(id);
+    Course findByIdAndStatus(@PathVariable String id, @RequestParam(required = false) Status status){
+        logger.info("SIEMA W CONTROLER");
+        return courseService.findByIdAndStatus(id, status);
     }
 
     @PostMapping
@@ -88,9 +89,4 @@ public class CourseController {
         return courseService.getCourseTeachers(courseId);
     }
 
-    @GetMapping("/isLessonAdditionPossible/{courseId}")
-    public void isLessonAdditionPossible(@PathVariable String courseId){
-        logger.info("isLessonAdditionPossible() courseId: "+courseId);
-        courseService.isLessonAdditionPossible(courseId);
-    }
 }

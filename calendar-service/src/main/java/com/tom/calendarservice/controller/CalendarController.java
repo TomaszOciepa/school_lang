@@ -1,7 +1,6 @@
 package com.tom.calendarservice.controller;
 
 import com.tom.calendarservice.model.Calendar;
-import com.tom.calendarservice.model.EventRequest;
 import com.tom.calendarservice.service.CalendarService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin( origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PATCH})
 @AllArgsConstructor
 @RequestMapping("/calendar")
 public class CalendarController {
@@ -47,11 +47,6 @@ public class CalendarController {
     public void deleteLessonsById(@PathVariable String id) {
         calendarService.deleteLesson(id);
     }
-
-//    @PostMapping("/add-event")
-//    public Calendar addEvent(@RequestBody EventRequest eventRequest){
-//        return calendarService.addEvent(eventRequest);
-//    }
 
     @GetMapping("/student-lessons/{studentId}")
     public List<Calendar> getLessonByStudentId(@PathVariable Long studentId) {

@@ -27,7 +27,7 @@ public class Calendar {
     private String courseId;
     private Status status;
     private String description;
-    private List<LessonMembers> lessonMembers = new ArrayList<>();
+    private List<AttendanceList> attendanceList = new ArrayList<>();
 
     public Calendar() {
     }

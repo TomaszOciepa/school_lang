@@ -16,10 +16,12 @@ public class CalendarExceptionHandler {
 
         if (CalendarError.CALENDAR_NOT_FOUND.equals(e.getCalendarError())) {
             httpStatus = HttpStatus.NOT_FOUND;
-        }else if (CalendarError.CALENDAR_LESSONS_NOT_FOUND.equals(e.getCalendarError())) {
+        } else if (CalendarError.CALENDAR_LESSONS_NOT_FOUND.equals(e.getCalendarError())) {
             httpStatus = HttpStatus.NOT_FOUND;
-        }
-        else if (CalendarError.TEACHER_BUSY_AT_TIME_SLOT.equals(e.getCalendarError())) {
+        } else if (CalendarError.TEACHER_BUSY_AT_TIME_SLOT.equals(e.getCalendarError())
+                || CalendarError.TEACHER_IS_NOT_ENROLLED_IN_COURSE.equals(e.getCalendarError())
+                || CalendarError.COURSE_STUDENTS_LIST_IS_EMPTY.equals(e.getCalendarError())
+        ) {
             httpStatus = HttpStatus.CONFLICT;
         }
 
