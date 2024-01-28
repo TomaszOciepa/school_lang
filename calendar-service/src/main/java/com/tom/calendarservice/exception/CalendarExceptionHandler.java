@@ -21,6 +21,7 @@ public class CalendarExceptionHandler {
         } else if (CalendarError.TEACHER_BUSY_AT_TIME_SLOT.equals(e.getCalendarError())
                 || CalendarError.TEACHER_IS_NOT_ENROLLED_IN_COURSE.equals(e.getCalendarError())
                 || CalendarError.COURSE_STUDENTS_LIST_IS_EMPTY.equals(e.getCalendarError())
+                || CalendarError.STUDENT_ALREADY_ENROLLED.equals(e.getCalendarError())
         ) {
             httpStatus = HttpStatus.CONFLICT;
         }

@@ -40,11 +40,11 @@ class CourseServiceImplTest {
 
     List<Course> prepareCourseData() {
         return Arrays.asList(
-                new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
+                new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L, 0L,
                         LocalDate.of(2023, 12, 5),
                         LocalDate.of(2024, 03, 12),
                         Arrays.asList(), Arrays.asList()),
-                new Course("1111", "Kurs Niemiecki", Status.ACTIVE, 20L, 0L, 12L,
+                new Course("1111", "Kurs Niemiecki", Status.ACTIVE, 20L, 0L, 12L, 0L,
                         LocalDate.of(2023, 12, 8),
                         LocalDate.of(2024, 02, 12),
                         Arrays.asList(), Arrays.asList())
@@ -52,7 +52,7 @@ class CourseServiceImplTest {
     }
 
     Course prepareCourse() {
-        return new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
+        return new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L, 0L,
                 LocalDate.of(2023, 12, 5),
                 LocalDate.of(2024, 03, 12),
                 new ArrayList<>(), new ArrayList<>());
@@ -105,7 +105,7 @@ class CourseServiceImplTest {
         String mockId = "1111";
         given(courseRepository.findById(mockId)).willReturn(Optional.ofNullable(mockCourse));
         //when
-        Course result = courseServiceImpl.getCourseById(mockId);
+        Course result = courseServiceImpl.findByIdAndStatus(mockId, null);
         //then
         assertEquals(mockCourse, result);
     }
@@ -119,7 +119,7 @@ class CourseServiceImplTest {
         given(courseRepository.findById(mockId)).willThrow(mockException);
         //when
         //then
-        assertThrows(CourseException.class, () -> courseServiceImpl.getCourseById(mockId));
+        assertThrows(CourseException.class, () -> courseServiceImpl.findByIdAndStatus(mockId, null));
     }
 
     @Test
@@ -251,7 +251,7 @@ class CourseServiceImplTest {
         Course courseMock = prepareCourse();
         StudentDto studentMock = prepareStudent();
         Long studentIdMock = 1L;
-        CourseStudents courseStudents = new CourseStudents(studentMock.getId());
+        CourseStudents courseStudents = new CourseStudents(studentMock.getId(), Status.ACTIVE);
         given(courseRepository.findById(courseIdMock)).willReturn(Optional.ofNullable(courseMock));
         given(studentServiceClient.getStudentById(studentIdMock)).willReturn(studentMock);
         //when
@@ -268,7 +268,7 @@ class CourseServiceImplTest {
         //given
         StudentDto studentMock = prepareStudent();
         Long studentIdMock = 1L;
-        CourseStudents courseStudentsMock = new CourseStudents(studentMock.getId());
+        CourseStudents courseStudentsMock = new CourseStudents(studentMock.getId(), Status.ACTIVE);
         String courseIdMock = "1111";
         Course courseMock = prepareCourse();
         courseMock.getCourseStudents().add(courseStudentsMock);

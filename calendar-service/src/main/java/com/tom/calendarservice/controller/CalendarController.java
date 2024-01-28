@@ -3,8 +3,10 @@ package com.tom.calendarservice.controller;
 import com.tom.calendarservice.model.Calendar;
 import com.tom.calendarservice.service.CalendarService;
 import lombok.AllArgsConstructor;
+import org.apache.hc.core5.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -61,5 +63,11 @@ public class CalendarController {
     @GetMapping("/course-lessons/{courseId}")
     public List<Calendar> getLessonsByCourseId(@PathVariable String courseId) {
         return calendarService.getLessonsByCourseId(courseId);
+    }
+
+    @PostMapping("/enroll-lessons/{courseId}/{studentId}")
+    public ResponseEntity<?> enrollStudent(@PathVariable String courseId, @PathVariable Long studentId){
+            calendarService.enrollStudent(courseId, studentId);
+        return ResponseEntity.ok().build();
     }
 }

@@ -10,7 +10,8 @@ public enum CalendarError {
     TEACHER_LESSONS_LIST_IS_EMPTY("Teacher lessons list is empty"),
     TEACHER_BUSY_AT_TIME_SLOT("Teacher is busy at the specified time slot"),
     TEACHER_IS_NOT_ENROLLED_IN_COURSE("Teacher is not enrolled in course"),
-    LESSON_START_DATE_IS_BEFORE_COURSE_START_DATE("Lesson start  date is before course start date");
+    LESSON_START_DATE_IS_BEFORE_COURSE_START_DATE("Lesson start  date is before course start date"),
+    STUDENT_ALREADY_ENROLLED("Student is already enrolled in the lesson");
 
 
     private String message;

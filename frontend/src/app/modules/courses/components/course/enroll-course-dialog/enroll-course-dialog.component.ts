@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
   ErrorHandler,
@@ -106,8 +107,8 @@ export class EnrollCourseDialogComponent implements OnInit {
         next: (response) => {
           console.log('next: ' + response);
         },
-        error: (err) => {
-          console.log('error: ' + err);
+        error: (err: HttpErrorResponse) => {
+          console.log('error: ' + err.error.message);
         },
         complete: () => {
           console.log('zakończone');

@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 public class CalendarServiceImpl implements CalendarService {
     private static Logger logger = LoggerFactory.getLogger(CalendarServiceImpl.class);
 
-    private CalendarRepository calendarRepository;
-    private CourseServiceClient courseServiceClient;
-    private TeacherServiceClient teacherServiceClient;
+    private final CalendarRepository calendarRepository;
+    private final CourseServiceClient courseServiceClient;
+    private final TeacherServiceClient teacherServiceClient;
 
 
     @Override
@@ -247,5 +247,20 @@ public class CalendarServiceImpl implements CalendarService {
             logger.info("Teacher lessons list is empty.");
         }
         return lessons;
+    }
+
+    public void enrollStudent( String courseId,  Long studentId){
+        logger.info("Adding a student to the lesson.");
+        List<Calendar> lessons = getLessonsByCourseId(courseId);
+
+        lessons.stream().map(lesson -> {
+
+            if(lesson.getAttendanceList().stream().anyMatch(s -> s.getStudentId().equals(studentId))){
+                throw new CalendarException(CalendarError.STUDENT_ALREADY_ENROLLED);
+            }
+
+            lesson.getAttendanceList().add(new AttendanceList(studentId));
+            return calendarRepository.save(lesson);
+        }).collect(Collectors.toList());
     }
 }

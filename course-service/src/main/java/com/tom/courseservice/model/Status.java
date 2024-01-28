@@ -5,4 +5,7 @@ public enum Status {
     INACTIVE,
     FULL,
     FINISHED,
+    RESIGNED,
+    REMOVED
+
 }

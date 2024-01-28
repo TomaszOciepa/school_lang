@@ -13,8 +13,11 @@ public class CourseStudents {
     private Long studentId;
     private LocalDateTime enrollmentDate;
 
-    public CourseStudents(@NotNull Long studentId) {
+    private Status status;
+
+    public CourseStudents(@NotNull Long studentId, Status status) {
         this.studentId = studentId;
         this.enrollmentDate = LocalDateTime.now();
+        this.status = status;
     }
 }

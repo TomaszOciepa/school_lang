@@ -12,6 +12,7 @@ import com.tom.courseservice.repo.CourseRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final StudentServiceClient studentServiceClient;
     private final TeacherServiceClient teacherServiceClient;
+    private final  CalendarServiceClient calendarServiceClient;
 
     @Override
     public List<Course> findAllByStatus(Status status) {
@@ -110,21 +112,30 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void studentCourseEnrollment(String courseId, Long studentId) {
+    public ResponseEntity<?> studentCourseEnrollment(String courseId, Long studentId) {
         Course course = findByIdAndStatus(courseId, null);
-        validateCourseStatus(course);
+        if(course.getStatus().equals(Status.FULL)){
+            throw new CourseException(CourseError.COURSE_IS_FULL);
+        }
+//        validateCourseStatus(course);
         StudentDto studentDto = studentServiceClient.getStudentById(studentId);
         validateStudentBeforeCourseEnrollment(course, studentDto);
+        course.getCourseStudents().add(new CourseStudents(studentDto.getId() , Status.ACTIVE));
         course.incrementParticipantsNumber();
-        CourseStudents courseStudents = new CourseStudents(studentDto.getId());
-        course.getCourseStudents().add(courseStudents);
         courseRepository.save(course);
+        enrollStudentToLessons(course.getId(), studentDto.getId());
+        return ResponseEntity.ok().build();
+    }
+
+    private ResponseEntity<?> enrollStudentToLessons(String curseId, Long studentId) {
+        calendarServiceClient.enrollStudent(curseId, studentId);
+        return ResponseEntity.ok().build();
     }
 
     private void validateStudentBeforeCourseEnrollment(Course course, StudentDto studentDto) {
-        if (!Status.ACTIVE.equals(studentDto.getStatus())) {
-            throw new CourseException(CourseError.STUDENT_IS_NOT_ACTIVE);
-        }
+//        if (!Status.ACTIVE.equals(studentDto.getStatus())) {
+//            throw new CourseException(CourseError.STUDENT_IS_NOT_ACTIVE);
+//        }
         if (course.getCourseStudents()
                 .stream()
                 .anyMatch((member -> studentDto.getId().equals(member.getStudentId())))) {

@@ -3,6 +3,7 @@ package com.tom.courseservice.exception;
 public enum CourseError {
 
     COURSE_NOT_FOUND("Course does not exists"),
+    COURSE_IS_FULL("Course is full"),
     COURSE_STUDENT_LIST_IS_EMPTY("Course student list is empty"),
     COURSE_TEACHER_LIST_IS_EMPTY("Course teacher list is empty"),
     COURSE_NAME_ALREADY_EXISTS("Course name is already exists"),
