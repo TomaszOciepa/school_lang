@@ -70,4 +70,10 @@ public class CalendarController {
             calendarService.enrollStudent(courseId, studentId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/un-enroll-lessons/{courseId}/{studentId}")
+    public boolean unEnrollStudent(@PathVariable String courseId, @PathVariable Long studentId){
+        return calendarService.unEnrollStudent(courseId, studentId);
+
+    }
 }

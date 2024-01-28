@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,7 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final StudentServiceClient studentServiceClient;
     private final TeacherServiceClient teacherServiceClient;
-    private final  CalendarServiceClient calendarServiceClient;
+    private final CalendarServiceClient calendarServiceClient;
 
     @Override
     public List<Course> findAllByStatus(Status status) {
@@ -114,13 +115,17 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public ResponseEntity<?> studentCourseEnrollment(String courseId, Long studentId) {
         Course course = findByIdAndStatus(courseId, null);
-        if(course.getStatus().equals(Status.FULL)){
+        if (course.getStatus().equals(Status.FULL)) {
             throw new CourseException(CourseError.COURSE_IS_FULL);
         }
 //        validateCourseStatus(course);
         StudentDto studentDto = studentServiceClient.getStudentById(studentId);
-        validateStudentBeforeCourseEnrollment(course, studentDto);
-        course.getCourseStudents().add(new CourseStudents(studentDto.getId() , Status.ACTIVE));
+
+        if (isStudentEnrolledInCourse(course, studentDto.getId())) {
+            throw new CourseException(CourseError.STUDENT_ALREADY_ENROLLED);
+        }
+
+        course.getCourseStudents().add(new CourseStudents(studentDto.getId(), Status.ACTIVE));
         course.incrementParticipantsNumber();
         courseRepository.save(course);
         enrollStudentToLessons(course.getId(), studentDto.getId());
@@ -132,14 +137,15 @@ public class CourseServiceImpl implements CourseService {
         return ResponseEntity.ok().build();
     }
 
-    private void validateStudentBeforeCourseEnrollment(Course course, StudentDto studentDto) {
-//        if (!Status.ACTIVE.equals(studentDto.getStatus())) {
-//            throw new CourseException(CourseError.STUDENT_IS_NOT_ACTIVE);
-//        }
-        if (course.getCourseStudents()
+    private boolean isStudentEnrolledInCourse(Course course, Long studentId) {
+        boolean match = course.getCourseStudents()
                 .stream()
-                .anyMatch((member -> studentDto.getId().equals(member.getStudentId())))) {
-            throw new CourseException(CourseError.STUDENT_ALREADY_ENROLLED);
+                .anyMatch((member -> studentId.equals(member.getStudentId())));
+
+        if (match) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -153,7 +159,32 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void studentRemoveFromCourse(String courseId, Long studentId) {
         Course courseFromDb = findByIdAndStatus(courseId, null);
+        if (!isStudentEnrolledInCourse(courseFromDb, studentId)) {
+            throw new CourseException(CourseError.STUDENT_NO_ON_THE_LIST_OF_ENROLL);
+        }
+
+        if (courseFromDb.getStartDate().isAfter(LocalDate.now())) {
+            calendarServiceClient.unEnrollStudent(courseId, studentId);
+            removeStudentFromCourseStudentList(studentId, courseFromDb);
+        } else {
+            if (calendarServiceClient.unEnrollStudent(courseId, studentId)) {
+                courseFromDb.getCourseStudents().stream().map(student -> {
+                    if (student.getStudentId().equals(studentId)) {
+                        student.setStatus(Status.REMOVED);
+                    }
+                    return student;
+                }).collect(Collectors.toList());
+            } else {
+                removeStudentFromCourseStudentList(studentId, courseFromDb);
+            }
+        }
+
+        courseRepository.save(courseFromDb);
+    }
+
+    private void removeStudentFromCourseStudentList(Long studentId, Course courseFromDb) {
         List<CourseStudents> courseStudentsList = courseFromDb.getCourseStudents();
+
         boolean removed = courseStudentsList.removeIf(student -> studentId.equals(student.getStudentId()));
 
         if (!removed) {
@@ -161,7 +192,6 @@ public class CourseServiceImpl implements CourseService {
         }
         courseFromDb.setCourseStudents(courseStudentsList);
         courseFromDb.decrementParticipantsNumber();
-        courseRepository.save(courseFromDb);
     }
 
     @Override
