@@ -89,4 +89,9 @@ public class CourseController {
         return courseService.getCourseTeachers(courseId);
     }
 
+    @PostMapping("/member-status/course/{courseId}/student/{studentId}/status")
+    public ResponseEntity<?> changeCourseMemberStatus(@PathVariable String courseId, @PathVariable Long studentId, @RequestParam(required = true) Status status){
+        courseService.changeCourseMemberStatus(courseId, studentId, status);
+        return ResponseEntity.ok().build();
+    }
 }

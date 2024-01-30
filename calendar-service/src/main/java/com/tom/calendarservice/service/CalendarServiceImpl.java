@@ -44,6 +44,10 @@ public class CalendarServiceImpl implements CalendarService {
     public Calendar addLesson(Calendar calendar) {
         Calendar lesson;
 
+        if(calendar.getStartDate().isAfter(calendar.getEndDate())){
+            throw new CalendarException(CalendarError.LESSON_START_DATE_IS_AFTER_END_DATE);
+        }
+
         if (calendar.getCourseId() == null || calendar.getCourseId().isEmpty()) {
 
             lesson = createSingleLesson(calendar);
@@ -75,6 +79,7 @@ public class CalendarServiceImpl implements CalendarService {
 
         CourseDto courseFromDb = getCourse(calendar.getCourseId(), Status.ACTIVE);
         isLessonStartDateBeforeCourseStartDate(calendar.getStartDate(), courseFromDb.getStartDate());
+        isLessonStartDateAfterCourseEndDate(calendar.getStartDate(), courseFromDb.getEndDate());
         isTeacherEnrolledInCourse(calendar.getTeacherId(), courseFromDb.getCourseTeachers());
         isTeacherActive(calendar.getTeacherId());
 
@@ -92,6 +97,14 @@ public class CalendarServiceImpl implements CalendarService {
     private void isLessonStartDateBeforeCourseStartDate(LocalDateTime lessonStartDate, LocalDate courseStartDate) {
 
         if (lessonStartDate.isBefore(courseStartDate.atStartOfDay())) {
+            throw new CalendarException(CalendarError.LESSON_START_DATE_IS_BEFORE_COURSE_START_DATE);
+        }
+
+    }
+
+    private void isLessonStartDateAfterCourseEndDate(LocalDateTime lessonStartDate, LocalDate courseEndDate) {
+
+        if (lessonStartDate.isAfter(courseEndDate.atStartOfDay())) {
             throw new CalendarException(CalendarError.LESSON_START_DATE_IS_BEFORE_COURSE_START_DATE);
         }
 
@@ -277,8 +290,9 @@ public class CalendarServiceImpl implements CalendarService {
         for (Calendar lesson : lessons) {
 
             if (lesson.getStartDate().isBefore(LocalDateTime.now()) && !result) {
+//                If the lesson has already taken place, return true
                 result = true;
-            } else {
+            } else if (lesson.getStartDate().isAfter(LocalDateTime.now())){
                 lesson.getAttendanceList().removeIf(s -> s.getStudentId().equals(studentId));
                 calendarRepository.save(lesson);
             }

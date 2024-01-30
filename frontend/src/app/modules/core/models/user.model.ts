@@ -5,7 +5,7 @@ export interface UserResponse {
   firstName: string;
   lastName: string;
   email: string;
-  status: boolean;
+  status: string;
 }
 
 export type PostUser = Omit<UserResponse, 'id' | 'status'>;
@@ -16,7 +16,7 @@ export class User implements UserResponse {
     public firstName: string,
     public lastName: string,
     public email: string,
-    public status: boolean
+    public status: string
   ) {}
 }
 

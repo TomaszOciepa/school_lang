@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 export interface EnrollemntInfo {
   id: number;
   enrollmentData: Date;
+  status: string;
 }
 
 export type PostCourse = Omit<

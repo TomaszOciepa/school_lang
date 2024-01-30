@@ -12,7 +12,6 @@ public interface CourseService {
 
     List<Course> findAllByStatus(Status status);
     Course findByIdAndStatus(String id, Status status);
-
     Course addCourse(Course course);
     Course putCourse(String id, Course course);
     Course patchCourse(String id, Course course);
@@ -23,5 +22,6 @@ public interface CourseService {
     void teacherRemoveFromCourse(String courseId, Long teacherId);
     List<StudentDto> getCourseMembers(String courseId);
     List<TeacherDto> getCourseTeachers(String courseId);
+    void changeCourseMemberStatus(String courseId, Long studentId, Status status);
 
 }

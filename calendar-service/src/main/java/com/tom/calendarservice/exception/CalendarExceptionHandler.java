@@ -22,6 +22,9 @@ public class CalendarExceptionHandler {
                 || CalendarError.TEACHER_IS_NOT_ENROLLED_IN_COURSE.equals(e.getCalendarError())
                 || CalendarError.COURSE_STUDENTS_LIST_IS_EMPTY.equals(e.getCalendarError())
                 || CalendarError.STUDENT_ALREADY_ENROLLED.equals(e.getCalendarError())
+                || CalendarError.LESSON_START_DATE_IS_AFTER_END_DATE.equals(e.getCalendarError())
+                || CalendarError.LESSON_START_DATE_IS_AFTER_COURSE_END_DATE.equals(e.getCalendarError())
+                || CalendarError.LESSON_START_DATE_IS_BEFORE_COURSE_START_DATE.equals(e.getCalendarError())
         ) {
             httpStatus = HttpStatus.CONFLICT;
         }

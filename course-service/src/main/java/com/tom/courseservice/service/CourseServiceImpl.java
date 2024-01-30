@@ -159,6 +159,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void studentRemoveFromCourse(String courseId, Long studentId) {
         Course courseFromDb = findByIdAndStatus(courseId, null);
+
         if (!isStudentEnrolledInCourse(courseFromDb, studentId)) {
             throw new CourseException(CourseError.STUDENT_NO_ON_THE_LIST_OF_ENROLL);
         }
@@ -168,18 +169,22 @@ public class CourseServiceImpl implements CourseService {
             removeStudentFromCourseStudentList(studentId, courseFromDb);
         } else {
             if (calendarServiceClient.unEnrollStudent(courseId, studentId)) {
-                courseFromDb.getCourseStudents().stream().map(student -> {
-                    if (student.getStudentId().equals(studentId)) {
-                        student.setStatus(Status.REMOVED);
-                    }
-                    return student;
-                }).collect(Collectors.toList());
+                setRemovedStatus(studentId, courseFromDb);
             } else {
                 removeStudentFromCourseStudentList(studentId, courseFromDb);
             }
         }
 
         courseRepository.save(courseFromDb);
+    }
+
+    private void setRemovedStatus(Long studentId, Course courseFromDb) {
+        courseFromDb.getCourseStudents().stream().map(student -> {
+            if (student.getStudentId().equals(studentId)) {
+                student.setStatus(Status.REMOVED);
+            }
+            return student;
+        }).collect(Collectors.toList());
     }
 
     private void removeStudentFromCourseStudentList(Long studentId, Course courseFromDb) {
@@ -255,4 +260,24 @@ public class CourseServiceImpl implements CourseService {
 
         return teacherServiceClient.getTeachersByIdNumber(idNumbers);
     }
+
+    @Override
+    public void changeCourseMemberStatus(String courseId, Long studentId, Status status) {
+
+        Course courseFromDb = findByIdAndStatus(courseId, null);
+
+        courseFromDb.getCourseStudents().stream().map(student -> {
+            if (student.getStudentId().equals(studentId)) {
+                student.setStatus(status);
+            }
+            return student;
+        }).collect(Collectors.toList());
+        courseRepository.save(courseFromDb);
+
+        if (status.equals(Status.ACTIVE)) {
+            enrollStudentToLessons(courseId, studentId);
+        }
+
+    }
+
 }
