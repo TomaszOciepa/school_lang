@@ -1,18 +1,22 @@
 package com.tom.calendarservice.controller;
 
 import com.tom.calendarservice.model.Calendar;
-import com.tom.calendarservice.model.EventRequest;
 import com.tom.calendarservice.service.CalendarService;
 import lombok.AllArgsConstructor;
+import org.apache.hc.core5.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin( origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PATCH})
 @AllArgsConstructor
 @RequestMapping("/calendar")
 public class CalendarController {
-
+    private static Logger logger = LoggerFactory.getLogger(CalendarController.class);
     private final CalendarService calendarService;
 
     @GetMapping
@@ -26,7 +30,8 @@ public class CalendarController {
     }
 
     @PostMapping
-    public Calendar addLesson(Calendar calendar) {
+    public Calendar addLesson(@RequestBody Calendar calendar) {
+        logger.info("Try add new lesson.");
         return calendarService.addLesson(calendar);
     }
 
@@ -45,11 +50,6 @@ public class CalendarController {
         calendarService.deleteLesson(id);
     }
 
-    @PostMapping("/add-event")
-    public Calendar addEvent(@RequestBody EventRequest eventRequest){
-        return calendarService.addEvent(eventRequest);
-    }
-
     @GetMapping("/student-lessons/{studentId}")
     public List<Calendar> getLessonByStudentId(@PathVariable Long studentId) {
         return calendarService.getLessonsByStudentId(studentId);
@@ -63,5 +63,17 @@ public class CalendarController {
     @GetMapping("/course-lessons/{courseId}")
     public List<Calendar> getLessonsByCourseId(@PathVariable String courseId) {
         return calendarService.getLessonsByCourseId(courseId);
+    }
+
+    @PostMapping("/enroll-lessons/{courseId}/{studentId}")
+    public ResponseEntity<?> enrollStudent(@PathVariable String courseId, @PathVariable Long studentId){
+            calendarService.enrollStudent(courseId, studentId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/un-enroll-lessons/{courseId}/{studentId}")
+    public boolean unEnrollStudent(@PathVariable String courseId, @PathVariable Long studentId){
+        return calendarService.unEnrollStudent(courseId, studentId);
+
     }
 }

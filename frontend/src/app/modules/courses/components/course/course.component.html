@@ -16,13 +16,12 @@
         <td><b>nazwa: </b>{{ course.name }}</td>
         <td><b>status: </b>{{ course.status }}</td>
         <td><b>data rozpoczęcia: </b>{{ course.startDate }}</td>
-        <td><b>ata zakończenia: </b>{{ course.endDate }}</td>
+        <td><b>data zakończenia: </b>{{ course.endDate }}</td>
       </tr>
       <tr>
         <td><b>liczba lekcji: </b>{{ course.lessonsNumber }}</td>
         <td><b>liczba uczniów: </b>{{ course.participantsNumber }}</td>
         <td><b>max liczba uczniów: </b>{{ course.participantsLimit }}</td>
-        <td>-</td>
       </tr>
     </tbody>
   </table>
@@ -46,6 +45,7 @@
               <th scope="col">lp.</th>
               <th scope="col">Imię</th>
               <th scope="col">Nazwisko</th>
+              <th scope="col">Status</th>
               <th scope="col"></th>
               <th scope="col"></th>
             </tr>
@@ -55,6 +55,7 @@
               <th scope="row">{{ i + 1 }}</th>
               <td>{{ student.firstName }}</td>
               <td>{{ student.lastName }}</td>
+              <td>{{ course.courseStudents.enrollmentData }}</td>
               <td>
                 <button
                   mat-raised-button

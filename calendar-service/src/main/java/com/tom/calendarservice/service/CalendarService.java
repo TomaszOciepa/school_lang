@@ -2,7 +2,8 @@ package com.tom.calendarservice.service;
 
 
 import com.tom.calendarservice.model.Calendar;
-import com.tom.calendarservice.model.EventRequest;
+import com.tom.calendarservice.model.Dto.CourseDto;
+import com.tom.calendarservice.model.Status;
 
 import java.util.List;
 
@@ -20,10 +21,12 @@ public interface CalendarService {
 
     void deleteLesson(String id);
 
-    Calendar addEvent(EventRequest eventRequest);
+//    Calendar addEvent(EventRequest eventRequest);
     List<Calendar> getLessonsByStudentId(Long studentId);
     List<Calendar> getLessonsByTeacherId(Long teacherId);
     List<Calendar> getLessonsByCourseId(String courseId);
+    void enrollStudent( String courseId,  Long studentId);
+    public boolean unEnrollStudent(String courseId, Long studentId);
 
 
 

@@ -22,7 +22,8 @@ public class CourseExceptionHandler {
                 || CourseError.TEACHER_ALREADY_ENROLLED.equals(e.getCourseError())
                 || CourseError.STUDENT_CANNOT_BE_ENROLL.equals(e.getCourseError())
                 || CourseError.STUDENT_NO_ON_THE_LIST_OF_ENROLL.equals(e.getCourseError())
-                || CourseError.TEACHER_NO_ON_THE_LIST_OF_ENROLL.equals(e.getCourseError())) {
+                || CourseError.TEACHER_NO_ON_THE_LIST_OF_ENROLL.equals(e.getCourseError())
+                || CourseError.COURSE_IS_FULL.equals(e.getCourseError())) {
             httpStatus = HttpStatus.CONFLICT;
         } else if (CourseError.COURSE_IS_NOT_ACTIVE.equals(e.getCourseError())
                 || CourseError.STUDENT_IS_NOT_ACTIVE.equals(e.getCourseError())

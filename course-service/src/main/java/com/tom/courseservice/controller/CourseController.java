@@ -6,6 +6,8 @@ import com.tom.courseservice.model.dto.StudentDto;
 import com.tom.courseservice.model.dto.TeacherDto;
 import com.tom.courseservice.service.CourseService;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CourseController {
 
+    private static Logger logger = LoggerFactory.getLogger(CourseController.class);
     private final CourseService courseService;
 
     @GetMapping
@@ -25,8 +28,9 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    Course getCourseById(@PathVariable String id){
-        return courseService.getCourseById(id);
+    Course findByIdAndStatus(@PathVariable String id, @RequestParam(required = false) Status status){
+        logger.info("SIEMA W CONTROLER");
+        return courseService.findByIdAndStatus(id, status);
     }
 
     @PostMapping
@@ -83,5 +87,11 @@ public class CourseController {
     @GetMapping("/teacher/{courseId}")
     public List<TeacherDto> getCourseTeachers(@PathVariable String courseId){
         return courseService.getCourseTeachers(courseId);
+    }
+
+    @PostMapping("/member-status/course/{courseId}/student/{studentId}/status")
+    public ResponseEntity<?> changeCourseMemberStatus(@PathVariable String courseId, @PathVariable Long studentId, @RequestParam(required = true) Status status){
+        courseService.changeCourseMemberStatus(courseId, studentId, status);
+        return ResponseEntity.ok().build();
     }
 }

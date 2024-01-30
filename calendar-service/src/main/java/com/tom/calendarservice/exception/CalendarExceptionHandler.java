@@ -16,6 +16,17 @@ public class CalendarExceptionHandler {
 
         if (CalendarError.CALENDAR_NOT_FOUND.equals(e.getCalendarError())) {
             httpStatus = HttpStatus.NOT_FOUND;
+        } else if (CalendarError.CALENDAR_LESSONS_NOT_FOUND.equals(e.getCalendarError())) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } else if (CalendarError.TEACHER_BUSY_AT_TIME_SLOT.equals(e.getCalendarError())
+                || CalendarError.TEACHER_IS_NOT_ENROLLED_IN_COURSE.equals(e.getCalendarError())
+                || CalendarError.COURSE_STUDENTS_LIST_IS_EMPTY.equals(e.getCalendarError())
+                || CalendarError.STUDENT_ALREADY_ENROLLED.equals(e.getCalendarError())
+                || CalendarError.LESSON_START_DATE_IS_AFTER_END_DATE.equals(e.getCalendarError())
+                || CalendarError.LESSON_START_DATE_IS_AFTER_COURSE_END_DATE.equals(e.getCalendarError())
+                || CalendarError.LESSON_START_DATE_IS_BEFORE_COURSE_START_DATE.equals(e.getCalendarError())
+        ) {
+            httpStatus = HttpStatus.CONFLICT;
         }
 
         return ResponseEntity.status(httpStatus).body(new ErrorInfo(e.getCalendarError().getMessage()));
