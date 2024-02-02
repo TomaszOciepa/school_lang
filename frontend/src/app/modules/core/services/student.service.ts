@@ -34,4 +34,8 @@ export class StudentService {
   getStudentsByNotIdNumber(id: number[]): Observable<User[]> {
     return this.http.post<User[]>(this.apiUrl + '/notIdNumbers', id);
   }
+
+  getStudentsByIdNumber(id: number[]): Observable<User[]> {
+    return this.http.post<User[]>(this.apiUrl + '/idNumbers', id);
+  }
 }

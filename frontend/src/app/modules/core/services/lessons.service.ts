@@ -18,4 +18,8 @@ export class LessonsService {
   getLessonById(id: string): Observable<Lesson> {
     return this.http.get<Lesson>(`${this.apiUrl}/${id}`);
   }
+
+  patchLesson(id: string, lesson: Lesson): Observable<Lesson> {
+    return this.http.patch<Lesson>(`${this.apiUrl}/${id}`, lesson);
+  }
 }
