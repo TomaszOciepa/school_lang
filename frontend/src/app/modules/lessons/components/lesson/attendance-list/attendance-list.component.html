@@ -6,8 +6,7 @@
   <thead>
     <tr>
       <th scope="col">lp.</th>
-      <th scope="col">Imię</th>
-      <th scope="col">Nazwisko</th>
+      <th scope="col">Imię i Nazwisko</th>
       <th scope="col">Obecność</th>
       <th scope="col"></th>
     </tr>
@@ -15,8 +14,11 @@
   <tbody>
     <tr *ngFor="let attendance of attendanceList; index as i">
       <th scope="row">{{ i + 1 }}</th>
-      <td>{{ attendance.firstName }}</td>
-      <td>{{ attendance.lastName }}</td>
+      <td>
+        <a [routerLink]="'/students/' + attendance.studentId"
+          >{{ attendance.firstName }} {{ attendance.lastName }}</a
+        >
+      </td>
       <ng-container *ngIf="attendance.present">
         <td>obecny</td>
       </ng-container>
