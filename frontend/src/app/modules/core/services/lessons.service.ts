@@ -14,4 +14,8 @@ export class LessonsService {
   getAllLessons(): Observable<Lesson[]> {
     return this.http.get<Lesson[]>(this.apiUrl);
   }
+
+  getLessonById(id: string): Observable<Lesson> {
+    return this.http.get<Lesson>(`${this.apiUrl}/${id}`);
+  }
 }

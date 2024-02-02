@@ -28,7 +28,7 @@
           Data wydarzenia
         </th>
         <td mat-cell *matCellDef="let row">
-          {{ row.startDate | date : "yyyy-MM-dd" }}
+          {{ row.startDate | date : "dd-MM-yyyy" }}
         </td>
       </ng-container>
 
@@ -58,7 +58,7 @@
           <button
             mat-raised-button
             color="primary"
-            [routerLink]="'/courses/' + row.id"
+            [routerLink]="'/lessons/' + row.id"
           >
             szczegóły
           </button>
