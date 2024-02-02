@@ -7,35 +7,36 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Course } from 'src/app/modules/core/models/course.model';
-import { CourseService } from 'src/app/modules/core/services/course.service';
+import { Lesson } from 'src/app/modules/core/models/lesson.model';
+import { LessonsService } from 'src/app/modules/core/services/lessons.service';
 
 @Component({
-  selector: 'app-courses-table',
-  templateUrl: './courses-table.component.html',
-  styleUrls: ['./courses-table.component.css'],
+  selector: 'app-lesons-table',
+  templateUrl: './lesons-table.component.html',
+  styleUrls: ['./lesons-table.component.css'],
 })
-export class CoursesTableComponent implements AfterViewInit {
+export class LesonsTableComponent implements AfterViewInit {
   displayedColumns: string[] = [
     'lp',
-    'name',
+    'eventName',
     'startDate',
+    'endDate',
     'status',
     'participantsNumber',
     'buttons',
   ];
-  dataSource!: MatTableDataSource<Course>;
+  dataSource!: MatTableDataSource<Lesson>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private courseService: CourseService) {}
+  constructor(private lessonsService: LessonsService) {}
 
   async ngAfterViewInit(): Promise<void> {
-    this.courseService.getCourses().subscribe({
-      next: (course) => {
-        console.log(course);
-        this.dataSource = new MatTableDataSource<Course>(course);
+    this.lessonsService.getAllLessons().subscribe({
+      next: (lesson) => {
+        console.log(lesson);
+        this.dataSource = new MatTableDataSource<Lesson>(lesson);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },

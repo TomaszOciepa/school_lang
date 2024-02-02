@@ -12,6 +12,13 @@
     </button>
     <button
       mat-button
+      routerLink="lessons"
+      *ngIf="(isLoggedIn && isAdmin) || (isLoggedIn && isUser)"
+    >
+      Lekcje
+    </button>
+    <button
+      mat-button
       routerLink="teachers"
       *ngIf="(isLoggedIn && isAdmin) || (isLoggedIn && isUser)"
     >
