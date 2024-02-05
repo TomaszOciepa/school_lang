@@ -1,3 +1,5 @@
+import { FormControl } from '@angular/forms';
+
 export interface AttendanceList {
   studentId: number;
   firstName: string;
@@ -30,3 +32,16 @@ export class Lesson implements Lesson {
     public attendanceList: AttendanceList[]
   ) {}
 }
+
+export interface PostLessonForm {
+  eventName: FormControl<string>;
+  startDate: FormControl<Date>;
+  startTime: FormControl<string>;
+  endTime: FormControl<string>;
+  teacherId: FormControl<number>;
+  courseId: FormControl<string>;
+  status: FormControl<string>;
+  description: FormControl<string>;
+}
+
+export type PostLesson = Omit<Lesson, 'id' | 'attendanceList'>;

@@ -43,7 +43,9 @@ export class LessonComponent implements OnInit {
       },
       complete: () => {
         this.getTeacher(this.lesson.teacherId);
-        this.getCourse(this.lesson.courseId);
+        if (this.lesson.courseId !== '') {
+          this.getCourse(this.lesson.courseId);
+        }
       },
     });
   }

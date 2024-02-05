@@ -33,7 +33,9 @@
         </td>
         <td>
           <b>Kurs: </b>
-          <a [routerLink]="'/courses/' + course.id">{{ course.name }}</a>
+          <a *ngIf="course" [routerLink]="'/courses/' + course.id">{{
+            course.name
+          }}</a>
         </td>
       </tr>
     </tbody>

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
-import { Lesson } from '../models/lesson.model';
+import { Lesson, PostLesson } from '../models/lesson.model';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +17,10 @@ export class LessonsService {
 
   getLessonById(id: string): Observable<Lesson> {
     return this.http.get<Lesson>(`${this.apiUrl}/${id}`);
+  }
+
+  addLesson(lesson: PostLesson): Observable<Lesson> {
+    return this.http.post<Lesson>(this.apiUrl, lesson);
   }
 
   patchLesson(id: string, lesson: Lesson): Observable<Lesson> {

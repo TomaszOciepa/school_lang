@@ -1,0 +1,142 @@
+<div class="teacher-form-wrapper mt-3">
+  <h2 *ngIf="!editMode">Utwórz lekcje:</h2>
+  <form [formGroup]="lessonForm" (ngSubmit)="onAddLesson()">
+    <div>
+      <mat-form-field>
+        <mat-label>Nazwa</mat-label>
+        <input matInput formControlName="eventName" />
+        <mat-error *ngIf="controls.eventName.invalid">{{
+          getErrorMessage(controls.eventName)
+        }}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field>
+        <mat-label>Data rozpoczęcia</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="startDate" />
+        <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field>
+        <input
+          matInput
+          name="selected_time_B"
+          [format]="24"
+          [ngxMatTimepicker]="pickerB"
+          placeholder="wybierz godzinę rozpoczęcia..."
+          readonly
+          formControlName="startTime"
+        />
+        <!-- <mat-hint>godzina rozpoczęcia</mat-hint> -->
+        <mat-icon matSuffix (click)="pickerB.open()"> watch_later </mat-icon>
+      </mat-form-field>
+      <ngx-mat-timepicker color="primary" #pickerB></ngx-mat-timepicker>
+    </div>
+
+    <div>
+      <mat-form-field>
+        <input
+          matInput
+          name="selected_time_A"
+          [format]="24"
+          [ngxMatTimepicker]="pickerA"
+          placeholder="wybierz godzinę zakończenia..."
+          readonly
+          formControlName="endTime"
+        />
+        <!-- <mat-hint>godzina zakońćzenia</mat-hint> -->
+        <mat-icon matSuffix (click)="pickerA.open()"> watch_later </mat-icon>
+      </mat-form-field>
+      <ngx-mat-timepicker color="primary" #pickerA></ngx-mat-timepicker>
+    </div>
+
+    <div>
+      <mat-form-field>
+        <mat-label>Kurs</mat-label>
+        <mat-select formControlName="courseId">
+          <mat-option
+            *ngFor="let course of coursesList"
+            value="{{ course.id }}"
+            >{{ course.name }}</mat-option
+          >
+        </mat-select>
+        <mat-error *ngIf="controls.courseId.invalid">{{
+          getErrorMessage(controls.courseId)
+        }}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field>
+        <mat-label>Nauczyciel</mat-label>
+        <mat-select formControlName="teacherId">
+          <mat-option
+            *ngFor="let teacher of teacherList"
+            value="{{ teacher.id }}"
+            >{{ teacher.firstName }} {{ teacher.lastName }}</mat-option
+          >
+        </mat-select>
+        <!-- <input matInput formControlName="status" /> -->
+        <mat-error *ngIf="controls.teacherId.invalid">{{
+          getErrorMessage(controls.teacherId)
+        }}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field>
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="ACTIVE">ACTIVE</mat-option>
+          <mat-option value="INACTIVE">INACTIVE</mat-option>
+          <mat-option value="FULL">FULL</mat-option>
+          <mat-option value="FINISHED">FINISHED</mat-option>
+        </mat-select>
+        <!-- <input matInput formControlName="status" /> -->
+        <mat-error *ngIf="controls.status.invalid">{{
+          getErrorMessage(controls.status)
+        }}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field>
+        <mat-label>Opis</mat-label>
+        <input matInput formControlName="description" />
+        <mat-error *ngIf="controls.description.invalid">{{
+          getErrorMessage(controls.description)
+        }}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="d-flex justify-content-end">
+      <button
+        type="button"
+        mat-raised-button
+        color="warn"
+        *ngIf="editMode"
+        (click)="emitCLoseDialog()"
+      >
+        Anuluj
+      </button>
+      <button
+        class="mx-1"
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="lessonForm.invalid"
+      >
+        {{ editMode ? "Zapisz" : "Dodaj nową lekcję" }}
+      </button>
+    </div>
+    <!-- <app-alert *ngIf="errorMessage" [text]="errorMessage"></app-alert> -->
+  </form>
+</div>
