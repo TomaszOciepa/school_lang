@@ -4,9 +4,11 @@ import { Router } from '@angular/router';
 import { Observer } from 'rxjs';
 import {
   Course,
+  PostCourse,
   PostCourseForm,
 } from 'src/app/modules/core/models/course.model';
 import { CourseService } from 'src/app/modules/core/services/course.service';
+import { DateParserService } from 'src/app/modules/core/services/date-parser.service';
 import { FormsService } from 'src/app/modules/core/services/forms.service';
 
 @Component({
@@ -19,6 +21,9 @@ export class CourseFormComponent {
   @Input() editMode = false;
   @Input() course!: Course;
   @Output() closeDialog = new EventEmitter<void>();
+
+  postCourse: PostCourse = {} as PostCourse;
+
   observer: Observer<unknown> = {
     next: (course) => {
       if (this.editMode) {
@@ -36,7 +41,8 @@ export class CourseFormComponent {
   constructor(
     private formService: FormsService,
     private courseService: CourseService,
-    private router: Router
+    private router: Router,
+    private dateParser: DateParserService
   ) {}
 
   ngOnInit(): void {
@@ -80,7 +86,7 @@ export class CourseFormComponent {
         }
       ),
       startDate: new FormControl(
-        this.editMode ? new Date(this.course.endDate) : new Date(),
+        this.editMode ? new Date(this.course.startDate) : new Date(),
         {
           nonNullable: true,
           validators: [Validators.required],
@@ -101,15 +107,35 @@ export class CourseFormComponent {
   }
 
   onAddCourse() {
+    this.generatePostCourseObj();
+
     if (this.editMode) {
       this.courseService
-        .patchCourse(this.course.id, this.courseForm.getRawValue())
+        .patchCourse(this.course.id, this.postCourse)
         .subscribe(this.observer);
       return;
     }
-    this.courseService
-      .addNewCourse(this.courseForm.getRawValue())
-      .subscribe(this.observer);
+
+    this.courseService.addNewCourse(this.postCourse).subscribe(this.observer);
+  }
+
+  private generatePostCourseObj() {
+    this.postCourse.name = this.courseForm.getRawValue().name;
+    this.postCourse.status = this.courseForm.getRawValue().status;
+    this.postCourse.startDate = this.parseDateToStringFormat(
+      this.courseForm.getRawValue().startDate.toString()
+    );
+    this.postCourse.endDate = this.parseDateToStringFormat(
+      this.courseForm.getRawValue().endDate.toString()
+    );
+
+    this.postCourse.participantsLimit =
+      this.courseForm.getRawValue().participantsLimit;
+    this.postCourse.lessonsNumber = this.courseForm.getRawValue().lessonsNumber;
+  }
+
+  private parseDateToStringFormat(date: string): string {
+    return this.dateParser.parseDate(date);
   }
 
   emitCLoseDialog() {

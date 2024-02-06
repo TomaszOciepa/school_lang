@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -164,7 +165,7 @@ public class CourseServiceImpl implements CourseService {
             throw new CourseException(CourseError.STUDENT_NO_ON_THE_LIST_OF_ENROLL);
         }
 
-        if (courseFromDb.getStartDate().isAfter(LocalDate.now())) {
+        if (courseFromDb.getStartDate().isAfter(LocalDateTime.now())) {
             calendarServiceClient.unEnrollStudent(courseId, studentId);
             removeStudentFromCourseStudentList(studentId, courseFromDb);
         } else {

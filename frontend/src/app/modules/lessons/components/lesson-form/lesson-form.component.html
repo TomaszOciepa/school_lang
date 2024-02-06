@@ -62,6 +62,7 @@
       <mat-form-field>
         <mat-label>Kurs</mat-label>
         <mat-select formControlName="courseId">
+          <mat-option value="">-</mat-option>
           <mat-option
             *ngFor="let course of coursesList"
             value="{{ course.id }}"

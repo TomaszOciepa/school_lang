@@ -18,8 +18,8 @@ export interface CourseResponse {
   participantsLimit: number;
   participantsNumber: number;
   lessonsNumber: number;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   courseStudents: EnrollemntInfo;
   courseTeachers: EnrollemntInfo;
 }
@@ -32,8 +32,8 @@ export class Course implements CourseResponse {
     public participantsLimit: number,
     public participantsNumber: number,
     public lessonsNumber: number,
-    public startDate: Date,
-    public endDate: Date,
+    public startDate: string,
+    public endDate: string,
     public courseStudents: EnrollemntInfo,
     public courseTeachers: EnrollemntInfo
   ) {}

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Course } from 'src/app/modules/core/models/course.model';
 import { Lesson } from 'src/app/modules/core/models/lesson.model';
@@ -6,6 +7,7 @@ import { User } from 'src/app/modules/core/models/user.model';
 import { CourseService } from 'src/app/modules/core/services/course.service';
 import { LessonsService } from 'src/app/modules/core/services/lessons.service';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
+import { EditLessonDialogComponent } from './edit-lesson-dialog/edit-lesson-dialog.component';
 
 @Component({
   selector: 'app-lesson',
@@ -22,7 +24,8 @@ export class LessonComponent implements OnInit {
     private lessonsService: LessonsService,
     private teacherService: TeacherService,
     private courseService: CourseService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -59,6 +62,16 @@ export class LessonComponent implements OnInit {
   getCourse(id: string) {
     this.courseService.getCourseById(id).subscribe((response) => {
       this.course = response;
+    });
+  }
+
+  openEditDialog() {
+    const dialogRef = this.dialog.open(EditLessonDialogComponent, {
+      data: {
+        lesson: this.lesson,
+      },
+      width: '600px',
+      maxWidth: '600px',
     });
   }
 }

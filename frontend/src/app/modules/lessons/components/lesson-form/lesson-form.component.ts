@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Observer } from 'rxjs';
 import { Course } from 'src/app/modules/core/models/course.model';
 import {
   Lesson,
@@ -24,21 +25,23 @@ export class LessonFormComponent {
 
   coursesList!: Course[];
   teacherList!: User[];
-  // @Output() closeDialog = new EventEmitter<void>();
 
-  // observer: Observer<unknown> = {
-  //   next: (course) => {
-  //     if (this.editMode) {
-  //       this.emitCLoseDialog();
-  //     }
-  //     console.log('Zapisano do bazy: ' + course);
-  //     this.router.navigate(['/courses']);
-  //   },
-  //   error: (err) => {
-  //     console.log(err);
-  //   },
-  //   complete: () => {},
-  // };
+  observer: Observer<unknown> = {
+    next: () => {
+      if (this.editMode) {
+        this.emitCLoseDialog();
+      }
+      console.log('Zapisano do bazy:');
+    },
+    error: (err) => {
+      console.log(err);
+    },
+    complete: () => {
+      this.router.navigate(['/lessons']);
+    },
+  };
+
+  @Output() closeDialog = new EventEmitter<void>();
 
   constructor(
     private formService: FormsService,
@@ -49,9 +52,9 @@ export class LessonFormComponent {
   ) {}
 
   ngOnInit(): void {
-    this.initForm();
-    this.getCourse();
     this.getTeachers();
+    this.getCourse();
+    this.initForm();
   }
 
   get controls() {
@@ -79,14 +82,16 @@ export class LessonFormComponent {
         }
       ),
       startTime: new FormControl(
-        this.editMode ? this.lesson.startDate.getTime.toString() : '',
+        // this.editMode ? this.lesson.startDate.getTime.toString() :
+        '',
         {
           nonNullable: true,
           validators: [Validators.required],
         }
       ),
       endTime: new FormControl(
-        this.editMode ? this.lesson.endDate.getTime.toString() : '',
+        // this.editMode ? this.lesson.endDate.getTime.toString() :
+        '',
         {
           nonNullable: true,
           validators: [Validators.required],
@@ -96,10 +101,13 @@ export class LessonFormComponent {
         nonNullable: true,
         validators: [],
       }),
-      teacherId: new FormControl(0, {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
+      teacherId: new FormControl(
+        this.editMode ? this.lesson.teacherId.toString() : '',
+        {
+          nonNullable: true,
+          validators: [Validators.required],
+        }
+      ),
       status: new FormControl(this.editMode ? this.lesson.status : '', {
         nonNullable: true,
         validators: [Validators.required],
@@ -136,32 +144,24 @@ export class LessonFormComponent {
 
     this.lesson.courseId = this.lessonForm.getRawValue().courseId;
 
-    this.lesson.teacherId = this.lessonForm.getRawValue().teacherId;
+    this.lesson.teacherId = parseInt(
+      this.lessonForm.getRawValue().teacherId,
+      10
+    );
     this.lesson.status = this.lessonForm.getRawValue().status;
     this.lesson.description = this.lessonForm.getRawValue().description;
 
-    this.lessonsService.addLesson(this.lesson).subscribe({
-      error: (err) => {
-        console.log(err);
-      },
-      complete: () => {
-        console.log('Zapisano do bazy: ');
-        this.router.navigate(['/lessons']);
-      },
-    });
-    // if (this.editMode) {
-    //   this.courseService
-    //     .patchCourse(this.course.id, this.courseForm.getRawValue())
-    //     .subscribe(this.observer);
-    //   return;
-    // }
-    // this.courseService
-    //   .addNewCourse(this.courseForm.getRawValue())
-    //   .subscribe(this.observer);
+    if (this.editMode) {
+      this.lessonsService
+        .patchLesson(this.lesson.id, this.lesson)
+        .subscribe(this.observer);
+      return;
+    }
+    this.lessonsService.addLesson(this.lesson).subscribe(this.observer);
   }
 
   emitCLoseDialog() {
-    // this.closeDialog.emit();
+    this.closeDialog.emit();
   }
 
   private generateDateTime(date: Date, startTime: string): Date {
