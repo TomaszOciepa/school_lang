@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Czy napewno chcesz usunąć lekcje?</h1>
+<div mat-dialog-content>
+  <p>nazwa</p>
+  <p>{{ lesson.eventName }}</p>
+  <app-alert *ngIf="errorMessage">{{ errorMessage }}</app-alert>
+</div>
+<div mat-dialog-actions>
+  <button color="accent" mat-button mat-dialog-close>Anuluj</button>
+  <button color="warn" mat-button (click)="onDelete()" cdkFocusInitial>
+    Usuń
+  </button>
+</div>

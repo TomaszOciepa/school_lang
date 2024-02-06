@@ -9,6 +9,7 @@ import { LessonComponent } from './components/lesson/lesson.component';
 import { AttendanceListComponent } from './components/lesson/attendance-list/attendance-list.component';
 import { LessonFormComponent } from './components/lesson-form/lesson-form.component';
 import { EditLessonDialogComponent } from './components/lesson/edit-lesson-dialog/edit-lesson-dialog.component';
+import { DeleteLessonDialogComponent } from './components/lesson/delete-lesson-dialog/delete-lesson-dialog.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { EditLessonDialogComponent } from './components/lesson/edit-lesson-dialo
     AttendanceListComponent,
     LessonFormComponent,
     EditLessonDialogComponent,
+    DeleteLessonDialogComponent,
   ],
   imports: [SharedModule, CommonModule, LessonsRoutingModule],
 })

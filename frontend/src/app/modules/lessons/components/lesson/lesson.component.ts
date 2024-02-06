@@ -8,6 +8,7 @@ import { CourseService } from 'src/app/modules/core/services/course.service';
 import { LessonsService } from 'src/app/modules/core/services/lessons.service';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 import { EditLessonDialogComponent } from './edit-lesson-dialog/edit-lesson-dialog.component';
+import { DeleteLessonDialogComponent } from './delete-lesson-dialog/delete-lesson-dialog.component';
 
 @Component({
   selector: 'app-lesson',
@@ -72,6 +73,14 @@ export class LessonComponent implements OnInit {
       },
       width: '600px',
       maxWidth: '600px',
+    });
+  }
+
+  openDialog() {
+    const dialogRef = this.dialog.open(DeleteLessonDialogComponent, {
+      data: {
+        lesson: this.lesson,
+      },
     });
   }
 }

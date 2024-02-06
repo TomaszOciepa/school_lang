@@ -26,4 +26,8 @@ export class LessonsService {
   patchLesson(id: string, lesson: Lesson): Observable<Lesson> {
     return this.http.patch<Lesson>(`${this.apiUrl}/${id}`, lesson);
   }
+
+  deleteLessonById(id: string): Observable<Record<string, never>> {
+    return this.http.delete<Record<string, never>>(`${this.apiUrl}/${id}`);
+  }
 }
