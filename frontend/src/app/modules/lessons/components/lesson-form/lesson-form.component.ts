@@ -9,6 +9,7 @@ import {
 } from 'src/app/modules/core/models/lesson.model';
 import { User } from 'src/app/modules/core/models/user.model';
 import { CourseService } from 'src/app/modules/core/services/course.service';
+import { DateParserService } from 'src/app/modules/core/services/date-parser.service';
 import { FormsService } from 'src/app/modules/core/services/forms.service';
 import { LessonsService } from 'src/app/modules/core/services/lessons.service';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
@@ -25,6 +26,8 @@ export class LessonFormComponent {
 
   coursesList!: Course[];
   teacherList!: User[];
+  startTimeStr: string = '';
+  endTimeStr: string = '';
 
   observer: Observer<unknown> = {
     next: () => {
@@ -37,7 +40,7 @@ export class LessonFormComponent {
       console.log(err);
     },
     complete: () => {
-      this.router.navigate(['/lessons']);
+      this.router.navigate(['/lessons/' + this.lesson.id]);
     },
   };
 
@@ -48,6 +51,7 @@ export class LessonFormComponent {
     private lessonsService: LessonsService,
     private courseService: CourseService,
     private teacherService: TeacherService,
+    private dateParser: DateParserService,
     private router: Router
   ) {}
 
@@ -55,6 +59,19 @@ export class LessonFormComponent {
     this.getTeachers();
     this.getCourse();
     this.initForm();
+    if (this.editMode) {
+      this.startTimeStr = this.generateTimeStr(this.lesson.startDate);
+      this.endTimeStr = this.generateTimeStr(this.lesson.endDate);
+    }
+  }
+
+  private generateTimeStr(date: string): string {
+    const startDate = new Date(date);
+    const hours = ('0' + startDate.getHours()).slice(-2);
+    const minutes = ('0' + startDate.getMinutes()).slice(-2);
+
+    const timeString = `${hours}:${minutes}`;
+    return timeString;
   }
 
   get controls() {
@@ -75,28 +92,20 @@ export class LessonFormComponent {
         }
       ),
       startDate: new FormControl(
-        this.editMode ? this.lesson.startDate : new Date(),
+        this.editMode ? new Date(this.lesson.startDate) : new Date(),
         {
           nonNullable: true,
           validators: [Validators.required],
         }
       ),
-      startTime: new FormControl(
-        // this.editMode ? this.lesson.startDate.getTime.toString() :
-        '',
-        {
-          nonNullable: true,
-          validators: [Validators.required],
-        }
-      ),
-      endTime: new FormControl(
-        // this.editMode ? this.lesson.endDate.getTime.toString() :
-        '',
-        {
-          nonNullable: true,
-          validators: [Validators.required],
-        }
-      ),
+      startTime: new FormControl(this.editMode ? this.startTimeStr : '', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+      endTime: new FormControl(this.editMode ? this.endTimeStr : '', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
       courseId: new FormControl(this.editMode ? this.lesson.courseId : '', {
         nonNullable: true,
         validators: [],
@@ -127,29 +136,7 @@ export class LessonFormComponent {
   }
 
   onAddLesson() {
-    console.log(this.lessonForm.getRawValue());
-
-    this.lesson.eventName = this.lessonForm.getRawValue().eventName;
-    const startDate = this.lessonForm.getRawValue().startDate;
-
-    this.lesson.startDate = this.generateDateTime(
-      startDate,
-      this.lessonForm.getRawValue().startTime
-    );
-
-    this.lesson.endDate = this.generateDateTime(
-      startDate,
-      this.lessonForm.getRawValue().endTime
-    );
-
-    this.lesson.courseId = this.lessonForm.getRawValue().courseId;
-
-    this.lesson.teacherId = parseInt(
-      this.lessonForm.getRawValue().teacherId,
-      10
-    );
-    this.lesson.status = this.lessonForm.getRawValue().status;
-    this.lesson.description = this.lessonForm.getRawValue().description;
+    this.generatedLessonObj();
 
     if (this.editMode) {
       this.lessonsService
@@ -160,12 +147,37 @@ export class LessonFormComponent {
     this.lessonsService.addLesson(this.lesson).subscribe(this.observer);
   }
 
+  private generatedLessonObj() {
+    this.lesson.eventName = this.lessonForm.getRawValue().eventName;
+    this.lesson.startDate = this.generateDateTime(
+      this.lessonForm.getRawValue().startDate,
+      this.lessonForm.getRawValue().startTime
+    ).toString();
+
+    this.lesson.startDate = this.parseDateToStringFormat(this.lesson.startDate);
+
+    this.lesson.endDate = this.generateDateTime(
+      this.lessonForm.getRawValue().startDate,
+      this.lessonForm.getRawValue().endTime
+    ).toString();
+
+    this.lesson.endDate = this.parseDateToStringFormat(this.lesson.endDate);
+    this.lesson.courseId = this.lessonForm.getRawValue().courseId;
+
+    this.lesson.teacherId = parseInt(
+      this.lessonForm.getRawValue().teacherId,
+      10
+    );
+    this.lesson.status = this.lessonForm.getRawValue().status;
+    this.lesson.description = this.lessonForm.getRawValue().description;
+  }
+
   emitCLoseDialog() {
     this.closeDialog.emit();
   }
 
   private generateDateTime(date: Date, startTime: string): Date {
-    const parsedTime = this.parseTimeString(startTime);
+    const parsedTime = this.parseDataTimeToString(startTime);
     const newDate = new Date(date);
 
     if (!parsedTime) {
@@ -183,7 +195,7 @@ export class LessonFormComponent {
     return newDate;
   }
 
-  private parseTimeString(
+  private parseDataTimeToString(
     timeString: string
   ): { hours: number; minutes: number } | null {
     const timeRegex = /^(\d{1,2}):(\d{2})$/;
@@ -204,6 +216,10 @@ export class LessonFormComponent {
     }
 
     return { hours, minutes };
+  }
+
+  private parseDateToStringFormat(date: string): string {
+    return this.dateParser.parseDate(date);
   }
 
   private getCourse() {

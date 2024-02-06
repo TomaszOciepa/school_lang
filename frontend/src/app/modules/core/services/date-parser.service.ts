@@ -9,7 +9,7 @@ export class DateParserService {
   parseDate(inputDate: string): string {
     const date = new Date(inputDate);
     const year = date.getFullYear();
-    const month = ('0' + (date.getMonth() + 1)).slice(-2); // Dodaj 1 do miesiąca, ponieważ miesiące są indeksowane od 0
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
     const day = ('0' + date.getDate()).slice(-2);
     const hours = ('0' + date.getHours()).slice(-2);
     const minutes = ('0' + date.getMinutes()).slice(-2);

@@ -32,10 +32,11 @@
           [format]="24"
           [ngxMatTimepicker]="pickerB"
           placeholder="wybierz godzinę rozpoczęcia..."
+          [(ngModel)]="startTimeStr"
           readonly
           formControlName="startTime"
         />
-        <!-- <mat-hint>godzina rozpoczęcia</mat-hint> -->
+        <mat-hint>godzina rozpoczęcia: {{ startTimeStr }}</mat-hint>
         <mat-icon matSuffix (click)="pickerB.open()"> watch_later </mat-icon>
       </mat-form-field>
       <ngx-mat-timepicker color="primary" #pickerB></ngx-mat-timepicker>
@@ -49,6 +50,7 @@
           [format]="24"
           [ngxMatTimepicker]="pickerA"
           placeholder="wybierz godzinę zakończenia..."
+          [(ngModel)]="endTimeStr"
           readonly
           formControlName="endTime"
         />

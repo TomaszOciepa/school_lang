@@ -10,8 +10,8 @@ export interface AttendanceList {
 export interface Lesson {
   id: string;
   eventName: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   teacherId: number;
   courseId: string;
   status: string;
@@ -23,8 +23,8 @@ export class Lesson implements Lesson {
   constructor(
     public id: string,
     public eventName: string,
-    public startDate: Date,
-    public endDate: Date,
+    public startDate: string,
+    public endDate: string,
     public teacherId: number,
     public courseId: string,
     public status: string,
