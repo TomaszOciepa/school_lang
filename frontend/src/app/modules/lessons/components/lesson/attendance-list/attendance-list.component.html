@@ -9,6 +9,7 @@
       <th scope="col">Imię i Nazwisko</th>
       <th scope="col">Obecność</th>
       <th scope="col"></th>
+      <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
@@ -34,6 +35,16 @@
           (change)="changeAttendance(i)"
           id="{{ 'checkbox-' + i }}"
         />
+      </td>
+      <td>
+        <button
+          mat-raised-button
+          color="warn"
+          *ngIf="!courseId"
+          (click)="openUnEnrollDialog(attendance)"
+        >
+          Usuń
+        </button>
       </td>
     </tr>
   </tbody>

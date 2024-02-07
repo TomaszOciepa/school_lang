@@ -6,6 +6,8 @@ import {
 import { StudentService } from 'src/app/modules/core/services/student.service';
 import { User } from 'src/app/modules/core/models/user.model';
 import { LessonsService } from 'src/app/modules/core/services/lessons.service';
+import { UnEnrollLessonDialogComponent } from '../un-enroll-lesson-dialog/un-enroll-lesson-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-attendance-list',
@@ -15,6 +17,7 @@ import { LessonsService } from 'src/app/modules/core/services/lessons.service';
 export class AttendanceListComponent implements OnInit {
   @Input('lesson') lesson!: Lesson;
   @Input('attendance-list') attendanceList: AttendanceList[] = [];
+  @Input('courseId') courseId!: string;
 
   idList: number[] = [];
   students!: User[];
@@ -22,7 +25,8 @@ export class AttendanceListComponent implements OnInit {
 
   constructor(
     private studentService: StudentService,
-    private lessonsService: LessonsService
+    private lessonsService: LessonsService,
+    private dialog: MatDialog
   ) {}
   ngOnInit(): void {
     this.createIdList(this.attendanceList);
@@ -74,6 +78,17 @@ export class AttendanceListComponent implements OnInit {
       complete: () => {
         this.checked = false;
       },
+    });
+  }
+
+  openUnEnrollDialog(user: AttendanceList) {
+    const dialogRef = this.dialog.open(UnEnrollLessonDialogComponent, {
+      data: {
+        lessonId: this.lesson.id,
+        student: user,
+      },
+      width: '600px',
+      maxWidth: '600px',
     });
   }
 }

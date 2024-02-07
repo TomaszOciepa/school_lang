@@ -40,4 +40,14 @@ export class LessonsService {
       []
     );
   }
+
+  unEnrollStudentLesson(
+    lessonId: string,
+    studentId: number
+  ): Observable<HttpStatusCode> {
+    return this.http.post<HttpStatusCode>(
+      `${this.apiUrl}/un-enroll-student-lessons/${lessonId}/${studentId}`,
+      []
+    );
+  }
 }

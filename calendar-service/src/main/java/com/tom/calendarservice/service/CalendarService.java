@@ -4,6 +4,7 @@ package com.tom.calendarservice.service;
 import com.tom.calendarservice.model.Calendar;
 import com.tom.calendarservice.model.Dto.CourseDto;
 import com.tom.calendarservice.model.Status;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public interface CalendarService {
     void enrollStudent( String courseId,  Long studentId);
     public boolean unEnrollStudent(String courseId, Long studentId);
     void enrollStudentLesson(String lessonId, Long studentId);
+    void unEnrollStudentLesson(String lessonId, Long studentId);
 
 
 

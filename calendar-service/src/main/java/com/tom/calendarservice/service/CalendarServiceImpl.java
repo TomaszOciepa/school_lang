@@ -311,4 +311,11 @@ public class CalendarServiceImpl implements CalendarService {
         lessonFromDb.getAttendanceList().add(new AttendanceList(studentId));
         calendarRepository.save(lessonFromDb);
     }
+
+    public void unEnrollStudentLesson(String lessonId, Long studentId){
+        Calendar lessonFromDb = getLessonById(lessonId);
+
+        lessonFromDb.getAttendanceList().removeIf(s -> s.getStudentId().equals(studentId));
+        calendarRepository.save(lessonFromDb);
+    }
 }
