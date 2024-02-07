@@ -15,7 +15,8 @@ public class CourseExceptionHandler {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         if (CourseError.COURSE_NOT_FOUND.equals(e.getCourseError())
-                || CourseError.COURSE_STUDENT_LIST_IS_EMPTY.equals(e.getCourseError())) {
+                || CourseError.COURSE_STUDENT_LIST_IS_EMPTY.equals(e.getCourseError())
+                || CourseError.COURSE_TEACHER_LIST_IS_EMPTY.equals(e.getCourseError())) {
             httpStatus = HttpStatus.NOT_FOUND;
         } else if (CourseError.COURSE_NAME_ALREADY_EXISTS.equals(e.getCourseError())
                 || CourseError.STUDENT_ALREADY_ENROLLED.equals(e.getCourseError())

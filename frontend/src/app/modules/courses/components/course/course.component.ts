@@ -22,6 +22,7 @@ export class CourseComponent {
   courseId!: string;
 
   listUserId!: number[];
+  errMsg!: string;
 
   constructor(
     private courseService: CourseService,
@@ -52,9 +53,7 @@ export class CourseComponent {
       next: (student) => {
         this.students = student;
       },
-      error: (err) => {
-        console.log(err);
-      },
+      error: (err) => {},
     });
   }
 
@@ -63,9 +62,7 @@ export class CourseComponent {
       next: (teacher) => {
         this.teachers = teacher;
       },
-      error: (err) => {
-        console.log(err);
-      },
+      error: (err) => {},
     });
   }
 
@@ -90,15 +87,26 @@ export class CourseComponent {
   openEnrollDialog(enrollStudentIsEnable: boolean) {
     this.selectStudentOrTeacherEnroll(enrollStudentIsEnable);
 
-    const dialogRef = this.dialog.open(EnrollCourseDialogComponent, {
-      data: {
-        enrollStudentIsEnable: enrollStudentIsEnable,
-        courseId: this.course.id,
-        listUserId: this.listUserId,
-      },
-      width: '600px',
-      maxWidth: '600px',
-    });
+    if (this.course.status !== 'FULL' || !enrollStudentIsEnable) {
+      const dialogRef = this.dialog.open(EnrollCourseDialogComponent, {
+        data: {
+          enrollStudentIsEnable: enrollStudentIsEnable,
+          courseId: this.course.id,
+          listUserId: this.listUserId,
+        },
+        width: '600px',
+        maxWidth: '600px',
+      });
+    } else {
+      this.errMsg = 'Course members is FULL';
+      this.hideErrorMsg();
+    }
+  }
+
+  private hideErrorMsg() {
+    setTimeout(() => {
+      this.errMsg = '';
+    }, 3000);
   }
 
   private selectStudentOrTeacherEnroll(enrollStudent: boolean) {

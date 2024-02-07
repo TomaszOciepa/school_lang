@@ -23,7 +23,7 @@ export class LessonFormComponent {
   lessonForm!: FormGroup<PostLessonForm>;
   @Input() editMode = false;
   @Input() lesson: Lesson = {} as Lesson;
-
+  @Output() closeDialog = new EventEmitter<void>();
   coursesList!: Course[];
   teacherList!: User[];
   startTimeStr: string = '';
@@ -34,17 +34,18 @@ export class LessonFormComponent {
       if (this.editMode) {
         this.emitCLoseDialog();
       }
-      console.log('Zapisano do bazy:');
     },
     error: (err) => {
       console.log(err);
     },
     complete: () => {
-      this.router.navigate(['/lessons/' + this.lesson.id]);
+      if (this.editMode) {
+        this.router.navigate(['/lessons/' + this.lesson.id]);
+      } else {
+        this.router.navigate(['/lessons']);
+      }
     },
   };
-
-  @Output() closeDialog = new EventEmitter<void>();
 
   constructor(
     private formService: FormsService,

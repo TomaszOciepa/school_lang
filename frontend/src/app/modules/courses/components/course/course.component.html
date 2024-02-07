@@ -30,12 +30,15 @@
   <div class="row">
     <div class="col">
       <div *ngIf="!students">
-        <h3>Brak uczniów</h3>
+        <h3>Lista studentów jest jeszcze pusta...</h3>
       </div>
       <div>
         <button mat-raised-button color="info" (click)="openEnrollDialog(true)">
           dodaj kursanta
         </button>
+        <div *ngIf="errMsg" class="alert alert-danger" role="alert">
+          {{ errMsg }}
+        </div>
       </div>
       <div *ngIf="students">
         <h3>Lista uczniów:</h3>
@@ -81,7 +84,7 @@
     </div>
     <div class="col">
       <div *ngIf="!teachers">
-        <h3>Brak przypisanych nauczycieli</h3>
+        <h3>Lista nauczycieli jest pusta...</h3>
       </div>
       <div>
         <button

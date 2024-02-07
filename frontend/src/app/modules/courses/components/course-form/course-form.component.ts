@@ -1,7 +1,9 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observer } from 'rxjs';
+
 import {
   Course,
   PostCourse,
@@ -19,23 +21,29 @@ import { FormsService } from 'src/app/modules/core/services/forms.service';
 export class CourseFormComponent {
   courseForm!: FormGroup<PostCourseForm>;
   @Input() editMode = false;
-  @Input() course!: Course;
+  @Input() course: Course = {} as Course;
   @Output() closeDialog = new EventEmitter<void>();
 
   postCourse: PostCourse = {} as PostCourse;
+  errMsg!: string;
 
   observer: Observer<unknown> = {
-    next: (course) => {
+    next: () => {
       if (this.editMode) {
         this.emitCLoseDialog();
       }
-      console.log('Zapisano do bazy: ' + course);
-      this.router.navigate(['/courses']);
     },
-    error: (err) => {
-      console.log(err);
+    error: (err: HttpErrorResponse) => {
+      this.errMsg = err.error.message;
+      this.hideErrorMsg();
     },
-    complete: () => {},
+    complete: () => {
+      if (this.editMode) {
+        window.location.reload();
+      } else {
+        this.router.navigate(['/courses']);
+      }
+    },
   };
 
   constructor(
@@ -51,6 +59,11 @@ export class CourseFormComponent {
 
   get controls() {
     return this.courseForm.controls;
+  }
+  private hideErrorMsg() {
+    setTimeout(() => {
+      this.errMsg = '';
+    }, 3000);
   }
 
   private initForm() {
@@ -75,6 +88,7 @@ export class CourseFormComponent {
             Validators.required,
             Validators.min(1),
             Validators.max(26),
+            Validators.pattern('[1-9][0-9]*'),
           ],
         }
       ),
@@ -82,7 +96,11 @@ export class CourseFormComponent {
         this.editMode ? this.course.lessonsNumber : 0,
         {
           nonNullable: true,
-          validators: [Validators.required],
+          validators: [
+            Validators.required,
+            Validators.min(1),
+            Validators.pattern('[1-9][0-9]*'),
+          ],
         }
       ),
       startDate: new FormControl(

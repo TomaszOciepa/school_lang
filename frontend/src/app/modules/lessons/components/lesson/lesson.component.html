@@ -40,6 +40,12 @@
     </tbody>
   </table>
 
+  <div *ngIf="!lesson.courseId">
+    <button mat-raised-button color="primary" (click)="openEditDialog()">
+      dodaj studenta
+    </button>
+  </div>
+
   <app-attendance-list
     [lesson]="lesson"
     [attendance-list]="lesson.attendanceList"

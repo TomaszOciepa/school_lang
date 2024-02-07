@@ -14,8 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,6 +48,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course addCourse(Course course) {
+        course.setName(course.getName().trim());
         if (courseRepository.existsByName(course.getName())) {
             throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
         }
@@ -79,12 +78,30 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course patchCourse(String id, Course course) {
+        course.setName(course.getName().trim());
         return courseRepository.findById(id)
                 .map(courseFromDb -> {
                     if (!course.getName().isEmpty()) {
+                        if (!courseFromDb.getName().equals(course.getName())
+                                && courseRepository.existsByName(course.getName())) {
+                            throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
+                        }
                         courseFromDb.setName(course.getName());
                     }
                     if (course.getStatus() != null) {
+
+                        if(course.getStatus().equals(Status.ACTIVE)){
+                            if(courseFromDb.getParticipantsNumber().equals(courseFromDb.getParticipantsLimit())){
+                                throw new CourseException(CourseError.COURSE_IS_FULL);
+                            }
+                        }
+
+                        if(course.getStatus().equals(Status.FULL)){
+                            if(courseFromDb.getParticipantsNumber() < courseFromDb.getParticipantsLimit()){
+                                throw new CourseException(CourseError.COURSE_IS_NOT_FULL);
+                            }
+                        }
+
                         courseFromDb.setStatus(course.getStatus());
                     }
                     if (course.getParticipantsNumber() != null) {
@@ -203,7 +220,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void teacherCourseEnrollment(String courseId, Long teacherId) {
         Course course = findByIdAndStatus(courseId, null);
-        validateCourseStatus(course);
+//        validateCourseStatus(course);
         TeacherDto teacherDto = teacherServiceClient.getTeacherById(teacherId);
         validateTeacherBeforeCourseEnrollment(course, teacherDto);
         CourseTeachers courseTeachers = new CourseTeachers(teacherDto.getId());
