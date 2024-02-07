@@ -74,6 +74,11 @@ public class CalendarController {
     @GetMapping("/un-enroll-lessons/{courseId}/{studentId}")
     public boolean unEnrollStudent(@PathVariable String courseId, @PathVariable Long studentId){
         return calendarService.unEnrollStudent(courseId, studentId);
+    }
 
+    @PostMapping("/enroll-student-lessons/{lessonId}/{studentId}")
+    public ResponseEntity<?> enrollStudentLesson(@PathVariable String lessonId, @PathVariable Long studentId){
+        calendarService.enrollStudentLesson(lessonId, studentId);
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,11 +1,12 @@
 <div class="mt-3" *ngIf="lesson && teacher">
   <div>
-    <p>Usuń lekcję:</p>
-    <button mat-raised-button color="warn" (click)="openDialog()">Usuń</button>
+    <button mat-raised-button color="warn" (click)="openDialog()">
+      Usuń lekcje
+    </button>
   </div>
   <div>
     <button mat-raised-button color="primary" (click)="openEditDialog()">
-      Edytuj
+      Edytuj lekcje
     </button>
   </div>
   <h4>Informacje o lekcji:</h4>
@@ -41,7 +42,7 @@
   </table>
 
   <div *ngIf="!lesson.courseId">
-    <button mat-raised-button color="primary" (click)="openEditDialog()">
+    <button mat-raised-button color="primary" (click)="openEnrollDialog()">
       dodaj studenta
     </button>
   </div>

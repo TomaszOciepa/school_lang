@@ -300,4 +300,15 @@ public class CalendarServiceImpl implements CalendarService {
 
         return result;
     }
+
+    public void enrollStudentLesson(String lessonId, Long studentId){
+        Calendar lessonFromDb = getLessonById(lessonId);
+
+        if(lessonFromDb.getAttendanceList().stream().anyMatch(s -> s.getStudentId().equals(studentId))){
+            throw new CalendarException(CalendarError.STUDENT_ALREADY_ENROLLED);
+        }
+
+        lessonFromDb.getAttendanceList().add(new AttendanceList(studentId));
+        calendarRepository.save(lessonFromDb);
+    }
 }

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
@@ -29,5 +29,15 @@ export class LessonsService {
 
   deleteLessonById(id: string): Observable<Record<string, never>> {
     return this.http.delete<Record<string, never>>(`${this.apiUrl}/${id}`);
+  }
+
+  enrollStudentLesson(
+    lessonId: string,
+    studentId: number
+  ): Observable<HttpStatusCode> {
+    return this.http.post<HttpStatusCode>(
+      `${this.apiUrl}/enroll-student-lessons/${lessonId}/${studentId}`,
+      []
+    );
   }
 }
