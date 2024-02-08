@@ -1,5 +1,5 @@
-<div class="teacher-form-wrapper mt-3">
-  <h2 *ngIf="!editMode">Utwórz lekcje:</h2>
+<div class="container custom-container-width p-4">
+  <h2 *ngIf="!editMode">Dodaj nową lekcje:</h2>
   <form [formGroup]="lessonForm" (ngSubmit)="onAddLesson()">
     <div>
       <mat-form-field>

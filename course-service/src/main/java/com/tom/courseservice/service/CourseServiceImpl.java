@@ -52,6 +52,9 @@ public class CourseServiceImpl implements CourseService {
         if (courseRepository.existsByName(course.getName())) {
             throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
         }
+
+        isCourseStartDateIsAfterCourseEndDate(course.getStartDate(), course.getEndDate());
+
         course.setParticipantsNumber(0L);
         course.setFinishedLessons(0L);
         return courseRepository.save(course);
@@ -78,49 +81,68 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course patchCourse(String id, Course course) {
-        course.setName(course.getName().trim());
-        return courseRepository.findById(id)
-                .map(courseFromDb -> {
-                    if (!course.getName().isEmpty()) {
-                        if (!courseFromDb.getName().equals(course.getName())
-                                && courseRepository.existsByName(course.getName())) {
-                            throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
-                        }
-                        courseFromDb.setName(course.getName());
-                    }
-                    if (course.getStatus() != null) {
 
-                        if(course.getStatus().equals(Status.ACTIVE)){
-                            if(courseFromDb.getParticipantsNumber().equals(courseFromDb.getParticipantsLimit())){
-                                throw new CourseException(CourseError.COURSE_IS_FULL);
-                            }
-                        }
+        Course courseFromDb = courseRepository.findById(id).orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
 
-                        if(course.getStatus().equals(Status.FULL)){
-                            if(courseFromDb.getParticipantsNumber() < courseFromDb.getParticipantsLimit()){
-                                throw new CourseException(CourseError.COURSE_IS_NOT_FULL);
-                            }
-                        }
+        if(course.getName() != null){
+            course.setName(course.getName().trim());
+            if (!courseFromDb.getName().equals(course.getName())
+                    && courseRepository.existsByName(course.getName())) {
+                throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
+            }
+            courseFromDb.setName(course.getName());
+        }
 
-                        courseFromDb.setStatus(course.getStatus());
-                    }
-                    if (course.getParticipantsNumber() != null) {
-                        courseFromDb.setParticipantsNumber(course.getParticipantsNumber());
-                    }
-                    if (course.getParticipantsLimit() != null) {
-                        courseFromDb.setParticipantsLimit(course.getParticipantsLimit());
-                    }
-                    if (course.getLessonsNumber() != null) {
-                        courseFromDb.setLessonsNumber(course.getLessonsNumber());
-                    }
-                    if (course.getStartDate() != null) {
-                        courseFromDb.setStartDate(course.getStartDate());
-                    }
-                    if (course.getEndDate() != null) {
-                        courseFromDb.setEndDate(course.getEndDate());
-                    }
-                    return courseRepository.save(courseFromDb);
-                }).orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
+        if (course.getStatus() != null){
+            if(course.getStatus().equals(Status.ACTIVE)){
+                if(courseFromDb.getParticipantsNumber().equals(courseFromDb.getParticipantsLimit())){
+                    throw new CourseException(CourseError.COURSE_IS_FULL);
+                }
+            }
+
+            if(course.getStatus().equals(Status.FULL)){
+                if(courseFromDb.getParticipantsNumber() < courseFromDb.getParticipantsLimit()){
+                    throw new CourseException(CourseError.COURSE_IS_NOT_FULL);
+                }
+            }
+            courseFromDb.setStatus(course.getStatus());
+        }
+
+        if (course.getParticipantsLimit() != null) {
+            courseFromDb.setParticipantsLimit(course.getParticipantsLimit());
+        }
+
+        if (course.getParticipantsNumber() != null) {
+
+            if(courseFromDb.getParticipantsLimit() < course.getParticipantsNumber()){
+                throw new CourseException(CourseError.COURSE_PARTICIPANTS_NUMBER_IS_BIGGER_THEN_PARTICIPANTS_LIMIT);
+            }
+            courseFromDb.setParticipantsNumber(course.getParticipantsNumber());
+        }
+
+        if (course.getLessonsNumber() != null) {
+            courseFromDb.setLessonsNumber(course.getLessonsNumber());
+        }
+
+        if (course.getFinishedLessons() != null) {
+
+            if(courseFromDb.getLessonsNumber() < course.getFinishedLessons()){
+                throw new CourseException(CourseError.COURSE_LESSONS_FINISHED_IS_BIGGER_THEN_LESSONS_NUMBER);
+            }
+            courseFromDb.setFinishedLessons(course.getFinishedLessons());
+        }
+
+        if (course.getStartDate() != null) {
+            isCourseStartDateIsAfterCourseEndDate(course.getStartDate(), courseFromDb.getEndDate());
+            courseFromDb.setStartDate(course.getStartDate());
+        }
+
+        if (course.getEndDate() != null) {
+            isCourseEndDateIsBeforeCourseStartDate(course.getEndDate(), courseFromDb.getStartDate());
+            courseFromDb.setEndDate(course.getEndDate());
+        }
+
+        return courseRepository.save(courseFromDb);
     }
 
     @Override
@@ -296,6 +318,18 @@ public class CourseServiceImpl implements CourseService {
             enrollStudentToLessons(courseId, studentId);
         }
 
+    }
+
+    private void isCourseStartDateIsAfterCourseEndDate(LocalDateTime startDate, LocalDateTime endTime) {
+        if(startDate.isAfter(endTime) || startDate.isEqual(endTime)){
+            throw new CourseException(CourseError.COURSE_START_DATE_IS_AFTER_END_DATE);
+        }
+    }
+
+    private void isCourseEndDateIsBeforeCourseStartDate(LocalDateTime endDate, LocalDateTime startTime) {
+        if(endDate.isBefore(startTime) || endDate.isEqual(startTime)){
+            throw new CourseException(CourseError.COURSE_END_DATE_IS_BEFORE_START_DATE);
+        }
     }
 
 }
