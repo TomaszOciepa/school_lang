@@ -5,6 +5,8 @@ public enum CalendarError {
     CALENDAR_NOT_FOUND("Calendar does not exists"),
     CALENDAR_LESSONS_NOT_FOUND("Lessons does not exists"),
     LESSON_START_DATE_IS_AFTER_END_DATE("Lesson start date is after end date."),
+
+   LESSON_LIMIT_REACHED_ERROR_MESSAGE("Lesson limit has been reached."),
     COURSE_BUSY_AT_TIME_SLOT("Course is busy at the specified time slot"),
 
     COURSE_STUDENTS_LIST_IS_EMPTY("Course student list is empty. You need to add students to the course"),

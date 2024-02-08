@@ -25,6 +25,7 @@ public class CalendarExceptionHandler {
                 || CalendarError.LESSON_START_DATE_IS_AFTER_END_DATE.equals(e.getCalendarError())
                 || CalendarError.LESSON_START_DATE_IS_AFTER_COURSE_END_DATE.equals(e.getCalendarError())
                 || CalendarError.LESSON_START_DATE_IS_BEFORE_COURSE_START_DATE.equals(e.getCalendarError())
+                || CalendarError.LESSON_LIMIT_REACHED_ERROR_MESSAGE.equals(e.getCalendarError())
         ) {
             httpStatus = HttpStatus.CONFLICT;
         }

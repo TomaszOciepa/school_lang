@@ -73,11 +73,13 @@ public class CalendarServiceImpl implements CalendarService {
     private Calendar createCourseLesson(Calendar calendar) {
         logger.info("Creating course lesson");
 
+        CourseDto courseFromDb = getCourse(calendar.getCourseId(), Status.ACTIVE);
+
         if (isLessonExistForThisCourseInCalendar(calendar.getCourseId())) {
+            isLessonLimitReached(courseFromDb.getLessonsNumber(), calendar.getCourseId());
             isCourseHaveLessonAvailableOnTimeSlot(calendar.getCourseId(), calendar.getStartDate(), calendar.getEndDate());
         }
 
-        CourseDto courseFromDb = getCourse(calendar.getCourseId(), Status.ACTIVE);
         isLessonStartDateBeforeCourseStartDate(calendar.getStartDate(), courseFromDb.getStartDate());
         isLessonStartDateAfterCourseEndDate(calendar.getStartDate(), courseFromDb.getEndDate());
         isTeacherEnrolledInCourse(calendar.getTeacherId(), courseFromDb.getCourseTeachers());
@@ -94,6 +96,13 @@ public class CalendarServiceImpl implements CalendarService {
         return calendarRepository.save(calendar);
     }
 
+    private void isLessonLimitReached(Long lessonsLimit, String courseId){
+        logger.info("Inside isLessonLimitReached");
+        int lessonCount = getLessonsByCourseId(courseId).size();
+        if(lessonsLimit == lessonCount || lessonsLimit < lessonCount){
+            throw new CalendarException(CalendarError.LESSON_LIMIT_REACHED_ERROR_MESSAGE);
+        }
+    }
     private void isLessonStartDateBeforeCourseStartDate(LocalDateTime lessonStartDate, LocalDate courseStartDate) {
 
         if (lessonStartDate.isBefore(courseStartDate.atStartOfDay())) {
