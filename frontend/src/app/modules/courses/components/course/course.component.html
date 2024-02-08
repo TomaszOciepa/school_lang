@@ -85,7 +85,13 @@
   </div>
 
   <div class="row">
-    <div class="col"></div>
+    <div class="col text-start p-3">
+      <h2>Studenci</h2>
+      <app-lesons-table
+        [course-id]="course.id"
+        [switch]="true"
+      ></app-lesons-table>
+    </div>
   </div>
 
   <!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->

@@ -26,5 +26,6 @@ import { UnEnrollLessonDialogComponent } from './components/lesson/un-enroll-les
     UnEnrollLessonDialogComponent,
   ],
   imports: [SharedModule, CommonModule, LessonsRoutingModule],
+  exports: [LesonsTableComponent],
 })
 export class LessonsModule {}

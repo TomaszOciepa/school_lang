@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   ErrorHandler,
+  Input,
   ViewChild,
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
@@ -29,10 +30,34 @@ export class LesonsTableComponent implements AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  @Input('course-id') courseId!: string;
+  @Input('switch') getCourseLessons: boolean = false;
 
   constructor(private lessonsService: LessonsService) {}
 
   async ngAfterViewInit(): Promise<void> {
+    if (this.getCourseLessons) {
+      this.getLessonsByCourseId();
+    } else {
+      this.getAllLessons();
+    }
+  }
+
+  private getLessonsByCourseId() {
+    this.lessonsService.getLessonsByCourseId(this.courseId).subscribe({
+      next: (lesson) => {
+        console.log(lesson);
+        this.dataSource = new MatTableDataSource<Lesson>(lesson);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      },
+      error: (err: ErrorHandler) => {
+        console.log(err);
+      },
+    });
+  }
+
+  private getAllLessons() {
     this.lessonsService.getAllLessons().subscribe({
       next: (lesson) => {
         console.log(lesson);
