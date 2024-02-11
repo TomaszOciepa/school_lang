@@ -138,18 +138,38 @@ export class CourseFormComponent {
   }
 
   private generatePostCourseObj() {
-    this.postCourse.name = this.courseForm.getRawValue().name;
-    this.postCourse.status = this.courseForm.getRawValue().status;
-    this.postCourse.startDate = this.parseDateToStringFormat(
-      this.courseForm.getRawValue().startDate.toString()
-    );
-    this.postCourse.endDate = this.parseDateToStringFormat(
-      this.courseForm.getRawValue().endDate.toString()
-    );
+    this.courseForm.get('name')?.dirty;
+    if (this.courseForm.get('name')?.dirty) {
+      this.postCourse.name = this.courseForm.getRawValue().name;
+    }
 
-    this.postCourse.participantsLimit =
-      this.courseForm.getRawValue().participantsLimit;
-    this.postCourse.lessonsNumber = this.courseForm.getRawValue().lessonsNumber;
+    if (this.courseForm.get('status')?.dirty) {
+      this.postCourse.status = this.courseForm.getRawValue().status;
+    }
+
+    if (this.courseForm.get('startDate')?.dirty) {
+      this.postCourse.startDate = this.parseDateToStringFormat(
+        this.courseForm.getRawValue().startDate.toString()
+      );
+    }
+
+    if (this.courseForm.get('endDate')?.dirty) {
+      this.postCourse.endDate = this.parseDateToStringFormat(
+        this.courseForm.getRawValue().endDate.toString()
+      );
+    }
+
+    if (this.courseForm.get('participantsLimit')?.dirty) {
+      this.postCourse.participantsLimit =
+        this.courseForm.getRawValue().participantsLimit;
+    }
+
+    if (this.courseForm.get('lessonsNumber')?.dirty) {
+      this.postCourse.lessonsNumber =
+        this.courseForm.getRawValue().lessonsNumber;
+    }
+
+    console.log(this.postCourse);
   }
 
   private parseDateToStringFormat(date: string): string {

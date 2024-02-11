@@ -81,7 +81,6 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course patchCourse(String id, Course course) {
-
         Course courseFromDb = courseRepository.findById(id).orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
 
         if(course.getName() != null){
@@ -109,6 +108,17 @@ public class CourseServiceImpl implements CourseService {
         }
 
         if (course.getParticipantsLimit() != null) {
+            if(course.getParticipantsLimit() < courseFromDb.getParticipantsNumber() ){
+                throw new CourseException(CourseError.COURSE_PARTICIPANTS_NUMBER_IS_BIGGER_THEN_PARTICIPANTS_LIMIT);
+            }
+
+            if(course.getParticipantsLimit() == courseFromDb.getParticipantsNumber()){
+                courseFromDb.setStatus(Status.FULL);
+            }
+
+            if(course.getParticipantsLimit() > courseFromDb.getParticipantsNumber()){
+                courseFromDb.setStatus(Status.ACTIVE);
+            }
             courseFromDb.setParticipantsLimit(course.getParticipantsLimit());
         }
 
