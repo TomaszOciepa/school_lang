@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Course } from 'src/app/modules/core/models/course.model';
 import { CourseService } from 'src/app/modules/core/services/course.service';
 import { EditCourseDialogComponent } from './edit-course-dialog/edit-course-dialog.component';
@@ -19,7 +19,7 @@ export class CourseComponent {
   course!: Course;
   students!: User[];
   teachers!: User[];
-  courseId!: string;
+  // courseId!: string;
 
   listUserId!: number[];
   errMsg!: string;
@@ -27,7 +27,8 @@ export class CourseComponent {
   constructor(
     private courseService: CourseService,
     private route: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -44,7 +45,7 @@ export class CourseComponent {
   getCourse(id: string) {
     this.courseService.getCourseById(id).subscribe((response) => {
       this.course = response;
-      this.courseId = response.id;
+      // this.courseId = response.id;
     });
   }
 
@@ -133,5 +134,9 @@ export class CourseComponent {
       width: '600px',
       maxWidth: '600px',
     });
+  }
+
+  addNewLesson() {
+    this.router.navigate(['/lessons/dodaj', { id: this.id }]);
   }
 }

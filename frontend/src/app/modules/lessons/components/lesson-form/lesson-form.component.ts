@@ -1,6 +1,7 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observer } from 'rxjs';
 import { Course } from 'src/app/modules/core/models/course.model';
 import {
@@ -24,10 +25,14 @@ export class LessonFormComponent {
   @Input() editMode = false;
   @Input() lesson: Lesson = {} as Lesson;
   @Output() closeDialog = new EventEmitter<void>();
+
   coursesList!: Course[];
   teacherList!: User[];
   startTimeStr: string = '';
   endTimeStr: string = '';
+
+  courseId!: string | null;
+  course!: Course;
 
   observer: Observer<unknown> = {
     next: () => {
@@ -41,6 +46,10 @@ export class LessonFormComponent {
     complete: () => {
       if (this.editMode) {
         this.router.navigate(['/lessons/' + this.lesson.id]);
+        return;
+      }
+      if (this.courseId) {
+        this.router.navigate(['/courses/' + this.courseId]);
       } else {
         this.router.navigate(['/lessons']);
       }
@@ -53,12 +62,14 @@ export class LessonFormComponent {
     private courseService: CourseService,
     private teacherService: TeacherService,
     private dateParser: DateParserService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.getTeachers();
-    this.getCourse();
+    this.courseId = this.route.snapshot.paramMap.get('id');
+
     this.initForm();
     if (this.editMode) {
       this.startTimeStr = this.generateTimeStr(this.lesson.startDate);
@@ -107,10 +118,11 @@ export class LessonFormComponent {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      courseId: new FormControl(this.editMode ? this.lesson.courseId : '', {
-        nonNullable: true,
-        validators: [],
-      }),
+
+      // courseId: new FormControl(this.editMode ? this.lesson.courseId : '', {
+      //   nonNullable: true,
+      //   validators: [],
+      // }),
       teacherId: new FormControl(
         this.editMode ? this.lesson.teacherId.toString() : '',
         {
@@ -163,7 +175,10 @@ export class LessonFormComponent {
     ).toString();
 
     this.lesson.endDate = this.parseDateToStringFormat(this.lesson.endDate);
-    this.lesson.courseId = this.lessonForm.getRawValue().courseId;
+
+    if (this.courseId != null) {
+      this.lesson.courseId = this.courseId;
+    }
 
     this.lesson.teacherId = parseInt(
       this.lessonForm.getRawValue().teacherId,
@@ -221,18 +236,6 @@ export class LessonFormComponent {
 
   private parseDateToStringFormat(date: string): string {
     return this.dateParser.parseDate(date);
-  }
-
-  private getCourse() {
-    this.courseService.getCourses().subscribe({
-      next: (result) => {
-        this.coursesList = result;
-      },
-      error: (err) => {
-        console.log(err);
-      },
-      complete: () => {},
-    });
   }
 
   private getTeachers() {

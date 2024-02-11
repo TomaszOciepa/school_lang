@@ -28,10 +28,16 @@ export class DeleteLessonDialogComponent {
     this.lessonService.deleteLessonById(this.lesson.id).subscribe({
       next: () => {
         this.dialogRef.close();
-        this.router.navigate(['/lessons']);
       },
       error: (err) => {
         this.errorMessage = err;
+      },
+      complete: () => {
+        if (this.lesson.courseId) {
+          this.router.navigate(['/courses/' + this.lesson.courseId]);
+        } else {
+          this.router.navigate(['/lessons/' + this.lesson.id]);
+        }
       },
     });
   }
