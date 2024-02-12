@@ -93,6 +93,7 @@ public class CalendarServiceImpl implements CalendarService {
         List<AttendanceList> attendanceLists = addStudentsToAttendanceList(courseFromDb.getCourseStudents());
         calendar.setAttendanceList(attendanceLists);
         calendar.setStatus(Status.ACTIVE);
+
         return calendarRepository.save(calendar);
     }
 

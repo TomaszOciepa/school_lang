@@ -131,6 +131,8 @@ public class CourseServiceImpl implements CourseService {
         }
 
         if (course.getLessonsNumber() != null) {
+
+
             courseFromDb.setLessonsNumber(course.getLessonsNumber());
         }
 

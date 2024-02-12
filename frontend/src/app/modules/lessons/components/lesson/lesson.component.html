@@ -1,55 +1,75 @@
-<div class="mt-3" *ngIf="lesson && teacher">
-  <div>
-    <button mat-raised-button color="warn" (click)="openDialog()">
-      Usuń lekcje
-    </button>
+<div class="container text-center" *ngIf="lesson && teacher">
+  <!-- Stack the columns on mobile by making one full-width and the other half-width -->
+  <div class="row">
+    <div class="col-md-8"></div>
+    <div class="col-6 col-md-4">
+      <div class="row row-cols-2">
+        <div class="col p-3">
+          <button mat-raised-button color="primary" (click)="openEditDialog()">
+            Edytuj
+          </button>
+        </div>
+        <div class="col p-3">
+          <button mat-raised-button color="warn" (click)="openDialog()">
+            Usuń
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
-  <div>
-    <button mat-raised-button color="primary" (click)="openEditDialog()">
-      Edytuj lekcje
-    </button>
-  </div>
-  <h4>Informacje o lekcji:</h4>
-  <table class="table table-striped table-bordered">
-    <tbody>
-      <tr>
-        <td><b>nazwa: </b>{{ lesson.eventName }}</td>
-        <td>
-          <b>data rozpoczęcia: </b>{{ lesson.startDate | date : "dd-MM-yyyy" }}
-        </td>
-        <td>
-          <b>godziny: </b>{{ lesson.startDate | date : "HH:mm" }} -
-          {{ lesson.endDate | date : "HH:mm" }}
-        </td>
-        <td><b>status: </b>{{ lesson.status }}</td>
-      </tr>
-      <tr>
-        <td><b>Opis: </b>{{ lesson.description }}</td>
-        <td>
-          <b>Nauczyciel: </b>
+
+  <div class="row">
+    <div class="col">
+      <figure class="text-start">
+        <blockquote class="blockquote">
+          <h2>{{ lesson.eventName }}</h2>
+        </blockquote>
+        <figcaption class="blockquote-footer">
+          <cite title="Source Title">{{ lesson.description }}</cite>
+        </figcaption>
+      </figure>
+    </div>
+    <div class="col text-start">
+      <h3>
+        <small class="text-body-secondary"> data rozpoczęcia: </small>
+        {{ lesson.startDate | date : "EEEE, d MMMM yyyy" }}
+      </h3>
+      <h3>
+        <small class="text-body-secondary"> czas: </small>
+        {{ lesson.startDate | date : "HH:mm" }} -
+        {{ lesson.endDate | date : "HH:mm" }}
+      </h3>
+      <h3 *ngIf="course">
+        <small class="text-body-secondary"> kurs: </small>
+        <a [routerLink]="'/courses/' + course.id">{{ course.name }}</a>
+      </h3>
+    </div>
+    <div class="col">
+      <ul class="list-group list-group-flush text-start">
+        <li class="list-group-item">
+          <small class="text-body-secondary">nauczyciel: </small>
           <a [routerLink]="'/teachers/' + teacher.id"
             >{{ teacher.firstName }} {{ teacher.lastName }}</a
           >
-        </td>
-        <td>
-          <b>Kurs: </b>
-          <a *ngIf="course" [routerLink]="'/courses/' + course.id">{{
-            course.name
-          }}</a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div *ngIf="!lesson.courseId">
-    <button mat-raised-button color="primary" (click)="openEnrollDialog()">
-      dodaj studenta
-    </button>
+        </li>
+        <li class="list-group-item">
+          <small class="text-body-secondary">status: </small>
+          {{ lesson.status }}
+        </li>
+      </ul>
+    </div>
   </div>
+  <div class="row text-start">
+    <div *ngIf="!lesson.courseId">
+      <button mat-raised-button color="primary" (click)="openEnrollDialog()">
+        dodaj studenta
+      </button>
+    </div>
 
-  <app-attendance-list
-    [lesson]="lesson"
-    [attendance-list]="lesson.attendanceList"
-    [courseId]="lesson.courseId"
-  ></app-attendance-list>
+    <app-attendance-list
+      [lesson]="lesson"
+      [attendance-list]="lesson.attendanceList"
+      [courseId]="lesson.courseId"
+    ></app-attendance-list>
+  </div>
 </div>

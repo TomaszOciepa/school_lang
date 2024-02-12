@@ -3,7 +3,6 @@ package com.tom.calendarservice.controller;
 import com.tom.calendarservice.model.Calendar;
 import com.tom.calendarservice.service.CalendarService;
 import lombok.AllArgsConstructor;
-import org.apache.hc.core5.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

@@ -53,21 +53,4 @@ public class Course {
 
     public Course() {
     }
-
-    @Override
-    public String toString() {
-        return "Course{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", status=" + status +
-                ", participantsLimit=" + participantsLimit +
-                ", participantsNumber=" + participantsNumber +
-                ", lessonsNumber=" + lessonsNumber +
-                ", finishedLessons=" + finishedLessons +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", courseStudents=" + courseStudents +
-                ", courseTeachers=" + courseTeachers +
-                '}';
-    }
 }
