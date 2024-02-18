@@ -92,8 +92,8 @@ export class CourseFormComponent {
           ],
         }
       ),
-      lessonsNumber: new FormControl(
-        this.editMode ? this.course.lessonsNumber : 0,
+      lessonsLimit: new FormControl(
+        this.editMode ? this.course.lessonsLimit : 0,
         {
           nonNullable: true,
           validators: [
@@ -164,9 +164,8 @@ export class CourseFormComponent {
         this.courseForm.getRawValue().participantsLimit;
     }
 
-    if (this.courseForm.get('lessonsNumber')?.dirty) {
-      this.postCourse.lessonsNumber =
-        this.courseForm.getRawValue().lessonsNumber;
+    if (this.courseForm.get('lessonsLimit')?.dirty) {
+      this.postCourse.lessonsLimit = this.courseForm.getRawValue().lessonsLimit;
     }
 
     console.log(this.postCourse);

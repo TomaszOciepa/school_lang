@@ -19,8 +19,7 @@ public class CourseDto {
     private Status status;
     private Long participantsLimit;
     private Long participantsNumber;
-    private Long lessonsNumber;
-    private Long finishedLessons;
+    private Long lessonsLimit;
     private LocalDate startDate;
     private LocalDate endDate;
     private List<CourseStudentsDto> courseStudents = new ArrayList<>();

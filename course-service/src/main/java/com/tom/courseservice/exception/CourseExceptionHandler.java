@@ -28,7 +28,8 @@ public class CourseExceptionHandler {
                 || CourseError.COURSE_START_DATE_IS_AFTER_END_DATE.equals(e.getCourseError())
                 || CourseError.COURSE_END_DATE_IS_BEFORE_START_DATE.equals(e.getCourseError())
                 || CourseError.COURSE_PARTICIPANTS_NUMBER_IS_BIGGER_THEN_PARTICIPANTS_LIMIT.equals(e.getCourseError())
-                || CourseError.COURSE_LESSONS_FINISHED_IS_BIGGER_THEN_LESSONS_NUMBER.equals(e.getCourseError())) {
+                || CourseError.COURSE_LESSONS_FINISHED_IS_BIGGER_THEN_LESSONS_NUMBER.equals(e.getCourseError())
+                || CourseError.COURSE_LESSONS_NUMBER_IS_BIGGER_THEN_LESSONS_LIMIT.equals(e.getCourseError())) {
             httpStatus = HttpStatus.CONFLICT;
         } else if (CourseError.COURSE_IS_NOT_ACTIVE.equals(e.getCourseError())
                 || CourseError.STUDENT_IS_NOT_ACTIVE.equals(e.getCourseError())

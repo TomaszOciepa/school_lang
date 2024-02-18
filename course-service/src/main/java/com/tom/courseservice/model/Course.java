@@ -22,8 +22,7 @@ public class Course {
     private Status status;
     private Long participantsLimit;
     private Long participantsNumber;
-    private Long lessonsNumber;
-    private Long finishedLessons;
+    private Long lessonsLimit;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private List<CourseStudents> courseStudents = new ArrayList<>();
@@ -41,14 +40,6 @@ public class Course {
         if (status.equals(Status.FULL)){
             setStatus(Status.ACTIVE);
         }
-    }
-
-    public void incrementFinishedLessons(){
-        finishedLessons++;
-    }
-
-    public void decrementFinishedLessons(){
-        finishedLessons--;
     }
 
     public Course() {

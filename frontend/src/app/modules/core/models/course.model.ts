@@ -17,8 +17,7 @@ export interface CourseResponse {
   status: string;
   participantsLimit: number;
   participantsNumber: number;
-  lessonsNumber: number;
-  finishedLessons: number;
+  lessonsLimit: number;
   startDate: string;
   endDate: string;
   courseStudents: EnrollemntInfo;
@@ -32,8 +31,7 @@ export class Course implements CourseResponse {
     public status: string,
     public participantsLimit: number,
     public participantsNumber: number,
-    public lessonsNumber: number,
-    public finishedLessons: number,
+    public lessonsLimit: number,
     public startDate: string,
     public endDate: string,
     public courseStudents: EnrollemntInfo,
@@ -45,7 +43,7 @@ export interface PostCourseForm {
   name: FormControl<string>;
   status: FormControl<string>;
   participantsLimit: FormControl<number>;
-  lessonsNumber: FormControl<number>;
+  lessonsLimit: FormControl<number>;
   startDate: FormControl<Date>;
   endDate: FormControl<Date>;
 }

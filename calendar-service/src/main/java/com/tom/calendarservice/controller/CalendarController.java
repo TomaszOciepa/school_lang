@@ -64,6 +64,11 @@ public class CalendarController {
         return calendarService.getLessonsByCourseId(courseId);
     }
 
+    @GetMapping("/number-course-lessons/{courseId}")
+    public int getLessonsNumberByCourseId(@PathVariable String courseId) {
+        return calendarService.getLessonsNumberByCourseId(courseId);
+    }
+
     @PostMapping("/enroll-lessons/{courseId}/{studentId}")
     public ResponseEntity<?> enrollStudent(@PathVariable String courseId, @PathVariable Long studentId){
             calendarService.enrollStudent(courseId, studentId);

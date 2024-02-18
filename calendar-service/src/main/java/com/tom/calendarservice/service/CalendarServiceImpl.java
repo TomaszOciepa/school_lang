@@ -73,10 +73,10 @@ public class CalendarServiceImpl implements CalendarService {
     private Calendar createCourseLesson(Calendar calendar) {
         logger.info("Creating course lesson");
 
-        CourseDto courseFromDb = getCourse(calendar.getCourseId(), Status.ACTIVE);
+        CourseDto courseFromDb = getCourse(calendar.getCourseId(), null);
 
         if (isLessonExistForThisCourseInCalendar(calendar.getCourseId())) {
-            isLessonLimitReached(courseFromDb.getLessonsNumber(), calendar.getCourseId());
+            isLessonLimitReached(courseFromDb.getLessonsLimit(), calendar.getCourseId());
             isCourseHaveLessonAvailableOnTimeSlot(calendar.getCourseId(), calendar.getStartDate(), calendar.getEndDate());
         }
 
@@ -270,6 +270,10 @@ public class CalendarServiceImpl implements CalendarService {
             logger.info("Lessons list is empty.");
         }
         return lessons;
+    }
+    @Override
+    public int getLessonsNumberByCourseId(String courseId){
+        return getLessonsByCourseId(courseId).size();
     }
 
     public void enrollStudent(String courseId, Long studentId) {

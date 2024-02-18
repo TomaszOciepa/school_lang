@@ -56,7 +56,6 @@ public class CourseServiceImpl implements CourseService {
         isCourseStartDateIsAfterCourseEndDate(course.getStartDate(), course.getEndDate());
 
         course.setParticipantsNumber(0L);
-        course.setFinishedLessons(0L);
         return courseRepository.save(course);
     }
 
@@ -72,7 +71,7 @@ public class CourseServiceImpl implements CourseService {
                     courseFromDb.setStatus(course.getStatus());
                     courseFromDb.setParticipantsLimit(course.getParticipantsLimit());
                     courseFromDb.setParticipantsNumber(course.getParticipantsNumber());
-                    courseFromDb.setLessonsNumber(course.getLessonsNumber());
+                    courseFromDb.setLessonsLimit(course.getLessonsLimit());
                     courseFromDb.setStartDate(course.getStartDate());
                     courseFromDb.setEndDate(course.getEndDate());
                     return courseRepository.save(courseFromDb);
@@ -130,18 +129,12 @@ public class CourseServiceImpl implements CourseService {
             courseFromDb.setParticipantsNumber(course.getParticipantsNumber());
         }
 
-        if (course.getLessonsNumber() != null) {
+        if (course.getLessonsLimit() != null) {
 
-
-            courseFromDb.setLessonsNumber(course.getLessonsNumber());
-        }
-
-        if (course.getFinishedLessons() != null) {
-
-            if(courseFromDb.getLessonsNumber() < course.getFinishedLessons()){
-                throw new CourseException(CourseError.COURSE_LESSONS_FINISHED_IS_BIGGER_THEN_LESSONS_NUMBER);
+            if(course.getLessonsLimit() < calendarServiceClient.getLessonsNumberByCourseId(courseFromDb.getId())){
+                throw new CourseException(CourseError.COURSE_LESSONS_NUMBER_IS_BIGGER_THEN_LESSONS_LIMIT);
             }
-            courseFromDb.setFinishedLessons(course.getFinishedLessons());
+            courseFromDb.setLessonsLimit(course.getLessonsLimit());
         }
 
         if (course.getStartDate() != null) {

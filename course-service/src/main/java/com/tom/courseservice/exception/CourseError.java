@@ -9,6 +9,7 @@ public enum CourseError {
     COURSE_START_DATE_IS_AFTER_END_DATE("Course start date is after end date"),
     COURSE_END_DATE_IS_BEFORE_START_DATE("Course end date is before start date"),
     COURSE_PARTICIPANTS_NUMBER_IS_BIGGER_THEN_PARTICIPANTS_LIMIT("Course participants number is bigger then participants limit"),
+    COURSE_LESSONS_NUMBER_IS_BIGGER_THEN_LESSONS_LIMIT("Course lessons number is bigger then lessons limit"),
     COURSE_LESSONS_FINISHED_IS_BIGGER_THEN_LESSONS_NUMBER("Course lessons finished is bigger then lessons number"),
     COURSE_TEACHER_LIST_IS_EMPTY("Course teacher list is empty"),
     COURSE_NAME_ALREADY_EXISTS("Course name is already exists"),

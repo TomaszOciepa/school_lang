@@ -28,8 +28,8 @@ class CourseControllerTest {
 
     List<Course> prepareCourseData() {
         return Arrays.asList(
-                new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L, 0L,
-                        LocalDate.of(2023, 12, 5),
+                new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
+                        LocalDateTime.of(2023, 12, 5),
                         LocalDate.of(2024, 03, 6),
                         Arrays.asList(), Arrays.asList()),
                 new Course("1111", "Kurs Niemiecki", Status.ACTIVE, 20L, 0L, 12L, 0L,

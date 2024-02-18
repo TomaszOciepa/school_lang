@@ -26,6 +26,7 @@ public interface CalendarService {
     List<Calendar> getLessonsByStudentId(Long studentId);
     List<Calendar> getLessonsByTeacherId(Long teacherId);
     List<Calendar> getLessonsByCourseId(String courseId);
+    int getLessonsNumberByCourseId(String courseId);
     void enrollStudent( String courseId,  Long studentId);
     public boolean unEnrollStudent(String courseId, Long studentId);
     void enrollStudentLesson(String lessonId, Long studentId);

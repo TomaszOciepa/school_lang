@@ -38,9 +38,9 @@
     <div>
       <mat-form-field>
         <mat-label>Liczba lekcji</mat-label>
-        <input matInput formControlName="lessonsNumber" />
-        <mat-error *ngIf="controls.lessonsNumber.invalid">{{
-          getErrorMessage(controls.lessonsNumber)
+        <input matInput formControlName="lessonsLimit" />
+        <mat-error *ngIf="controls.lessonsLimit.invalid">{{
+          getErrorMessage(controls.lessonsLimit)
         }}</mat-error>
       </mat-form-field>
     </div>

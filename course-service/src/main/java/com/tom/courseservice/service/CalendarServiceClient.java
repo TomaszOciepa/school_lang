@@ -14,4 +14,8 @@ public interface CalendarServiceClient {
 
     @GetMapping("/calendar/un-enroll-lessons/{courseId}/{studentId}")
     public boolean unEnrollStudent(@PathVariable String courseId, @PathVariable Long studentId);
+
+
+    @GetMapping("/calendar/number-course-lessons/{courseId}")
+    public int getLessonsNumberByCourseId(@PathVariable String courseId);
 }
