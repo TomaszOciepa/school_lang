@@ -52,6 +52,8 @@ public class CourseServiceImpl implements CourseService {
         if (courseRepository.existsByName(course.getName())) {
             throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
         }
+        LocalDateTime endDate = course.getEndDate();
+        course.setEndDate(endDate.plusHours(23).plusMinutes(59));
 
         isCourseStartDateIsAfterCourseEndDate(course.getStartDate(), course.getEndDate());
 

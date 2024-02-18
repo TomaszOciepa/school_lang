@@ -36,7 +36,7 @@ export class DeleteLessonDialogComponent {
         if (this.lesson.courseId) {
           this.router.navigate(['/courses/' + this.lesson.courseId]);
         } else {
-          this.router.navigate(['/lessons/' + this.lesson.id]);
+          this.router.navigate(['/lessons']);
         }
       },
     });

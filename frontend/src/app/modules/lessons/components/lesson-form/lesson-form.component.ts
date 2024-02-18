@@ -6,6 +6,7 @@ import { Observer } from 'rxjs';
 import { Course } from 'src/app/modules/core/models/course.model';
 import {
   Lesson,
+  PostLesson,
   PostLessonForm,
 } from 'src/app/modules/core/models/lesson.model';
 import { User } from 'src/app/modules/core/models/user.model';
@@ -26,6 +27,7 @@ export class LessonFormComponent {
   @Input() lesson: Lesson = {} as Lesson;
   @Output() closeDialog = new EventEmitter<void>();
 
+  newLesson: PostLesson = {} as PostLesson;
   coursesList!: Course[];
   teacherList!: User[];
   startTimeStr: string = '';
@@ -45,8 +47,7 @@ export class LessonFormComponent {
     },
     complete: () => {
       if (this.editMode) {
-        this.router.navigate(['/lessons/' + this.lesson.id]);
-        return;
+        window.location.reload();
       }
       if (this.courseId) {
         this.router.navigate(['/courses/' + this.courseId]);
@@ -150,42 +151,70 @@ export class LessonFormComponent {
 
   onAddLesson() {
     this.generatedLessonObj();
+    console.log('MANGOOOO!!!!: ' + JSON.stringify(this.newLesson));
 
     if (this.editMode) {
+      console.log('edit mode');
       this.lessonsService
-        .patchLesson(this.lesson.id, this.lesson)
+        .patchLesson(this.lesson.id, this.newLesson)
         .subscribe(this.observer);
       return;
     }
-    this.lessonsService.addLesson(this.lesson).subscribe(this.observer);
+    console.log('add new lesson');
+    this.lessonsService.addLesson(this.newLesson).subscribe(this.observer);
   }
 
   private generatedLessonObj() {
-    this.lesson.eventName = this.lessonForm.getRawValue().eventName;
-    this.lesson.startDate = this.generateDateTime(
-      this.lessonForm.getRawValue().startDate,
-      this.lessonForm.getRawValue().startTime
-    ).toString();
-
-    this.lesson.startDate = this.parseDateToStringFormat(this.lesson.startDate);
-
-    this.lesson.endDate = this.generateDateTime(
-      this.lessonForm.getRawValue().startDate,
-      this.lessonForm.getRawValue().endTime
-    ).toString();
-
-    this.lesson.endDate = this.parseDateToStringFormat(this.lesson.endDate);
-
-    if (this.courseId != null) {
-      this.lesson.courseId = this.courseId;
+    if (this.lessonForm.get('eventName')?.dirty) {
+      this.newLesson.eventName = this.lessonForm.getRawValue().eventName;
     }
 
-    this.lesson.teacherId = parseInt(
-      this.lessonForm.getRawValue().teacherId,
-      10
-    );
-    this.lesson.status = this.lessonForm.getRawValue().status;
-    this.lesson.description = this.lessonForm.getRawValue().description;
+    if (
+      this.lessonForm.get('startDate')?.dirty ||
+      this.lessonForm.get('startTime')?.dirty
+    ) {
+      this.newLesson.startDate = this.generateDateTime(
+        this.lessonForm.getRawValue().startDate,
+        this.lessonForm.getRawValue().startTime
+      ).toString();
+
+      this.newLesson.startDate = this.parseDateToStringFormat(
+        this.newLesson.startDate
+      );
+    }
+
+    if (
+      this.lessonForm.get('startDate')?.dirty ||
+      this.lessonForm.get('endTime')?.dirty
+    ) {
+      this.newLesson.endDate = this.generateDateTime(
+        this.lessonForm.getRawValue().startDate,
+        this.lessonForm.getRawValue().endTime
+      ).toString();
+
+      this.newLesson.endDate = this.parseDateToStringFormat(
+        this.newLesson.endDate
+      );
+    }
+
+    if (this.courseId != null) {
+      this.newLesson.courseId = this.courseId;
+    }
+
+    if (this.lessonForm.get('teacherId')?.dirty) {
+      this.newLesson.teacherId = parseInt(
+        this.lessonForm.getRawValue().teacherId,
+        10
+      );
+    }
+
+    if (this.lessonForm.get('status')?.dirty) {
+      this.newLesson.status = this.lessonForm.getRawValue().status;
+    }
+
+    if (this.lessonForm.get('description')?.dirty) {
+      this.newLesson.description = this.lessonForm.getRawValue().description;
+    }
   }
 
   emitCLoseDialog() {

@@ -20,6 +20,7 @@ export class AttendanceListComponent implements OnInit {
   @Input('courseId') courseId!: string;
 
   idList: number[] = [];
+  newLesson: Lesson = {} as Lesson;
   students!: User[];
   checked: boolean = false;
 
@@ -67,8 +68,8 @@ export class AttendanceListComponent implements OnInit {
   }
 
   save() {
-    this.lesson.attendanceList = this.attendanceList;
-    this.lessonsService.patchLesson(this.lesson.id, this.lesson).subscribe({
+    this.newLesson.attendanceList = this.lesson.attendanceList;
+    this.lessonsService.patchLesson(this.lesson.id, this.newLesson).subscribe({
       next: (lesson) => {
         console.log(lesson);
       },

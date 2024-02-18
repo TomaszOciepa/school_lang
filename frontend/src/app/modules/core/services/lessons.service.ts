@@ -27,7 +27,7 @@ export class LessonsService {
     return this.http.post<Lesson>(this.apiUrl, lesson);
   }
 
-  patchLesson(id: string, lesson: Lesson): Observable<Lesson> {
+  patchLesson(id: string, lesson: PostLesson): Observable<Lesson> {
     return this.http.patch<Lesson>(`${this.apiUrl}/${id}`, lesson);
   }
 

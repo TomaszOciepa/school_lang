@@ -138,7 +138,8 @@ export class CourseFormComponent {
   }
 
   private generatePostCourseObj() {
-    this.courseForm.get('name')?.dirty;
+    // this.courseForm.get('name')?.dirty;
+
     if (this.courseForm.get('name')?.dirty) {
       this.postCourse.name = this.courseForm.getRawValue().name;
     }

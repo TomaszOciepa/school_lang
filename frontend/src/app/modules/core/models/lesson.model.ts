@@ -7,7 +7,7 @@ export interface AttendanceList {
   present: boolean;
 }
 
-export interface Lesson {
+export interface LessonResponse {
   id: string;
   eventName: string;
   startDate: string;
@@ -19,7 +19,7 @@ export interface Lesson {
   attendanceList: AttendanceList[];
 }
 
-export class Lesson implements Lesson {
+export class Lesson implements LessonResponse {
   constructor(
     public id: string,
     public eventName: string,
@@ -43,4 +43,4 @@ export interface PostLessonForm {
   description: FormControl<string>;
 }
 
-export type PostLesson = Omit<Lesson, 'id' | 'attendanceList'>;
+export type PostLesson = Omit<LessonResponse, 'id' | 'attendanceList'>;

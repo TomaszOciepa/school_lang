@@ -29,20 +29,21 @@ class CourseControllerTest {
     List<Course> prepareCourseData() {
         return Arrays.asList(
                 new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
-                        LocalDateTime.of(2023, 12, 5),
-                        LocalDate.of(2024, 03, 6),
+                        LocalDateTime.of(2023, 12, 5, 00, 00),
+                        LocalDateTime.of(2024, 03, 6, 00, 00),
                         Arrays.asList(), Arrays.asList()),
-                new Course("1111", "Kurs Niemiecki", Status.ACTIVE, 20L, 0L, 12L, 0L,
-                        LocalDate.of(2023, 12, 8),
-                        LocalDate.of(2024, 02, 12),
+                new Course("1111", "Kurs Angielski-B1", Status.ACTIVE, 20L, 0L, 10L,
+                        LocalDateTime.of(2023, 12, 5, 00, 00),
+                        LocalDateTime.of(2024, 03, 6, 00, 00),
                         Arrays.asList(), Arrays.asList())
+
         );
     }
 
     Course prepareCourse() {
-        return new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L, 0L,
-                LocalDate.of(2023, 12, 5),
-                LocalDate.of(2024, 03, 12),
+        return new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
+                LocalDateTime.of(2023, 12, 5, 00, 00),
+                LocalDateTime.of(2024, 03, 6, 00, 00),
                 Arrays.asList(), Arrays.asList());
     }
 
@@ -78,9 +79,9 @@ class CourseControllerTest {
         //given
         Course mockCourse = prepareCourse();
         String mockId = "1111";
-        given(courseService.getCourseById(mockId)).willReturn(mockCourse);
+        given(courseService.findByIdAndStatus(mockId, null)).willReturn(mockCourse);
         //when
-        Course result = courseController.getCourseById(mockId);
+        Course result = courseController.findByIdAndStatus(mockId, null);
         //then
         assertEquals(mockCourse, result);
     }

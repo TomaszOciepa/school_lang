@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,9 +45,7 @@ public class CalendarServiceImpl implements CalendarService {
     public Calendar addLesson(Calendar calendar) {
         Calendar lesson;
 
-        if(calendar.getStartDate().isAfter(calendar.getEndDate())){
-            throw new CalendarException(CalendarError.LESSON_START_DATE_IS_AFTER_END_DATE);
-        }
+        isLessonStartDateIsAfterLessonEndDate(calendar.getStartDate(), calendar.getEndDate());
 
         if (calendar.getCourseId() == null || calendar.getCourseId().isEmpty()) {
 
@@ -55,6 +54,12 @@ public class CalendarServiceImpl implements CalendarService {
             lesson = createCourseLesson(calendar);
         }
         return calendarRepository.save(lesson);
+    }
+
+    private void isLessonStartDateIsAfterLessonEndDate(LocalDateTime startDate, LocalDateTime endDate) {
+        if(startDate.isAfter(endDate)){
+            throw new CalendarException(CalendarError.LESSON_START_DATE_IS_AFTER_END_DATE);
+        }
     }
 
     private Calendar createSingleLesson(Calendar calendar) {
@@ -104,25 +109,41 @@ public class CalendarServiceImpl implements CalendarService {
             throw new CalendarException(CalendarError.LESSON_LIMIT_REACHED_ERROR_MESSAGE);
         }
     }
-    private void isLessonStartDateBeforeCourseStartDate(LocalDateTime lessonStartDate, LocalDate courseStartDate) {
+    private void isLessonStartDateBeforeCourseStartDate(LocalDateTime lessonStartDate, LocalDateTime courseStartDate) {
 
-        if (lessonStartDate.isBefore(courseStartDate.atStartOfDay())) {
+        if (lessonStartDate.isBefore(courseStartDate)) {
             throw new CalendarException(CalendarError.LESSON_START_DATE_IS_BEFORE_COURSE_START_DATE);
         }
 
     }
 
-    private void isLessonStartDateAfterCourseEndDate(LocalDateTime lessonStartDate, LocalDate courseEndDate) {
+    private void isLessonStartDateAfterCourseEndDate(LocalDateTime lessonStartDate, LocalDateTime courseEndDate) {
 
-        if (lessonStartDate.isAfter(courseEndDate.atStartOfDay())) {
-            throw new CalendarException(CalendarError.LESSON_START_DATE_IS_BEFORE_COURSE_START_DATE);
+        if (lessonStartDate.isAfter(courseEndDate)) {
+            throw new CalendarException(CalendarError.LESSON_START_DATE_IS_AFTER_COURSE_END_DATE);
+        }
+
+    }
+
+    private void isLessonEndDateBeforeCourseStartDate(LocalDateTime lessonEndDate, LocalDateTime courseStartDate) {
+
+        if (lessonEndDate.isBefore(courseStartDate)) {
+            throw new CalendarException(CalendarError.LESSON_END_DATE_IS_BEFORE_COURSE_START_DATE);
+        }
+    }
+
+    private void isLessonEndDateAfterCourseEndDate(LocalDateTime lessonEndDate, LocalDateTime courseEndDate) {
+
+        if (lessonEndDate.isAfter(courseEndDate)) {
+            throw new CalendarException(CalendarError.LESSON_END_DATE_IS_AFTER_COURSE_END_DATE);
         }
 
     }
 
     private List<AttendanceList> addStudentsToAttendanceList(List<CourseStudentsDto> courseStudents) {
         if (courseStudents.isEmpty()) {
-            throw new CalendarException(CalendarError.COURSE_STUDENTS_LIST_IS_EMPTY);
+//            throw new CalendarException(CalendarError.COURSE_STUDENTS_LIST_IS_EMPTY);
+            return new ArrayList<>();
         } else {
             return courseStudents.stream()
                     .map(student -> {
@@ -209,33 +230,58 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public Calendar patchLesson(String id, Calendar calendar) {
-        Calendar calendarFromDB = calendarRepository.findById(id)
+    public Calendar patchLesson(String id, Calendar lesson) {
+        Calendar lessonFromDB = calendarRepository.findById(id)
                 .orElseThrow(() -> new CalendarException(CalendarError.CALENDAR_NOT_FOUND));
-
-        if (calendar.getEventName() != null) {
-            calendarFromDB.setEventName(calendar.getEventName());
-        }
-        if (calendar.getStartDate() != null) {
-            calendarFromDB.setStartDate(calendar.getStartDate());
-        }
-        if (calendar.getEndDate() != null) {
-            calendarFromDB.setEndDate(calendar.getEndDate());
-        }
-        if (calendar.getAttendanceList() != null) {
-            calendarFromDB.setAttendanceList(calendar.getAttendanceList());
-        }
-        if (calendar.getTeacherId() != null) {
-            calendarFromDB.setTeacherId(calendar.getTeacherId());
-        }
-        if (calendar.getCourseId() != null) {
-            calendarFromDB.setCourseId(calendar.getCourseId());
-        }
-        if (calendar.getDescription() != null) {
-            calendarFromDB.setDescription(calendar.getDescription());
+        
+        if (lesson.getEventName() != null) {
+            lessonFromDB.setEventName(lesson.getEventName());
         }
 
-        return calendarRepository.save(calendarFromDB);
+        if (lesson.getStartDate() != null) {
+
+            if(lesson.getEndDate() == null){
+                lesson.setEndDate(lessonFromDB.getEndDate());
+            }
+
+            isLessonStartDateIsAfterLessonEndDate(lesson.getStartDate(), lesson.getEndDate());
+
+            if(lessonFromDB.getCourseId() != null){
+                CourseDto courseFromDB = courseServiceClient.findByIdAndStatus(lessonFromDB.getCourseId(), null);
+                isLessonStartDateBeforeCourseStartDate(lesson.getStartDate(), courseFromDB.getStartDate());
+                isLessonStartDateAfterCourseEndDate(lesson.getStartDate(), courseFromDB.getEndDate());
+            }
+            lessonFromDB.setStartDate(lesson.getStartDate());
+        }
+
+        if (lesson.getEndDate() != null) {
+
+                if(lesson.getStartDate() == null){
+                    lesson.setStartDate(lessonFromDB.getStartDate());
+                }
+            isLessonStartDateIsAfterLessonEndDate(lesson.getStartDate(), lesson.getEndDate());
+
+            if(lessonFromDB.getCourseId() != null){
+                CourseDto courseFromDB = courseServiceClient.findByIdAndStatus(lessonFromDB.getCourseId(), null);
+                isLessonEndDateBeforeCourseStartDate(lesson.getEndDate(), courseFromDB.getStartDate());
+                isLessonEndDateAfterCourseEndDate(lesson.getEndDate(), courseFromDB.getEndDate());
+            }
+            lessonFromDB.setEndDate(lesson.getEndDate());
+        }
+        if (lesson.getAttendanceList() != null && !lesson.getAttendanceList().isEmpty()) {
+            lessonFromDB.setAttendanceList(lesson.getAttendanceList());
+        }
+        if (lesson.getTeacherId() != null) {
+            lessonFromDB.setTeacherId(lesson.getTeacherId());
+        }
+//        if (calendar.getCourseId() != null) {
+//            calendarFromDB.setCourseId(calendar.getCourseId());
+//        }
+        if (lesson.getDescription() != null) {
+            lessonFromDB.setDescription(lesson.getDescription());
+        }
+
+        return calendarRepository.save(lessonFromDB);
     }
 
     @Override
