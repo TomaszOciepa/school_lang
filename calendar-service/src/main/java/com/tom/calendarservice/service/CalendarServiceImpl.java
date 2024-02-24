@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -233,7 +232,7 @@ public class CalendarServiceImpl implements CalendarService {
     public Calendar patchLesson(String id, Calendar lesson) {
         Calendar lessonFromDB = calendarRepository.findById(id)
                 .orElseThrow(() -> new CalendarException(CalendarError.CALENDAR_NOT_FOUND));
-        
+
         if (lesson.getEventName() != null) {
             lessonFromDB.setEventName(lesson.getEventName());
         }

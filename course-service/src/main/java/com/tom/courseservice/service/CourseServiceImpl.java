@@ -31,18 +31,24 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> findAllByStatus(Status status) {
         if (status != null) {
-            return courseRepository.findAllByStatus(status);
+            return courseRepository.findAllByStatus(status).stream()
+                    .map(this::updateCourseStatus)
+                    .collect(Collectors.toList());
         }
-        return courseRepository.findAll();
+        return courseRepository.findAll().stream()
+                .map(this::updateCourseStatus)
+                .collect(Collectors.toList());
     }
 
     public Course findByIdAndStatus(String id, Status status) {
         if (status != null) {
             return courseRepository.findByIdAndStatus(id, status)
+                    .map(this::updateCourseStatus)
                     .orElseThrow(() -> new CourseException(CourseError.COURSE_IS_NOT_ACTIVE));
         }
 
         return courseRepository.findById(id)
+                .map(this::updateCourseStatus)
                 .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
     }
 
@@ -145,6 +151,9 @@ public class CourseServiceImpl implements CourseService {
         }
 
         if (course.getEndDate() != null) {
+            LocalDateTime endDate = course.getEndDate();
+            course.setEndDate(endDate.plusHours(23).plusMinutes(59));
+
             isCourseEndDateIsBeforeCourseStartDate(course.getEndDate(), courseFromDb.getStartDate());
             courseFromDb.setEndDate(course.getEndDate());
         }
@@ -337,6 +346,25 @@ public class CourseServiceImpl implements CourseService {
         if(endDate.isBefore(startTime) || endDate.isEqual(startTime)){
             throw new CourseException(CourseError.COURSE_END_DATE_IS_BEFORE_START_DATE);
         }
+    }
+
+    private Course updateCourseStatus(Course course){
+
+        if(course.getStartDate().isAfter(LocalDateTime.now())){
+            course.setStatus(Status.INACTIVE);
+        }
+
+        if(course.getStartDate().isBefore(LocalDateTime.now()) && course.getEndDate().isAfter(LocalDateTime.now())){
+            course.setStatus(Status.ACTIVE);
+        }
+
+
+
+        if(course.getEndDate().isBefore(LocalDateTime.now())){
+            course.setStatus(Status.FINISHED);
+        }
+
+        return courseRepository.save(course);
     }
 
 }
