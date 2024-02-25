@@ -35,6 +35,7 @@ export class LessonFormComponent {
 
   courseId!: string | null;
   course!: Course;
+  errMsg!: string;
 
   observer: Observer<unknown> = {
     next: () => {
@@ -42,8 +43,8 @@ export class LessonFormComponent {
         this.emitCLoseDialog();
       }
     },
-    error: (err) => {
-      console.log(err);
+    error: (err: HttpErrorResponse) => {
+      this.errMsg = err.error.message;
     },
     complete: () => {
       if (this.editMode) {
