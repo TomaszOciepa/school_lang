@@ -39,7 +39,7 @@ export interface PostLessonForm {
   startTime: FormControl<string>;
   endTime: FormControl<string>;
   teacherId: FormControl<string>;
-  status: FormControl<string>;
+  // status: FormControl<string>;
   description: FormControl<string>;
 }
 

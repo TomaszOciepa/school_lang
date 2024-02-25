@@ -69,8 +69,15 @@ export class LessonFormComponent {
   ) {}
 
   ngOnInit(): void {
-    this.getTeachers();
     this.courseId = this.route.snapshot.paramMap.get('id');
+
+    if (this.courseId == null) {
+      this.getTeachers();
+    }
+
+    if (this.courseId !== null) {
+      this.getCourseTeachers(this.courseId);
+    }
 
     this.initForm();
     if (this.editMode) {
@@ -132,10 +139,10 @@ export class LessonFormComponent {
           validators: [Validators.required],
         }
       ),
-      status: new FormControl(this.editMode ? this.lesson.status : '', {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
+      // status: new FormControl(this.editMode ? this.lesson.status : '', {
+      //   nonNullable: true,
+      //   validators: [Validators.required],
+      // }),
       description: new FormControl(
         this.editMode ? this.lesson.description : '',
         {
@@ -209,9 +216,9 @@ export class LessonFormComponent {
       );
     }
 
-    if (this.lessonForm.get('status')?.dirty) {
-      this.newLesson.status = this.lessonForm.getRawValue().status;
-    }
+    // if (this.lessonForm.get('status')?.dirty) {
+    //   this.newLesson.status = this.lessonForm.getRawValue().status;
+    // }
 
     if (this.lessonForm.get('description')?.dirty) {
       this.newLesson.description = this.lessonForm.getRawValue().description;
@@ -270,6 +277,18 @@ export class LessonFormComponent {
 
   private getTeachers() {
     this.teacherService.getTeacher().subscribe({
+      next: (result) => {
+        this.teacherList = result;
+      },
+      error: (err) => {
+        console.log(err);
+      },
+      complete: () => {},
+    });
+  }
+
+  private getCourseTeachers(courseId: string) {
+    this.courseService.getCourseTeachers(courseId).subscribe({
       next: (result) => {
         this.teacherList = result;
       },

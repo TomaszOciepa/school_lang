@@ -31,12 +31,15 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public List<Calendar> getAllLessons() {
-        return calendarRepository.findAll();
+        return calendarRepository.findAll().stream()
+                .map(this::updateLessonStatus)
+                .collect(Collectors.toList());
     }
 
     @Override
     public Calendar getLessonById(String id) {
         return calendarRepository.findById(id)
+                .map(this::updateLessonStatus)
                 .orElseThrow(() -> new CalendarException(CalendarError.CALENDAR_NOT_FOUND));
     }
 
@@ -301,7 +304,9 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public List<Calendar> getLessonsByTeacherId(Long teacherId) {
-        List<Calendar> lessons = calendarRepository.getLessonsByTeacherId(teacherId);
+        List<Calendar> lessons = calendarRepository.getLessonsByTeacherId(teacherId).stream()
+                .map(this::updateLessonStatus)
+                .collect(Collectors.toList());
         if (lessons.isEmpty()) {
             logger.info("Teacher lessons list is empty.");
         }
@@ -310,7 +315,9 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public List<Calendar> getLessonsByCourseId(String courseId) {
-        List<Calendar> lessons = calendarRepository.getLessonsByCourseId(courseId);
+        List<Calendar> lessons = calendarRepository.getLessonsByCourseId(courseId).stream()
+                .map(this::updateLessonStatus)
+                .collect(Collectors.toList());
         if (lessons.isEmpty()) {
             logger.info("Lessons list is empty.");
         }
@@ -395,5 +402,24 @@ public class CalendarServiceImpl implements CalendarService {
 
         lessonFromDb.getAttendanceList().removeIf(s -> s.getStudentId().equals(studentId));
         calendarRepository.save(lessonFromDb);
+    }
+
+    private Calendar updateLessonStatus(Calendar lesson){
+
+        if(lesson.getStartDate().isAfter(LocalDateTime.now())){
+            lesson.setStatus(Status.INACTIVE);
+        }
+
+        if(lesson.getStartDate().isBefore(LocalDateTime.now()) && lesson.getEndDate().isAfter(LocalDateTime.now())){
+            lesson.setStatus(Status.ACTIVE);
+        }
+
+
+
+        if(lesson.getEndDate().isBefore(LocalDateTime.now())){
+            lesson.setStatus(Status.FINISHED);
+        }
+
+        return calendarRepository.save(lesson);
     }
 }

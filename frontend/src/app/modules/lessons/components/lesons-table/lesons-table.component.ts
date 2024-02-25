@@ -87,8 +87,6 @@ export class LesonsTableComponent implements AfterViewInit {
   }
 
   addCourseLesson() {
-    console.log('limit lekcji: ' + this.lessonsLimit);
-    console.log('liczba lekcji: ' + this.lessonsNumber);
     if (this.lessonsLimit == this.lessonsNumber) {
       this.errMsg = 'Course Lesson Limit Reached.';
       this.hideErrorMsg();
