@@ -30,6 +30,7 @@ public class CourseExceptionHandler {
                 || CourseError.COURSE_PARTICIPANTS_NUMBER_IS_BIGGER_THEN_PARTICIPANTS_LIMIT.equals(e.getCourseError())
                 || CourseError.COURSE_LESSONS_FINISHED_IS_BIGGER_THEN_LESSONS_NUMBER.equals(e.getCourseError())
                 || CourseError.COURSE_LESSONS_NUMBER_IS_BIGGER_THEN_LESSONS_LIMIT.equals(e.getCourseError())
+                || CourseError.TEACHER_HAS_LESSONS_IN_COURSE.equals(e.getCourseError())
                 || CourseError.STUDENT_IS_ACTIVE.equals(e.getCourseError())) {
             httpStatus = HttpStatus.CONFLICT;
         } else if (CourseError.COURSE_IS_NOT_ACTIVE.equals(e.getCourseError())

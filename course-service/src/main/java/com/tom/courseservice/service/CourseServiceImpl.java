@@ -318,6 +318,16 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void teacherRemoveFromCourse(String courseId, Long teacherId) {
         Course courseFromDb = findByIdAndStatus(courseId, null);
+
+        if(!courseFromDb.getCourseTeachers().stream().anyMatch(t-> t.getTeacherId().equals(teacherId))){
+            throw new CourseException(CourseError.TEACHER_NO_ON_THE_LIST_OF_ENROLL);
+        }
+
+        if(calendarServiceClient.isTeacherAssignedToLessonInCourse(courseId, teacherId)){
+            throw new CourseException(CourseError.TEACHER_HAS_LESSONS_IN_COURSE);
+        }
+
+
         List<CourseTeachers> courseTeacherList = courseFromDb.getCourseTeachers();
         boolean removed = courseTeacherList.removeIf(teacher -> teacherId.equals(teacher.getTeacherId()));
         if (!removed) {
@@ -325,6 +335,8 @@ public class CourseServiceImpl implements CourseService {
         }
         courseFromDb.setCourseTeachers(courseTeacherList);
         courseRepository.save(courseFromDb);
+
+
     }
 
     @Override

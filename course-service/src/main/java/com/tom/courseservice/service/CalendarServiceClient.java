@@ -22,4 +22,7 @@ public interface CalendarServiceClient {
 
     @DeleteMapping("/calendar/delete-course-lessons/{courseId}")
     public void deleteCourseLessons(@PathVariable String courseId);
+
+    @GetMapping("/calendar/check-teacher-assignment/{courseId}/{studentId}")
+    public boolean isTeacherAssignedToLessonInCourse(@PathVariable String courseId, @PathVariable Long studentId);
 }

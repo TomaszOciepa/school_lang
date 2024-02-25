@@ -97,4 +97,11 @@ public class CalendarController {
         calendarService.unEnrollStudentLesson(lessonId, studentId);
         return ResponseEntity.ok().build();
     }
+
+
+    @GetMapping("/check-teacher-assignment/{courseId}/{studentId}")
+    public boolean isTeacherAssignedToLessonInCourse(@PathVariable String courseId, @PathVariable Long studentId){
+        return calendarService.isTeacherAssignedToLessonInCourse(courseId, studentId);
+    }
+
 }

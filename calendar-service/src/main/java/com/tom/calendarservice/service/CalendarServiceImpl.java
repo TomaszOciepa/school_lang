@@ -337,6 +337,16 @@ public class CalendarServiceImpl implements CalendarService {
         }).collect(Collectors.toList());
     }
 
+    public boolean isTeacherAssignedToLessonInCourse(String courseId, Long teacherId){
+        List<Calendar> courseLessonsList = getLessonsByCourseId(courseId);
+
+        if(courseLessonsList.stream().anyMatch(l-> l.getTeacherId().equals(teacherId))){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public void deleteCourseLessons(String courseId){
         List<Calendar> lessonsList = getLessonsByCourseId(courseId);
 

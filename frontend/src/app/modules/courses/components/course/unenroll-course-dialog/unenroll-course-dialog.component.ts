@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -13,7 +14,7 @@ export class UnenrollCourseDialogComponent {
   studentIsEnabled!: boolean;
   user!: User;
   courseId!: string;
-  errorMessage = '';
+  errMsg!: string;
 
   constructor(
     private dialogRef: MatDialogRef<UnenrollCourseDialogComponent>,
@@ -45,7 +46,7 @@ export class UnenrollCourseDialogComponent {
           console.log('haha');
         },
         error: (err) => {
-          this.errorMessage = err;
+          this.errMsg = err;
         },
         complete: () => {
           window.location.reload();
@@ -57,11 +58,9 @@ export class UnenrollCourseDialogComponent {
     this.courseService
       .teacherCourseUnEnrollment(this.courseId, teacherId)
       .subscribe({
-        next: () => {
-          console.log('haha');
-        },
-        error: (err) => {
-          this.errorMessage = err;
+        next: () => {},
+        error: (err: HttpErrorResponse) => {
+          this.errMsg = err.error.message;
         },
         complete: () => {
           window.location.reload();
