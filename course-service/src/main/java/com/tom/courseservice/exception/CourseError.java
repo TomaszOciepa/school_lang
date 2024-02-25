@@ -16,6 +16,7 @@ public enum CourseError {
     COURSE_IS_NOT_ACTIVE("Course is not ACTIVE"),
     COURSE_LESSON_LIMIT_REACHED("Course lesson limit reached"),
     STUDENT_IS_NOT_ACTIVE("Student is not ACTIVE"),
+    STUDENT_IS_ACTIVE("Student is ACTIVE"),
     STUDENT_IS_NOT_FOUND("Student is not Found"),
     STUDENT_NO_ON_THE_LIST_OF_ENROLL("No student on the list of enroll"),
     STUDENT_ALREADY_ENROLLED("Student already enrolled on this course"),

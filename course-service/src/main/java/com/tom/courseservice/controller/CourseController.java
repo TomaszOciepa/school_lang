@@ -2,7 +2,7 @@ package com.tom.courseservice.controller;
 
 import com.tom.courseservice.model.Course;
 import com.tom.courseservice.model.Status;
-import com.tom.courseservice.model.dto.StudentDto;
+import com.tom.courseservice.model.dto.CourseStudentDto;
 import com.tom.courseservice.model.dto.TeacherDto;
 import com.tom.courseservice.service.CourseService;
 import lombok.AllArgsConstructor;
@@ -60,6 +60,13 @@ public class CourseController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/restore/{courseId}/student/{studentId}")
+    public ResponseEntity<?> restoreStudentToCourse(@PathVariable String courseId, @PathVariable Long studentId){
+        courseService.restoreStudentToCourse(courseId, studentId);
+
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/{courseId}/student/{studentId}")
     public ResponseEntity<?> studentCourseUnEnrollment(@PathVariable String courseId, @PathVariable Long studentId){
         courseService.studentRemoveFromCourse(courseId, studentId);
@@ -80,7 +87,7 @@ public class CourseController {
     }
 
     @GetMapping("/members/{courseId}")
-    public List<StudentDto> getCourseMembers(@PathVariable String courseId){
+    public List<CourseStudentDto> getCourseMembers(@PathVariable String courseId){
         return courseService.getCourseMembers(courseId);
     }
 

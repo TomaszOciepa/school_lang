@@ -41,9 +41,17 @@ export class Course implements CourseResponse {
 
 export interface PostCourseForm {
   name: FormControl<string>;
-  status: FormControl<string>;
+  // status: FormControl<string>;
   participantsLimit: FormControl<number>;
   lessonsLimit: FormControl<number>;
-  startDate: FormControl<Date>;
-  endDate: FormControl<Date>;
+  startDate: FormControl<Date | ''>;
+  endDate: FormControl<Date | ''>;
+}
+
+export interface CourseMembers {
+  id: number;
+  firstName: string;
+  lastName: string;
+  enrollmentData: Date;
+  status: string;
 }

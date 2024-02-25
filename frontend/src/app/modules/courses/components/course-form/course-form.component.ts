@@ -76,10 +76,10 @@ export class CourseFormComponent {
           Validators.maxLength(50),
         ],
       }),
-      status: new FormControl(this.editMode ? this.course.status : '', {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
+      // status: new FormControl(this.editMode ? this.course.status : '', {
+      //   nonNullable: true,
+      //   validators: [Validators.required],
+      // }),
       participantsLimit: new FormControl(
         this.editMode ? this.course.participantsLimit : 0,
         {
@@ -104,14 +104,14 @@ export class CourseFormComponent {
         }
       ),
       startDate: new FormControl(
-        this.editMode ? new Date(this.course.startDate) : new Date(),
+        this.editMode ? new Date(this.course.startDate) : '',
         {
           nonNullable: true,
           validators: [Validators.required],
         }
       ),
       endDate: new FormControl(
-        this.editMode ? new Date(this.course.endDate) : new Date(),
+        this.editMode ? new Date(this.course.endDate) : '',
         {
           nonNullable: true,
           validators: [Validators.required],
@@ -144,9 +144,9 @@ export class CourseFormComponent {
       this.postCourse.name = this.courseForm.getRawValue().name;
     }
 
-    if (this.courseForm.get('status')?.dirty) {
-      this.postCourse.status = this.courseForm.getRawValue().status;
-    }
+    // if (this.courseForm.get('status')?.dirty) {
+    //   this.postCourse.status = this.courseForm.getRawValue().status;
+    // }
 
     if (this.courseForm.get('startDate')?.dirty) {
       this.postCourse.startDate = this.parseDateToStringFormat(

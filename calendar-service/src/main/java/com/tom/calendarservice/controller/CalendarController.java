@@ -49,6 +49,7 @@ public class CalendarController {
         calendarService.deleteLesson(id);
     }
 
+
     @GetMapping("/student-lessons/{studentId}")
     public List<Calendar> getLessonByStudentId(@PathVariable Long studentId) {
         return calendarService.getLessonsByStudentId(studentId);
@@ -62,6 +63,11 @@ public class CalendarController {
     @GetMapping("/course-lessons/{courseId}")
     public List<Calendar> getLessonsByCourseId(@PathVariable String courseId) {
         return calendarService.getLessonsByCourseId(courseId);
+    }
+
+    @DeleteMapping("/delete-course-lessons/{courseId}")
+    public void deleteCourseLessons(@PathVariable String courseId) {
+       calendarService.deleteCourseLessons(courseId);
     }
 
     @GetMapping("/number-course-lessons/{courseId}")

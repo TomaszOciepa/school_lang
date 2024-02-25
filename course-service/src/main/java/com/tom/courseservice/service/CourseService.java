@@ -2,6 +2,7 @@ package com.tom.courseservice.service;
 
 import com.tom.courseservice.model.Course;
 import com.tom.courseservice.model.Status;
+import com.tom.courseservice.model.dto.CourseStudentDto;
 import com.tom.courseservice.model.dto.StudentDto;
 import com.tom.courseservice.model.dto.TeacherDto;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,11 @@ public interface CourseService {
     Course patchCourse(String id, Course course);
     void deleteCourse(String id);
     ResponseEntity<?> studentCourseEnrollment(String courseId, Long studentId);
+    ResponseEntity<?> restoreStudentToCourse(String courseId, Long studentId);
     void studentRemoveFromCourse(String courseId, Long studentId);
     void teacherCourseEnrollment(String courseId, Long teacherId);
     void teacherRemoveFromCourse(String courseId, Long teacherId);
-    List<StudentDto> getCourseMembers(String courseId);
+    List<CourseStudentDto> getCourseMembers(String courseId);
     List<TeacherDto> getCourseTeachers(String courseId);
     void changeCourseMemberStatus(String courseId, Long studentId, Status status);
 

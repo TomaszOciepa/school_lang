@@ -6,6 +6,7 @@ import com.tom.courseservice.model.Course;
 import com.tom.courseservice.model.CourseStudents;
 import com.tom.courseservice.model.CourseTeachers;
 import com.tom.courseservice.model.Status;
+import com.tom.courseservice.model.dto.CourseStudentDto;
 import com.tom.courseservice.model.dto.StudentDto;
 import com.tom.courseservice.model.dto.TeacherDto;
 import com.tom.courseservice.repo.CourseRepository;
@@ -15,7 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -146,7 +149,7 @@ public class CourseServiceImpl implements CourseService {
         }
 
         if (course.getStartDate() != null) {
-            isCourseStartDateIsAfterCourseEndDate(course.getStartDate(), courseFromDb.getEndDate());
+            isCourseStartDateIsAfterCourseEndDate(course.getStartDate(), course.getEndDate());
             courseFromDb.setStartDate(course.getStartDate());
         }
 
@@ -154,7 +157,7 @@ public class CourseServiceImpl implements CourseService {
             LocalDateTime endDate = course.getEndDate();
             course.setEndDate(endDate.plusHours(23).plusMinutes(59));
 
-            isCourseEndDateIsBeforeCourseStartDate(course.getEndDate(), courseFromDb.getStartDate());
+            isCourseEndDateIsBeforeCourseStartDate(course.getEndDate(), course.getStartDate());
             courseFromDb.setEndDate(course.getEndDate());
         }
 
@@ -166,14 +169,20 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.findById(id)
                 .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
         courseRepository.deleteById(id);
+        calendarServiceClient.deleteCourseLessons(id);
     }
 
     @Override
     public ResponseEntity<?> studentCourseEnrollment(String courseId, Long studentId) {
         Course course = findByIdAndStatus(courseId, null);
-        if (course.getStatus().equals(Status.FULL)) {
+
+        if(course.getParticipantsLimit().equals(course.getParticipantsNumber())){
             throw new CourseException(CourseError.COURSE_IS_FULL);
         }
+//        if (course.getStatus().equals(Status.FULL)) {
+//            throw new CourseException(CourseError.COURSE_IS_FULL);
+//        }
+
 //        validateCourseStatus(course);
         StudentDto studentDto = studentServiceClient.getStudentById(studentId);
 
@@ -188,6 +197,32 @@ public class CourseServiceImpl implements CourseService {
         return ResponseEntity.ok().build();
     }
 
+    public ResponseEntity<?> restoreStudentToCourse(String courseId, Long studentId){
+        Course course = findByIdAndStatus(courseId, null);
+
+        if(course.getParticipantsLimit().equals(course.getParticipantsNumber())){
+            throw new CourseException(CourseError.COURSE_IS_FULL);
+        }
+
+        if(!isStudentEnrolledInCourse(course, studentId)){
+            throw new CourseException(CourseError.STUDENT_NO_ON_THE_LIST_OF_ENROLL);
+        }
+
+        course.getCourseStudents().forEach(student ->{
+            if(student.getStudentId().equals(studentId) && student.getStatus().equals(Status.ACTIVE)){
+                throw new CourseException(CourseError.STUDENT_IS_ACTIVE);
+            }
+
+            if(student.getStudentId().equals(studentId)){
+                student.setStatus(Status.ACTIVE);
+            }
+        });
+
+        course.incrementParticipantsNumber();
+        courseRepository.save(course);
+        enrollStudentToLessons(course.getId(), studentId);
+        return ResponseEntity.ok().build();
+    }
     private ResponseEntity<?> enrollStudentToLessons(String curseId, Long studentId) {
         calendarServiceClient.enrollStudent(curseId, studentId);
         return ResponseEntity.ok().build();
@@ -226,6 +261,7 @@ public class CourseServiceImpl implements CourseService {
         } else {
             if (calendarServiceClient.unEnrollStudent(courseId, studentId)) {
                 setRemovedStatus(studentId, courseFromDb);
+                courseFromDb.decrementParticipantsNumber();
             } else {
                 removeStudentFromCourseStudentList(studentId, courseFromDb);
             }
@@ -241,6 +277,8 @@ public class CourseServiceImpl implements CourseService {
             }
             return student;
         }).collect(Collectors.toList());
+
+        courseRepository.save(courseFromDb);
     }
 
     private void removeStudentFromCourseStudentList(Long studentId, Course courseFromDb) {
@@ -290,7 +328,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<StudentDto> getCourseMembers(String courseId) {
+    public List<CourseStudentDto> getCourseMembers(String courseId) {
         Course course = findByIdAndStatus(courseId, null);
         List<CourseStudents> courseStudents = course.getCourseStudents();
         if (courseStudents.isEmpty()) {
@@ -300,7 +338,25 @@ public class CourseServiceImpl implements CourseService {
                 .map(CourseStudents::getStudentId)
                 .collect(Collectors.toList());
 
-        return studentServiceClient.getStudentsByIdNumber(idNumbers);
+        List<StudentDto> studentsFromDb = studentServiceClient.getStudentsByIdNumber(idNumbers);
+
+        List<CourseStudentDto> courseStudentList = new ArrayList<>();
+
+        for (StudentDto student: studentsFromDb ){
+
+           Long id = student.getId();
+           String firstName = student.getFirstName();
+           String lastName = student.getLastName();
+
+            Optional<CourseStudents> first = courseStudents.stream().filter(s -> s.getStudentId().equals(id)).findFirst();
+            LocalDateTime enrollmentDate = first.get().getEnrollmentDate();
+            Status status = first.get().getStatus();
+
+            courseStudentList.add(new CourseStudentDto(id, firstName, lastName, enrollmentDate, status));
+
+        }
+
+    return courseStudentList;
     }
 
     @Override

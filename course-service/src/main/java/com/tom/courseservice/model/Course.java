@@ -30,16 +30,16 @@ public class Course {
 
     public void incrementParticipantsNumber(){
         participantsNumber++;
-        if (getParticipantsNumber().equals(getParticipantsLimit())){
-            setStatus(Status.FULL);
-        }
+//        if (getParticipantsNumber().equals(getParticipantsLimit())){
+//            setStatus(Status.FULL);
+//        }
     }
 
     public void decrementParticipantsNumber(){
         participantsNumber--;
-        if (status.equals(Status.FULL)){
-            setStatus(Status.ACTIVE);
-        }
+//        if (status.equals(Status.FULL)){
+//            setStatus(Status.ACTIVE);
+//        }
     }
 
     public Course() {

@@ -327,13 +327,22 @@ public class CalendarServiceImpl implements CalendarService {
 
         lessons.stream().map(lesson -> {
 
-            if (lesson.getAttendanceList().stream().anyMatch(s -> s.getStudentId().equals(studentId))) {
-                throw new CalendarException(CalendarError.STUDENT_ALREADY_ENROLLED);
+            if (!lesson.getAttendanceList().stream().anyMatch(s -> s.getStudentId().equals(studentId))) {
+//                throw new CalendarException(CalendarError.STUDENT_ALREADY_ENROLLED);
+                lesson.getAttendanceList().add(new AttendanceList(studentId));
             }
 
-            lesson.getAttendanceList().add(new AttendanceList(studentId));
+
             return calendarRepository.save(lesson);
         }).collect(Collectors.toList());
+    }
+
+    public void deleteCourseLessons(String courseId){
+        List<Calendar> lessonsList = getLessonsByCourseId(courseId);
+
+        lessonsList.forEach(lesson ->{
+            deleteLesson(lesson.getId());
+        });
     }
 
     public boolean unEnrollStudent(String courseId, Long studentId) {
@@ -348,7 +357,7 @@ public class CalendarServiceImpl implements CalendarService {
 
         for (Calendar lesson : lessons) {
 
-            if (lesson.getStartDate().isBefore(LocalDateTime.now()) && !result) {
+            if (lesson.getStartDate().isBefore(LocalDateTime.now())) {
 //                If the lesson has already taken place, return true
                 result = true;
             } else if (lesson.getStartDate().isAfter(LocalDateTime.now())){

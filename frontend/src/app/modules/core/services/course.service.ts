@@ -2,7 +2,7 @@ import { HttpClient, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
-import { Course, PostCourse } from '../models/course.model';
+import { Course, CourseMembers, PostCourse } from '../models/course.model';
 import { User } from '../models/user.model';
 
 @Injectable({
@@ -32,8 +32,8 @@ export class CourseService {
     return this.http.patch<Course>(`${this.apiUrl}/${id}`, editedCourse);
   }
 
-  getCourseMembers(courseId: string): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}/members/${courseId}`);
+  getCourseMembers(courseId: string): Observable<CourseMembers[]> {
+    return this.http.get<CourseMembers[]>(`${this.apiUrl}/members/${courseId}`);
   }
 
   getCourseTeachers(courseId: string): Observable<User[]> {
@@ -46,6 +46,16 @@ export class CourseService {
   ): Observable<HttpStatusCode> {
     return this.http.post<HttpStatusCode>(
       `${this.apiUrl}/${courseId}/student/${studentId}`,
+      []
+    );
+  }
+
+  restoreStudentToCourse(
+    courseId: string,
+    studentId: number
+  ): Observable<HttpStatusCode> {
+    return this.http.post<HttpStatusCode>(
+      `${this.apiUrl}/restore/${courseId}/student/${studentId}`,
       []
     );
   }

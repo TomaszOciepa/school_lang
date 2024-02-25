@@ -128,10 +128,18 @@
               <td>{{ student.status }}</td>
               <td>
                 <button
+                  *ngIf="student.status != 'REMOVED'"
                   class="btn btn-outline-danger"
-                  (click)="openUnEnrollDialog(student, true)"
+                  (click)="openUnEnrollStudentDialog(student, true)"
                 >
                   usuń
+                </button>
+                <button
+                  *ngIf="student.status == 'REMOVED'"
+                  class="btn btn-outline-primary"
+                  (click)="restoreStudentToCourseDialog(student)"
+                >
+                  przywróć
                 </button>
               </td>
             </tr>
@@ -172,7 +180,7 @@
               <td>
                 <button
                   class="btn btn-outline-danger"
-                  (click)="openUnEnrollDialog(teacher, false)"
+                  (click)="openUnEnrollTeacherDialog(teacher, false)"
                 >
                   usuń
                 </button>
