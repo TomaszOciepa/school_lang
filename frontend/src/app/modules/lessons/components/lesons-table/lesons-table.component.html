@@ -1,4 +1,25 @@
 <section class="mt-4">
+  <button
+    *ngIf="getCourseLessons"
+    mat-raised-button
+    color="primary"
+    (click)="addCourseLesson()"
+  >
+    Dodaj lekcje
+  </button>
+  <button
+    *ngIf="!getCourseLessons"
+    mat-raised-button
+    color="primary"
+    (click)="addLesson()"
+  >
+    Dodaj lekcje
+  </button>
+
+  <div *ngIf="errMsg" class="alert alert-danger" role="alert">
+    {{ errMsg }}
+  </div>
+
   <mat-form-field>
     <mat-label>Filtrowanie</mat-label>
     <input

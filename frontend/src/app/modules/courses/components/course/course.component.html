@@ -81,11 +81,12 @@
   <div class="row">
     <div class="col text-start p-3">
       <h2>Lekcje</h2>
-      <button mat-raised-button color="primary" (click)="addNewLesson()">
+      <!-- <button mat-raised-button color="primary" (click)="addNewLesson()">
         Dodaj lekcje
-      </button>
+      </button> -->
       <app-lesons-table
         [course-id]="course.id"
+        [lessons-limit]="course.lessonsLimit"
         [switch]="true"
       ></app-lesons-table>
     </div>

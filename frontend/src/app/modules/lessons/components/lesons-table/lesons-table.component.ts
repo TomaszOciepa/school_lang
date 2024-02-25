@@ -8,6 +8,7 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { Lesson } from 'src/app/modules/core/models/lesson.model';
 import { LessonsService } from 'src/app/modules/core/services/lessons.service';
 
@@ -31,9 +32,13 @@ export class LesonsTableComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @Input('course-id') courseId!: string;
+  @Input('lessons-limit') lessonsLimit!: number;
   @Input('switch') getCourseLessons: boolean = false;
 
-  constructor(private lessonsService: LessonsService) {}
+  lessonsNumber!: number;
+  errMsg!: string;
+
+  constructor(private lessonsService: LessonsService, private router: Router) {}
 
   async ngAfterViewInit(): Promise<void> {
     if (this.getCourseLessons) {
@@ -47,6 +52,7 @@ export class LesonsTableComponent implements AfterViewInit {
     this.lessonsService.getLessonsByCourseId(this.courseId).subscribe({
       next: (lesson) => {
         console.log(lesson);
+        this.lessonsNumber = lesson.length;
         this.dataSource = new MatTableDataSource<Lesson>(lesson);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
@@ -78,5 +84,26 @@ export class LesonsTableComponent implements AfterViewInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  addCourseLesson() {
+    console.log('limit lekcji: ' + this.lessonsLimit);
+    console.log('liczba lekcji: ' + this.lessonsNumber);
+    if (this.lessonsLimit == this.lessonsNumber) {
+      this.errMsg = 'Course Lesson Limit Reached.';
+      this.hideErrorMsg();
+    } else {
+      this.router.navigate(['/lessons/dodaj', { id: this.courseId }]);
+    }
+  }
+
+  addLesson() {
+    this.router.navigate(['/lessons/dodaj']);
+  }
+
+  private hideErrorMsg() {
+    setTimeout(() => {
+      this.errMsg = '';
+    }, 3000);
   }
 }

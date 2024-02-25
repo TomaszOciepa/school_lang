@@ -82,7 +82,7 @@ export class CourseComponent {
   openDialog() {
     const dialogRef = this.dialog.open(DeleteCourseDialogComponent, {
       data: {
-        course: this.course,
+        course: this.course.lessonsLimit,
       },
     });
   }
