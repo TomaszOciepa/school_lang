@@ -9,8 +9,6 @@ public enum CalendarError {
    LESSON_LIMIT_REACHED_ERROR_MESSAGE("Lesson limit has been reached."),
     COURSE_BUSY_AT_TIME_SLOT("Course is busy at the specified time slot"),
 
-    COURSE_STUDENTS_LIST_IS_EMPTY("Course student list is empty. You need to add students to the course"),
-
     TEACHER_LESSONS_LIST_IS_EMPTY("Teacher lessons list is empty"),
     TEACHER_BUSY_AT_TIME_SLOT("Teacher is busy at the specified time slot"),
     TEACHER_IS_NOT_ENROLLED_IN_COURSE("Teacher is not enrolled in course"),

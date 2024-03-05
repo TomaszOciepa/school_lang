@@ -11,6 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface CourseServiceClient {
 
     @GetMapping("/course/{id}")
-    CourseDto findByIdAndStatus(@PathVariable String id, @RequestParam(required = false) Status status);
+    CourseDto getCourseById(@PathVariable String id, @RequestParam(required = false) Status status);
 
 }

@@ -15,13 +15,10 @@ public interface TeacherServiceClient {
     @PostMapping("/teacher/idNumbers")
     List<TeacherDto> getTeachersByIdNumber(@RequestBody List<Long> idNumbers);
 
+    @GetMapping("/teacher/{id}")
+    TeacherDto getTeacherById(@PathVariable Long id);
 
     //nie sprawdzone
-    @GetMapping("/teacher/{id}")
-     TeacherDto getTeacherById(@PathVariable Long id);
-
-
-
     @GetMapping("/teacher/teacherIsActive/{teacherId}")
     boolean teacherIsActive(@PathVariable Long teacherId);
 }

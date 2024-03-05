@@ -128,10 +128,6 @@ export class LessonFormComponent {
         validators: [Validators.required],
       }),
 
-      // courseId: new FormControl(this.editMode ? this.lesson.courseId : '', {
-      //   nonNullable: true,
-      //   validators: [],
-      // }),
       teacherId: new FormControl(
         this.editMode ? this.lesson.teacherId.toString() : '',
         {
@@ -139,10 +135,7 @@ export class LessonFormComponent {
           validators: [Validators.required],
         }
       ),
-      // status: new FormControl(this.editMode ? this.lesson.status : '', {
-      //   nonNullable: true,
-      //   validators: [Validators.required],
-      // }),
+
       description: new FormControl(
         this.editMode ? this.lesson.description : '',
         {
@@ -159,16 +152,13 @@ export class LessonFormComponent {
 
   onAddLesson() {
     this.generatedLessonObj();
-    console.log('MANGOOOO!!!!: ' + JSON.stringify(this.newLesson));
 
     if (this.editMode) {
-      console.log('edit mode');
       this.lessonsService
         .patchLesson(this.lesson.id, this.newLesson)
         .subscribe(this.observer);
       return;
     }
-    console.log('add new lesson');
     this.lessonsService.addLesson(this.newLesson).subscribe(this.observer);
   }
 
@@ -276,7 +266,7 @@ export class LessonFormComponent {
   }
 
   private getTeachers() {
-    this.teacherService.getTeacher().subscribe({
+    this.teacherService.getTeachers().subscribe({
       next: (result) => {
         this.teacherList = result;
       },

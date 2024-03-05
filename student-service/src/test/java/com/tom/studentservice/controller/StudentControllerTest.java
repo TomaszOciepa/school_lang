@@ -47,9 +47,9 @@ class StudentControllerTest {
         List<Student> mockStudents = prepareStudentsData();
         Status mockStatus = Status.ACTIVE;
 
-        given(studentService.getAllStudents(mockStatus)).willReturn(mockStudents);
+        given(studentService.getStudents(mockStatus)).willReturn(mockStudents);
         //when
-        List<Student> result = studentController.getAllStudents(mockStatus);
+        List<Student> result = studentController.getStudents(mockStatus);
         //then
         assertEquals(mockStudents, result);
     }

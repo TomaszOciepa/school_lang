@@ -35,13 +35,31 @@ export class CourseService {
   patchCourse(id: string, editedCourse: PostCourse): Observable<Course> {
     return this.http.patch<Course>(`${this.apiUrl}/${id}`, editedCourse);
   }
-  // nie sprawdzone
 
   deleteCourseById(id: string): Observable<Record<string, never>> {
     return this.http.delete<Record<string, never>>(`${this.apiUrl}/${id}`);
   }
 
-  studentCourseEnrollment(
+  assignTeacherToCourse(
+    courseId: string,
+    teacherId: number
+  ): Observable<HttpStatusCode> {
+    return this.http.post<HttpStatusCode>(
+      `${this.apiUrl}/${courseId}/teacher/${teacherId}`,
+      []
+    );
+  }
+
+  teacherCourseUnEnrollment(
+    courseId: string,
+    teacherId: number
+  ): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(
+      `${this.apiUrl}/${courseId}/teacher/${teacherId}`
+    );
+  }
+
+  assignStudentToCourse(
     courseId: string,
     studentId: number
   ): Observable<HttpStatusCode> {
@@ -50,6 +68,7 @@ export class CourseService {
       []
     );
   }
+  // nie sprawdzone
 
   restoreStudentToCourse(
     courseId: string,
@@ -67,25 +86,6 @@ export class CourseService {
   ): Observable<HttpStatusCode> {
     return this.http.delete<HttpStatusCode>(
       `${this.apiUrl}/${courseId}/student/${studentId}`
-    );
-  }
-
-  teacherCourseEnrollment(
-    courseId: string,
-    teacherId: number
-  ): Observable<HttpStatusCode> {
-    return this.http.post<HttpStatusCode>(
-      `${this.apiUrl}/${courseId}/teacher/${teacherId}`,
-      []
-    );
-  }
-
-  teacherCourseUnEnrollment(
-    courseId: string,
-    teacherId: number
-  ): Observable<HttpStatusCode> {
-    return this.http.delete<HttpStatusCode>(
-      `${this.apiUrl}/${courseId}/teacher/${teacherId}`
     );
   }
 }

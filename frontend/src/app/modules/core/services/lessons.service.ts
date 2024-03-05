@@ -16,14 +16,12 @@ export class LessonsService {
     return this.http.get<Lesson[]>(this.apiUrl);
   }
 
-  getLessonsByCourseId(courseId: string): Observable<Lesson[]> {
-    return this.http.get<Lesson[]>(`${this.apiUrl}/course-lessons/${courseId}`);
-  }
-
-  // nie sprawdzone
-
   getLessonById(id: string): Observable<Lesson> {
     return this.http.get<Lesson>(`${this.apiUrl}/${id}`);
+  }
+
+  getLessonsByCourseId(courseId: string): Observable<Lesson[]> {
+    return this.http.get<Lesson[]>(`${this.apiUrl}/course-lessons/${courseId}`);
   }
 
   addLesson(lesson: PostLesson): Observable<Lesson> {
@@ -33,11 +31,11 @@ export class LessonsService {
   patchLesson(id: string, lesson: PostLesson): Observable<Lesson> {
     return this.http.patch<Lesson>(`${this.apiUrl}/${id}`, lesson);
   }
-
   deleteLessonById(id: string): Observable<Record<string, never>> {
     return this.http.delete<Record<string, never>>(`${this.apiUrl}/${id}`);
   }
 
+  // nie sprawdzone
   enrollStudentLesson(
     lessonId: string,
     studentId: number

@@ -49,7 +49,7 @@ class TeacherServiceImplTest {
         Status mockStatus = Status.ACTIVE;
         given(teacherRepository.findAllByStatus(mockStatus)).willReturn(mockTeacherList);
         //when
-        List<Teacher> result = teacherServiceImpl.getAllTeacher(mockStatus);
+        List<Teacher> result = teacherServiceImpl.getTeachers(mockStatus);
         //then
         assertEquals(mockTeacherList, result);
     }
@@ -61,7 +61,7 @@ class TeacherServiceImplTest {
         List<Teacher> mockTeacherList = prepareTeachersData();
         given(teacherRepository.findAll()).willReturn(mockTeacherList);
         //when
-        List<Teacher> result = teacherServiceImpl.getAllTeacher(null);
+        List<Teacher> result = teacherServiceImpl.getTeachers(null);
         //then
         assertEquals(mockTeacherList, result);
     }

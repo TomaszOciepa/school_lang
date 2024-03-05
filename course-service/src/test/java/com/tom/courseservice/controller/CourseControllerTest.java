@@ -8,7 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -129,10 +128,10 @@ class CourseControllerTest {
         MockitoAnnotations.openMocks(this);
         //given
         String mockId = "1111";
-        willDoNothing().given(courseService).deleteCourse(mockId);
+        willDoNothing().given(courseService).deleteCourseById(mockId);
         //when
-        courseController.deleteCourse(mockId);
+        courseController.deleteCourseById(mockId);
         //then
-        verify(courseService, times(1)).deleteCourse(mockId);
+        verify(courseService, times(1)).deleteCourseById(mockId);
     }
 }

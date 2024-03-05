@@ -14,13 +14,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -223,7 +221,7 @@ class CourseServiceImplTest {
         mockCourse.setId(mockId);
         given(courseRepository.findById(mockId)).willReturn(Optional.of(mockCourse));
         //when
-        courseServiceImpl.deleteCourse(mockId);
+        courseServiceImpl.deleteCourseById(mockId);
         //then
         verify(courseRepository, times(1)).findById(mockId);
         verify(courseRepository, times(1)).deleteById(mockId);
@@ -240,7 +238,7 @@ class CourseServiceImplTest {
         given(courseRepository.findById(mockId)).willThrow(mockException);
         //when
         //then
-        assertThrows(CourseException.class, () -> courseServiceImpl.deleteCourse(mockId));
+        assertThrows(CourseException.class, () -> courseServiceImpl.deleteCourseById(mockId));
     }
 
     @Test
@@ -255,7 +253,7 @@ class CourseServiceImplTest {
         given(courseRepository.findById(courseIdMock)).willReturn(Optional.ofNullable(courseMock));
         given(studentServiceClient.getStudentById(studentIdMock)).willReturn(studentMock);
         //when
-        courseServiceImpl.studentCourseEnrollment(courseIdMock, studentIdMock);
+        courseServiceImpl.assignStudentToCourse(courseIdMock, studentIdMock);
         //then
         verify(courseRepository, times(1)).findById(courseIdMock);
         verify(studentServiceClient, times(1)).getStudentById(studentIdMock);
@@ -294,7 +292,7 @@ class CourseServiceImplTest {
         given(courseRepository.findById(courseIdMock)).willReturn(Optional.ofNullable(courseMock));
         given(teacherServiceClient.getTeacherById(teacherIdMock)).willReturn(teacherMock);
         //when
-        courseServiceImpl.teacherCourseEnrollment(courseIdMock, teacherIdMock);
+        courseServiceImpl.assignTeacherToCourse(courseIdMock, teacherIdMock);
         //then
         verify(courseRepository, times(1)).findById(courseIdMock);
         verify(teacherServiceClient, times(1)).getTeacherById(teacherIdMock);
@@ -313,7 +311,7 @@ class CourseServiceImplTest {
         courseMock.getCourseTeachers().add(courseTeachersMock);
         given(courseRepository.findById(courseIdMock)).willReturn(Optional.ofNullable(courseMock));
         //when
-        courseServiceImpl.teacherRemoveFromCourse(courseIdMock, teacherIdMock);
+        courseServiceImpl.teacherCourseUnEnrollment(courseIdMock, teacherIdMock);
         //then
         verify(courseRepository, times(1)).findById(courseIdMock);
         verify(courseRepository, times(1)).save(courseMock);

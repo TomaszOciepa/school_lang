@@ -1,6 +1,5 @@
 package com.tom.teacherservice.service;
 
-import com.tom.teacherservice.controller.TeacherController;
 import com.tom.teacherservice.exception.TeacherError;
 import com.tom.teacherservice.exception.TeacherException;
 import com.tom.teacherservice.model.Status;
@@ -22,31 +21,36 @@ public class TeacherServiceImpl implements TeacherService {
     private static Logger logger = LoggerFactory.getLogger(TeacherServiceImpl.class);
     //sprawdzone
     @Override
+    public List<Teacher> getTeachers(Status status) {
+        if (status != null) {
+            logger.info("Fetching teachers with status: {}", status);
+            return teacherRepository.findAllByStatus(status);
+        }
+        logger.info("Fetching teachers without status.");
+        return teacherRepository.findAll();
+    }
+    @Override
     public List<Teacher> getTeachersByIdNumber(List<Long> idNumbers) {
         logger.info("Fetching teachers list.");
         return teacherRepository.findAllByIdIn(idNumbers);
     }
-
-    //nie sprawdzone
-
-    @Override
-    public List<Teacher> getAllTeacher(Status status) {
-
-        if (status != null) {
-            return teacherRepository.findAllByStatus(status);
-        }
-        return teacherRepository.findAll();
-    }
-
     @Override
     public Teacher getTeacherById(Long id) {
+        logger.info("Fetching teacher by id: {}", id);
         Teacher teacher = teacherRepository.findById(id)
                 .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
         if (!Status.ACTIVE.equals(teacher.getStatus())) {
+            logger.info("Teacher is not active");
             throw new TeacherException(TeacherError.TEACHER_IS_NOT_ACTIVE);
         }
         return teacher;
     }
+    @Override
+    public List<Teacher> getTeachersByIdNumberNotEqual(List<Long> idNumbers) {
+        logger.info("Fetching teachers where id number is not equal: {}", idNumbers.toString());
+        return teacherRepository.findAllByIdNotInAndStatus(idNumbers, Status.ACTIVE);
+    }
+    //nie sprawdzone
 
     @Override
     public Teacher getTeacherByEmail(String email) {
@@ -110,17 +114,4 @@ public class TeacherServiceImpl implements TeacherService {
         teacherRepository.save(teacher);
     }
 
-
-    @Override
-    public List<Teacher> findAllByIdNotInAndStatus(List<Long> idNumbers) {
-        return teacherRepository.findAllByIdNotInAndStatus(idNumbers, Status.ACTIVE);
-    }
-
-    public void teacherIsActive(Long teacherId){
-        Teacher teacher = getTeacherById(teacherId);
-        if (teacher.getStatus().equals(Status.INACTIVE)){
-            throw new TeacherException(TeacherError.TEACHER_IS_NOT_ACTIVE);
-        }
-
-    }
 }

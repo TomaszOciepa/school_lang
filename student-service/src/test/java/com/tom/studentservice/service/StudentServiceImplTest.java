@@ -50,7 +50,7 @@ class StudentServiceImplTest {
         given(studentRepository.findAllByStatus(Status.ACTIVE)).willReturn(mockStudentsList);
 
         //when
-        List<Student> result = studentServiceImpl.getAllStudents(mockStatus);
+        List<Student> result = studentServiceImpl.getStudents(mockStatus);
         //then
         assertEquals(mockStudentsList, result);
     }
@@ -63,7 +63,7 @@ class StudentServiceImplTest {
         given(studentRepository.findAll()).willReturn(mockStudentsList);
 
         //when
-        List<Student> result = studentServiceImpl.getAllStudents(null);
+        List<Student> result = studentServiceImpl.getStudents(null);
         //then
         assertEquals(mockStudentsList, result);
     }

@@ -116,6 +116,6 @@ class CalendarControllerTest {
         //when
         calendarController.deleteLessonsById(mockId);
         //then
-        verify(calendarService, times(1)).deleteLesson(mockId);
+        verify(calendarService, times(1)).deleteLessonsById(mockId);
     }
 }

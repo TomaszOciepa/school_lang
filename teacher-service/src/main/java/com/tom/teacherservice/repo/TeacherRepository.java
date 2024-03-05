@@ -12,7 +12,8 @@ import java.util.Optional;
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     //sprawdzone
     List<Teacher> findAllByIdIn(List<Long> idNumbers);
-
+    @Query("SELECT t FROM Teacher t WHERE t.id NOT IN :idNumbers AND t.status = :status")
+    List<Teacher> findAllByIdNotInAndStatus(@Param("idNumbers") List<Long> idNumbers, @Param("status") Status status);
     //    nie sprawdzone
     List<Teacher> findAllByStatus(Status status);
 
@@ -21,6 +22,5 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     boolean existsByEmail(String email);
 
 
-    @Query("SELECT t FROM Teacher t WHERE t.id NOT IN :idNumbers AND t.status = :status")
-    List<Teacher> findAllByIdNotInAndStatus(@Param("idNumbers") List<Long> idNumbers, @Param("status") Status status);
+
 }

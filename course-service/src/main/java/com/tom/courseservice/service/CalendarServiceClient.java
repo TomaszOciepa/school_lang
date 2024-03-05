@@ -13,17 +13,18 @@ public interface CalendarServiceClient {
     @GetMapping("/calendar/number-course-lessons/{courseId}")
     public int getLessonsNumberByCourseId(@PathVariable String courseId);
 
-    //    nie sprawdzone
-    @PostMapping("/calendar/enroll-lessons/{courseId}/{studentId}")
-    ResponseEntity<?> enrollStudent(@PathVariable String courseId, @PathVariable Long studentId);
-
-    @GetMapping("/calendar/un-enroll-lessons/{courseId}/{studentId}")
-    public boolean unEnrollStudent(@PathVariable String courseId, @PathVariable Long studentId);
-
-
     @DeleteMapping("/calendar/delete-course-lessons/{courseId}")
     public void deleteCourseLessons(@PathVariable String courseId);
 
     @GetMapping("/calendar/check-teacher-assignment/{courseId}/{studentId}")
     public boolean isTeacherAssignedToLessonInCourse(@PathVariable String courseId, @PathVariable Long studentId);
+
+    @PostMapping("/calendar/enroll-lessons/{courseId}/{studentId}")
+    ResponseEntity<?> enrollStudent(@PathVariable String courseId, @PathVariable Long studentId);
+
+    //    nie sprawdzone
+
+    @GetMapping("/calendar/un-enroll-lessons/{courseId}/{studentId}")
+    public boolean unEnrollStudent(@PathVariable String courseId, @PathVariable Long studentId);
+
 }

@@ -12,7 +12,6 @@ public class CourseStudents {
 
     private Long studentId;
     private LocalDateTime enrollmentDate;
-
     private Status status;
 
     public CourseStudents(@NotNull Long studentId, Status status) {

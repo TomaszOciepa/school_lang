@@ -12,10 +12,9 @@ public interface StudentServiceClient {
     //    sprawdzone
     @PostMapping("/student/idNumbers")
     List<StudentDto> getStudentsByIdNumbers(@RequestBody List<Long> idNumbers);
-
-    //    nie sprawdzone
-
     @GetMapping("/student/{id}")
     StudentDto getStudentById(@PathVariable Long id);
+    //    nie sprawdzone
+
 
 }

@@ -48,7 +48,7 @@ export class EnrollLessonDialogComponent implements OnInit {
   }
 
   async ngAfterViewInit(): Promise<void> {
-    this.studentServices.getStudent().subscribe({
+    this.studentServices.getStudents().subscribe({
       next: (students) => {
         this.students = students;
         this.dataSource = new MatTableDataSource<User>(students);

@@ -9,18 +9,14 @@ import java.util.List;
 public interface StudentService {
     //sprawdzone
     List<Student> getStudentsByIdNumbers(List<Long> idNumbers);
-
-
-    //nie sprawdzone
-    List<Student> getAllStudents(Status status);
+    List<Student> getStudents(Status status);
+    List<Student> getStudentsByIdNumberNotEqual(List<Long> idNumbers);
     Student getStudentById(Long id);
+    //nie sprawdzone
     Student getStudentByEmail(String email);
     Student addStudent(Student student);
     Student putStudent(Long id, Student student);
     Student patchStudent(Long id, Student student);
     void deleteStudent(Long id);
     List<Student> getStudentsByEmails(List<String> emails);
-
-    List<Student> findAllByIdNotInAndStatus(List<Long> idNumbers);
-
 }

@@ -9,12 +9,10 @@ public interface TeacherService {
 
     //    sprawdzone
     List<Teacher> getTeachersByIdNumber(List<Long> idNumbers);
-
-    //    nie sprawdzone
-    List<Teacher> getAllTeacher(Status status);
-
     Teacher getTeacherById(Long id);
-
+    List<Teacher> getTeachers(Status status);
+    List<Teacher> getTeachersByIdNumberNotEqual(List<Long> idNumbers);
+    //    nie sprawdzone
     Teacher getTeacherByEmail(String email);
 
     Teacher addTeacher(Teacher teacher);
@@ -24,8 +22,4 @@ public interface TeacherService {
     Teacher patchTeacher(Long id, Teacher teacher);
 
     void deleteTeacher(Long id);
-
-    List<Teacher> findAllByIdNotInAndStatus(List<Long> idNumbers);
-
-    void teacherIsActive(Long teacherId);
 }

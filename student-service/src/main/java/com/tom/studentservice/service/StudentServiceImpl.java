@@ -1,6 +1,5 @@
 package com.tom.studentservice.service;
 
-import com.tom.studentservice.controller.StudentController;
 import com.tom.studentservice.exception.StudentError;
 import com.tom.studentservice.exception.StudentException;
 import com.tom.studentservice.model.Status;
@@ -12,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
@@ -26,26 +26,36 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findAllByIdIn(idNumbers);
     }
 
-    //nie sprawdzone
     @Override
-    public List<Student> getAllStudents(Status status) {
-
+    public List<Student> getStudents(Status status) {
+        logger.info("Fetching all students.");
         if (status != null) {
+            logger.info("Fetching all students with status: {}", status);
             return studentRepository.findAllByStatus(status);
         }
+        logger.info("Fetching all students without status.");
         return studentRepository.findAll();
     }
 
     @Override
+    public List<Student> getStudentsByIdNumberNotEqual(List<Long> idNumbers) {
+        logger.info("Fetching students where id numbers not equal: idNumbers: {}", idNumbers);
+        return studentRepository.findAllByIdNotInAndStatus(idNumbers, Status.ACTIVE);
+    }
+
+    @Override
     public Student getStudentById(Long id) {
+        logger.info("Fetching student by id: {}", id);
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
         if (!Status.ACTIVE.equals(student.getStatus())) {
+            logger.info("Student is not Active.");
             throw new StudentException(StudentError.STUDENT_IS_NOT_ACTIVE);
         }
         return student;
     }
 
+    //nie sprawdzone
     @Override
     public Student getStudentByEmail(String email) {
         Student student = studentRepository.findByEmail(email)
@@ -112,14 +122,6 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<Student> getStudentsByEmails(List<String> emails) {
         return studentRepository.findAllByEmailIn(emails);
-    }
-
-
-
-    @Override
-    public List<Student> findAllByIdNotInAndStatus(List<Long> idNumbers) {
-
-        return studentRepository.findAllByIdNotInAndStatus(idNumbers, Status.ACTIVE);
     }
 
 }

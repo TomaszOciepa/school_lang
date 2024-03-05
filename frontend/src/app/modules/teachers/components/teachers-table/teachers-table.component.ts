@@ -33,7 +33,7 @@ export class TeachersTableComponent implements AfterViewInit {
   constructor(private teacherService: TeacherService) {}
 
   async ngAfterViewInit(): Promise<void> {
-    this.teacherService.getTeacher().subscribe({
+    this.teacherService.getTeachers().subscribe({
       next: (clients) => {
         console.log(clients);
         this.dataSource = new MatTableDataSource<User>(clients);

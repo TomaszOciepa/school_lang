@@ -126,6 +126,134 @@ public class CourseServiceImpl implements CourseService {
         return teacherServiceClient.getTeachersByIdNumber(idNumbers);
     }
 
+    @Override
+    public Course patchCourse(String id, Course course) {
+        logger.info("Fetching course by ID from the database: {}", id);
+        Course courseFromDb = courseRepository.findById(id).orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
+
+        if(course.getName() != null){
+            logger.info("Changing the course name...");
+            course.setName(course.getName().trim());
+            if (!courseFromDb.getName().equals(course.getName())
+                    && courseRepository.existsByName(course.getName())) {
+                logger.info("Course name is already exists.");
+                throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
+            }
+            courseFromDb.setName(course.getName());
+        }
+
+        if (course.getParticipantsLimit() != null) {
+            logger.info("Changing the course participants limit...");
+            if(course.getParticipantsLimit() < courseFromDb.getParticipantsNumber() ){
+                throw new CourseException(CourseError.COURSE_PARTICIPANTS_NUMBER_IS_BIGGER_THEN_PARTICIPANTS_LIMIT);
+            }
+
+            if(course.getParticipantsLimit() == courseFromDb.getParticipantsNumber()){
+                courseFromDb.setStatus(Status.FULL);
+            }
+
+            if(course.getParticipantsLimit() > courseFromDb.getParticipantsNumber()){
+                courseFromDb.setStatus(Status.ACTIVE);
+            }
+            courseFromDb.setParticipantsLimit(course.getParticipantsLimit());
+        }
+
+        if (course.getLessonsLimit() != null) {
+            logger.info("Changing the course lessons limit...");
+            if(course.getLessonsLimit() < calendarServiceClient.getLessonsNumberByCourseId(courseFromDb.getId())){
+                throw new CourseException(CourseError.COURSE_LESSONS_NUMBER_IS_BIGGER_THEN_LESSONS_LIMIT);
+            }
+            courseFromDb.setLessonsLimit(course.getLessonsLimit());
+        }
+
+        if (course.getStartDate() != null) {
+            logger.info("Changing the course start date ...");
+            isCourseStartDateIsAfterCourseEndDate(course.getStartDate(), course.getEndDate());
+            courseFromDb.setStartDate(course.getStartDate());
+        }
+
+        if (course.getEndDate() != null) {
+            logger.info("Changing the course end date ...");
+            LocalDateTime endDate = course.getEndDate();
+            course.setEndDate(endDate.plusHours(23).plusMinutes(59));
+
+            isCourseEndDateIsBeforeCourseStartDate(course.getEndDate(), course.getStartDate());
+            courseFromDb.setEndDate(course.getEndDate());
+        }
+
+        return courseRepository.save(courseFromDb);
+    }
+
+    @Override
+    public void deleteCourseById(String id) {
+        logger.info("Trying delete course by id: {}", id);
+        logger.info("Fetching course, if exists");
+        courseRepository.findById(id)
+                .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
+        logger.info("Delete course.");
+        courseRepository.deleteById(id);
+        logger.info("Delete course lessons.");
+        calendarServiceClient.deleteCourseLessons(id);
+    }
+
+    @Override
+    public void assignTeacherToCourse(String courseId, Long teacherId) {
+        logger.info("Trying assignTeacherToCourse, courseId: {}, teacherId: {}", courseId, teacherId);
+        Course course = getCourseById(courseId, null);
+
+        TeacherDto teacherDto = teacherServiceClient.getTeacherById(teacherId);
+        validateTeacherBeforeCourseEnrollment(course, teacherDto);
+        CourseTeachers courseTeachers = new CourseTeachers(teacherDto.getId());
+        course.getCourseTeachers().add(courseTeachers);
+        logger.info("Assign teacher to course is done.");
+        courseRepository.save(course);
+    }
+    @Override
+    public void teacherCourseUnEnrollment(String courseId, Long teacherId) {
+        logger.info("teacherCourseUnEnrollment courseId: {}, teacherId: {}", courseId, teacherId);
+        Course courseFromDb = getCourseById(courseId, null);
+
+        if(!courseFromDb.getCourseTeachers().stream().anyMatch(t-> t.getTeacherId().equals(teacherId))){
+            logger.info("No teacher on the list of enroll");
+            throw new CourseException(CourseError.TEACHER_NO_ON_THE_LIST_OF_ENROLL);
+        }
+
+        if(calendarServiceClient.isTeacherAssignedToLessonInCourse(courseId, teacherId)){
+            logger.info("Teacher has lessons in course");
+            throw new CourseException(CourseError.TEACHER_HAS_LESSONS_IN_COURSE);
+        }
+
+        List<CourseTeachers> courseTeacherList = courseFromDb.getCourseTeachers();
+        boolean removed = courseTeacherList.removeIf(teacher -> teacherId.equals(teacher.getTeacherId()));
+        if (!removed) {
+            throw new CourseException(CourseError.TEACHER_NO_ON_THE_LIST_OF_ENROLL);
+        }
+        courseFromDb.setCourseTeachers(courseTeacherList);
+        courseRepository.save(courseFromDb);
+    }
+
+    @Override
+    public ResponseEntity<?> assignStudentToCourse(String courseId, Long studentId) {
+        logger.info("Trying assignStudentToCourse courseId: {}, studentId: {}", courseId, studentId);
+        Course course = getCourseById(courseId, null);
+
+        if(course.getParticipantsLimit().equals(course.getParticipantsNumber())){
+            throw new CourseException(CourseError.COURSE_IS_FULL);
+        }
+
+        StudentDto studentDto = studentServiceClient.getStudentById(studentId);
+
+        if (isStudentEnrolledInCourse(course, studentDto.getId())) {
+            logger.info("Student already enrolled on this course");
+            throw new CourseException(CourseError.STUDENT_ALREADY_ENROLLED);
+        }
+
+        course.getCourseStudents().add(new CourseStudents(studentDto.getId(), Status.ACTIVE));
+        course.incrementParticipantsNumber();
+        courseRepository.save(course);
+        enrollStudentToLessons(course.getId(), studentDto.getId());
+        return ResponseEntity.ok().build();
+    }
     private void isCourseStartDateIsAfterCourseEndDate(LocalDateTime startDate, LocalDateTime endDate) {
         logger.info("Checking isCourseStartDateIsAfterCourseEndDate");
         logger.info("Start date is: {}, end date is: {}.", startDate, endDate);
@@ -153,8 +281,6 @@ public class CourseServiceImpl implements CourseService {
             course.setStatus(Status.ACTIVE);
             logger.info("Set status: {}.", Status.ACTIVE);
         }
-
-
 
         if(course.getEndDate().isBefore(LocalDateTime.now())){
             course.setStatus(Status.FINISHED);
@@ -184,7 +310,37 @@ public class CourseServiceImpl implements CourseService {
         return courseStudentList;
     }
 
+    private void validateTeacherBeforeCourseEnrollment(Course course, TeacherDto teacherDto) {
+        logger.info("validateTeacherBeforeCourseEnrollment");
+        if (!Status.ACTIVE.equals(teacherDto.getStatus())) {
+            logger.info("Teacher is not active.");
+            throw new CourseException(CourseError.TEACHER_IS_NOT_ACTIVE);
+        }
+        if (course.getCourseTeachers()
+                .stream()
+                .anyMatch((member -> teacherDto.getId().equals(member.getTeacherId())))) {
+            logger.info("Teacher is already enrolled.");
+            throw new CourseException(CourseError.TEACHER_ALREADY_ENROLLED);
+        }
+    }
 
+    private boolean isStudentEnrolledInCourse(Course course, Long studentId) {
+        logger.info("Checking isStudentEnrolledInCourse");
+        boolean match = course.getCourseStudents()
+                .stream()
+                .anyMatch((member -> studentId.equals(member.getStudentId())));
+        if (match) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private ResponseEntity<?> enrollStudentToLessons(String curseId, Long studentId) {
+        logger.info("Trying enrollStudentToLessons");
+        calendarServiceClient.enrollStudent(curseId, studentId);
+        return ResponseEntity.ok().build();
+    }
 //    nie sprawdzone
 
 
@@ -205,94 +361,6 @@ public class CourseServiceImpl implements CourseService {
                     courseFromDb.setEndDate(course.getEndDate());
                     return courseRepository.save(courseFromDb);
                 }).orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
-    }
-
-    @Override
-    public Course patchCourse(String id, Course course) {
-        logger.info("Fetching course by ID from the database: {}", id);
-        Course courseFromDb = courseRepository.findById(id).orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
-
-        if(course.getName() != null){
-            logger.info("Changing the course name...");
-            course.setName(course.getName().trim());
-            if (!courseFromDb.getName().equals(course.getName())
-                    && courseRepository.existsByName(course.getName())) {
-                logger.info("Course name is already exists.");
-                throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
-            }
-            courseFromDb.setName(course.getName());
-        }
-
-        if (course.getParticipantsLimit() != null) {
-            if(course.getParticipantsLimit() < courseFromDb.getParticipantsNumber() ){
-                throw new CourseException(CourseError.COURSE_PARTICIPANTS_NUMBER_IS_BIGGER_THEN_PARTICIPANTS_LIMIT);
-            }
-
-            if(course.getParticipantsLimit() == courseFromDb.getParticipantsNumber()){
-                courseFromDb.setStatus(Status.FULL);
-            }
-
-            if(course.getParticipantsLimit() > courseFromDb.getParticipantsNumber()){
-                courseFromDb.setStatus(Status.ACTIVE);
-            }
-            courseFromDb.setParticipantsLimit(course.getParticipantsLimit());
-        }
-
-        if (course.getLessonsLimit() != null) {
-
-            if(course.getLessonsLimit() < calendarServiceClient.getLessonsNumberByCourseId(courseFromDb.getId())){
-                throw new CourseException(CourseError.COURSE_LESSONS_NUMBER_IS_BIGGER_THEN_LESSONS_LIMIT);
-            }
-            courseFromDb.setLessonsLimit(course.getLessonsLimit());
-        }
-
-        if (course.getStartDate() != null) {
-            isCourseStartDateIsAfterCourseEndDate(course.getStartDate(), course.getEndDate());
-            courseFromDb.setStartDate(course.getStartDate());
-        }
-
-        if (course.getEndDate() != null) {
-            LocalDateTime endDate = course.getEndDate();
-            course.setEndDate(endDate.plusHours(23).plusMinutes(59));
-
-            isCourseEndDateIsBeforeCourseStartDate(course.getEndDate(), course.getStartDate());
-            courseFromDb.setEndDate(course.getEndDate());
-        }
-
-        return courseRepository.save(courseFromDb);
-    }
-
-    @Override
-    public void deleteCourse(String id) {
-        courseRepository.findById(id)
-                .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
-        courseRepository.deleteById(id);
-        calendarServiceClient.deleteCourseLessons(id);
-    }
-
-    @Override
-    public ResponseEntity<?> studentCourseEnrollment(String courseId, Long studentId) {
-        Course course = getCourseById(courseId, null);
-
-        if(course.getParticipantsLimit().equals(course.getParticipantsNumber())){
-            throw new CourseException(CourseError.COURSE_IS_FULL);
-        }
-//        if (course.getStatus().equals(Status.FULL)) {
-//            throw new CourseException(CourseError.COURSE_IS_FULL);
-//        }
-
-//        validateCourseStatus(course);
-        StudentDto studentDto = studentServiceClient.getStudentById(studentId);
-
-        if (isStudentEnrolledInCourse(course, studentDto.getId())) {
-            throw new CourseException(CourseError.STUDENT_ALREADY_ENROLLED);
-        }
-
-        course.getCourseStudents().add(new CourseStudents(studentDto.getId(), Status.ACTIVE));
-        course.incrementParticipantsNumber();
-        courseRepository.save(course);
-        enrollStudentToLessons(course.getId(), studentDto.getId());
-        return ResponseEntity.ok().build();
     }
 
     public ResponseEntity<?> restoreStudentToCourse(String courseId, Long studentId){
@@ -321,23 +389,6 @@ public class CourseServiceImpl implements CourseService {
         enrollStudentToLessons(course.getId(), studentId);
         return ResponseEntity.ok().build();
     }
-    private ResponseEntity<?> enrollStudentToLessons(String curseId, Long studentId) {
-        calendarServiceClient.enrollStudent(curseId, studentId);
-        return ResponseEntity.ok().build();
-    }
-
-    private boolean isStudentEnrolledInCourse(Course course, Long studentId) {
-        boolean match = course.getCourseStudents()
-                .stream()
-                .anyMatch((member -> studentId.equals(member.getStudentId())));
-
-        if (match) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
 
     private void validateCourseStatus(Course course) {
         if (!Status.ACTIVE.equals(course.getStatus())) {
@@ -391,51 +442,7 @@ public class CourseServiceImpl implements CourseService {
         courseFromDb.decrementParticipantsNumber();
     }
 
-    @Override
-    public void teacherCourseEnrollment(String courseId, Long teacherId) {
-        Course course = getCourseById(courseId, null);
-//        validateCourseStatus(course);
-        TeacherDto teacherDto = teacherServiceClient.getTeacherById(teacherId);
-        validateTeacherBeforeCourseEnrollment(course, teacherDto);
-        CourseTeachers courseTeachers = new CourseTeachers(teacherDto.getId());
-        course.getCourseTeachers().add(courseTeachers);
-        courseRepository.save(course);
-    }
 
-    private void validateTeacherBeforeCourseEnrollment(Course course, TeacherDto teacherDto) {
-        if (!Status.ACTIVE.equals(teacherDto.getStatus())) {
-            throw new CourseException(CourseError.TEACHER_IS_NOT_ACTIVE);
-        }
-        if (course.getCourseTeachers()
-                .stream()
-                .anyMatch((member -> teacherDto.getId().equals(member.getTeacherId())))) {
-            throw new CourseException(CourseError.TEACHER_ALREADY_ENROLLED);
-        }
-    }
-
-    @Override
-    public void teacherRemoveFromCourse(String courseId, Long teacherId) {
-        Course courseFromDb = getCourseById(courseId, null);
-
-        if(!courseFromDb.getCourseTeachers().stream().anyMatch(t-> t.getTeacherId().equals(teacherId))){
-            throw new CourseException(CourseError.TEACHER_NO_ON_THE_LIST_OF_ENROLL);
-        }
-
-        if(calendarServiceClient.isTeacherAssignedToLessonInCourse(courseId, teacherId)){
-            throw new CourseException(CourseError.TEACHER_HAS_LESSONS_IN_COURSE);
-        }
-
-
-        List<CourseTeachers> courseTeacherList = courseFromDb.getCourseTeachers();
-        boolean removed = courseTeacherList.removeIf(teacher -> teacherId.equals(teacher.getTeacherId()));
-        if (!removed) {
-            throw new CourseException(CourseError.TEACHER_NO_ON_THE_LIST_OF_ENROLL);
-        }
-        courseFromDb.setCourseTeachers(courseTeacherList);
-        courseRepository.save(courseFromDb);
-
-
-    }
 
     @Override
     public void changeCourseMemberStatus(String courseId, Long studentId, Status status) {

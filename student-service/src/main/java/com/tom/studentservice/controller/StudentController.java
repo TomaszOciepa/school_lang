@@ -21,25 +21,29 @@ public class StudentController {
     private final StudentService studentService;
 
     //    sprawdzone
-
     @PostMapping("/idNumbers")
     public List<Student> getStudentsByIdNumbers(@RequestBody List<Long> idNumbers) {
         logger.info("Post method getStudentsByIdNumber().");
         return studentService.getStudentsByIdNumbers(idNumbers);
     }
-
-    //    nie sprawdzone
     @PreAuthorize("hasRole('admin')")
     @GetMapping
-    public List<Student> getAllStudents(@RequestParam(required = false) Status status) {
-        return studentService.getAllStudents(status);
+    public List<Student> getStudents(@RequestParam(required = false) Status status) {
+        logger.info("Get method getStudents().");
+        return studentService.getStudents(status);
+    }
+    @PostMapping("/notIdNumbers")
+    public List<Student> getStudentsByIdNumberNotEqual(@RequestBody List<Long> idNumbers) {
+        logger.info("Post method getStudentsByIdNumberNotEqual().");
+        return studentService.getStudentsByIdNumberNotEqual(idNumbers);
     }
 
     @GetMapping("/{id}")
     public Student getStudentById(@PathVariable Long id) {
+        logger.info("GET method getStudentById().");
         return studentService.getStudentById(id);
     }
-
+    //    nie sprawdzone
     @GetMapping("/email")
     public Student getStudentByEmail(@RequestParam String email) {
         return studentService.getStudentByEmail(email);
@@ -68,12 +72,6 @@ public class StudentController {
     @PostMapping("/emails")
     public List<Student> getStudentsByEmails(@RequestBody List<String> emails) {
         return studentService.getStudentsByEmails(emails);
-    }
-
-
-    @PostMapping("/notIdNumbers")
-    public List<Student> getStudentsByNotIdNumber(@RequestBody List<Long> idNumbers) {
-        return studentService.findAllByIdNotInAndStatus(idNumbers);
     }
 
 }

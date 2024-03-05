@@ -11,9 +11,15 @@ export class StudentService {
   apiUrl = environment.apiUrlStudents;
   constructor(private http: HttpClient) {}
 
-  getStudent(): Observable<User[]> {
+  //sprawdzone
+  getStudents(): Observable<User[]> {
     return this.http.get<User[]>(this.apiUrl + '?status=ACTIVE');
   }
+
+  getStudentsByIdNumberNotEqual(id: number[]): Observable<User[]> {
+    return this.http.post<User[]>(this.apiUrl + '/notIdNumbers', id);
+  }
+  //nie sprawdzone
 
   getStudentById(id: number): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/${id}`);
@@ -29,10 +35,6 @@ export class StudentService {
 
   patchStudent(id: number, editedStudent: PostUser): Observable<User> {
     return this.http.patch<User>(`${this.apiUrl}/${id}`, editedStudent);
-  }
-
-  getStudentsByNotIdNumber(id: number[]): Observable<User[]> {
-    return this.http.post<User[]>(this.apiUrl + '/notIdNumbers', id);
   }
 
   getStudentsByIdNumber(id: number[]): Observable<User[]> {

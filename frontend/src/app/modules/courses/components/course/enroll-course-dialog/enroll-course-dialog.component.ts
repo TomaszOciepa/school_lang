@@ -11,8 +11,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { error } from 'console';
-import { response } from 'express';
 import { User } from 'src/app/modules/core/models/user.model';
 import { CourseService } from 'src/app/modules/core/services/course.service';
 import { StudentService } from 'src/app/modules/core/services/student.service';
@@ -61,13 +59,11 @@ export class EnrollCourseDialogComponent implements OnInit {
   }
 
   async ngAfterViewInit(): Promise<void> {
-    console.log('siema: enableD:' + this.enrollStudentIsEnable);
-
     if (this.enrollStudentIsEnable) {
       if (this.usersIdEnrolled == undefined) {
         this.getStudents();
       } else {
-        this.getStudentsByNotIdNumber();
+        this.getStudentsByIdNumberNotEqual();
       }
     }
 
@@ -75,7 +71,7 @@ export class EnrollCourseDialogComponent implements OnInit {
       if (this.usersIdEnrolled == undefined) {
         this.getTeachers();
       } else {
-        this.getTeachersByNotIdNumber();
+        this.getTeachersByIdNumberNotEqual();
       }
     }
   }
@@ -100,9 +96,8 @@ export class EnrollCourseDialogComponent implements OnInit {
   }
 
   private enrollStudent(studentId: number) {
-    console.log('zapisz: ' + studentId);
     this.courseService
-      .studentCourseEnrollment(this.courseId, studentId)
+      .assignStudentToCourse(this.courseId, studentId)
       .subscribe({
         next: (response) => {
           console.log('next: ' + response);
@@ -111,16 +106,14 @@ export class EnrollCourseDialogComponent implements OnInit {
           console.log('error: ' + err.error.message);
         },
         complete: () => {
-          console.log('zakończone');
           window.location.reload();
         },
       });
   }
 
   private enrollTeacher(teacherId: number) {
-    console.log('zapisz: ' + teacherId);
     this.courseService
-      .teacherCourseEnrollment(this.courseId, teacherId)
+      .assignTeacherToCourse(this.courseId, teacherId)
       .subscribe({
         next: (response) => {
           console.log('next: ' + response);
@@ -129,15 +122,14 @@ export class EnrollCourseDialogComponent implements OnInit {
           console.log('error: ' + err.error.message);
         },
         complete: () => {
-          console.log('zakończone');
           window.location.reload();
         },
       });
   }
 
-  getStudentsByNotIdNumber() {
+  getStudentsByIdNumberNotEqual() {
     this.studentServices
-      .getStudentsByNotIdNumber(this.usersIdEnrolled)
+      .getStudentsByIdNumberNotEqual(this.usersIdEnrolled)
       .subscribe({
         next: (clients) => {
           console.log(clients);
@@ -152,7 +144,7 @@ export class EnrollCourseDialogComponent implements OnInit {
   }
 
   getStudents() {
-    this.studentServices.getStudent().subscribe({
+    this.studentServices.getStudents().subscribe({
       next: (clients) => {
         console.log(clients);
         this.dataSource = new MatTableDataSource<User>(clients);
@@ -166,9 +158,8 @@ export class EnrollCourseDialogComponent implements OnInit {
   }
 
   getTeachers() {
-    this.teacherService.getTeacher().subscribe({
+    this.teacherService.getTeachers().subscribe({
       next: (clients) => {
-        console.log(clients);
         this.dataSource = new MatTableDataSource<User>(clients);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
@@ -179,9 +170,9 @@ export class EnrollCourseDialogComponent implements OnInit {
     });
   }
 
-  getTeachersByNotIdNumber() {
+  getTeachersByIdNumberNotEqual() {
     this.teacherService
-      .getTeachersByNotIdNumber(this.usersIdEnrolled)
+      .getTeachersByIdNumberNotEqual(this.usersIdEnrolled)
       .subscribe({
         next: (clients) => {
           console.log(clients);

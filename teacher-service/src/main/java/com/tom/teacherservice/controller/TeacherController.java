@@ -28,20 +28,32 @@ public class TeacherController {
         return teacherService.getTeachersByIdNumber(idNumbers);
     }
 
+    @GetMapping("/teacher-is-active/{teacherId}")
+    public void teacherIsActive(@PathVariable Long teacherId) {
+        logger.info("Get method teacherIsActive()");
+        teacherService.getTeacherById(teacherId);
+    }
 
-    //    nie sprawdzone
     @PreAuthorize("hasRole('admin')")
     @GetMapping
-    public List<Teacher> getAllTeacher(@RequestParam(required = false) Status status) {
-        return teacherService.getAllTeacher(status);
+    public List<Teacher> getTeachers(@RequestParam(required = false) Status status) {
+        logger.info("Get method getTeachers()");
+        return teacherService.getTeachers(status);
+    }
+
+    @PostMapping("/id-numbers-not-equal")
+    public List<Teacher> getTeachersByIdNumberNotEqual(@RequestBody List<Long> idNumbers) {
+        logger.info("Post method getTeachersByIdNumberNotEqual()");
+        return teacherService.getTeachersByIdNumberNotEqual(idNumbers);
     }
 
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/{id}")
     public Teacher getTeacherById(@PathVariable Long id) {
+        logger.info("Get method getTeacherById()");
         return teacherService.getTeacherById(id);
     }
-
+    //    nie sprawdzone
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/email")
     public Teacher getTeacherByEmail(@RequestParam String email) {
@@ -72,14 +84,6 @@ public class TeacherController {
         teacherService.deleteTeacher(id);
     }
 
-    @PostMapping("/notIdNumbers")
-    public List<Teacher> getTeachersByNotIdNumber(@RequestBody List<Long> idNumbers) {
-        return teacherService.findAllByIdNotInAndStatus(idNumbers);
-    }
 
-    @GetMapping("/teacherIsActive/{teacherId}")
-    public void teacherIsActive(@PathVariable Long teacherId) {
-        logger.info("teacherIsActive() teacherId: " + teacherId);
-        teacherService.getTeacherById(teacherId);
-    }
+
 }

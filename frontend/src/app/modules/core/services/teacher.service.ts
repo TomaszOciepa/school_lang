@@ -12,9 +12,15 @@ export class TeacherService {
 
   constructor(private http: HttpClient) {}
 
-  getTeacher(): Observable<User[]> {
+  // sprawdzone
+  getTeachers(): Observable<User[]> {
     return this.http.get<User[]>(this.apiUrl + '?status=ACTIVE');
   }
+
+  getTeachersByIdNumberNotEqual(id: number[]): Observable<User[]> {
+    return this.http.post<User[]>(this.apiUrl + '/id-numbers-not-equal', id);
+  }
+  // nie sprawdzone
 
   getTeacherById(id: number): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/${id}`);
@@ -30,9 +36,5 @@ export class TeacherService {
 
   patchTeacher(id: number, editedTeacher: PostUser): Observable<User> {
     return this.http.patch<User>(`${this.apiUrl}/${id}`, editedTeacher);
-  }
-
-  getTeachersByNotIdNumber(id: number[]): Observable<User[]> {
-    return this.http.post<User[]>(this.apiUrl + '/notIdNumbers', id);
   }
 }

@@ -16,15 +16,14 @@ public interface CourseService {
     List<CourseStudentDto> getCourseMembers(String courseId);
     List<TeacherDto> getCourseTeachers(String courseId);
     Course patchCourse(String id, Course course);
-
+    void deleteCourseById(String id);
+    void assignTeacherToCourse(String courseId, Long teacherId);
+    void teacherCourseUnEnrollment(String courseId, Long teacherId);
+    ResponseEntity<?> assignStudentToCourse(String courseId, Long studentId);
 //    nie sprawdzone
     Course putCourse(String id, Course course);
-    void deleteCourse(String id);
-    ResponseEntity<?> studentCourseEnrollment(String courseId, Long studentId);
     ResponseEntity<?> restoreStudentToCourse(String courseId, Long studentId);
     void studentRemoveFromCourse(String courseId, Long studentId);
-    void teacherCourseEnrollment(String courseId, Long teacherId);
-    void teacherRemoveFromCourse(String courseId, Long teacherId);
 
     void changeCourseMemberStatus(String courseId, Long studentId, Status status);
 
