@@ -1,11 +1,14 @@
 package com.tom.studentservice.service;
 
+import com.tom.studentservice.controller.StudentController;
 import com.tom.studentservice.exception.StudentError;
 import com.tom.studentservice.exception.StudentException;
 import com.tom.studentservice.model.Status;
 import com.tom.studentservice.model.Student;
 import com.tom.studentservice.repo.StudentRepository;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,8 +16,17 @@ import java.util.List;
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
+    private static Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
     private final StudentRepository studentRepository;
 
+    //sprawdzone
+    @Override
+    public List<Student> getStudentsByIdNumbers(List<Long> idNumbers) {
+        logger.info("Fetching students by id list numbers.");
+        return studentRepository.findAllByIdIn(idNumbers);
+    }
+
+    //nie sprawdzone
     @Override
     public List<Student> getAllStudents(Status status) {
 
@@ -102,10 +114,7 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findAllByEmailIn(emails);
     }
 
-    @Override
-    public List<Student> getStudentsByIdNumber(List<Long> idNumbers) {
-        return studentRepository.findAllByIdIn(idNumbers);
-    }
+
 
     @Override
     public List<Student> findAllByIdNotInAndStatus(List<Long> idNumbers) {

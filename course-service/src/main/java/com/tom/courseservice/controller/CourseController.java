@@ -22,31 +22,52 @@ public class CourseController {
     private static Logger logger = LoggerFactory.getLogger(CourseController.class);
     private final CourseService courseService;
 
+
+    // sprawdzone
+    @PostMapping
+    Course addCourse(@RequestBody Course course){
+        logger.info("Post method addCourse().");
+        return courseService.addCourse(course);
+    }
+
     @GetMapping
-    List<Course> findAllByStatus(@RequestParam(required = false) Status status) {
-     return courseService.findAllByStatus(status);
+        List<Course> getAllByStatus(@RequestParam(required = false) Status status) {
+        logger.info("Get method getAllByStatus().");
+        return courseService.getAllByStatus(status);
     }
 
     @GetMapping("/{id}")
-    Course findByIdAndStatus(@PathVariable String id, @RequestParam(required = false) Status status){
-        logger.info("SIEMA W CONTROLER");
-        return courseService.findByIdAndStatus(id, status);
+    Course getCourseById(@PathVariable String id, @RequestParam(required = false) Status status){
+        logger.info("Get method getCourseById()");
+        return courseService.getCourseById(id, status);
     }
 
-    @PostMapping
-    Course addCourse(@RequestBody Course course){
-        return courseService.addCourse(course);
+    @GetMapping("/members/{courseId}")
+    public List<CourseStudentDto> getCourseMembers(@PathVariable String courseId){
+        logger.info("Get method getCourseMembers()");
+        return courseService.getCourseMembers(courseId);
     }
+
+    @GetMapping("/teacher/{courseId}")
+    public List<TeacherDto> getCourseTeachers(@PathVariable String courseId){
+        logger.info("Get method getCourseTeachers()");
+        return courseService.getCourseTeachers(courseId);
+    }
+
+    @PatchMapping("/{id}")
+    Course patchCourse(@PathVariable String id, @RequestBody Course course){
+        logger.info("Patch method patchCourse()");
+        return courseService.patchCourse(id, course);
+    }
+//    nie sprawdzone
+
 
     @PutMapping("/{id}")
     Course putCourse(@PathVariable String id, @RequestBody Course course){
         return courseService.putCourse(id, course);
     }
 
-    @PatchMapping("/{id}")
-    Course patchCourse(@PathVariable String id, @RequestBody Course course){
-        return courseService.patchCourse(id, course);
-    }
+
 
     @DeleteMapping("/{id}")
     void deleteCourse(@PathVariable String id){
@@ -84,16 +105,6 @@ public class CourseController {
     public ResponseEntity<?> teacherCourseUnEnrollment(@PathVariable String courseId, @PathVariable Long teacherId){
         courseService.teacherRemoveFromCourse(courseId, teacherId);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/members/{courseId}")
-    public List<CourseStudentDto> getCourseMembers(@PathVariable String courseId){
-        return courseService.getCourseMembers(courseId);
-    }
-
-    @GetMapping("/teacher/{courseId}")
-    public List<TeacherDto> getCourseTeachers(@PathVariable String courseId){
-        return courseService.getCourseTeachers(courseId);
     }
 
     @PostMapping("/member-status/course/{courseId}/student/{studentId}/status")

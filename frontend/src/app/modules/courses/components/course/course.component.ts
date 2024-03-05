@@ -24,7 +24,6 @@ export class CourseComponent {
   course!: Course;
   students!: CourseMembers[];
   teachers!: User[];
-  // courseId!: string;
 
   listUserId!: number[];
   errMsg!: string;
@@ -42,15 +41,14 @@ export class CourseComponent {
       this.id = params['id'];
     });
 
-    this.getCourse(this.id);
+    this.getCourseById(this.id);
     this.getCourseMembers(this.id);
     this.getCourseTeachers(this.id);
   }
 
-  getCourse(id: string) {
+  getCourseById(id: string) {
     this.courseService.getCourseById(id).subscribe((response) => {
       this.course = response;
-      // this.courseId = response.id;
     });
   }
 
@@ -58,11 +56,9 @@ export class CourseComponent {
     this.courseService.getCourseMembers(courseId).subscribe({
       next: (student) => {
         this.students = student;
-        console.log(student);
       },
       error: (err: HttpErrorResponse) => {
         console.log(err.error.message);
-        this.hideErrorMsg();
       },
     });
   }

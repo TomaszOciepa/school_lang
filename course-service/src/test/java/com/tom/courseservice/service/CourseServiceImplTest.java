@@ -40,21 +40,21 @@ class CourseServiceImplTest {
 
     List<Course> prepareCourseData() {
         return Arrays.asList(
-                new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L, 0L,
-                        LocalDate.of(2023, 12, 5),
-                        LocalDate.of(2024, 03, 12),
+                new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
+                        LocalDateTime.of(2023, 12, 5, 17, 0),
+                        LocalDateTime.of(2024, 03, 12, 16,0),
                         Arrays.asList(), Arrays.asList()),
-                new Course("1111", "Kurs Niemiecki", Status.ACTIVE, 20L, 0L, 12L, 0L,
-                        LocalDate.of(2023, 12, 8),
-                        LocalDate.of(2024, 02, 12),
+                new Course("1111", "Kurs Niemiecki", Status.ACTIVE, 20L, 0L, 12L,
+                        LocalDateTime.of(2023, 12, 8, 8,0),
+                        LocalDateTime.of(2024, 02, 12, 20,0),
                         Arrays.asList(), Arrays.asList())
         );
     }
 
     Course prepareCourse() {
-        return new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L, 0L,
-                LocalDate.of(2023, 12, 5),
-                LocalDate.of(2024, 03, 12),
+        return new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
+                LocalDateTime.of(2023, 12, 5, 8,0),
+                LocalDateTime.of(2024, 03, 12, 20,0),
                 new ArrayList<>(), new ArrayList<>());
     }
 
@@ -78,9 +78,9 @@ class CourseServiceImplTest {
         //given
         List<Course> mockCourses = prepareCourseData();
         Status mockStatus = Status.ACTIVE;
-        given(courseRepository.findAllByStatus(mockStatus)).willReturn(mockCourses);
+        given(courseRepository.getAllByStatus(mockStatus)).willReturn(mockCourses);
         //when
-        List<Course> result = courseServiceImpl.findAllByStatus(mockStatus);
+        List<Course> result = courseServiceImpl.getAllByStatus(mockStatus);
         //then
         assertEquals(mockCourses, result);
     }
@@ -92,7 +92,7 @@ class CourseServiceImplTest {
         List<Course> mockCourses = prepareCourseData();
         given(courseRepository.findAll()).willReturn(mockCourses);
         //when
-        List<Course> result = courseServiceImpl.findAllByStatus(null);
+        List<Course> result = courseServiceImpl.getAllByStatus(null);
         //then
         assertEquals(mockCourses, result);
     }
@@ -105,7 +105,7 @@ class CourseServiceImplTest {
         String mockId = "1111";
         given(courseRepository.findById(mockId)).willReturn(Optional.ofNullable(mockCourse));
         //when
-        Course result = courseServiceImpl.findByIdAndStatus(mockId, null);
+        Course result = courseServiceImpl.getCourseById(mockId, null);
         //then
         assertEquals(mockCourse, result);
     }
@@ -119,7 +119,7 @@ class CourseServiceImplTest {
         given(courseRepository.findById(mockId)).willThrow(mockException);
         //when
         //then
-        assertThrows(CourseException.class, () -> courseServiceImpl.findByIdAndStatus(mockId, null));
+        assertThrows(CourseException.class, () -> courseServiceImpl.getCourseById(mockId, null));
     }
 
     @Test

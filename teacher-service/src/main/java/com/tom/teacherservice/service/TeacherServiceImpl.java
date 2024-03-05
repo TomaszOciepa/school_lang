@@ -1,11 +1,14 @@
 package com.tom.teacherservice.service;
 
+import com.tom.teacherservice.controller.TeacherController;
 import com.tom.teacherservice.exception.TeacherError;
 import com.tom.teacherservice.exception.TeacherException;
 import com.tom.teacherservice.model.Status;
 import com.tom.teacherservice.model.Teacher;
 import com.tom.teacherservice.repo.TeacherRepository;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +18,16 @@ import java.util.List;
 public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
+
+    private static Logger logger = LoggerFactory.getLogger(TeacherServiceImpl.class);
+    //sprawdzone
+    @Override
+    public List<Teacher> getTeachersByIdNumber(List<Long> idNumbers) {
+        logger.info("Fetching teachers list.");
+        return teacherRepository.findAllByIdIn(idNumbers);
+    }
+
+    //nie sprawdzone
 
     @Override
     public List<Teacher> getAllTeacher(Status status) {
@@ -97,10 +110,6 @@ public class TeacherServiceImpl implements TeacherService {
         teacherRepository.save(teacher);
     }
 
-    @Override
-    public List<Teacher> getTeachersByIdNumber(List<Long> idNumbers) {
-        return teacherRepository.findAllByIdIn(idNumbers);
-    }
 
     @Override
     public List<Teacher> findAllByIdNotInAndStatus(List<Long> idNumbers) {

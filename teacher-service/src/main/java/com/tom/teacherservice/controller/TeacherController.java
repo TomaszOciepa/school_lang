@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin( origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PATCH})
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PATCH})
 @AllArgsConstructor
 @RequestMapping("/teacher")
 public class TeacherController {
@@ -20,6 +20,16 @@ public class TeacherController {
     private static Logger logger = LoggerFactory.getLogger(TeacherController.class);
     private final TeacherService teacherService;
 
+    //sprawdzone
+    @PreAuthorize("hasRole('admin')")
+    @PostMapping("/idNumbers")
+    public List<Teacher> getTeachersByIdNumber(@RequestBody List<Long> idNumbers) {
+        logger.info("Post method getTeachersByIdNumber()");
+        return teacherService.getTeachersByIdNumber(idNumbers);
+    }
+
+
+    //    nie sprawdzone
     @PreAuthorize("hasRole('admin')")
     @GetMapping
     public List<Teacher> getAllTeacher(@RequestParam(required = false) Status status) {
@@ -58,14 +68,8 @@ public class TeacherController {
 
     @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/{id}")
-    public void deleteTeacher(@PathVariable Long id){
+    public void deleteTeacher(@PathVariable Long id) {
         teacherService.deleteTeacher(id);
-    }
-
-    @PreAuthorize("hasRole('admin')")
-    @PostMapping("/idNumbers")
-    public List<Teacher> getTeachersByIdNumber(@RequestBody List<Long> idNumbers) {
-        return teacherService.getTeachersByIdNumber(idNumbers);
     }
 
     @PostMapping("/notIdNumbers")
@@ -74,8 +78,8 @@ public class TeacherController {
     }
 
     @GetMapping("/teacherIsActive/{teacherId}")
-    public void teacherIsActive(@PathVariable Long teacherId){
-        logger.info("teacherIsActive() teacherId: "+teacherId);
+    public void teacherIsActive(@PathVariable Long teacherId) {
+        logger.info("teacherIsActive() teacherId: " + teacherId);
         teacherService.getTeacherById(teacherId);
     }
 }

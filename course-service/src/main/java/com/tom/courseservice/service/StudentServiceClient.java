@@ -9,10 +9,13 @@ import java.util.List;
 
 @FeignClient(name = "STUDENT-SERVICE")
 public interface StudentServiceClient {
+    //    sprawdzone
+    @PostMapping("/student/idNumbers")
+    List<StudentDto> getStudentsByIdNumbers(@RequestBody List<Long> idNumbers);
+
+    //    nie sprawdzone
 
     @GetMapping("/student/{id}")
     StudentDto getStudentById(@PathVariable Long id);
 
-    @PostMapping("/student/idNumbers")
-    List<StudentDto> getStudentsByIdNumber(@RequestBody List<Long> idNumbers);
 }

@@ -11,16 +11,19 @@ export class LessonsService {
   apiUrl = environment.apiUrlLessons;
   constructor(private http: HttpClient) {}
 
+  //sprawdzone
   getAllLessons(): Observable<Lesson[]> {
     return this.http.get<Lesson[]>(this.apiUrl);
   }
 
-  getLessonById(id: string): Observable<Lesson> {
-    return this.http.get<Lesson>(`${this.apiUrl}/${id}`);
-  }
-
   getLessonsByCourseId(courseId: string): Observable<Lesson[]> {
     return this.http.get<Lesson[]>(`${this.apiUrl}/course-lessons/${courseId}`);
+  }
+
+  // nie sprawdzone
+
+  getLessonById(id: string): Observable<Lesson> {
+    return this.http.get<Lesson>(`${this.apiUrl}/${id}`);
   }
 
   addLesson(lesson: PostLesson): Observable<Lesson> {

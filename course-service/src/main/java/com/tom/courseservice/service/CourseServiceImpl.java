@@ -31,44 +31,162 @@ public class CourseServiceImpl implements CourseService {
     private final TeacherServiceClient teacherServiceClient;
     private final CalendarServiceClient calendarServiceClient;
 
+    //sprawdzone
+
     @Override
-    public List<Course> findAllByStatus(Status status) {
+    public Course addCourse(Course course) {
+        logger.info("Adding new course: {}", course);
+        logger.info("Removing white spaces from the name.");
+        course.setName(course.getName().trim());
+
+        logger.info("Checking if the name already exists.");
+        if (courseRepository.existsByName(course.getName())) {
+            throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
+        }
+
+        logger.info("Setting the end date of the course.");
+        LocalDateTime endDate = course.getEndDate();
+        course.setEndDate(endDate.plusHours(23).plusMinutes(59));
+
+        logger.info("Checking if start date is after end date.");
+        isCourseStartDateIsAfterCourseEndDate(course.getStartDate(), course.getEndDate());
+
+        logger.info("Setting participants number on 0L.");
+        course.setParticipantsNumber(0L);
+        logger.info("Save course on database.");
+        return courseRepository.save(course);
+    }
+
+    @Override
+    public List<Course> getAllByStatus(Status status) {
+        logger.info("getAllByStatus()");
         if (status != null) {
-            return courseRepository.findAllByStatus(status).stream()
+            logger.info("Fetching courses with status: {}.", status);
+            return courseRepository.getAllByStatus(status).stream()
                     .map(this::updateCourseStatus)
                     .collect(Collectors.toList());
         }
+        logger.info("Fetching courses without status: {}.", status);
         return courseRepository.findAll().stream()
                 .map(this::updateCourseStatus)
                 .collect(Collectors.toList());
     }
-
-    public Course findByIdAndStatus(String id, Status status) {
+    @Override
+    public Course getCourseById(String id, Status status) {
         if (status != null) {
+            logger.info("Fetching courses with status: {}.", status);
+            logger.info("");
             return courseRepository.findByIdAndStatus(id, status)
                     .map(this::updateCourseStatus)
-                    .orElseThrow(() -> new CourseException(CourseError.COURSE_IS_NOT_ACTIVE));
+                    .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
         }
 
+        logger.info("Fetching courses without status: {}.", status);
         return courseRepository.findById(id)
                 .map(this::updateCourseStatus)
                 .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
     }
 
     @Override
-    public Course addCourse(Course course) {
-        course.setName(course.getName().trim());
-        if (courseRepository.existsByName(course.getName())) {
-            throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
+    public List<CourseStudentDto> getCourseMembers(String courseId) {
+        logger.info("Fetching courses by id: {}.", courseId);
+        Course course = getCourseById(courseId, null);
+        logger.info("Fetching course members.");
+        List<CourseStudents> courseStudents = course.getCourseStudents();
+        if (courseStudents.isEmpty()) {
+            logger.info("Student list is empty.");
+            throw new CourseException(CourseError.COURSE_STUDENT_LIST_IS_EMPTY);
         }
-        LocalDateTime endDate = course.getEndDate();
-        course.setEndDate(endDate.plusHours(23).plusMinutes(59));
+        List<Long> idNumbers = courseStudents.stream()
+                .map(CourseStudents::getStudentId)
+                .collect(Collectors.toList());
+        logger.info("Create student id numbers list.");
 
-        isCourseStartDateIsAfterCourseEndDate(course.getStartDate(), course.getEndDate());
+        logger.info("Fetching students by id number.");
+        List<StudentDto> studentsFromDb = studentServiceClient.getStudentsByIdNumbers(idNumbers);
 
-        course.setParticipantsNumber(0L);
+        List<CourseStudentDto> courseStudentList = createCourseStudentList(courseStudents, studentsFromDb);
+
+        return courseStudentList;
+    }
+
+    @Override
+    public List<TeacherDto> getCourseTeachers(String courseId) {
+        logger.info("Fetching course by id number.");
+        Course course = getCourseById(courseId, null);
+
+        List<CourseTeachers> courseTeachers = course.getCourseTeachers();
+        if (courseTeachers.isEmpty()) {
+            throw new CourseException(CourseError.COURSE_TEACHER_LIST_IS_EMPTY);
+        }
+        List<Long> idNumbers = courseTeachers.stream()
+                .map(CourseTeachers::getTeacherId)
+                .collect(Collectors.toList());
+
+        return teacherServiceClient.getTeachersByIdNumber(idNumbers);
+    }
+
+    private void isCourseStartDateIsAfterCourseEndDate(LocalDateTime startDate, LocalDateTime endDate) {
+        logger.info("Checking isCourseStartDateIsAfterCourseEndDate");
+        logger.info("Start date is: {}, end date is: {}.", startDate, endDate);
+        if(startDate.isAfter(endDate) || startDate.isEqual(endDate)){
+            throw new CourseException(CourseError.COURSE_START_DATE_IS_AFTER_END_DATE);
+        }
+    }
+
+    private void isCourseEndDateIsBeforeCourseStartDate(LocalDateTime endDate, LocalDateTime startTime) {
+        logger.info("Checking isCourseEndDateIsBeforeCourseStartDate");
+        logger.info("Start date is: {}, end date is: {}.", startTime, endDate);
+        if(endDate.isBefore(startTime) || endDate.isEqual(startTime)){
+            throw new CourseException(CourseError.COURSE_END_DATE_IS_BEFORE_START_DATE);
+        }
+    }
+
+    private Course updateCourseStatus(Course course){
+        logger.info("Updating course status");
+        if(course.getStartDate().isAfter(LocalDateTime.now())){
+            course.setStatus(Status.INACTIVE);
+            logger.info("Set status: {}", Status.INACTIVE);
+        }
+
+        if(course.getStartDate().isBefore(LocalDateTime.now()) && course.getEndDate().isAfter(LocalDateTime.now())){
+            course.setStatus(Status.ACTIVE);
+            logger.info("Set status: {}.", Status.ACTIVE);
+        }
+
+
+
+        if(course.getEndDate().isBefore(LocalDateTime.now())){
+            course.setStatus(Status.FINISHED);
+            logger.info("Set status: {}.", Status.FINISHED);
+        }
+
         return courseRepository.save(course);
     }
+
+    private List<CourseStudentDto> createCourseStudentList(List<CourseStudents> courseStudents, List<StudentDto> studentsFromDb) {
+        logger.info("Creating course student list.");
+        List<CourseStudentDto> courseStudentList = new ArrayList<>();
+
+        for (StudentDto student: studentsFromDb){
+
+            Long id = student.getId();
+            String firstName = student.getFirstName();
+            String lastName = student.getLastName();
+
+            Optional<CourseStudents> first = courseStudents.stream().filter(s -> s.getStudentId().equals(id)).findFirst();
+            LocalDateTime enrollmentDate = first.get().getEnrollmentDate();
+            Status status = first.get().getStatus();
+
+            courseStudentList.add(new CourseStudentDto(id, firstName, lastName, enrollmentDate, status));
+
+        }
+        return courseStudentList;
+    }
+
+
+//    nie sprawdzone
+
 
     @Override
     public Course putCourse(String id, Course course) {
@@ -91,30 +209,18 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course patchCourse(String id, Course course) {
+        logger.info("Fetching course by ID from the database: {}", id);
         Course courseFromDb = courseRepository.findById(id).orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
 
         if(course.getName() != null){
+            logger.info("Changing the course name...");
             course.setName(course.getName().trim());
             if (!courseFromDb.getName().equals(course.getName())
                     && courseRepository.existsByName(course.getName())) {
+                logger.info("Course name is already exists.");
                 throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
             }
             courseFromDb.setName(course.getName());
-        }
-
-        if (course.getStatus() != null){
-            if(course.getStatus().equals(Status.ACTIVE)){
-                if(courseFromDb.getParticipantsNumber().equals(courseFromDb.getParticipantsLimit())){
-                    throw new CourseException(CourseError.COURSE_IS_FULL);
-                }
-            }
-
-            if(course.getStatus().equals(Status.FULL)){
-                if(courseFromDb.getParticipantsNumber() < courseFromDb.getParticipantsLimit()){
-                    throw new CourseException(CourseError.COURSE_IS_NOT_FULL);
-                }
-            }
-            courseFromDb.setStatus(course.getStatus());
         }
 
         if (course.getParticipantsLimit() != null) {
@@ -130,14 +236,6 @@ public class CourseServiceImpl implements CourseService {
                 courseFromDb.setStatus(Status.ACTIVE);
             }
             courseFromDb.setParticipantsLimit(course.getParticipantsLimit());
-        }
-
-        if (course.getParticipantsNumber() != null) {
-
-            if(courseFromDb.getParticipantsLimit() < course.getParticipantsNumber()){
-                throw new CourseException(CourseError.COURSE_PARTICIPANTS_NUMBER_IS_BIGGER_THEN_PARTICIPANTS_LIMIT);
-            }
-            courseFromDb.setParticipantsNumber(course.getParticipantsNumber());
         }
 
         if (course.getLessonsLimit() != null) {
@@ -174,7 +272,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public ResponseEntity<?> studentCourseEnrollment(String courseId, Long studentId) {
-        Course course = findByIdAndStatus(courseId, null);
+        Course course = getCourseById(courseId, null);
 
         if(course.getParticipantsLimit().equals(course.getParticipantsNumber())){
             throw new CourseException(CourseError.COURSE_IS_FULL);
@@ -198,7 +296,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     public ResponseEntity<?> restoreStudentToCourse(String courseId, Long studentId){
-        Course course = findByIdAndStatus(courseId, null);
+        Course course = getCourseById(courseId, null);
 
         if(course.getParticipantsLimit().equals(course.getParticipantsNumber())){
             throw new CourseException(CourseError.COURSE_IS_FULL);
@@ -249,7 +347,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void studentRemoveFromCourse(String courseId, Long studentId) {
-        Course courseFromDb = findByIdAndStatus(courseId, null);
+        Course courseFromDb = getCourseById(courseId, null);
 
         if (!isStudentEnrolledInCourse(courseFromDb, studentId)) {
             throw new CourseException(CourseError.STUDENT_NO_ON_THE_LIST_OF_ENROLL);
@@ -295,7 +393,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void teacherCourseEnrollment(String courseId, Long teacherId) {
-        Course course = findByIdAndStatus(courseId, null);
+        Course course = getCourseById(courseId, null);
 //        validateCourseStatus(course);
         TeacherDto teacherDto = teacherServiceClient.getTeacherById(teacherId);
         validateTeacherBeforeCourseEnrollment(course, teacherDto);
@@ -317,7 +415,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void teacherRemoveFromCourse(String courseId, Long teacherId) {
-        Course courseFromDb = findByIdAndStatus(courseId, null);
+        Course courseFromDb = getCourseById(courseId, null);
 
         if(!courseFromDb.getCourseTeachers().stream().anyMatch(t-> t.getTeacherId().equals(teacherId))){
             throw new CourseException(CourseError.TEACHER_NO_ON_THE_LIST_OF_ENROLL);
@@ -340,55 +438,9 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseStudentDto> getCourseMembers(String courseId) {
-        Course course = findByIdAndStatus(courseId, null);
-        List<CourseStudents> courseStudents = course.getCourseStudents();
-        if (courseStudents.isEmpty()) {
-            throw new CourseException(CourseError.COURSE_STUDENT_LIST_IS_EMPTY);
-        }
-        List<Long> idNumbers = courseStudents.stream()
-                .map(CourseStudents::getStudentId)
-                .collect(Collectors.toList());
-
-        List<StudentDto> studentsFromDb = studentServiceClient.getStudentsByIdNumber(idNumbers);
-
-        List<CourseStudentDto> courseStudentList = new ArrayList<>();
-
-        for (StudentDto student: studentsFromDb ){
-
-           Long id = student.getId();
-           String firstName = student.getFirstName();
-           String lastName = student.getLastName();
-
-            Optional<CourseStudents> first = courseStudents.stream().filter(s -> s.getStudentId().equals(id)).findFirst();
-            LocalDateTime enrollmentDate = first.get().getEnrollmentDate();
-            Status status = first.get().getStatus();
-
-            courseStudentList.add(new CourseStudentDto(id, firstName, lastName, enrollmentDate, status));
-
-        }
-
-    return courseStudentList;
-    }
-
-    @Override
-    public List<TeacherDto> getCourseTeachers(String courseId) {
-        Course course = findByIdAndStatus(courseId, null);
-        List<CourseTeachers> courseTeachers = course.getCourseTeachers();
-        if (courseTeachers.isEmpty()) {
-            throw new CourseException(CourseError.COURSE_TEACHER_LIST_IS_EMPTY);
-        }
-        List<Long> idNumbers = courseTeachers.stream()
-                .map(CourseTeachers::getTeacherId)
-                .collect(Collectors.toList());
-
-        return teacherServiceClient.getTeachersByIdNumber(idNumbers);
-    }
-
-    @Override
     public void changeCourseMemberStatus(String courseId, Long studentId, Status status) {
 
-        Course courseFromDb = findByIdAndStatus(courseId, null);
+        Course courseFromDb = getCourseById(courseId, null);
 
         courseFromDb.getCourseStudents().stream().map(student -> {
             if (student.getStudentId().equals(studentId)) {
@@ -404,35 +456,8 @@ public class CourseServiceImpl implements CourseService {
 
     }
 
-    private void isCourseStartDateIsAfterCourseEndDate(LocalDateTime startDate, LocalDateTime endTime) {
-        if(startDate.isAfter(endTime) || startDate.isEqual(endTime)){
-            throw new CourseException(CourseError.COURSE_START_DATE_IS_AFTER_END_DATE);
-        }
-    }
-
-    private void isCourseEndDateIsBeforeCourseStartDate(LocalDateTime endDate, LocalDateTime startTime) {
-        if(endDate.isBefore(startTime) || endDate.isEqual(startTime)){
-            throw new CourseException(CourseError.COURSE_END_DATE_IS_BEFORE_START_DATE);
-        }
-    }
-
-    private Course updateCourseStatus(Course course){
-
-        if(course.getStartDate().isAfter(LocalDateTime.now())){
-            course.setStatus(Status.INACTIVE);
-        }
-
-        if(course.getStartDate().isBefore(LocalDateTime.now()) && course.getEndDate().isAfter(LocalDateTime.now())){
-            course.setStatus(Status.ACTIVE);
-        }
 
 
 
-        if(course.getEndDate().isBefore(LocalDateTime.now())){
-            course.setStatus(Status.FINISHED);
-        }
-
-        return courseRepository.save(course);
-    }
 
 }

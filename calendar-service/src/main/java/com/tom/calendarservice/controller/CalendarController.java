@@ -11,17 +11,33 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin( origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PATCH})
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PATCH})
 @AllArgsConstructor
 @RequestMapping("/calendar")
 public class CalendarController {
     private static Logger logger = LoggerFactory.getLogger(CalendarController.class);
     private final CalendarService calendarService;
 
+    //sprawdzone
     @GetMapping
     public List<Calendar> getAllLessons() {
+        logger.info("Get method getAllLessons()");
         return calendarService.getAllLessons();
     }
+
+    @GetMapping("/course-lessons/{courseId}")
+    public List<Calendar> getLessonsByCourseId(@PathVariable String courseId) {
+        logger.info("Get method getLessonsByCourseId() courseId: {}", courseId);
+        return calendarService.getLessonsByCourseId(courseId);
+    }
+
+    @GetMapping("/number-course-lessons/{courseId}")
+    public int getLessonsNumberByCourseId(@PathVariable String courseId) {
+        logger.info("Get method getLessonsNumberByCourseId()");
+        return calendarService.getLessonsNumberByCourseId(courseId);
+    }
+    //    nie sprawdzone
+
 
     @GetMapping("/{id}")
     public Calendar getLessonById(@PathVariable String id) {
@@ -60,47 +76,39 @@ public class CalendarController {
         return calendarService.getLessonsByTeacherId(teacherId);
     }
 
-    @GetMapping("/course-lessons/{courseId}")
-    public List<Calendar> getLessonsByCourseId(@PathVariable String courseId) {
-        return calendarService.getLessonsByCourseId(courseId);
-    }
-
     @DeleteMapping("/delete-course-lessons/{courseId}")
     public void deleteCourseLessons(@PathVariable String courseId) {
-       calendarService.deleteCourseLessons(courseId);
+        calendarService.deleteCourseLessons(courseId);
     }
 
-    @GetMapping("/number-course-lessons/{courseId}")
-    public int getLessonsNumberByCourseId(@PathVariable String courseId) {
-        return calendarService.getLessonsNumberByCourseId(courseId);
-    }
+
 
     @PostMapping("/enroll-lessons/{courseId}/{studentId}")
-    public ResponseEntity<?> enrollStudent(@PathVariable String courseId, @PathVariable Long studentId){
-            calendarService.enrollStudent(courseId, studentId);
+    public ResponseEntity<?> enrollStudent(@PathVariable String courseId, @PathVariable Long studentId) {
+        calendarService.enrollStudent(courseId, studentId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/un-enroll-lessons/{courseId}/{studentId}")
-    public boolean unEnrollStudent(@PathVariable String courseId, @PathVariable Long studentId){
+    public boolean unEnrollStudent(@PathVariable String courseId, @PathVariable Long studentId) {
         return calendarService.unEnrollStudent(courseId, studentId);
     }
 
     @PostMapping("/enroll-student-lessons/{lessonId}/{studentId}")
-    public ResponseEntity<?> enrollStudentLesson(@PathVariable String lessonId, @PathVariable Long studentId){
+    public ResponseEntity<?> enrollStudentLesson(@PathVariable String lessonId, @PathVariable Long studentId) {
         calendarService.enrollStudentLesson(lessonId, studentId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/un-enroll-student-lessons/{lessonId}/{studentId}")
-    public ResponseEntity<?> unEnrollStudentLesson(@PathVariable String lessonId, @PathVariable Long studentId){
+    public ResponseEntity<?> unEnrollStudentLesson(@PathVariable String lessonId, @PathVariable Long studentId) {
         calendarService.unEnrollStudentLesson(lessonId, studentId);
         return ResponseEntity.ok().build();
     }
 
 
     @GetMapping("/check-teacher-assignment/{courseId}/{studentId}")
-    public boolean isTeacherAssignedToLessonInCourse(@PathVariable String courseId, @PathVariable Long studentId){
+    public boolean isTeacherAssignedToLessonInCourse(@PathVariable String courseId, @PathVariable Long studentId) {
         return calendarService.isTeacherAssignedToLessonInCourse(courseId, studentId);
     }
 

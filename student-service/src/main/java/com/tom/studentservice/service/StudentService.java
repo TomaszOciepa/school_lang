@@ -7,7 +7,11 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface StudentService {
+    //sprawdzone
+    List<Student> getStudentsByIdNumbers(List<Long> idNumbers);
 
+
+    //nie sprawdzone
     List<Student> getAllStudents(Status status);
     Student getStudentById(Long id);
     Student getStudentByEmail(String email);
@@ -16,7 +20,7 @@ public interface StudentService {
     Student patchStudent(Long id, Student student);
     void deleteStudent(Long id);
     List<Student> getStudentsByEmails(List<String> emails);
-    List<Student> getStudentsByIdNumber(List<Long> idNumbers);
+
     List<Student> findAllByIdNotInAndStatus(List<Long> idNumbers);
 
 }

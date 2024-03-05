@@ -53,9 +53,9 @@ class CourseControllerTest {
         //given
         List<Course> mockCourseList = prepareCourseData();
         Status mockStatus = Status.ACTIVE;
-        given(courseService.findAllByStatus(mockStatus)).willReturn(mockCourseList);
+        given(courseService.getAllByStatus(mockStatus)).willReturn(mockCourseList);
         //when
-        List<Course> result = courseController.findAllByStatus(mockStatus);
+        List<Course> result = courseController.getAllByStatus(mockStatus);
         //then
         assertEquals(mockCourseList, result);
     }
@@ -66,9 +66,9 @@ class CourseControllerTest {
         //given
         List<Course> mockCourseList = prepareCourseData();
         Status mockStatus = null;
-        given(courseService.findAllByStatus(mockStatus)).willReturn(mockCourseList);
+        given(courseService.getAllByStatus(mockStatus)).willReturn(mockCourseList);
         //when
-        List<Course> result = courseController.findAllByStatus(mockStatus);
+        List<Course> result = courseController.getAllByStatus(mockStatus);
         //then
         assertEquals(mockCourseList, result);
     }
@@ -79,9 +79,9 @@ class CourseControllerTest {
         //given
         Course mockCourse = prepareCourse();
         String mockId = "1111";
-        given(courseService.findByIdAndStatus(mockId, null)).willReturn(mockCourse);
+        given(courseService.getCourseById(mockId, null)).willReturn(mockCourse);
         //when
-        Course result = courseController.findByIdAndStatus(mockId, null);
+        Course result = courseController.getCourseById(mockId, null);
         //then
         assertEquals(mockCourse, result);
     }

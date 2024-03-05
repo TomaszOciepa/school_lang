@@ -2,7 +2,7 @@ package com.tom.calendarservice.exception;
 
 public enum CalendarError {
 
-    CALENDAR_NOT_FOUND("Calendar does not exists"),
+        CALENDAR_NOT_FOUND("Calendar does not exists"),
     CALENDAR_LESSONS_NOT_FOUND("Lessons does not exists"),
     LESSON_START_DATE_IS_AFTER_END_DATE("Lesson start date is after lesson end date."),
 

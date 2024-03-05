@@ -287,7 +287,7 @@ class StudentServiceImplTest {
         List<Long> mockStudentsIdNumberList = Arrays.asList(1L, 2L);
         given(studentRepository.findAllByIdIn(mockStudentsIdNumberList)).willReturn(mockStudentList);
         //when
-        List<Student> result = studentServiceImpl.getStudentsByIdNumber(mockStudentsIdNumberList);
+        List<Student> result = studentServiceImpl.getStudentsByIdNumbers(mockStudentsIdNumberList);
         //then
         assertEquals(mockStudentList, result);
     }

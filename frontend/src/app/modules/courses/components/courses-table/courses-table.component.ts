@@ -34,7 +34,7 @@ export class CoursesTableComponent implements AfterViewInit {
   constructor(private courseService: CourseService) {}
 
   async ngAfterViewInit(): Promise<void> {
-    this.courseService.getCourses().subscribe({
+    this.courseService.getAllByStatus().subscribe({
       next: (course) => {
         this.dataSource = new MatTableDataSource<Course>(course);
         this.dataSource.paginator = this.paginator;

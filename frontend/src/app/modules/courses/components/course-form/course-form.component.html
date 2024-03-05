@@ -1,6 +1,5 @@
 <div class="teacher-form-wrapper mt-3">
   <h2 *ngIf="!editMode">Dodaj kurs:</h2>
-
   <form [formGroup]="courseForm" (ngSubmit)="onAddCourse()">
     <div>
       <mat-form-field>
@@ -11,21 +10,6 @@
         }}</mat-error>
       </mat-form-field>
     </div>
-    <!-- <div>
-      <mat-form-field>
-        <mat-label>Status</mat-label>
-        <mat-select formControlName="status">
-          <mat-option value="ACTIVE">ACTIVE</mat-option>
-          <mat-option value="INACTIVE">INACTIVE</mat-option>
-          <mat-option value="FULL">FULL</mat-option>
-          <mat-option value="FINISHED">FINISHED</mat-option>
-        </mat-select>
-   
-        <mat-error *ngIf="controls.status.invalid">{{
-          getErrorMessage(controls.status)
-        }}</mat-error>
-      </mat-form-field>
-    </div> -->
     <div>
       <mat-form-field>
         <mat-label>Maksymalna ilość uczniów</mat-label>
@@ -86,6 +70,5 @@
         {{ editMode ? "Zapisz" : "Dodaj nowy kurs" }}
       </button>
     </div>
-    <!-- <app-alert *ngIf="errorMessage" [text]="errorMessage"></app-alert> -->
   </form>
 </div>

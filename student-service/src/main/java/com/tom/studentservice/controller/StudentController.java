@@ -4,19 +4,31 @@ import com.tom.studentservice.model.Status;
 import com.tom.studentservice.model.Student;
 import com.tom.studentservice.service.StudentService;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@CrossOrigin( origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PATCH})
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PATCH})
 @AllArgsConstructor
 @RequestMapping("/student")
 public class StudentController {
 
+    private static Logger logger = LoggerFactory.getLogger(StudentController.class);
     private final StudentService studentService;
 
+    //    sprawdzone
+
+    @PostMapping("/idNumbers")
+    public List<Student> getStudentsByIdNumbers(@RequestBody List<Long> idNumbers) {
+        logger.info("Post method getStudentsByIdNumber().");
+        return studentService.getStudentsByIdNumbers(idNumbers);
+    }
+
+    //    nie sprawdzone
     @PreAuthorize("hasRole('admin')")
     @GetMapping
     public List<Student> getAllStudents(@RequestParam(required = false) Status status) {
@@ -58,10 +70,6 @@ public class StudentController {
         return studentService.getStudentsByEmails(emails);
     }
 
-    @PostMapping("/idNumbers")
-    public List<Student> getStudentsByIdNumber(@RequestBody List<Long> idNumbers) {
-        return studentService.getStudentsByIdNumber(idNumbers);
-    }
 
     @PostMapping("/notIdNumbers")
     public List<Student> getStudentsByNotIdNumber(@RequestBody List<Long> idNumbers) {

@@ -258,9 +258,9 @@ class StudentControllerTest {
         //given
         List<Student> mockStudentList = prepareStudentsData();
         List<Long> mockStudentsIdNumberList= Arrays.asList(1L, 2L);
-        given(studentService.getStudentsByIdNumber(mockStudentsIdNumberList)).willReturn(mockStudentList);
+        given(studentService.getStudentsByIdNumbers(mockStudentsIdNumberList)).willReturn(mockStudentList);
         //when
-        List<Student> result = studentController.getStudentsByIdNumber(mockStudentsIdNumberList);
+        List<Student> result = studentController.getStudentsByIdNumbers(mockStudentsIdNumberList);
         //then
         assertEquals(mockStudentList, result);
     }

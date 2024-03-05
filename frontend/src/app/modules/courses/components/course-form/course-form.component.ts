@@ -19,13 +19,9 @@ import { FormsService } from 'src/app/modules/core/services/forms.service';
   styleUrls: ['./course-form.component.css'],
 })
 export class CourseFormComponent {
-  courseForm!: FormGroup<PostCourseForm>;
   @Input() editMode = false;
   @Input() course: Course = {} as Course;
   @Output() closeDialog = new EventEmitter<void>();
-
-  postCourse: PostCourse = {} as PostCourse;
-  errMsg!: string;
 
   observer: Observer<unknown> = {
     next: () => {
@@ -46,6 +42,10 @@ export class CourseFormComponent {
     },
   };
 
+  courseForm!: FormGroup<PostCourseForm>;
+  postCourse: PostCourse = {} as PostCourse;
+  errMsg!: string;
+
   constructor(
     private formService: FormsService,
     private courseService: CourseService,
@@ -57,13 +57,12 @@ export class CourseFormComponent {
     this.initForm();
   }
 
+  getErrorMessage(control: FormControl) {
+    return this.formService.getErrorMessage(control);
+  }
+
   get controls() {
     return this.courseForm.controls;
-  }
-  private hideErrorMsg() {
-    setTimeout(() => {
-      this.errMsg = '';
-    }, 3000);
   }
 
   private initForm() {
@@ -76,10 +75,6 @@ export class CourseFormComponent {
           Validators.maxLength(50),
         ],
       }),
-      // status: new FormControl(this.editMode ? this.course.status : '', {
-      //   nonNullable: true,
-      //   validators: [Validators.required],
-      // }),
       participantsLimit: new FormControl(
         this.editMode ? this.course.participantsLimit : 0,
         {
@@ -120,10 +115,6 @@ export class CourseFormComponent {
     });
   }
 
-  getErrorMessage(control: FormControl) {
-    return this.formService.getErrorMessage(control);
-  }
-
   onAddCourse() {
     this.generatePostCourseObj();
 
@@ -134,19 +125,13 @@ export class CourseFormComponent {
       return;
     }
 
-    this.courseService.addNewCourse(this.postCourse).subscribe(this.observer);
+    this.courseService.addCourse(this.postCourse).subscribe(this.observer);
   }
 
   private generatePostCourseObj() {
-    // this.courseForm.get('name')?.dirty;
-
     if (this.courseForm.get('name')?.dirty) {
       this.postCourse.name = this.courseForm.getRawValue().name;
     }
-
-    // if (this.courseForm.get('status')?.dirty) {
-    //   this.postCourse.status = this.courseForm.getRawValue().status;
-    // }
 
     if (this.courseForm.get('startDate')?.dirty) {
       this.postCourse.startDate = this.parseDateToStringFormat(
@@ -168,15 +153,19 @@ export class CourseFormComponent {
     if (this.courseForm.get('lessonsLimit')?.dirty) {
       this.postCourse.lessonsLimit = this.courseForm.getRawValue().lessonsLimit;
     }
+  }
 
-    console.log(this.postCourse);
+  emitCLoseDialog() {
+    this.closeDialog.emit();
   }
 
   private parseDateToStringFormat(date: string): string {
     return this.dateParser.parseDate(date);
   }
 
-  emitCLoseDialog() {
-    this.closeDialog.emit();
+  private hideErrorMsg() {
+    setTimeout(() => {
+      this.errMsg = '';
+    }, 3000);
   }
 }
