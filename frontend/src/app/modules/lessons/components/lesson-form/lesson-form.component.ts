@@ -152,7 +152,6 @@ export class LessonFormComponent {
 
   onAddLesson() {
     this.generatedLessonObj();
-
     if (this.editMode) {
       this.lessonsService
         .patchLesson(this.lesson.id, this.newLesson)

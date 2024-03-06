@@ -151,7 +151,8 @@ public class CalendarServiceImpl implements CalendarService {
             logger.info("Changing description");
             lessonFromDB.setDescription(lesson.getDescription());
         }
-        if (lesson.getAttendanceList() != null) {
+
+        if (lesson.getAttendanceList() != null && !lesson.getAttendanceList().isEmpty()) {
             logger.info("Changing attendance list");
             lessonFromDB.setAttendanceList(lesson.getAttendanceList());
         }

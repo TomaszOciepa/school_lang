@@ -69,9 +69,7 @@ export class AttendanceListComponent implements OnInit {
   save() {
     this.newLesson.attendanceList = this.lesson.attendanceList;
     this.lessonsService.patchLesson(this.lesson.id, this.newLesson).subscribe({
-      next: (lesson) => {
-        console.log(lesson);
-      },
+      next: (lesson) => {},
       error: (err) => {
         console.log(err);
       },

@@ -51,7 +51,6 @@ export class LesonsTableComponent implements AfterViewInit {
   private getLessonsByCourseId() {
     this.lessonsService.getLessonsByCourseId(this.courseId).subscribe({
       next: (lesson) => {
-        console.log(lesson);
         this.lessonsNumber = lesson.length;
         this.dataSource = new MatTableDataSource<Lesson>(lesson);
         this.dataSource.paginator = this.paginator;
