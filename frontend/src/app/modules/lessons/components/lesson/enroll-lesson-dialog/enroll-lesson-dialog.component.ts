@@ -1,5 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ErrorHandler,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -36,6 +42,7 @@ export class EnrollLessonDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA)
     private data: {
       lessonId: string;
+      listUserId: number[];
     },
 
     private studentServices: StudentService,
@@ -45,9 +52,18 @@ export class EnrollLessonDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.lessonId = this.data.lessonId;
+    this.usersIdEnrolled = this.data.listUserId;
   }
 
   async ngAfterViewInit(): Promise<void> {
+    if (this.usersIdEnrolled == undefined) {
+      this.getStudents();
+    } else {
+      this.getStudentsByIdNumberNotEqual();
+    }
+  }
+
+  private getStudents() {
     this.studentServices.getStudents().subscribe({
       next: (students) => {
         this.students = students;
@@ -62,6 +78,20 @@ export class EnrollLessonDialogComponent implements OnInit {
     });
   }
 
+  getStudentsByIdNumberNotEqual() {
+    this.studentServices
+      .getStudentsByIdNumberNotEqual(this.usersIdEnrolled)
+      .subscribe({
+        next: (clients) => {
+          this.dataSource = new MatTableDataSource<User>(clients);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+        },
+        error: (err: ErrorHandler) => {
+          console.log(err);
+        },
+      });
+  }
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();

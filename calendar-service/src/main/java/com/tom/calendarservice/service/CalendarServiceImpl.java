@@ -238,6 +238,13 @@ public class CalendarServiceImpl implements CalendarService {
         calendarRepository.save(lessonFromDb);
     }
 
+    public void unEnrollStudentLesson(String lessonId, Long studentId) {
+        logger.info("Trying unEnrollStudentLesson lessonId: {}, studentId: {}", lessonId, studentId);
+        Calendar lessonFromDb = getLessonById(lessonId);
+        lessonFromDb.getAttendanceList().removeIf(s -> s.getStudentId().equals(studentId));
+        calendarRepository.save(lessonFromDb);
+    }
+
     private Calendar updateLessonStatus(Calendar lesson) {
         logger.info("Updating lesson status.");
         if (lesson.getStartDate().isAfter(LocalDateTime.now())) {
@@ -431,13 +438,4 @@ public class CalendarServiceImpl implements CalendarService {
         }
         return lessons;
     }
-
-    public void unEnrollStudentLesson(String lessonId, Long studentId) {
-        Calendar lessonFromDb = getLessonById(lessonId);
-
-        lessonFromDb.getAttendanceList().removeIf(s -> s.getStudentId().equals(studentId));
-        calendarRepository.save(lessonFromDb);
-    }
-
-
 }

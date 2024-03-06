@@ -11,7 +11,7 @@ export class LessonsService {
   apiUrl = environment.apiUrlLessons;
   constructor(private http: HttpClient) {}
 
-  //sprawdzone
+  //ok
   getAllLessons(): Observable<Lesson[]> {
     return this.http.get<Lesson[]>(this.apiUrl);
   }
@@ -44,7 +44,6 @@ export class LessonsService {
       []
     );
   }
-  // nie sprawdzone
 
   unEnrollStudentLesson(
     lessonId: string,

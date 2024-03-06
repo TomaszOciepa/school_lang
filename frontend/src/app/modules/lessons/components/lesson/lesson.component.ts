@@ -89,6 +89,9 @@ export class LessonComponent implements OnInit {
     const dialogRef = this.dialog.open(EnrollLessonDialogComponent, {
       data: {
         lessonId: this.lesson.id,
+        listUserId: this.lesson.attendanceList.map(
+          (student) => student.studentId
+        ),
       },
       width: '600px',
       maxWidth: '600px',

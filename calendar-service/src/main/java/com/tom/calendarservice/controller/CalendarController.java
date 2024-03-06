@@ -92,6 +92,12 @@ public class CalendarController {
         calendarService.enrollStudentLesson(lessonId, studentId);
         return ResponseEntity.ok().build();
     }
+    @PostMapping("/un-enroll-student-lessons/{lessonId}/{studentId}")
+    public ResponseEntity<?> unEnrollStudentLesson(@PathVariable String lessonId, @PathVariable Long studentId) {
+        logger.info("Post method unEnrollStudentLesson().");
+        calendarService.unEnrollStudentLesson(lessonId, studentId);
+        return ResponseEntity.ok().build();
+    }
     //    nie sprawdzone
     @GetMapping("/student-lessons/{studentId}")
     public List<Calendar> getLessonByStudentId(@PathVariable Long studentId) {
@@ -101,12 +107,6 @@ public class CalendarController {
     @GetMapping("/teacher-lessons/{teacherId}")
     public List<Calendar> getLessonByTeacherId(@PathVariable Long teacherId) {
         return calendarService.getLessonsByTeacherId(teacherId);
-    }
-
-    @PostMapping("/un-enroll-student-lessons/{lessonId}/{studentId}")
-    public ResponseEntity<?> unEnrollStudentLesson(@PathVariable String lessonId, @PathVariable Long studentId) {
-        calendarService.unEnrollStudentLesson(lessonId, studentId);
-        return ResponseEntity.ok().build();
     }
 
 }
