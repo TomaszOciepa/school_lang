@@ -66,7 +66,6 @@ export class LesonsTableComponent implements AfterViewInit {
   private getAllLessons() {
     this.lessonsService.getAllLessons().subscribe({
       next: (lesson) => {
-        console.log(lesson);
         this.dataSource = new MatTableDataSource<Lesson>(lesson);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;

@@ -98,19 +98,6 @@ class CourseControllerTest {
     }
 
     @Test
-    void putCourse() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        Course mockCourse = prepareCourse();
-        String mockId = "1111";
-        given(courseService.putCourse(mockId, mockCourse)).willReturn(mockCourse);
-        //when
-        Course result = courseController.putCourse(mockId, mockCourse);
-        //then
-        assertEquals(mockCourse, result);
-    }
-
-    @Test
     void patchCourse() {
         MockitoAnnotations.openMocks(this);
         //given

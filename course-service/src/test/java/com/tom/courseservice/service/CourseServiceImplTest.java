@@ -146,46 +146,6 @@ class CourseServiceImplTest {
     }
 
     @Test
-    void putCourseShouldBeReturnCourse() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        Course mockCourse = prepareCourse();
-        String mockId = "1111";
-        given(courseRepository.findById(mockId)).willReturn(Optional.ofNullable(mockCourse));
-        given(courseRepository.save(mockCourse)).willReturn(mockCourse);
-        //when
-        Course result = courseServiceImpl.putCourse(mockId, mockCourse);
-        //then
-        assertEquals(mockCourse, result);
-    }
-
-    @Test
-    void putCourseShouldBeReturnExceptionCourseNotFound() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        Course mockCourse = prepareCourse();
-        String mockId = "1111";
-        CourseException mockException = new CourseException(CourseError.COURSE_NOT_FOUND);
-        given(courseRepository.findById(mockId)).willThrow(mockException);
-        //when
-        //then
-        assertThrows(CourseException.class, () -> courseServiceImpl.putCourse(mockId, mockCourse));
-    }
-
-    @Test
-    void putCourseShouldBeReturnExceptionCourseNameAlreadyExists() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        Course mockCourse = prepareCourse();
-        String mockId = "1111";
-        CourseException mockException = new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
-        given(courseRepository.findById(mockId)).willThrow(mockException);
-        //when
-        //then
-        assertThrows(CourseException.class, () -> courseServiceImpl.putCourse(mockId, mockCourse));
-    }
-
-    @Test
     void patchCourseShouldBeReturnCourse() {
         MockitoAnnotations.openMocks(this);
         //given
@@ -273,7 +233,7 @@ class CourseServiceImplTest {
         courseMock.incrementParticipantsNumber();
         given(courseRepository.findById(courseIdMock)).willReturn(Optional.ofNullable(courseMock));
         //when
-        courseServiceImpl.studentRemoveFromCourse(courseIdMock, studentIdMock);
+        courseServiceImpl.studentCourseUnEnrollment(courseIdMock, studentIdMock);
         //then
         verify(courseRepository, times(1)).findById(courseIdMock);
         verify(courseRepository, times(1)).save(courseMock);

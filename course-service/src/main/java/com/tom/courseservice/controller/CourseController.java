@@ -22,8 +22,6 @@ public class CourseController {
     private static Logger logger = LoggerFactory.getLogger(CourseController.class);
     private final CourseService courseService;
 
-
-    // sprawdzone
     @PostMapping
     Course addCourse(@RequestBody Course course) {
         logger.info("Post method addCourse().");
@@ -86,32 +84,18 @@ public class CourseController {
         courseService.assignStudentToCourse(courseId, studentId);
         return ResponseEntity.ok().build();
     }
-//    nie sprawdzone
-
-
-    @PutMapping("/{id}")
-    Course putCourse(@PathVariable String id, @RequestBody Course course) {
-        return courseService.putCourse(id, course);
-    }
-
-
-    @PostMapping("/restore/{courseId}/student/{studentId}")
-    public ResponseEntity<?> restoreStudentToCourse(@PathVariable String courseId, @PathVariable Long studentId) {
-        courseService.restoreStudentToCourse(courseId, studentId);
-
-        return ResponseEntity.ok().build();
-    }
 
     @DeleteMapping("/{courseId}/student/{studentId}")
     public ResponseEntity<?> studentCourseUnEnrollment(@PathVariable String courseId, @PathVariable Long studentId) {
-        courseService.studentRemoveFromCourse(courseId, studentId);
-
+        logger.info("Delete method studentCourseUnEnrollment()");
+        courseService.studentCourseUnEnrollment(courseId, studentId);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/member-status/course/{courseId}/student/{studentId}/status")
-    public ResponseEntity<?> changeCourseMemberStatus(@PathVariable String courseId, @PathVariable Long studentId, @RequestParam(required = true) Status status) {
-        courseService.changeCourseMemberStatus(courseId, studentId, status);
+    @PostMapping("/restore/{courseId}/student/{studentId}")
+    public ResponseEntity<?> restoreStudentToCourse(@PathVariable String courseId, @PathVariable Long studentId) {
+        logger.info("Post method restoreStudentToCourse()");
+        courseService.restoreStudentToCourse(courseId, studentId);
         return ResponseEntity.ok().build();
     }
 }

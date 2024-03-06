@@ -20,18 +20,16 @@ public interface CalendarService {
     void deleteLessonsById(String id);
     boolean isTeacherAssignedToLessonInCourse(String courseId, Long teacherId);
     void enrollStudent(String courseId, Long studentId);
+    public boolean unEnrollStudent(String courseId, Long studentId);
+    void enrollStudentLesson(String lessonId, Long studentId);
 //    nie sprawdzone
-
-    Calendar putLesson(String id, Calendar calendar);
 
     //    Calendar addEvent(EventRequest eventRequest);
     List<Calendar> getLessonsByStudentId(Long studentId);
 
     List<Calendar> getLessonsByTeacherId(Long teacherId);
 
-    public boolean unEnrollStudent(String courseId, Long studentId);
 
-    void enrollStudentLesson(String lessonId, Long studentId);
 
     void unEnrollStudentLesson(String lessonId, Long studentId);
 

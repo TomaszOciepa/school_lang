@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @FeignClient(name = "CALENDAR-SERVICE")
 public interface CalendarServiceClient {
-    //    sprawdzone
+
     @GetMapping("/calendar/number-course-lessons/{courseId}")
     public int getLessonsNumberByCourseId(@PathVariable String courseId);
 
@@ -22,9 +22,6 @@ public interface CalendarServiceClient {
     @PostMapping("/calendar/enroll-lessons/{courseId}/{studentId}")
     ResponseEntity<?> enrollStudent(@PathVariable String courseId, @PathVariable Long studentId);
 
-    //    nie sprawdzone
-
     @GetMapping("/calendar/un-enroll-lessons/{courseId}/{studentId}")
     public boolean unEnrollStudent(@PathVariable String courseId, @PathVariable Long studentId);
-
 }

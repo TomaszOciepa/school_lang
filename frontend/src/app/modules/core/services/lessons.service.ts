@@ -35,7 +35,6 @@ export class LessonsService {
     return this.http.delete<Record<string, never>>(`${this.apiUrl}/${id}`);
   }
 
-  // nie sprawdzone
   enrollStudentLesson(
     lessonId: string,
     studentId: number
@@ -45,6 +44,7 @@ export class LessonsService {
       []
     );
   }
+  // nie sprawdzone
 
   unEnrollStudentLesson(
     lessonId: string,

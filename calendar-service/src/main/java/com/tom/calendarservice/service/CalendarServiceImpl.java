@@ -88,45 +88,6 @@ public class CalendarServiceImpl implements CalendarService {
         return calendarRepository.save(lesson);
     }
 
-    private Calendar createSingleLesson(Calendar calendar) {
-        logger.info("Creating single lesson.");
-        isTeacherActive(calendar.getTeacherId());
-
-        if (isTeacherHaveLessons(calendar.getTeacherId())) {
-            List<Calendar> lessons = getLessonsByTeacherId(calendar.getTeacherId());
-            isTeacherAvailableOnTimeSlot(lessons, calendar.getStartDate(), calendar.getEndDate());
-        }
-        return calendar;
-    }
-
-    private Calendar updateLessonStatus(Calendar lesson) {
-        logger.info("Updating lesson status.");
-        if (lesson.getStartDate().isAfter(LocalDateTime.now())) {
-            logger.info("Changing lesson status: {}", Status.INACTIVE);
-            lesson.setStatus(Status.INACTIVE);
-        }
-
-        if (lesson.getStartDate().isBefore(LocalDateTime.now()) && lesson.getEndDate().isAfter(LocalDateTime.now())) {
-            logger.info("Changing lesson status: {}", Status.ACTIVE);
-            lesson.setStatus(Status.ACTIVE);
-        }
-
-        if (lesson.getEndDate().isBefore(LocalDateTime.now())) {
-            logger.info("Changing lesson status: {}", Status.FINISHED);
-            lesson.setStatus(Status.FINISHED);
-        }
-
-        return calendarRepository.save(lesson);
-    }
-
-    private void isLessonStartDateIsAfterLessonEndDate(LocalDateTime startDate, LocalDateTime endDate) {
-        logger.info("Checking isLessonStartDateIsAfterLessonEndDate");
-        if (startDate.isAfter(endDate)) {
-            logger.info("Lesson start date is after lesson end date.");
-            throw new CalendarException(CalendarError.LESSON_START_DATE_IS_AFTER_END_DATE);
-        }
-    }
-
     @Override
     public List<Calendar> getLessonsByTeacherId(Long teacherId) {
         logger.info("Fetching lessons by teacher id.");
@@ -190,6 +151,10 @@ public class CalendarServiceImpl implements CalendarService {
             logger.info("Changing description");
             lessonFromDB.setDescription(lesson.getDescription());
         }
+        if (lesson.getAttendanceList() != null) {
+            logger.info("Changing attendance list");
+            lessonFromDB.setAttendanceList(lesson.getAttendanceList());
+        }
         return calendarRepository.save(lessonFromDB);
     }
 
@@ -224,6 +189,93 @@ public class CalendarServiceImpl implements CalendarService {
         }).collect(Collectors.toList());
     }
 
+    public boolean unEnrollStudent(String courseId, Long studentId) {
+        logger.info("unEnrollStudent courseId: {}, studentId: {}", courseId, studentId);
+        List<Calendar> lessons = getLessonsByCourseId(courseId);
+
+        if (lessons.isEmpty()) {
+            logger.info("No lessons for this course.");
+            return false;
+        }
+
+        boolean result = false;
+
+        for (Calendar lesson : lessons) {
+
+            if (lesson.getStartDate().isBefore(LocalDateTime.now())) {
+                logger.info("Lesson id: {} is finished.", lesson.getId());
+
+                boolean isStudentPresent = lesson.getAttendanceList().stream()
+                        .anyMatch(s -> s.getStudentId().equals(studentId) && s.isPresent());
+
+                if (isStudentPresent) {
+                    logger.warn("Can't remove a student from this lesson. Because Student is present on this lesson.", lesson.getId());
+                    result = true;
+                } else {
+                    lesson.getAttendanceList().removeIf(s -> s.getStudentId().equals(studentId));
+                    calendarRepository.save(lesson);
+                }
+            } else if (lesson.getStartDate().isAfter(LocalDateTime.now())) {
+                logger.info("Lesson id: {}.", lesson.getId());
+                logger.info("Remove student from this lesson.", lesson.getId());
+                lesson.getAttendanceList().removeIf(s -> s.getStudentId().equals(studentId));
+                calendarRepository.save(lesson);
+            }
+        }
+        return result;
+    }
+
+    public void enrollStudentLesson(String lessonId, Long studentId) {
+        logger.info("Trying enrollStudentLesson lessonId: {}, studentId: {}", lessonId, studentId);
+        Calendar lessonFromDb = getLessonById(lessonId);
+
+        if (lessonFromDb.getAttendanceList().stream().anyMatch(s -> s.getStudentId().equals(studentId))) {
+            logger.warn("Student is already enrolled in the lesson");
+            throw new CalendarException(CalendarError.STUDENT_ALREADY_ENROLLED);
+        }
+
+        lessonFromDb.getAttendanceList().add(new AttendanceList(studentId));
+        calendarRepository.save(lessonFromDb);
+    }
+
+    private Calendar updateLessonStatus(Calendar lesson) {
+        logger.info("Updating lesson status.");
+        if (lesson.getStartDate().isAfter(LocalDateTime.now())) {
+            logger.info("Changing lesson status: {}", Status.INACTIVE);
+            lesson.setStatus(Status.INACTIVE);
+        }
+
+        if (lesson.getStartDate().isBefore(LocalDateTime.now()) && lesson.getEndDate().isAfter(LocalDateTime.now())) {
+            logger.info("Changing lesson status: {}", Status.ACTIVE);
+            lesson.setStatus(Status.ACTIVE);
+        }
+
+        if (lesson.getEndDate().isBefore(LocalDateTime.now())) {
+            logger.info("Changing lesson status: {}", Status.FINISHED);
+            lesson.setStatus(Status.FINISHED);
+        }
+
+        return calendarRepository.save(lesson);
+    }
+
+    private void isLessonStartDateIsAfterLessonEndDate(LocalDateTime startDate, LocalDateTime endDate) {
+        logger.info("Checking isLessonStartDateIsAfterLessonEndDate");
+        if (startDate.isAfter(endDate)) {
+            logger.info("Lesson start date is after lesson end date.");
+            throw new CalendarException(CalendarError.LESSON_START_DATE_IS_AFTER_END_DATE);
+        }
+    }
+
+    private Calendar createSingleLesson(Calendar calendar) {
+        logger.info("Creating single lesson.");
+        isTeacherActive(calendar.getTeacherId());
+        if (isTeacherHaveLessons(calendar.getTeacherId())) {
+            List<Calendar> lessons = getLessonsByTeacherId(calendar.getTeacherId());
+            isTeacherAvailableOnTimeSlot(lessons, calendar.getStartDate(), calendar.getEndDate());
+        }
+        return calendar;
+    }
+
     private Calendar createCourseLesson(Calendar calendar) {
         logger.info("Creating course lesson");
 
@@ -253,8 +305,10 @@ public class CalendarServiceImpl implements CalendarService {
         logger.info("Checking isTeacherHaveLessons");
         List<Calendar> lessons = getLessonsByTeacherId(teacherId);
         if (lessons.isEmpty()) {
+            logger.info("Teacher don't have lessons.");
             return false;
         } else {
+            logger.info("Teacher have lessons.");
             return true;
         }
     }
@@ -368,21 +422,6 @@ public class CalendarServiceImpl implements CalendarService {
 
 
     //nie sprawdzone
-    @Override
-    public Calendar putLesson(String id, Calendar calendar) {
-        return calendarRepository.findById(id)
-                .map(calendarFromDb -> {
-                    calendarFromDb.setEventName(calendar.getEventName());
-                    calendarFromDb.setStartDate(calendar.getStartDate());
-                    calendarFromDb.setEndDate(calendar.getEndDate());
-                    calendarFromDb.setAttendanceList(calendar.getAttendanceList());
-                    calendarFromDb.setTeacherId(calendar.getTeacherId());
-                    calendarFromDb.setCourseId(calendar.getCourseId());
-                    calendarFromDb.setDescription(calendar.getDescription());
-                    return calendarRepository.save(calendarFromDb);
-                })
-                .orElseThrow(() -> new CalendarException(CalendarError.CALENDAR_NOT_FOUND));
-    }
 
     @Override
     public List<Calendar> getLessonsByStudentId(Long studentId) {
@@ -391,41 +430,6 @@ public class CalendarServiceImpl implements CalendarService {
             throw new CalendarException(CalendarError.CALENDAR_LESSONS_NOT_FOUND);
         }
         return lessons;
-    }
-
-    public boolean unEnrollStudent(String courseId, Long studentId) {
-        logger.info("Removing a student to the lesson.");
-        List<Calendar> lessons = getLessonsByCourseId(courseId);
-
-        if (lessons.isEmpty()) {
-            return false;
-        }
-
-        boolean result = false;
-
-        for (Calendar lesson : lessons) {
-
-            if (lesson.getStartDate().isBefore(LocalDateTime.now())) {
-//                If the lesson has already taken place, return true
-                result = true;
-            } else if (lesson.getStartDate().isAfter(LocalDateTime.now())) {
-                lesson.getAttendanceList().removeIf(s -> s.getStudentId().equals(studentId));
-                calendarRepository.save(lesson);
-            }
-        }
-
-        return result;
-    }
-
-    public void enrollStudentLesson(String lessonId, Long studentId) {
-        Calendar lessonFromDb = getLessonById(lessonId);
-
-        if (lessonFromDb.getAttendanceList().stream().anyMatch(s -> s.getStudentId().equals(studentId))) {
-            throw new CalendarException(CalendarError.STUDENT_ALREADY_ENROLLED);
-        }
-
-        lessonFromDb.getAttendanceList().add(new AttendanceList(studentId));
-        calendarRepository.save(lessonFromDb);
     }
 
     public void unEnrollStudentLesson(String lessonId, Long studentId) {

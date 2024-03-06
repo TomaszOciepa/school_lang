@@ -79,13 +79,20 @@ public class CalendarController {
         calendarService.enrollStudent(courseId, studentId);
         return ResponseEntity.ok().build();
     }
-    //    nie sprawdzone
 
-    @PutMapping("/{id}")
-    public Calendar putLesson(@PathVariable String id, @RequestBody Calendar calendar) {
-        return calendarService.putLesson(id, calendar);
+    @GetMapping("/un-enroll-lessons/{courseId}/{studentId}")
+    public boolean unEnrollStudent(@PathVariable String courseId, @PathVariable Long studentId) {
+        logger.info("Get method unEnrollStudent().");
+        return calendarService.unEnrollStudent(courseId, studentId);
     }
 
+    @PostMapping("/enroll-student-lessons/{lessonId}/{studentId}")
+    public ResponseEntity<?> enrollStudentLesson(@PathVariable String lessonId, @PathVariable Long studentId) {
+        logger.info("Post method enrollStudentLesson().");
+        calendarService.enrollStudentLesson(lessonId, studentId);
+        return ResponseEntity.ok().build();
+    }
+    //    nie sprawdzone
     @GetMapping("/student-lessons/{studentId}")
     public List<Calendar> getLessonByStudentId(@PathVariable Long studentId) {
         return calendarService.getLessonsByStudentId(studentId);
@@ -94,17 +101,6 @@ public class CalendarController {
     @GetMapping("/teacher-lessons/{teacherId}")
     public List<Calendar> getLessonByTeacherId(@PathVariable Long teacherId) {
         return calendarService.getLessonsByTeacherId(teacherId);
-    }
-
-    @GetMapping("/un-enroll-lessons/{courseId}/{studentId}")
-    public boolean unEnrollStudent(@PathVariable String courseId, @PathVariable Long studentId) {
-        return calendarService.unEnrollStudent(courseId, studentId);
-    }
-
-    @PostMapping("/enroll-student-lessons/{lessonId}/{studentId}")
-    public ResponseEntity<?> enrollStudentLesson(@PathVariable String lessonId, @PathVariable Long studentId) {
-        calendarService.enrollStudentLesson(lessonId, studentId);
-        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/un-enroll-student-lessons/{lessonId}/{studentId}")

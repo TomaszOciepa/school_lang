@@ -12,7 +12,7 @@ export class CourseService {
   apiUrl = environment.apiUrlCourses;
   constructor(private http: HttpClient) {}
 
-  // sprawdzone
+  // ok
   addCourse(course: PostCourse): Observable<Course> {
     return this.http.post<Course>(this.apiUrl, course);
   }
@@ -68,7 +68,15 @@ export class CourseService {
       []
     );
   }
-  // nie sprawdzone
+
+  studentCourseUnEnrollment(
+    courseId: string,
+    studentId: number
+  ): Observable<HttpStatusCode> {
+    return this.http.delete<HttpStatusCode>(
+      `${this.apiUrl}/${courseId}/student/${studentId}`
+    );
+  }
 
   restoreStudentToCourse(
     courseId: string,
@@ -77,15 +85,6 @@ export class CourseService {
     return this.http.post<HttpStatusCode>(
       `${this.apiUrl}/restore/${courseId}/student/${studentId}`,
       []
-    );
-  }
-
-  studentCourseUnEnrollment(
-    courseId: string,
-    studentId: number
-  ): Observable<HttpStatusCode> {
-    return this.http.delete<HttpStatusCode>(
-      `${this.apiUrl}/${courseId}/student/${studentId}`
     );
   }
 }

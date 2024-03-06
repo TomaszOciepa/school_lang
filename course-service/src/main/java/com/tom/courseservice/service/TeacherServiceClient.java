@@ -11,14 +11,9 @@ import java.util.List;
 
 @FeignClient(name = "TEACHER-SERVICE")
 public interface TeacherServiceClient {
-    //sprawdzone
     @PostMapping("/teacher/idNumbers")
     List<TeacherDto> getTeachersByIdNumber(@RequestBody List<Long> idNumbers);
 
     @GetMapping("/teacher/{id}")
     TeacherDto getTeacherById(@PathVariable Long id);
-
-    //nie sprawdzone
-    @GetMapping("/teacher/teacherIsActive/{teacherId}")
-    boolean teacherIsActive(@PathVariable Long teacherId);
 }

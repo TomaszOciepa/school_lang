@@ -20,11 +20,9 @@ public interface CourseService {
     void assignTeacherToCourse(String courseId, Long teacherId);
     void teacherCourseUnEnrollment(String courseId, Long teacherId);
     ResponseEntity<?> assignStudentToCourse(String courseId, Long studentId);
-//    nie sprawdzone
-    Course putCourse(String id, Course course);
+    void studentCourseUnEnrollment(String courseId, Long studentId);
     ResponseEntity<?> restoreStudentToCourse(String courseId, Long studentId);
-    void studentRemoveFromCourse(String courseId, Long studentId);
-
-    void changeCourseMemberStatus(String courseId, Long studentId, Status status);
+//    nie sprawdzone
+//    void changeCourseMemberStatus(String courseId, Long studentId, Status status);
 
 }

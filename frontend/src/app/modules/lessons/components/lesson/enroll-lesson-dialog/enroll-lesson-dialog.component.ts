@@ -71,7 +71,7 @@ export class EnrollLessonDialogComponent implements OnInit {
     }
   }
 
-  enrollLesson(userId: number) {
+  enrollStudentLesson(userId: number) {
     this.lessonService.enrollStudentLesson(this.lessonId, userId).subscribe({
       next: () => {},
       error: (err: HttpErrorResponse) => {

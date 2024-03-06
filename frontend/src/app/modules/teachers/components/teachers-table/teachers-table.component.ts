@@ -35,7 +35,6 @@ export class TeachersTableComponent implements AfterViewInit {
   async ngAfterViewInit(): Promise<void> {
     this.teacherService.getTeachers().subscribe({
       next: (clients) => {
-        console.log(clients);
         this.dataSource = new MatTableDataSource<User>(clients);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;

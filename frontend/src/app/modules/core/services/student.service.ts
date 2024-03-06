@@ -19,6 +19,10 @@ export class StudentService {
   getStudentsByIdNumberNotEqual(id: number[]): Observable<User[]> {
     return this.http.post<User[]>(this.apiUrl + '/notIdNumbers', id);
   }
+
+  getStudentsByIdNumbers(id: number[]): Observable<User[]> {
+    return this.http.post<User[]>(this.apiUrl + '/idNumbers', id);
+  }
   //nie sprawdzone
 
   getStudentById(id: number): Observable<User> {
@@ -35,9 +39,5 @@ export class StudentService {
 
   patchStudent(id: number, editedStudent: PostUser): Observable<User> {
     return this.http.patch<User>(`${this.apiUrl}/${id}`, editedStudent);
-  }
-
-  getStudentsByIdNumber(id: number[]): Observable<User[]> {
-    return this.http.post<User[]>(this.apiUrl + '/idNumbers', id);
   }
 }

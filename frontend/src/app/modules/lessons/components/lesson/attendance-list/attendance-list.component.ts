@@ -44,7 +44,7 @@ export class AttendanceListComponent implements OnInit {
   }
 
   getStudents(idList: number[]) {
-    this.studentService.getStudentsByIdNumber(idList).subscribe({
+    this.studentService.getStudentsByIdNumbers(idList).subscribe({
       next: (students) => {
         this.students = students;
         this.attendanceList.forEach((attendance) => {
@@ -63,7 +63,6 @@ export class AttendanceListComponent implements OnInit {
 
   changeAttendance(id: number) {
     this.attendanceList[id].present = !this.attendanceList[id].present;
-    console.log('lista obecności: ' + JSON.stringify(this.attendanceList));
     this.checked = true;
   }
 

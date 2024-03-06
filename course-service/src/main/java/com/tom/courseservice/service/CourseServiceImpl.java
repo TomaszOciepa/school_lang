@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,7 @@ public class CourseServiceImpl implements CourseService {
                 .map(this::updateCourseStatus)
                 .collect(Collectors.toList());
     }
+
     @Override
     public Course getCourseById(String id, Status status) {
         if (status != null) {
@@ -131,7 +133,7 @@ public class CourseServiceImpl implements CourseService {
         logger.info("Fetching course by ID from the database: {}", id);
         Course courseFromDb = courseRepository.findById(id).orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
 
-        if(course.getName() != null){
+        if (course.getName() != null) {
             logger.info("Changing the course name...");
             course.setName(course.getName().trim());
             if (!courseFromDb.getName().equals(course.getName())
@@ -144,15 +146,15 @@ public class CourseServiceImpl implements CourseService {
 
         if (course.getParticipantsLimit() != null) {
             logger.info("Changing the course participants limit...");
-            if(course.getParticipantsLimit() < courseFromDb.getParticipantsNumber() ){
+            if (course.getParticipantsLimit() < courseFromDb.getParticipantsNumber()) {
                 throw new CourseException(CourseError.COURSE_PARTICIPANTS_NUMBER_IS_BIGGER_THEN_PARTICIPANTS_LIMIT);
             }
 
-            if(course.getParticipantsLimit() == courseFromDb.getParticipantsNumber()){
+            if (course.getParticipantsLimit() == courseFromDb.getParticipantsNumber()) {
                 courseFromDb.setStatus(Status.FULL);
             }
 
-            if(course.getParticipantsLimit() > courseFromDb.getParticipantsNumber()){
+            if (course.getParticipantsLimit() > courseFromDb.getParticipantsNumber()) {
                 courseFromDb.setStatus(Status.ACTIVE);
             }
             courseFromDb.setParticipantsLimit(course.getParticipantsLimit());
@@ -160,7 +162,7 @@ public class CourseServiceImpl implements CourseService {
 
         if (course.getLessonsLimit() != null) {
             logger.info("Changing the course lessons limit...");
-            if(course.getLessonsLimit() < calendarServiceClient.getLessonsNumberByCourseId(courseFromDb.getId())){
+            if (course.getLessonsLimit() < calendarServiceClient.getLessonsNumberByCourseId(courseFromDb.getId())) {
                 throw new CourseException(CourseError.COURSE_LESSONS_NUMBER_IS_BIGGER_THEN_LESSONS_LIMIT);
             }
             courseFromDb.setLessonsLimit(course.getLessonsLimit());
@@ -208,17 +210,18 @@ public class CourseServiceImpl implements CourseService {
         logger.info("Assign teacher to course is done.");
         courseRepository.save(course);
     }
+
     @Override
     public void teacherCourseUnEnrollment(String courseId, Long teacherId) {
         logger.info("teacherCourseUnEnrollment courseId: {}, teacherId: {}", courseId, teacherId);
         Course courseFromDb = getCourseById(courseId, null);
 
-        if(!courseFromDb.getCourseTeachers().stream().anyMatch(t-> t.getTeacherId().equals(teacherId))){
+        if (!courseFromDb.getCourseTeachers().stream().anyMatch(t -> t.getTeacherId().equals(teacherId))) {
             logger.info("No teacher on the list of enroll");
             throw new CourseException(CourseError.TEACHER_NO_ON_THE_LIST_OF_ENROLL);
         }
 
-        if(calendarServiceClient.isTeacherAssignedToLessonInCourse(courseId, teacherId)){
+        if (calendarServiceClient.isTeacherAssignedToLessonInCourse(courseId, teacherId)) {
             logger.info("Teacher has lessons in course");
             throw new CourseException(CourseError.TEACHER_HAS_LESSONS_IN_COURSE);
         }
@@ -237,7 +240,7 @@ public class CourseServiceImpl implements CourseService {
         logger.info("Trying assignStudentToCourse courseId: {}, studentId: {}", courseId, studentId);
         Course course = getCourseById(courseId, null);
 
-        if(course.getParticipantsLimit().equals(course.getParticipantsNumber())){
+        if (course.getParticipantsLimit().equals(course.getParticipantsNumber())) {
             throw new CourseException(CourseError.COURSE_IS_FULL);
         }
 
@@ -254,10 +257,65 @@ public class CourseServiceImpl implements CourseService {
         enrollStudentToLessons(course.getId(), studentDto.getId());
         return ResponseEntity.ok().build();
     }
+
+    @Override
+    public void studentCourseUnEnrollment(String courseId, Long studentId) {
+        logger.info("studentCourseUnEnrollment courseId: {}, studentId: {}", courseId, studentId);
+        Course courseFromDb = getCourseById(courseId, null);
+
+        if (!isStudentEnrolledInCourse(courseFromDb, studentId)) {
+            throw new CourseException(CourseError.STUDENT_NO_ON_THE_LIST_OF_ENROLL);
+        }
+
+        if (courseFromDb.getStartDate().isAfter(LocalDateTime.now())) {
+            calendarServiceClient.unEnrollStudent(courseId, studentId);
+            removeStudentFromCourseStudentList(studentId, courseFromDb);
+        } else {
+            if (calendarServiceClient.unEnrollStudent(courseId, studentId)) {
+                setRemovedStatus(studentId, courseFromDb);
+                courseFromDb.decrementParticipantsNumber();
+            } else {
+                removeStudentFromCourseStudentList(studentId, courseFromDb);
+            }
+        }
+        courseRepository.save(courseFromDb);
+    }
+
+    public ResponseEntity<?> restoreStudentToCourse(String courseId, Long studentId) {
+        logger.info("restoreStudentToCourse courseId: {}, studentId: {}", courseId, studentId);
+        Course course = getCourseById(courseId, null);
+        if (course.getParticipantsLimit().equals(course.getParticipantsNumber())) {
+            logger.warn("Course is full.");
+            throw new CourseException(CourseError.COURSE_IS_FULL);
+        }
+
+        if (!isStudentEnrolledInCourse(course, studentId)) {
+            logger.warn("No student on the list of enroll.");
+            throw new CourseException(CourseError.STUDENT_NO_ON_THE_LIST_OF_ENROLL);
+        }
+
+        course.getCourseStudents().forEach(student -> {
+            if (student.getStudentId().equals(studentId) && student.getStatus().equals(Status.ACTIVE)) {
+                logger.warn("Student is ACTIVE.");
+                throw new CourseException(CourseError.STUDENT_IS_ACTIVE);
+            }
+
+            if (student.getStudentId().equals(studentId)) {
+                logger.info("Student with studentId: {} set status Active.", studentId);
+                student.setStatus(Status.ACTIVE);
+            }
+        });
+
+        course.incrementParticipantsNumber();
+        courseRepository.save(course);
+        enrollStudentToLessons(course.getId(), studentId);
+        return ResponseEntity.ok().build();
+    }
+
     private void isCourseStartDateIsAfterCourseEndDate(LocalDateTime startDate, LocalDateTime endDate) {
         logger.info("Checking isCourseStartDateIsAfterCourseEndDate");
         logger.info("Start date is: {}, end date is: {}.", startDate, endDate);
-        if(startDate.isAfter(endDate) || startDate.isEqual(endDate)){
+        if (startDate.isAfter(endDate) || startDate.isEqual(endDate)) {
             throw new CourseException(CourseError.COURSE_START_DATE_IS_AFTER_END_DATE);
         }
     }
@@ -265,24 +323,24 @@ public class CourseServiceImpl implements CourseService {
     private void isCourseEndDateIsBeforeCourseStartDate(LocalDateTime endDate, LocalDateTime startTime) {
         logger.info("Checking isCourseEndDateIsBeforeCourseStartDate");
         logger.info("Start date is: {}, end date is: {}.", startTime, endDate);
-        if(endDate.isBefore(startTime) || endDate.isEqual(startTime)){
+        if (endDate.isBefore(startTime) || endDate.isEqual(startTime)) {
             throw new CourseException(CourseError.COURSE_END_DATE_IS_BEFORE_START_DATE);
         }
     }
 
-    private Course updateCourseStatus(Course course){
+    private Course updateCourseStatus(Course course) {
         logger.info("Updating course status");
-        if(course.getStartDate().isAfter(LocalDateTime.now())){
+        if (course.getStartDate().isAfter(LocalDateTime.now())) {
             course.setStatus(Status.INACTIVE);
             logger.info("Set status: {}", Status.INACTIVE);
         }
 
-        if(course.getStartDate().isBefore(LocalDateTime.now()) && course.getEndDate().isAfter(LocalDateTime.now())){
+        if (course.getStartDate().isBefore(LocalDateTime.now()) && course.getEndDate().isAfter(LocalDateTime.now())) {
             course.setStatus(Status.ACTIVE);
             logger.info("Set status: {}.", Status.ACTIVE);
         }
 
-        if(course.getEndDate().isBefore(LocalDateTime.now())){
+        if (course.getEndDate().isBefore(LocalDateTime.now())) {
             course.setStatus(Status.FINISHED);
             logger.info("Set status: {}.", Status.FINISHED);
         }
@@ -294,7 +352,7 @@ public class CourseServiceImpl implements CourseService {
         logger.info("Creating course student list.");
         List<CourseStudentDto> courseStudentList = new ArrayList<>();
 
-        for (StudentDto student: studentsFromDb){
+        for (StudentDto student : studentsFromDb) {
 
             Long id = student.getId();
             String firstName = student.getFirstName();
@@ -313,13 +371,13 @@ public class CourseServiceImpl implements CourseService {
     private void validateTeacherBeforeCourseEnrollment(Course course, TeacherDto teacherDto) {
         logger.info("validateTeacherBeforeCourseEnrollment");
         if (!Status.ACTIVE.equals(teacherDto.getStatus())) {
-            logger.info("Teacher is not active.");
+            logger.warn("Teacher is not active.");
             throw new CourseException(CourseError.TEACHER_IS_NOT_ACTIVE);
         }
         if (course.getCourseTeachers()
                 .stream()
                 .anyMatch((member -> teacherDto.getId().equals(member.getTeacherId())))) {
-            logger.info("Teacher is already enrolled.");
+            logger.warn("Teacher is already enrolled.");
             throw new CourseException(CourseError.TEACHER_ALREADY_ENROLLED);
         }
     }
@@ -341,130 +399,57 @@ public class CourseServiceImpl implements CourseService {
         calendarServiceClient.enrollStudent(curseId, studentId);
         return ResponseEntity.ok().build();
     }
-//    nie sprawdzone
-
-
-    @Override
-    public Course putCourse(String id, Course course) {
-        return courseRepository.findById(id)
-                .map(courseFromDb -> {
-                    if (!courseFromDb.getName().equals(course.getName())
-                            && courseRepository.existsByName(course.getName())) {
-                        throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
-                    }
-                    courseFromDb.setName(course.getName());
-                    courseFromDb.setStatus(course.getStatus());
-                    courseFromDb.setParticipantsLimit(course.getParticipantsLimit());
-                    courseFromDb.setParticipantsNumber(course.getParticipantsNumber());
-                    courseFromDb.setLessonsLimit(course.getLessonsLimit());
-                    courseFromDb.setStartDate(course.getStartDate());
-                    courseFromDb.setEndDate(course.getEndDate());
-                    return courseRepository.save(courseFromDb);
-                }).orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
-    }
-
-    public ResponseEntity<?> restoreStudentToCourse(String courseId, Long studentId){
-        Course course = getCourseById(courseId, null);
-
-        if(course.getParticipantsLimit().equals(course.getParticipantsNumber())){
-            throw new CourseException(CourseError.COURSE_IS_FULL);
-        }
-
-        if(!isStudentEnrolledInCourse(course, studentId)){
-            throw new CourseException(CourseError.STUDENT_NO_ON_THE_LIST_OF_ENROLL);
-        }
-
-        course.getCourseStudents().forEach(student ->{
-            if(student.getStudentId().equals(studentId) && student.getStatus().equals(Status.ACTIVE)){
-                throw new CourseException(CourseError.STUDENT_IS_ACTIVE);
-            }
-
-            if(student.getStudentId().equals(studentId)){
-                student.setStatus(Status.ACTIVE);
-            }
-        });
-
-        course.incrementParticipantsNumber();
-        courseRepository.save(course);
-        enrollStudentToLessons(course.getId(), studentId);
-        return ResponseEntity.ok().build();
-    }
-
-    private void validateCourseStatus(Course course) {
-        if (!Status.ACTIVE.equals(course.getStatus())) {
-            throw new CourseException(CourseError.COURSE_IS_NOT_ACTIVE);
-        }
-    }
-
-    @Override
-    public void studentRemoveFromCourse(String courseId, Long studentId) {
-        Course courseFromDb = getCourseById(courseId, null);
-
-        if (!isStudentEnrolledInCourse(courseFromDb, studentId)) {
-            throw new CourseException(CourseError.STUDENT_NO_ON_THE_LIST_OF_ENROLL);
-        }
-
-        if (courseFromDb.getStartDate().isAfter(LocalDateTime.now())) {
-            calendarServiceClient.unEnrollStudent(courseId, studentId);
-            removeStudentFromCourseStudentList(studentId, courseFromDb);
-        } else {
-            if (calendarServiceClient.unEnrollStudent(courseId, studentId)) {
-                setRemovedStatus(studentId, courseFromDb);
-                courseFromDb.decrementParticipantsNumber();
-            } else {
-                removeStudentFromCourseStudentList(studentId, courseFromDb);
-            }
-        }
-
-        courseRepository.save(courseFromDb);
-    }
-
-    private void setRemovedStatus(Long studentId, Course courseFromDb) {
-        courseFromDb.getCourseStudents().stream().map(student -> {
-            if (student.getStudentId().equals(studentId)) {
-                student.setStatus(Status.REMOVED);
-            }
-            return student;
-        }).collect(Collectors.toList());
-
-        courseRepository.save(courseFromDb);
-    }
 
     private void removeStudentFromCourseStudentList(Long studentId, Course courseFromDb) {
+        logger.info("removeStudentFromCourseStudentList studentId: {}, courseName: {}", studentId, courseFromDb.getName());
         List<CourseStudents> courseStudentsList = courseFromDb.getCourseStudents();
 
         boolean removed = courseStudentsList.removeIf(student -> studentId.equals(student.getStudentId()));
 
         if (!removed) {
+            logger.warn("No student on the list of enroll");
             throw new CourseException(CourseError.STUDENT_NO_ON_THE_LIST_OF_ENROLL);
         }
         courseFromDb.setCourseStudents(courseStudentsList);
         courseFromDb.decrementParticipantsNumber();
     }
 
-
-
-    @Override
-    public void changeCourseMemberStatus(String courseId, Long studentId, Status status) {
-
-        Course courseFromDb = getCourseById(courseId, null);
-
+    private void setRemovedStatus(Long studentId, Course courseFromDb) {
+        logger.info("setRemovedStatus for studentId: {} in courseName: {}", studentId, courseFromDb.getName());
         courseFromDb.getCourseStudents().stream().map(student -> {
             if (student.getStudentId().equals(studentId)) {
-                student.setStatus(status);
+                student.setStatus(Status.REMOVED);
             }
             return student;
         }).collect(Collectors.toList());
         courseRepository.save(courseFromDb);
-
-        if (status.equals(Status.ACTIVE)) {
-            enrollStudentToLessons(courseId, studentId);
-        }
-
     }
+//    nie sprawdzone
 
-
-
+//    private void validateCourseStatus(Course course) {
+//        if (!Status.ACTIVE.equals(course.getStatus())) {
+//            throw new CourseException(CourseError.COURSE_IS_NOT_ACTIVE);
+//        }
+//    }
+//
+//    @Override
+//    public void changeCourseMemberStatus(String courseId, Long studentId, Status status) {
+//
+//        Course courseFromDb = getCourseById(courseId, null);
+//
+//        courseFromDb.getCourseStudents().stream().map(student -> {
+//            if (student.getStudentId().equals(studentId)) {
+//                student.setStatus(status);
+//            }
+//            return student;
+//        }).collect(Collectors.toList());
+//        courseRepository.save(courseFromDb);
+//
+//        if (status.equals(Status.ACTIVE)) {
+//            enrollStudentToLessons(courseId, studentId);
+//        }
+//
+//    }
 
 
 }
