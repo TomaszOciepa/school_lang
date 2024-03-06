@@ -11,27 +11,32 @@ export class StudentService {
   apiUrl = environment.apiUrlStudents;
   constructor(private http: HttpClient) {}
 
-  getStudent(): Observable<User[]> {
+  //ok
+  getStudents(): Observable<User[]> {
     return this.http.get<User[]>(this.apiUrl + '?status=ACTIVE');
   }
 
-  getStudentById(id: number): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/${id}`);
+  getStudentsByIdNumberNotEqual(id: number[]): Observable<User[]> {
+    return this.http.post<User[]>(this.apiUrl + '/notIdNumbers', id);
+  }
+
+  getStudentsByIdNumbers(id: number[]): Observable<User[]> {
+    return this.http.post<User[]>(this.apiUrl + '/idNumbers', id);
   }
 
   addNewStudent(newStudent: PostUser): Observable<User> {
     return this.http.post<User>(this.apiUrl, newStudent);
   }
 
-  deleteStudentById(id: number): Observable<Record<string, never>> {
-    return this.http.delete<Record<string, never>>(`${this.apiUrl}/${id}`);
-  }
-
   patchStudent(id: number, editedStudent: PostUser): Observable<User> {
     return this.http.patch<User>(`${this.apiUrl}/${id}`, editedStudent);
   }
 
-  getStudentsByNotIdNumber(id: number[]): Observable<User[]> {
-    return this.http.post<User[]>(this.apiUrl + '/notIdNumbers', id);
+  deleteStudentById(id: number): Observable<Record<string, never>> {
+    return this.http.delete<Record<string, never>>(`${this.apiUrl}/${id}`);
+  }
+
+  getStudentById(id: number): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/${id}`);
   }
 }

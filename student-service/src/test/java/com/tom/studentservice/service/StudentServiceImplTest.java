@@ -50,7 +50,7 @@ class StudentServiceImplTest {
         given(studentRepository.findAllByStatus(Status.ACTIVE)).willReturn(mockStudentsList);
 
         //when
-        List<Student> result = studentServiceImpl.getAllStudents(mockStatus);
+        List<Student> result = studentServiceImpl.getStudents(mockStatus);
         //then
         assertEquals(mockStudentsList, result);
     }
@@ -63,7 +63,7 @@ class StudentServiceImplTest {
         given(studentRepository.findAll()).willReturn(mockStudentsList);
 
         //when
-        List<Student> result = studentServiceImpl.getAllStudents(null);
+        List<Student> result = studentServiceImpl.getStudents(null);
         //then
         assertEquals(mockStudentsList, result);
     }
@@ -166,49 +166,6 @@ class StudentServiceImplTest {
         assertThrows(StudentException.class, () -> studentServiceImpl.addStudent(mockStudent));
     }
 
-    @Test
-    void putStudentShouldBeReturnStudent() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        Student mockStudent = prepareStudent();
-        Long mockId = 1L;
-        given(studentRepository.findById(mockId)).willReturn(Optional.of(mockStudent));
-        given(studentRepository.existsByEmail(mockStudent.getEmail())).willReturn(false);
-        given(studentRepository.save(mockStudent)).willReturn(mockStudent);
-
-        //when
-        Student result = studentServiceImpl.putStudent(mockId, mockStudent);
-        //then
-        assertEquals(mockStudent, result);
-    }
-
-    @Test
-    void putStudentShouldBeReturnExceptionStudentNotFound() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        Student mockStudent = prepareStudent();
-        Long mockId = 1L;
-        StudentException mockException = new StudentException(StudentError.STUDENT_NOT_FOUND);
-        given(studentRepository.findById(mockId)).willThrow(mockException);
-
-        //when
-        //then
-        assertThrows(StudentException.class, () -> studentServiceImpl.putStudent(mockId, mockStudent));
-    }
-
-    @Test
-    void putStudentShouldBeReturnExceptionStudentEmailAlreadyExists() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        Student mockStudent = prepareStudent();
-        Long mockId = 1L;
-        StudentException mockException = new StudentException(StudentError.STUDENT_EMAIL_ALREADY_EXISTS);
-        given(studentRepository.save(mockStudent)).willThrow(mockException);
-
-        //when
-        //then
-        assertThrows(StudentException.class, () -> studentServiceImpl.putStudent(mockId, mockStudent));
-    }
 
     @Test
     void patchStudentShouldBEReturnStudent() {
@@ -287,7 +244,7 @@ class StudentServiceImplTest {
         List<Long> mockStudentsIdNumberList = Arrays.asList(1L, 2L);
         given(studentRepository.findAllByIdIn(mockStudentsIdNumberList)).willReturn(mockStudentList);
         //when
-        List<Student> result = studentServiceImpl.getStudentsByIdNumber(mockStudentsIdNumberList);
+        List<Student> result = studentServiceImpl.getStudentsByIdNumbers(mockStudentsIdNumberList);
         //then
         assertEquals(mockStudentList, result);
     }

@@ -6,7 +6,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,33 +22,18 @@ public class Course {
     private Status status;
     private Long participantsLimit;
     private Long participantsNumber;
-    private Long lessonsNumber;
-    private Long finishedLessons;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private Long lessonsLimit;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private List<CourseStudents> courseStudents = new ArrayList<>();
     private List<CourseTeachers> courseTeachers = new ArrayList<>();
 
     public void incrementParticipantsNumber(){
         participantsNumber++;
-        if (getParticipantsNumber().equals(getParticipantsLimit())){
-            setStatus(Status.FULL);
-        }
     }
 
     public void decrementParticipantsNumber(){
         participantsNumber--;
-        if (status.equals(Status.FULL)){
-            setStatus(Status.ACTIVE);
-        }
-    }
-
-    public void incrementFinishedLessons(){
-        finishedLessons++;
-    }
-
-    public void decrementFinishedLessons(){
-        finishedLessons--;
     }
 
     public Course() {

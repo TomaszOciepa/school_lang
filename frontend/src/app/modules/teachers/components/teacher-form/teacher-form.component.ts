@@ -21,13 +21,17 @@ export class TeacherFormComponent implements OnInit {
       if (this.editMode) {
         this.emitCLoseDialog();
       }
-      console.log('Zapisano do bazy: ' + teacher);
-      this.router.navigate(['/teachers']);
     },
     error: (err) => {
       console.log(err);
     },
-    complete: () => {},
+    complete: () => {
+      if (this.editMode) {
+        window.location.reload();
+      } else {
+        this.router.navigate(['/teachers']);
+      }
+    },
   };
 
   constructor(

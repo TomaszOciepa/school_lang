@@ -9,7 +9,8 @@ import java.util.Optional;
 
 public interface CourseRepository extends MongoRepository<Course, String> {
 
-    List<Course> findAllByStatus(Status status);
-    Optional<Course> findByIdAndStatus(String id, Status status);
+    //sprawdzone
     boolean existsByName(String name);
+    List<Course> getAllByStatus(Status status);
+    Optional<Course> findByIdAndStatus(String id, Status status);
 }

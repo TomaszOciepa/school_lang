@@ -2,26 +2,27 @@ package com.tom.courseservice.service;
 
 import com.tom.courseservice.model.Course;
 import com.tom.courseservice.model.Status;
-import com.tom.courseservice.model.dto.StudentDto;
+import com.tom.courseservice.model.dto.CourseStudentDto;
 import com.tom.courseservice.model.dto.TeacherDto;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-
 public interface CourseService {
 
-    List<Course> findAllByStatus(Status status);
-    Course findByIdAndStatus(String id, Status status);
+    //sprawdzone
     Course addCourse(Course course);
-    Course putCourse(String id, Course course);
-    Course patchCourse(String id, Course course);
-    void deleteCourse(String id);
-    ResponseEntity<?> studentCourseEnrollment(String courseId, Long studentId);
-    void studentRemoveFromCourse(String courseId, Long studentId);
-    void teacherCourseEnrollment(String courseId, Long teacherId);
-    void teacherRemoveFromCourse(String courseId, Long teacherId);
-    List<StudentDto> getCourseMembers(String courseId);
+    List<Course> getAllByStatus(Status status);
+    Course getCourseById(String id, Status status);
+    List<CourseStudentDto> getCourseMembers(String courseId);
     List<TeacherDto> getCourseTeachers(String courseId);
-    void changeCourseMemberStatus(String courseId, Long studentId, Status status);
+    Course patchCourse(String id, Course course);
+    void deleteCourseById(String id);
+    void assignTeacherToCourse(String courseId, Long teacherId);
+    void teacherCourseUnEnrollment(String courseId, Long teacherId);
+    ResponseEntity<?> assignStudentToCourse(String courseId, Long studentId);
+    void studentCourseUnEnrollment(String courseId, Long studentId);
+    ResponseEntity<?> restoreStudentToCourse(String courseId, Long studentId);
+//    nie sprawdzone
+//    void changeCourseMemberStatus(String courseId, Long studentId, Status status);
 
 }

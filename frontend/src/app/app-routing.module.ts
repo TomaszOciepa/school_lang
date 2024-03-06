@@ -44,6 +44,16 @@ const routes: Routes = [
     },
     title: 'nauczyciele',
   },
+  {
+    path: 'lessons',
+    loadChildren: () =>
+      import('./modules/lessons/lessons.module').then((m) => m.LessonsModule),
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['admin', 'user'],
+    },
+    title: 'lekcje',
+  },
   { path: '**', component: PageNotFoundComponent, title: 'Page not found 404' },
 ];
 

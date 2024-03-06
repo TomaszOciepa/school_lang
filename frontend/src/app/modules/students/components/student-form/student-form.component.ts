@@ -22,13 +22,17 @@ export class StudentFormComponent {
       if (this.editMode) {
         this.emitCLoseDialog();
       }
-      console.log('Zapisano do bazy: ' + student);
-      this.router.navigate(['/students']);
     },
     error: (err) => {
       console.log(err);
     },
-    complete: () => {},
+    complete: () => {
+      if (this.editMode) {
+        window.location.reload();
+      } else {
+        this.router.navigate(['/students/']);
+      }
+    },
   };
 
   constructor(

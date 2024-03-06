@@ -6,6 +6,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './modules/core/core.module';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { registerLocaleData } from '@angular/common';
+import localePl from '@angular/common/locales/pl';
+import { LOCALE_ID } from '@angular/core';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -23,6 +26,8 @@ function initializeKeycloak(keycloak: KeycloakService) {
     });
 }
 
+registerLocaleData(localePl);
+
 @NgModule({
   declarations: [AppComponent, PageNotFoundComponent],
   imports: [
@@ -39,6 +44,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
       multi: true,
       deps: [KeycloakService],
     },
+    { provide: LOCALE_ID, useValue: 'pl' },
   ],
   bootstrap: [AppComponent],
 })

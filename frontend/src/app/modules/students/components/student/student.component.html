@@ -1,17 +1,59 @@
-<div class="mt-3" *ngIf="student">
-  <div>
-    <p>Usuń ucznia:</p>
-    <button mat-raised-button color="warn" (click)="openDialog()">Usuń</button>
+<div class="container text-center">
+  <div class="row">
+    <div class="col-md-8"></div>
+    <div class="col-6 col-md-4">
+      <div class="row row-cols-2">
+        <div class="col p-3">
+          <button mat-raised-button color="primary" (click)="openEditDialog()">
+            Edycja
+          </button>
+        </div>
+        <div class="col p-3">
+          <button mat-raised-button color="warn" (click)="openDialog()">
+            Usuń
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
-  <div>
-    <p>Edytuj ucznia:</p>
-    <button mat-raised-button color="primary" (click)="openEditDialog()">
-      Edytuj
-    </button>
-  </div>
-  <h4>Dane ucznia:</h4>
 
-  <p>{{ student.firstName }} {{ student.lastName }}</p>
-  <p>{{ student.email }}</p>
-  <p>{{ student.status }}</p>
+  <div class="row" *ngIf="student">
+    <div class="col">
+      <figure class="text-start">
+        <blockquote class="blockquote">
+          <h2>student</h2>
+        </blockquote>
+        <figcaption class="blockquote-footer">
+          w szkole... <cite title="Source Title">Lang school</cite>
+        </figcaption>
+      </figure>
+    </div>
+    <div class="col text-start">
+      <h3>
+        <small class="text-body-secondary"> imię i nazwisko: </small>
+        {{ student.firstName }} {{ student.lastName }}
+      </h3>
+      <h3>
+        <small class="text-body-secondary"> adress email;</small>
+        {{ student.email }}
+      </h3>
+
+      <h3>
+        <small class="text-body-secondary">status:</small>
+        {{ student.status }}
+      </h3>
+    </div>
+    <div class="col">
+      <ul class="list-group list-group-flush text-start">
+        <li class="list-group-item">
+          liczba kursów:
+          <small class="text-body-secondary"></small>
+        </li>
+        <li class="list-group-item">
+          Liczba lekcji:
+          <small class="text-body-secondary"></small>
+        </li>
+      </ul>
+    </div>
+  </div>
 </div>

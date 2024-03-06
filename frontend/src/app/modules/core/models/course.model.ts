@@ -17,9 +17,9 @@ export interface CourseResponse {
   status: string;
   participantsLimit: number;
   participantsNumber: number;
-  lessonsNumber: number;
-  startDate: Date;
-  endDate: Date;
+  lessonsLimit: number;
+  startDate: string;
+  endDate: string;
   courseStudents: EnrollemntInfo;
   courseTeachers: EnrollemntInfo;
 }
@@ -31,9 +31,9 @@ export class Course implements CourseResponse {
     public status: string,
     public participantsLimit: number,
     public participantsNumber: number,
-    public lessonsNumber: number,
-    public startDate: Date,
-    public endDate: Date,
+    public lessonsLimit: number,
+    public startDate: string,
+    public endDate: string,
     public courseStudents: EnrollemntInfo,
     public courseTeachers: EnrollemntInfo
   ) {}
@@ -41,9 +41,17 @@ export class Course implements CourseResponse {
 
 export interface PostCourseForm {
   name: FormControl<string>;
-  status: FormControl<string>;
+  // status: FormControl<string>;
   participantsLimit: FormControl<number>;
-  lessonsNumber: FormControl<number>;
-  startDate: FormControl<Date>;
-  endDate: FormControl<Date>;
+  lessonsLimit: FormControl<number>;
+  startDate: FormControl<Date | ''>;
+  endDate: FormControl<Date | ''>;
+}
+
+export interface CourseMembers {
+  id: number;
+  firstName: string;
+  lastName: string;
+  enrollmentData: Date;
+  status: string;
 }

@@ -1,12 +1,16 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observer } from 'rxjs';
+
 import {
   Course,
+  PostCourse,
   PostCourseForm,
 } from 'src/app/modules/core/models/course.model';
 import { CourseService } from 'src/app/modules/core/services/course.service';
+import { DateParserService } from 'src/app/modules/core/services/date-parser.service';
 import { FormsService } from 'src/app/modules/core/services/forms.service';
 
 @Component({
@@ -15,32 +19,46 @@ import { FormsService } from 'src/app/modules/core/services/forms.service';
   styleUrls: ['./course-form.component.css'],
 })
 export class CourseFormComponent {
-  courseForm!: FormGroup<PostCourseForm>;
   @Input() editMode = false;
-  @Input() course!: Course;
+  @Input() course: Course = {} as Course;
   @Output() closeDialog = new EventEmitter<void>();
+
   observer: Observer<unknown> = {
-    next: (course) => {
+    next: () => {
       if (this.editMode) {
         this.emitCLoseDialog();
       }
-      console.log('Zapisano do bazy: ' + course);
-      this.router.navigate(['/courses']);
     },
-    error: (err) => {
-      console.log(err);
+    error: (err: HttpErrorResponse) => {
+      this.errMsg = err.error.message;
+      this.hideErrorMsg();
     },
-    complete: () => {},
+    complete: () => {
+      if (this.editMode) {
+        window.location.reload();
+      } else {
+        this.router.navigate(['/courses']);
+      }
+    },
   };
+
+  courseForm!: FormGroup<PostCourseForm>;
+  postCourse: PostCourse = {} as PostCourse;
+  errMsg!: string;
 
   constructor(
     private formService: FormsService,
     private courseService: CourseService,
-    private router: Router
+    private router: Router,
+    private dateParser: DateParserService
   ) {}
 
   ngOnInit(): void {
     this.initForm();
+  }
+
+  getErrorMessage(control: FormControl) {
+    return this.formService.getErrorMessage(control);
   }
 
   get controls() {
@@ -57,10 +75,6 @@ export class CourseFormComponent {
           Validators.maxLength(50),
         ],
       }),
-      status: new FormControl(this.editMode ? this.course.status : '', {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
       participantsLimit: new FormControl(
         this.editMode ? this.course.participantsLimit : 0,
         {
@@ -69,25 +83,30 @@ export class CourseFormComponent {
             Validators.required,
             Validators.min(1),
             Validators.max(26),
+            Validators.pattern('[1-9][0-9]*'),
           ],
         }
       ),
-      lessonsNumber: new FormControl(
-        this.editMode ? this.course.lessonsNumber : 0,
+      lessonsLimit: new FormControl(
+        this.editMode ? this.course.lessonsLimit : 0,
         {
           nonNullable: true,
-          validators: [Validators.required],
+          validators: [
+            Validators.required,
+            Validators.min(1),
+            Validators.pattern('[1-9][0-9]*'),
+          ],
         }
       ),
       startDate: new FormControl(
-        this.editMode ? new Date(this.course.endDate) : new Date(),
+        this.editMode ? new Date(this.course.startDate) : '',
         {
           nonNullable: true,
           validators: [Validators.required],
         }
       ),
       endDate: new FormControl(
-        this.editMode ? new Date(this.course.endDate) : new Date(),
+        this.editMode ? new Date(this.course.endDate) : '',
         {
           nonNullable: true,
           validators: [Validators.required],
@@ -96,23 +115,57 @@ export class CourseFormComponent {
     });
   }
 
-  getErrorMessage(control: FormControl) {
-    return this.formService.getErrorMessage(control);
-  }
-
   onAddCourse() {
+    this.generatePostCourseObj();
+
     if (this.editMode) {
       this.courseService
-        .patchCourse(this.course.id, this.courseForm.getRawValue())
+        .patchCourse(this.course.id, this.postCourse)
         .subscribe(this.observer);
       return;
     }
-    this.courseService
-      .addNewCourse(this.courseForm.getRawValue())
-      .subscribe(this.observer);
+
+    this.courseService.addCourse(this.postCourse).subscribe(this.observer);
+  }
+
+  private generatePostCourseObj() {
+    if (this.courseForm.get('name')?.dirty) {
+      this.postCourse.name = this.courseForm.getRawValue().name;
+    }
+
+    if (this.courseForm.get('startDate')?.dirty) {
+      this.postCourse.startDate = this.parseDateToStringFormat(
+        this.courseForm.getRawValue().startDate.toString()
+      );
+    }
+
+    if (this.courseForm.get('endDate')?.dirty) {
+      this.postCourse.endDate = this.parseDateToStringFormat(
+        this.courseForm.getRawValue().endDate.toString()
+      );
+    }
+
+    if (this.courseForm.get('participantsLimit')?.dirty) {
+      this.postCourse.participantsLimit =
+        this.courseForm.getRawValue().participantsLimit;
+    }
+
+    if (this.courseForm.get('lessonsLimit')?.dirty) {
+      this.postCourse.lessonsLimit = this.courseForm.getRawValue().lessonsLimit;
+    }
   }
 
   emitCLoseDialog() {
     this.closeDialog.emit();
+  }
+
+  private parseDateToStringFormat(date: string): string {
+    return this.dateParser.parseDate(date);
+  }
+
+  private hideErrorMsg() {
+    setTimeout(() => {
+      this.errMsg = '';
+    }, 3000);
   }
 }

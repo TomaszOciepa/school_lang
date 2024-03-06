@@ -19,11 +19,22 @@ export class FormsService {
     if (control.hasError('maxlength')) {
       return 'Przekazałeś za duzo znaków w kontrolce';
     }
-
+    if (control.hasError('maxlength')) {
+      return 'Przekazałeś za duzo znaków w kontrolce';
+    }
+    if (control.hasError('max')) {
+      return 'Przekazałeś za duzo znaków w kontrolce';
+    }
+    if (control.hasError('min')) {
+      return 'Przekazałeś za mało znaków w kontrolce';
+    }
     if (control.hasError('invalidPostcode')) {
       return 'Kod pocztowy powinien być w formacie xx-xxx ';
     }
 
+    if (control.hasError('pattern')) {
+      return 'Nieprawidłowe dane';
+    }
     return control.hasError('email') ? 'Nieprwidłowy adres email' : '';
   }
 }

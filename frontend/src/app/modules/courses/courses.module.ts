@@ -10,6 +10,8 @@ import { EditCourseDialogComponent } from './components/course/edit-course-dialo
 import { DeleteCourseDialogComponent } from './components/course/delete-course-dialog/delete-course-dialog.component';
 import { EnrollCourseDialogComponent } from './components/course/enroll-course-dialog/enroll-course-dialog.component';
 import { UnenrollCourseDialogComponent } from './components/course/unenroll-course-dialog/unenroll-course-dialog.component';
+import { LessonsModule } from '../lessons/lessons.module';
+import { RestoreStudentDialogComponent } from './components/course/restore-student-dialog/restore-student-dialog.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,8 @@ import { UnenrollCourseDialogComponent } from './components/course/unenroll-cour
     DeleteCourseDialogComponent,
     EnrollCourseDialogComponent,
     UnenrollCourseDialogComponent,
+    RestoreStudentDialogComponent,
   ],
-  imports: [SharedModule, CoursesRoutingModule],
+  imports: [SharedModule, CoursesRoutingModule, LessonsModule],
 })
 export class CoursesModule {}

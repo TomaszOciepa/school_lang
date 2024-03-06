@@ -2,7 +2,6 @@ import {
   AfterViewInit,
   Component,
   ErrorHandler,
-  OnInit,
   ViewChild,
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
@@ -10,11 +9,13 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Course } from 'src/app/modules/core/models/course.model';
 import { CourseService } from 'src/app/modules/core/services/course.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-courses-table',
   templateUrl: './courses-table.component.html',
   styleUrls: ['./courses-table.component.css'],
+  providers: [DatePipe],
 })
 export class CoursesTableComponent implements AfterViewInit {
   displayedColumns: string[] = [
@@ -33,9 +34,8 @@ export class CoursesTableComponent implements AfterViewInit {
   constructor(private courseService: CourseService) {}
 
   async ngAfterViewInit(): Promise<void> {
-    this.courseService.getCourses().subscribe({
+    this.courseService.getAllByStatus().subscribe({
       next: (course) => {
-        console.log(course);
         this.dataSource = new MatTableDataSource<Course>(course);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;

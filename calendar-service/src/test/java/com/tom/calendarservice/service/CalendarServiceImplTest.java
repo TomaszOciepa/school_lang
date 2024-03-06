@@ -148,7 +148,7 @@ class CalendarServiceImplTest {
         Calendar mockCalendar = prepareCalendar();
         given(calendarRepository.findById(mockId)).willReturn(Optional.ofNullable(mockCalendar));
         //when
-        calendarServiceImpl.deleteLesson(mockId);
+        calendarServiceImpl.deleteLessonsById(mockId);
         //then
         verify(calendarRepository, times(1)).findById(mockId);
         verify(calendarRepository, times(1)).deleteById(mockId);
@@ -164,6 +164,6 @@ class CalendarServiceImplTest {
         given(calendarRepository.findById(mockId)).willThrow(mockException);
         //when
         //then
-        assertThrows(CalendarException.class, ()-> calendarServiceImpl.deleteLesson(mockId));
+        assertThrows(CalendarException.class, ()-> calendarServiceImpl.deleteLessonsById(mockId));
     }
 }

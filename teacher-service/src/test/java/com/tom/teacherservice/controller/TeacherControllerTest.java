@@ -44,9 +44,9 @@ class TeacherControllerTest {
         //given
         List<Teacher> mockTeacherList = prepareTeachersData();
         Status mockStatus = Status.ACTIVE;
-        given(teacherService.getAllTeacher(mockStatus)).willReturn(mockTeacherList);
+        given(teacherService.getTeachers(mockStatus)).willReturn(mockTeacherList);
         //when
-        List<Teacher> result = teacherController.getAllTeacher(mockStatus);
+        List<Teacher> result = teacherController.getTeachers(mockStatus);
         //then
         assertEquals(mockTeacherList, result);
     }
@@ -57,9 +57,9 @@ class TeacherControllerTest {
         //given
         List<Teacher> mockTeacherList = prepareTeachersData();
 
-        given(teacherService.getAllTeacher(null)).willReturn(mockTeacherList);
+        given(teacherService.getTeachers(null)).willReturn(mockTeacherList);
         //when
-        List<Teacher> result = teacherController.getAllTeacher(null);
+        List<Teacher> result = teacherController.getTeachers(null);
         //then
         assertEquals(mockTeacherList, result);
     }

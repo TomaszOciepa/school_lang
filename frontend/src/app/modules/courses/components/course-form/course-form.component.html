@@ -12,21 +12,6 @@
     </div>
     <div>
       <mat-form-field>
-        <mat-label>Status</mat-label>
-        <mat-select formControlName="status">
-          <mat-option value="ACTIVE">ACTIVE</mat-option>
-          <mat-option value="INACTIVE">INACTIVE</mat-option>
-          <mat-option value="FULL">FULL</mat-option>
-          <mat-option value="FINISHED">FINISHED</mat-option>
-        </mat-select>
-        <!-- <input matInput formControlName="status" /> -->
-        <mat-error *ngIf="controls.status.invalid">{{
-          getErrorMessage(controls.status)
-        }}</mat-error>
-      </mat-form-field>
-    </div>
-    <div>
-      <mat-form-field>
         <mat-label>Maksymalna ilość uczniów</mat-label>
         <input matInput formControlName="participantsLimit" />
         <mat-error *ngIf="controls.participantsLimit.invalid">{{
@@ -37,9 +22,9 @@
     <div>
       <mat-form-field>
         <mat-label>Liczba lekcji</mat-label>
-        <input matInput formControlName="lessonsNumber" />
-        <mat-error *ngIf="controls.lessonsNumber.invalid">{{
-          getErrorMessage(controls.lessonsNumber)
+        <input matInput formControlName="lessonsLimit" />
+        <mat-error *ngIf="controls.lessonsLimit.invalid">{{
+          getErrorMessage(controls.lessonsLimit)
         }}</mat-error>
       </mat-form-field>
     </div>
@@ -62,6 +47,9 @@
         <mat-date-range-picker #picker></mat-date-range-picker>
       </mat-form-field>
     </div>
+    <div *ngIf="errMsg" class="alert alert-danger" role="alert">
+      {{ errMsg }}
+    </div>
     <div class="d-flex justify-content-end">
       <button
         type="button"
@@ -82,6 +70,5 @@
         {{ editMode ? "Zapisz" : "Dodaj nowy kurs" }}
       </button>
     </div>
-    <!-- <app-alert *ngIf="errorMessage" [text]="errorMessage"></app-alert> -->
   </form>
 </div>
