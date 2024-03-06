@@ -56,9 +56,12 @@ export class EnrollLessonDialogComponent implements OnInit {
   }
 
   async ngAfterViewInit(): Promise<void> {
-    if (this.usersIdEnrolled == undefined) {
+    console.log('co to jest: ' + this.usersIdEnrolled);
+    if (this.usersIdEnrolled.length == 0) {
+      console.log('dupa');
       this.getStudents();
     } else {
+      console.log('blada');
       this.getStudentsByIdNumberNotEqual();
     }
   }
