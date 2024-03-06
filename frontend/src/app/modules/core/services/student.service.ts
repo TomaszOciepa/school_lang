@@ -11,7 +11,7 @@ export class StudentService {
   apiUrl = environment.apiUrlStudents;
   constructor(private http: HttpClient) {}
 
-  //sprawdzone
+  //ok
   getStudents(): Observable<User[]> {
     return this.http.get<User[]>(this.apiUrl + '?status=ACTIVE');
   }
@@ -23,21 +23,20 @@ export class StudentService {
   getStudentsByIdNumbers(id: number[]): Observable<User[]> {
     return this.http.post<User[]>(this.apiUrl + '/idNumbers', id);
   }
-  //nie sprawdzone
-
-  getStudentById(id: number): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/${id}`);
-  }
 
   addNewStudent(newStudent: PostUser): Observable<User> {
     return this.http.post<User>(this.apiUrl, newStudent);
+  }
+
+  patchStudent(id: number, editedStudent: PostUser): Observable<User> {
+    return this.http.patch<User>(`${this.apiUrl}/${id}`, editedStudent);
   }
 
   deleteStudentById(id: number): Observable<Record<string, never>> {
     return this.http.delete<Record<string, never>>(`${this.apiUrl}/${id}`);
   }
 
-  patchStudent(id: number, editedStudent: PostUser): Observable<User> {
-    return this.http.patch<User>(`${this.apiUrl}/${id}`, editedStudent);
+  getStudentById(id: number): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/${id}`);
   }
 }

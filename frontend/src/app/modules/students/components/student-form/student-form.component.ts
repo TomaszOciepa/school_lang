@@ -22,7 +22,6 @@ export class StudentFormComponent {
       if (this.editMode) {
         this.emitCLoseDialog();
       }
-      console.log('Zapisano do bazy: ' + student);
     },
     error: (err) => {
       console.log(err);

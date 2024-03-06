@@ -19,6 +19,7 @@ public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository teacherRepository;
 
     private static Logger logger = LoggerFactory.getLogger(TeacherServiceImpl.class);
+
     //sprawdzone
     @Override
     public List<Teacher> getTeachers(Status status) {
@@ -29,11 +30,13 @@ public class TeacherServiceImpl implements TeacherService {
         logger.info("Fetching teachers without status.");
         return teacherRepository.findAll();
     }
+
     @Override
     public List<Teacher> getTeachersByIdNumber(List<Long> idNumbers) {
         logger.info("Fetching teachers list.");
         return teacherRepository.findAllByIdIn(idNumbers);
     }
+
     @Override
     public Teacher getTeacherById(Long id) {
         logger.info("Fetching teacher by id: {}", id);
@@ -45,10 +48,48 @@ public class TeacherServiceImpl implements TeacherService {
         }
         return teacher;
     }
+
     @Override
     public List<Teacher> getTeachersByIdNumberNotEqual(List<Long> idNumbers) {
         logger.info("Fetching teachers where id number is not equal: {}", idNumbers.toString());
         return teacherRepository.findAllByIdNotInAndStatus(idNumbers, Status.ACTIVE);
+    }
+
+    @Override
+    public Teacher addTeacher(Teacher teacher) {
+        logger.info("Trying create new teacher.");
+        validateTeacherEmailExists(teacher.getEmail());
+        teacher.setStatus(Status.ACTIVE);
+        return teacherRepository.save(teacher);
+    }
+
+    @Override
+    public void deleteTeacher(Long id) {
+        logger.info("Trying deleteTeacher with id: {}.", id);
+        Teacher teacher = teacherRepository.findById(id)
+                .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
+        teacher.setStatus(Status.INACTIVE);
+        teacherRepository.save(teacher);
+    }
+
+    @Override
+    public Teacher patchTeacher(Long id, Teacher teacher) {
+        logger.info("patchTeacher teacherId: {}", id);
+        Teacher teacherFromDb = teacherRepository.findById(id)
+                .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
+        if (teacher.getFirstName() != null) {
+            logger.info("Changing first name");
+            teacherFromDb.setFirstName(teacher.getFirstName());
+        }
+        if (teacher.getLastName() != null) {
+            logger.info("Changing last name");
+            teacherFromDb.setLastName(teacher.getLastName());
+        }
+        if (teacher.getStatus() != null) {
+            logger.info("Changing status");
+            teacherFromDb.setStatus(teacher.getStatus());
+        }
+        return teacherRepository.save(teacherFromDb);
     }
     //nie sprawdzone
 
@@ -60,13 +101,6 @@ public class TeacherServiceImpl implements TeacherService {
             throw new TeacherException(TeacherError.TEACHER_IS_NOT_ACTIVE);
         }
         return teacher;
-    }
-
-    @Override
-    public Teacher addTeacher(Teacher teacher) {
-        validateTeacherEmailExists(teacher.getEmail());
-        teacher.setStatus(Status.ACTIVE);
-        return teacherRepository.save(teacher);
     }
 
     private void validateTeacherEmailExists(String email) {
@@ -89,29 +123,4 @@ public class TeacherServiceImpl implements TeacherService {
                     return teacherRepository.save(teacherFromDb);
                 }).orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
     }
-
-    @Override
-    public Teacher patchTeacher(Long id, Teacher teacher) {
-        Teacher teacherFromDb = teacherRepository.findById(id)
-                .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
-        if (teacher.getFirstName() != null) {
-            teacherFromDb.setFirstName(teacher.getFirstName());
-        }
-        if (teacher.getLastName() != null) {
-            teacherFromDb.setLastName(teacher.getLastName());
-        }
-        if (teacher.getStatus() != null) {
-            teacherFromDb.setStatus(teacher.getStatus());
-        }
-        return teacherRepository.save(teacherFromDb);
-    }
-
-    @Override
-    public void deleteTeacher(Long id) {
-        Teacher teacher = teacherRepository.findById(id)
-                .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
-        teacher.setStatus(Status.INACTIVE);
-        teacherRepository.save(teacher);
-    }
-
 }

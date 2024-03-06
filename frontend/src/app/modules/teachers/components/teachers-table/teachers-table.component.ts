@@ -4,12 +4,10 @@ import {
   ErrorHandler,
   ViewChild,
 } from '@angular/core';
-import { Router } from '@angular/router';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { KeycloakService } from 'keycloak-angular';
 import { User } from 'src/app/modules/core/models/user.model';
 
 @Component({
@@ -23,6 +21,7 @@ export class TeachersTableComponent implements AfterViewInit {
     'firstName',
     'lastName',
     'email',
+    'status',
     'buttons',
   ];
   dataSource!: MatTableDataSource<User>;

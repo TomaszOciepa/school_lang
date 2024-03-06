@@ -43,31 +43,31 @@ public class StudentController {
         logger.info("GET method getStudentById().");
         return studentService.getStudentById(id);
     }
+
+    @PostMapping
+    public Student addStudent(@RequestBody Student student) {
+        logger.info("POST method addStudent().");
+        return studentService.addStudent(student);
+    }
+
+    @PatchMapping("/{id}")
+    public Student patchStudent(@PathVariable Long id, @RequestBody Student student) {
+        logger.info("PATCH method patchStudent().");
+        return studentService.patchStudent(id, student);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteStudent(@PathVariable Long id) {
+        logger.info("Delete method deleteStudent().");
+        studentService.deleteStudent(id);
+    }
+    
     //    nie sprawdzone
     @GetMapping("/email")
     public Student getStudentByEmail(@RequestParam String email) {
         return studentService.getStudentByEmail(email);
     }
 
-    @PostMapping
-    public Student addStudent(@RequestBody Student student) {
-        return studentService.addStudent(student);
-    }
-
-    @PutMapping("/{id}")
-    public Student putStudent(@PathVariable Long id, @RequestBody Student student) {
-        return studentService.putStudent(id, student);
-    }
-
-    @PatchMapping("/{id}")
-    public Student patchStudent(@PathVariable Long id, @RequestBody Student student) {
-        return studentService.patchStudent(id, student);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteStudent(@PathVariable Long id) {
-        studentService.deleteStudent(id);
-    }
 
     @PostMapping("/emails")
     public List<Student> getStudentsByEmails(@RequestBody List<String> emails) {

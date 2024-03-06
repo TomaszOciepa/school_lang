@@ -12,18 +12,18 @@ export class TeacherService {
 
   constructor(private http: HttpClient) {}
 
-  // sprawdzone
+  // ok
+
   getTeachers(): Observable<User[]> {
     return this.http.get<User[]>(this.apiUrl + '?status=ACTIVE');
   }
 
-  getTeachersByIdNumberNotEqual(id: number[]): Observable<User[]> {
-    return this.http.post<User[]>(this.apiUrl + '/id-numbers-not-equal', id);
-  }
-  // nie sprawdzone
-
   getTeacherById(id: number): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/${id}`);
+  }
+
+  getTeachersByIdNumberNotEqual(id: number[]): Observable<User[]> {
+    return this.http.post<User[]>(this.apiUrl + '/id-numbers-not-equal', id);
   }
 
   addNewTeacher(newTeacher: PostUser): Observable<User> {

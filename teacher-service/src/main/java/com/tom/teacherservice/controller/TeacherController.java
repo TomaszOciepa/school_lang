@@ -53,28 +53,18 @@ public class TeacherController {
         logger.info("Get method getTeacherById()");
         return teacherService.getTeacherById(id);
     }
-    //    nie sprawdzone
-    @PreAuthorize("hasRole('admin')")
-    @GetMapping("/email")
-    public Teacher getTeacherByEmail(@RequestParam String email) {
-        return teacherService.getTeacherByEmail(email);
-    }
 
     @PreAuthorize("hasRole('admin')")
     @PostMapping
     public Teacher addTeacher(@RequestBody Teacher teacher) {
+        logger.info("Post method addTeacher()");
         return teacherService.addTeacher(teacher);
-    }
-
-    @PreAuthorize("hasRole('admin')")
-    @PutMapping("/{id}")
-    public Teacher putTeacher(@PathVariable Long id, @RequestBody Teacher teacher) {
-        return teacherService.putTeacher(id, teacher);
     }
 
     @PreAuthorize("hasRole('admin')")
     @PatchMapping("/{id}")
     public Teacher patchTeacher(@PathVariable Long id, @RequestBody Teacher teacher) {
+        logger.info("Patch method patchTeacher()");
         return teacherService.patchTeacher(id, teacher);
     }
 
@@ -84,6 +74,17 @@ public class TeacherController {
         teacherService.deleteTeacher(id);
     }
 
+    //    nie sprawdzone
+    @PreAuthorize("hasRole('admin')")
+    @GetMapping("/email")
+    public Teacher getTeacherByEmail(@RequestParam String email) {
+        return teacherService.getTeacherByEmail(email);
+    }
 
+    @PreAuthorize("hasRole('admin')")
+    @PutMapping("/{id}")
+    public Teacher putTeacher(@PathVariable Long id, @RequestBody Teacher teacher) {
+        return teacherService.putTeacher(id, teacher);
+    }
 
 }

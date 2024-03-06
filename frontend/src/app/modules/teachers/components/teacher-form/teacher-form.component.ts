@@ -21,7 +21,6 @@ export class TeacherFormComponent implements OnInit {
       if (this.editMode) {
         this.emitCLoseDialog();
       }
-      console.log('Zapisano do bazy: ' + teacher);
     },
     error: (err) => {
       console.log(err);

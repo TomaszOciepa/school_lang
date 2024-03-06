@@ -55,6 +55,52 @@ public class StudentServiceImpl implements StudentService {
         return student;
     }
 
+    @Override
+    public Student addStudent(Student student) {
+        logger.info("Trying create new student.");
+        validateStudentEmailExists(student.getEmail());
+        student.setStatus(Status.ACTIVE);
+        return studentRepository.save(student);
+    }
+
+    @Override
+    public Student patchStudent(Long id, Student student) {
+        logger.info("patchStudent studentId: {}", id);
+        Student studentFromDb = studentRepository.findById(id)
+                .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
+
+        if (student.getFirstName() != null) {
+            logger.info("Changing first name");
+            studentFromDb.setFirstName(student.getFirstName());
+        }
+        if (student.getLastName() != null) {
+            logger.info("Changing last name");
+            studentFromDb.setLastName(student.getLastName());
+        }
+        if (student.getStatus() != null) {
+            logger.info("Changing status");
+            studentFromDb.setStatus(student.getStatus());
+        }
+        return studentRepository.save(studentFromDb);
+    }
+
+    @Override
+    public void deleteStudent(Long id) {
+        logger.info("deleteStudent studentId: {}", id);
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
+        student.setStatus(Status.INACTIVE);
+        studentRepository.save(student);
+    }
+
+    private void validateStudentEmailExists(String email) {
+        logger.info("validateStudentEmailExists: {}", email);
+        if (studentRepository.existsByEmail(email)) {
+            logger.warn("Student email already exists.");
+            throw new StudentException(StudentError.STUDENT_EMAIL_ALREADY_EXISTS);
+        }
+    }
+
     //nie sprawdzone
     @Override
     public Student getStudentByEmail(String email) {
@@ -64,59 +110,6 @@ public class StudentServiceImpl implements StudentService {
             throw new StudentException(StudentError.STUDENT_IS_NOT_ACTIVE);
         }
         return student;
-    }
-
-    @Override
-    public Student addStudent(Student student) {
-        validateStudentEmailExists(student.getEmail());
-        student.setStatus(Status.ACTIVE);
-        return studentRepository.save(student);
-    }
-
-    private void validateStudentEmailExists(String email) {
-        if (studentRepository.existsByEmail(email)) {
-            throw new StudentException(StudentError.STUDENT_EMAIL_ALREADY_EXISTS);
-        }
-    }
-
-    @Override
-    public Student putStudent(Long id, Student student) {
-        return studentRepository.findById(id)
-                .map(studentFromDb -> {
-                    if (!studentFromDb.getEmail().equals(student.getEmail())
-                            && studentRepository.existsByEmail(student.getEmail())) {
-                        throw new StudentException(StudentError.STUDENT_EMAIL_ALREADY_EXISTS);
-                    }
-                    studentFromDb.setFirstName(student.getFirstName());
-                    studentFromDb.setLastName(student.getLastName());
-                    studentFromDb.setStatus(student.getStatus());
-                    return studentRepository.save(studentFromDb);
-                }).orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
-    }
-
-    @Override
-    public Student patchStudent(Long id, Student student) {
-        Student studentFromDb = studentRepository.findById(id)
-                .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
-
-        if (student.getFirstName() != null) {
-            studentFromDb.setFirstName(student.getFirstName());
-        }
-        if (student.getLastName() != null) {
-            studentFromDb.setLastName(student.getLastName());
-        }
-        if (student.getStatus() != null) {
-            studentFromDb.setStatus(student.getStatus());
-        }
-        return studentRepository.save(studentFromDb);
-    }
-
-    @Override
-    public void deleteStudent(Long id) {
-        Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
-        student.setStatus(Status.INACTIVE);
-        studentRepository.save(student);
     }
 
     @Override
