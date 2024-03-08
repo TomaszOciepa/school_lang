@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   ErrorHandler,
+  Input,
   ViewChild,
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
@@ -30,20 +31,34 @@ export class CoursesTableComponent implements AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-
+  @Input('switch') switch!: string;
+  @Input('teacherId') teacherId!: number;
   constructor(private courseService: CourseService) {}
 
   async ngAfterViewInit(): Promise<void> {
-    this.courseService.getAllByStatus().subscribe({
-      next: (course) => {
-        this.dataSource = new MatTableDataSource<Course>(course);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-      },
-      error: (err: ErrorHandler) => {
-        console.log(err);
-      },
-    });
+    if (this.switch === 'teacher') {
+      this.courseService.getCourseByTeacherId(this.teacherId).subscribe({
+        next: (course) => {
+          this.dataSource = new MatTableDataSource<Course>(course);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+        },
+        error: (err: ErrorHandler) => {
+          console.log(err);
+        },
+      });
+    } else {
+      this.courseService.getAllByStatus().subscribe({
+        next: (course) => {
+          this.dataSource = new MatTableDataSource<Course>(course);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+        },
+        error: (err: ErrorHandler) => {
+          console.log(err);
+        },
+      });
+    }
   }
 
   applyFilter(event: Event) {

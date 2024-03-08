@@ -98,4 +98,10 @@ public class CourseController {
         courseService.restoreStudentToCourse(courseId, studentId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/teacher-lessons/{teacherId}")
+    public List<Course> getCourseByTeacherId(@PathVariable Long teacherId) {
+        logger.info("Get method getCoursesByStudentId()");
+        return courseService.getCourseByTeacherId(teacherId);
+    }
 }
