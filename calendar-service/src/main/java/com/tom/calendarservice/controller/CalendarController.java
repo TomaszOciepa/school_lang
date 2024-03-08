@@ -68,9 +68,9 @@ public class CalendarController {
     }
 
     @GetMapping("/check-teacher-assignment/{courseId}/{studentId}")
-    public boolean isTeacherAssignedToLessonInCourse(@PathVariable String courseId, @PathVariable Long studentId) {
+    public boolean isTeacherAssignedToLessonInCourse(@PathVariable String courseId, @PathVariable Long teacherId) {
         logger.info("Get method isTeacherAssignedToLessonInCourse().");
-        return calendarService.isTeacherAssignedToLessonInCourse(courseId, studentId);
+        return calendarService.isTeacherAssignedToLessonInCourse(courseId, teacherId);
     }
 
     @PostMapping("/enroll-lessons/{courseId}/{studentId}")
@@ -92,15 +92,17 @@ public class CalendarController {
         calendarService.enrollStudentLesson(lessonId, studentId);
         return ResponseEntity.ok().build();
     }
+
     @PostMapping("/un-enroll-student-lessons/{lessonId}/{studentId}")
     public ResponseEntity<?> unEnrollStudentLesson(@PathVariable String lessonId, @PathVariable Long studentId) {
         logger.info("Post method unEnrollStudentLesson().");
         calendarService.unEnrollStudentLesson(lessonId, studentId);
         return ResponseEntity.ok().build();
     }
+
     //    nie sprawdzone
     @GetMapping("/student-lessons/{studentId}")
-    public List<Calendar> getLessonByStudentId(@PathVariable Long studentId) {
+    public List<Calendar> getLessonsByStudentId(@PathVariable Long studentId) {
         return calendarService.getLessonsByStudentId(studentId);
     }
 

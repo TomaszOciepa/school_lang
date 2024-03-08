@@ -40,9 +40,9 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public Calendar getLessonById(String id) {
         logger.info("Fetching lesson by id: {}.", id);
-        return calendarRepository.findById(id)
-                .map(this::updateLessonStatus)
-                .orElseThrow(() -> new CalendarException(CalendarError.CALENDAR_NOT_FOUND));
+        Calendar lesson = calendarRepository.findById(id)
+                .orElseThrow(()-> new CalendarException(CalendarError.CALENDAR_LESSONS_NOT_FOUND));
+        return updateLessonStatus(lesson);
     }
 
     @Override
@@ -248,6 +248,7 @@ public class CalendarServiceImpl implements CalendarService {
 
     private Calendar updateLessonStatus(Calendar lesson) {
         logger.info("Updating lesson status.");
+
         if (lesson.getStartDate().isAfter(LocalDateTime.now())) {
             logger.info("Changing lesson status: {}", Status.INACTIVE);
             lesson.setStatus(Status.INACTIVE);
@@ -263,7 +264,8 @@ public class CalendarServiceImpl implements CalendarService {
             lesson.setStatus(Status.FINISHED);
         }
 
-        return calendarRepository.save(lesson);
+        calendarRepository.save(lesson);
+        return lesson;
     }
 
     private void isLessonStartDateIsAfterLessonEndDate(LocalDateTime startDate, LocalDateTime endDate) {
