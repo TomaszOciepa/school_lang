@@ -35,7 +35,7 @@ export class CourseComponent {
     private router: Router
   ) {}
 
-  ngOnInit(): void {
+  async ngAfterViewInit(): Promise<void> {
     this.route.params;
     this.route.params.subscribe((params) => {
       this.id = params['id'];
@@ -47,8 +47,14 @@ export class CourseComponent {
   }
 
   getCourseById(id: string) {
-    this.courseService.getCourseById(id).subscribe((response) => {
-      this.course = response;
+    this.courseService.getCourseById(id).subscribe({
+      next: (response) => {
+        this.course = response;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log(err.error.message);
+      },
+      complete: () => {},
     });
   }
 
@@ -60,6 +66,7 @@ export class CourseComponent {
       error: (err: HttpErrorResponse) => {
         console.log(err.error.message);
       },
+      complete: () => {},
     });
   }
 
@@ -72,6 +79,7 @@ export class CourseComponent {
         console.log(err.error.message);
         this.hideErrorMsg();
       },
+      complete: () => {},
     });
   }
 

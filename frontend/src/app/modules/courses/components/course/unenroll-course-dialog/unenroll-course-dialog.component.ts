@@ -42,9 +42,7 @@ export class UnenrollCourseDialogComponent {
     this.courseService
       .studentCourseUnEnrollment(this.courseId, studentId)
       .subscribe({
-        next: () => {
-          console.log('haha');
-        },
+        next: () => {},
         error: (err) => {
           this.errMsg = err;
         },

@@ -43,6 +43,11 @@ public class CalendarController {
         return calendarService.getLessonsNumberByCourseId(courseId);
     }
 
+    @GetMapping("/teacher-lessons/{teacherId}")
+    public List<Calendar> getLessonByTeacherId(@PathVariable Long teacherId) {
+        return calendarService.getLessonsByTeacherId(teacherId);
+    }
+
     @DeleteMapping("/delete-course-lessons/{courseId}")
     public void deleteCourseLessons(@PathVariable String courseId) {
         logger.info("Delete method deleteCourseLessons()");
@@ -67,7 +72,7 @@ public class CalendarController {
         calendarService.deleteLessonsById(id);
     }
 
-    @GetMapping("/check-teacher-assignment/{courseId}/{studentId}")
+    @GetMapping("/check-teacher-assignment/{courseId}/{teacherId}")
     public boolean isTeacherAssignedToLessonInCourse(@PathVariable String courseId, @PathVariable Long teacherId) {
         logger.info("Get method isTeacherAssignedToLessonInCourse().");
         return calendarService.isTeacherAssignedToLessonInCourse(courseId, teacherId);
@@ -105,10 +110,4 @@ public class CalendarController {
     public List<Calendar> getLessonsByStudentId(@PathVariable Long studentId) {
         return calendarService.getLessonsByStudentId(studentId);
     }
-
-    @GetMapping("/teacher-lessons/{teacherId}")
-    public List<Calendar> getLessonByTeacherId(@PathVariable Long teacherId) {
-        return calendarService.getLessonsByTeacherId(teacherId);
-    }
-
 }

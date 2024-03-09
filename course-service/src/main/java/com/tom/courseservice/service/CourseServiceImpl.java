@@ -77,7 +77,6 @@ public class CourseServiceImpl implements CourseService {
     public Course getCourseById(String id, Status status) {
         if (status != null) {
             logger.info("Fetching courses with status: {}.", status);
-            logger.info("");
             return courseRepository.findByIdAndStatus(id, status)
                     .map(this::updateCourseStatus)
                     .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
@@ -99,10 +98,11 @@ public class CourseServiceImpl implements CourseService {
             logger.info("Student list is empty.");
             throw new CourseException(CourseError.COURSE_STUDENT_LIST_IS_EMPTY);
         }
+        logger.info("Create students id numbers list.");
         List<Long> idNumbers = courseStudents.stream()
                 .map(CourseStudents::getStudentId)
                 .collect(Collectors.toList());
-        logger.info("Create student id numbers list.");
+
 
         logger.info("Fetching students by id number.");
         List<StudentDto> studentsFromDb = studentServiceClient.getStudentsByIdNumbers(idNumbers);
@@ -114,17 +114,19 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<TeacherDto> getCourseTeachers(String courseId) {
-        logger.info("Fetching course by id number.");
+        logger.info("Fetching courses by id: {}.", courseId);
         Course course = getCourseById(courseId, null);
-
+        logger.info("Fetching course teachers.");
         List<CourseTeachers> courseTeachers = course.getCourseTeachers();
         if (courseTeachers.isEmpty()) {
             throw new CourseException(CourseError.COURSE_TEACHER_LIST_IS_EMPTY);
         }
+        logger.info("Create teachers id numbers list.");
         List<Long> idNumbers = courseTeachers.stream()
                 .map(CourseTeachers::getTeacherId)
                 .collect(Collectors.toList());
 
+        logger.info("Fetching teachers by id number.");
         return teacherServiceClient.getTeachersByIdNumber(idNumbers);
     }
 
@@ -215,17 +217,20 @@ public class CourseServiceImpl implements CourseService {
     public void teacherCourseUnEnrollment(String courseId, Long teacherId) {
         logger.info("teacherCourseUnEnrollment courseId: {}, teacherId: {}", courseId, teacherId);
         Course courseFromDb = getCourseById(courseId, null);
+        logger.info("Fetching course list done.");
 
         if (!courseFromDb.getCourseTeachers().stream().anyMatch(t -> t.getTeacherId().equals(teacherId))) {
             logger.info("No teacher on the list of enroll");
             throw new CourseException(CourseError.TEACHER_NO_ON_THE_LIST_OF_ENROLL);
         }
 
+
         if (calendarServiceClient.isTeacherAssignedToLessonInCourse(courseId, teacherId)) {
             logger.info("Teacher has lessons in course");
             throw new CourseException(CourseError.TEACHER_HAS_LESSONS_IN_COURSE);
         }
 
+        logger.info("Removing teachers from course.");
         List<CourseTeachers> courseTeacherList = courseFromDb.getCourseTeachers();
         boolean removed = courseTeacherList.removeIf(teacher -> teacherId.equals(teacher.getTeacherId()));
         if (!removed) {

@@ -12,12 +12,12 @@ public interface CalendarRepository extends MongoRepository<Calendar, String> {
     @Query("{'courseId': ?0}")
     List<Calendar> getLessonsByCourseId(String courseId);
 
+    @Query("{'teacherId': ?0}")
+    List<Calendar> getLessonsByTeacherId(Long teacherId);
     //nie sprawdzone
 
     @Query("{'studentIdList': ?0}")
     List<Calendar> getLessonsByStudentId(Long studentId);
-    @Query("{'teacherId': ?0}")
-    List<Calendar> getLessonsByTeacherId(Long teacherId);
 
 
 }
