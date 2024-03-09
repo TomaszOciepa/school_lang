@@ -26,5 +26,6 @@ import { RestoreStudentDialogComponent } from './components/course/restore-stude
     RestoreStudentDialogComponent,
   ],
   imports: [SharedModule, CoursesRoutingModule, LessonsModule],
+  exports: [CoursesTableComponent],
 })
 export class CoursesModule {}

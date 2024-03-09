@@ -16,8 +16,8 @@ public interface CalendarServiceClient {
     @DeleteMapping("/calendar/delete-course-lessons/{courseId}")
     public void deleteCourseLessons(@PathVariable String courseId);
 
-    @GetMapping("/calendar/check-teacher-assignment/{courseId}/{studentId}")
-    public boolean isTeacherAssignedToLessonInCourse(@PathVariable String courseId, @PathVariable Long studentId);
+    @GetMapping("/calendar/check-teacher-assignment/{courseId}/{teacherId}")
+    public boolean isTeacherAssignedToLessonInCourse(@PathVariable String courseId, @PathVariable Long teacherId);
 
     @PostMapping("/calendar/enroll-lessons/{courseId}/{studentId}")
     ResponseEntity<?> enrollStudent(@PathVariable String courseId, @PathVariable Long studentId);

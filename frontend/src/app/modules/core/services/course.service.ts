@@ -87,4 +87,10 @@ export class CourseService {
       []
     );
   }
+
+  getCourseByTeacherId(teacherId: number): Observable<Course[]> {
+    return this.http.get<Course[]>(
+      `${this.apiUrl}/teacher-lessons/${teacherId}`
+    );
+  }
 }

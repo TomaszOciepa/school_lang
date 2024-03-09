@@ -59,5 +59,20 @@
         </li>
       </ul>
     </div>
+    <div class="row text-start p-md-3">
+      <h2>Kursy</h2>
+      <app-courses-table
+        [switch]="'teacher'"
+        [teacherId]="teacher.id"
+      ></app-courses-table>
+    </div>
+
+    <div class="row text-start p-md-3">
+      <h2>Lekcje</h2>
+      <app-lesons-table
+        [switch]="'teacher'"
+        [teacher-id]="teacher.id"
+      ></app-lesons-table>
+    </div>
   </div>
 </div>

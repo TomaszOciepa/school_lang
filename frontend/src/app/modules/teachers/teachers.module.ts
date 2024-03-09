@@ -8,6 +8,8 @@ import { TeacherFormComponent } from './components/teacher-form/teacher-form.com
 import { SharedModule } from '../shared/shared.module';
 import { DeleteTeacherDialogComponent } from './components/teacher/delete-teacher-dialog/delete-teacher-dialog.component';
 import { EditTeacherDialogComponent } from './components/teacher/edit-teacher-dialog/edit-teacher-dialog.component';
+import { CoursesModule } from '../courses/courses.module';
+import { LessonsModule } from '../lessons/lessons.module';
 
 @NgModule({
   declarations: [
@@ -18,6 +20,6 @@ import { EditTeacherDialogComponent } from './components/teacher/edit-teacher-di
     DeleteTeacherDialogComponent,
     EditTeacherDialogComponent,
   ],
-  imports: [SharedModule, TeachersRoutingModule],
+  imports: [SharedModule, TeachersRoutingModule, CoursesModule, LessonsModule],
 })
 export class TeachersModule {}
