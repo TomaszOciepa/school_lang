@@ -55,5 +55,13 @@
         </li>
       </ul>
     </div>
+
+    <div class="row text-start p-md-3">
+      <h2>Kursy</h2>
+      <app-courses-table
+        [switch]="'student'"
+        [studentId]="student.id"
+      ></app-courses-table>
+    </div>
   </div>
 </div>

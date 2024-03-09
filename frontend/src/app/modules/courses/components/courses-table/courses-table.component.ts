@@ -33,11 +33,24 @@ export class CoursesTableComponent implements AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @Input('switch') switch!: string;
   @Input('teacherId') teacherId!: number;
+  @Input('studentId') studentId!: number;
   constructor(private courseService: CourseService) {}
 
   async ngAfterViewInit(): Promise<void> {
     if (this.switch === 'teacher') {
       this.courseService.getCourseByTeacherId(this.teacherId).subscribe({
+        next: (course) => {
+          this.dataSource = new MatTableDataSource<Course>(course);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+        },
+        error: (err: ErrorHandler) => {
+          console.log(err);
+        },
+      });
+    } else if (this.switch === 'student') {
+      console.log();
+      this.courseService.getCourseByStudentId(this.studentId).subscribe({
         next: (course) => {
           this.dataSource = new MatTableDataSource<Course>(course);
           this.dataSource.paginator = this.paginator;

@@ -90,7 +90,13 @@ export class CourseService {
 
   getCourseByTeacherId(teacherId: number): Observable<Course[]> {
     return this.http.get<Course[]>(
-      `${this.apiUrl}/teacher-lessons/${teacherId}`
+      `${this.apiUrl}/teacher-courses/${teacherId}`
+    );
+  }
+
+  getCourseByStudentId(studentId: number): Observable<Course[]> {
+    return this.http.get<Course[]>(
+      `${this.apiUrl}/student-courses/${studentId}`
     );
   }
 }

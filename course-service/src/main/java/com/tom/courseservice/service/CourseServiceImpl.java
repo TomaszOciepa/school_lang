@@ -328,6 +328,16 @@ public class CourseServiceImpl implements CourseService {
         return courses;
     }
 
+    @Override
+    public List<Course> getCourseByStudentId(Long studentId) {
+        logger.info("getCourseByStudentId: studentId: {}", studentId);
+        List<Course> courses = courseRepository.getCoursesByStudentId(studentId);
+        if (courses.isEmpty()) {
+            logger.info("Courses list is empty.");
+            throw new CourseException(CourseError.COURSE_NOT_FOUND);
+        }
+        return courses;
+    }
 
     private void isCourseStartDateIsAfterCourseEndDate(LocalDateTime startDate, LocalDateTime endDate) {
         logger.info("Checking isCourseStartDateIsAfterCourseEndDate");
