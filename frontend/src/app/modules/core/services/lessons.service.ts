@@ -24,6 +24,12 @@ export class LessonsService {
     return this.http.get<Lesson[]>(`${this.apiUrl}/course-lessons/${courseId}`);
   }
 
+  getLessonByTeacherId(teacherId: number): Observable<Lesson[]> {
+    return this.http.get<Lesson[]>(
+      `${this.apiUrl}/teacher-lessons/${teacherId}`
+    );
+  }
+
   addLesson(lesson: PostLesson): Observable<Lesson> {
     return this.http.post<Lesson>(this.apiUrl, lesson);
   }

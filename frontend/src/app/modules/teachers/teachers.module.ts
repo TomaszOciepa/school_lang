@@ -9,6 +9,7 @@ import { SharedModule } from '../shared/shared.module';
 import { DeleteTeacherDialogComponent } from './components/teacher/delete-teacher-dialog/delete-teacher-dialog.component';
 import { EditTeacherDialogComponent } from './components/teacher/edit-teacher-dialog/edit-teacher-dialog.component';
 import { CoursesModule } from '../courses/courses.module';
+import { LessonsModule } from '../lessons/lessons.module';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,6 @@ import { CoursesModule } from '../courses/courses.module';
     DeleteTeacherDialogComponent,
     EditTeacherDialogComponent,
   ],
-  imports: [SharedModule, TeachersRoutingModule, CoursesModule],
+  imports: [SharedModule, TeachersRoutingModule, CoursesModule, LessonsModule],
 })
 export class TeachersModule {}

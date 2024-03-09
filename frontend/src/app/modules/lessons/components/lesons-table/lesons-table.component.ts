@@ -32,8 +32,9 @@ export class LesonsTableComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @Input('course-id') courseId!: string;
+  @Input('teacher-id') teacherId!: number;
   @Input('lessons-limit') lessonsLimit!: number;
-  @Input('switch') getCourseLessons: boolean = false;
+  @Input('switch') switch: string = 'lesson';
 
   lessonsNumber!: number;
   errMsg!: string;
@@ -41,11 +42,26 @@ export class LesonsTableComponent implements AfterViewInit {
   constructor(private lessonsService: LessonsService, private router: Router) {}
 
   async ngAfterViewInit(): Promise<void> {
-    if (this.getCourseLessons) {
-      this.getLessonsByCourseId();
-    } else {
+    if (this.switch === 'lesson') {
       this.getAllLessons();
+    } else if (this.switch === 'course') {
+      this.getLessonsByCourseId();
+    } else if (this.switch === 'teacher') {
+      this.getLessonsByTeacherId();
     }
+  }
+
+  private getAllLessons() {
+    this.lessonsService.getAllLessons().subscribe({
+      next: (lesson) => {
+        this.dataSource = new MatTableDataSource<Lesson>(lesson);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      },
+      error: (err: ErrorHandler) => {
+        console.log(err);
+      },
+    });
   }
 
   private getLessonsByCourseId() {
@@ -62,9 +78,10 @@ export class LesonsTableComponent implements AfterViewInit {
     });
   }
 
-  private getAllLessons() {
-    this.lessonsService.getAllLessons().subscribe({
+  private getLessonsByTeacherId() {
+    this.lessonsService.getLessonByTeacherId(this.teacherId).subscribe({
       next: (lesson) => {
+        this.lessonsNumber = lesson.length;
         this.dataSource = new MatTableDataSource<Lesson>(lesson);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
