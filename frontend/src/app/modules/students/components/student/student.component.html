@@ -63,5 +63,13 @@
         [studentId]="student.id"
       ></app-courses-table>
     </div>
+
+    <div class="row text-start p-md-3">
+      <h2>Lekcje</h2>
+      <app-lesons-table
+        [switch]="'student'"
+        [student-id]="student.id"
+      ></app-lesons-table>
+    </div>
   </div>
 </div>

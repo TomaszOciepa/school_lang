@@ -33,6 +33,7 @@ export class LesonsTableComponent implements AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @Input('course-id') courseId!: string;
   @Input('teacher-id') teacherId!: number;
+  @Input('student-id') studentId!: number;
   @Input('lessons-limit') lessonsLimit!: number;
   @Input('switch') switch: string = 'lesson';
 
@@ -48,6 +49,8 @@ export class LesonsTableComponent implements AfterViewInit {
       this.getLessonsByCourseId();
     } else if (this.switch === 'teacher') {
       this.getLessonsByTeacherId();
+    } else if (this.switch === 'student') {
+      this.getLessonsByStudentId();
     }
   }
 
@@ -80,6 +83,20 @@ export class LesonsTableComponent implements AfterViewInit {
 
   private getLessonsByTeacherId() {
     this.lessonsService.getLessonByTeacherId(this.teacherId).subscribe({
+      next: (lesson) => {
+        this.lessonsNumber = lesson.length;
+        this.dataSource = new MatTableDataSource<Lesson>(lesson);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      },
+      error: (err: ErrorHandler) => {
+        console.log(err);
+      },
+    });
+  }
+
+  private getLessonsByStudentId() {
+    this.lessonsService.getLessonsByStudentId(this.studentId).subscribe({
       next: (lesson) => {
         this.lessonsNumber = lesson.length;
         this.dataSource = new MatTableDataSource<Lesson>(lesson);
