@@ -45,7 +45,14 @@ public class CalendarController {
 
     @GetMapping("/teacher-lessons/{teacherId}")
     public List<Calendar> getLessonByTeacherId(@PathVariable Long teacherId) {
+        logger.info("Get method getLessonByTeacherId()");
         return calendarService.getLessonsByTeacherId(teacherId);
+    }
+
+    @GetMapping("/student-lessons/{studentId}")
+    public List<Calendar> getLessonsByStudentId(@PathVariable Long studentId) {
+        logger.info("Get method getLessonsByStudentId()");
+        return calendarService.getLessonsByStudentId(studentId);
     }
 
     @DeleteMapping("/delete-course-lessons/{courseId}")
@@ -105,9 +112,4 @@ public class CalendarController {
         return ResponseEntity.ok().build();
     }
 
-    //    nie sprawdzone
-    @GetMapping("/student-lessons/{studentId}")
-    public List<Calendar> getLessonsByStudentId(@PathVariable Long studentId) {
-        return calendarService.getLessonsByStudentId(studentId);
-    }
 }

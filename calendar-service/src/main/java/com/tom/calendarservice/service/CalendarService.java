@@ -16,6 +16,8 @@ public interface CalendarService {
 
     List<Calendar> getLessonsByTeacherId(Long teacherId);
 
+    List<Calendar> getLessonsByStudentId(Long studentId);
+
     void deleteCourseLessons(String courseId);
 
     Calendar addLesson(Calendar calendar);
@@ -33,10 +35,10 @@ public interface CalendarService {
     void enrollStudentLesson(String lessonId, Long studentId);
 
     void unEnrollStudentLesson(String lessonId, Long studentId);
+
 //    nie sprawdzone
 
     //    Calendar addEvent(EventRequest eventRequest);
-    List<Calendar> getLessonsByStudentId(Long studentId);
 
 
 }

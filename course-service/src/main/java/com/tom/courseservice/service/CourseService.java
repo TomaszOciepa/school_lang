@@ -23,6 +23,8 @@ public interface CourseService {
     void studentCourseUnEnrollment(String courseId, Long studentId);
     ResponseEntity<?> restoreStudentToCourse(String courseId, Long studentId);
     List<Course> getCourseByTeacherId(Long teacherId);
+    List<Course> getCourseByStudentId(Long studentId);
+
 //    nie sprawdzone
 //    void changeCourseMemberStatus(String courseId, Long studentId, Status status);
 

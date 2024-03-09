@@ -99,9 +99,15 @@ public class CourseController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/teacher-lessons/{teacherId}")
+    @GetMapping("/teacher-courses/{teacherId}")
     public List<Course> getCourseByTeacherId(@PathVariable Long teacherId) {
-        logger.info("Get method getCoursesByStudentId()");
+        logger.info("Get method getCourseByTeacherId()");
         return courseService.getCourseByTeacherId(teacherId);
+    }
+
+    @GetMapping("/student-courses/{studentId}")
+    public List<Course> getCourseByStudentId(@PathVariable Long studentId) {
+        logger.info("Get method getCourseByStudentId()");
+        return courseService.getCourseByStudentId(studentId);
     }
 }

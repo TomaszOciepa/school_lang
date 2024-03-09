@@ -101,6 +101,16 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
+    public List<Calendar> getLessonsByStudentId(Long studentId) {
+        logger.info("Fetching lessons by student id.");
+        List<Calendar> lessons = calendarRepository.getLessonsByStudentId(studentId);
+        if (lessons.isEmpty()) {
+            logger.info("Teacher lessons list is empty.");
+            throw new CalendarException(CalendarError.CALENDAR_LESSONS_NOT_FOUND);
+        }
+        return lessons;
+    }
+    @Override
     public Calendar patchLesson(String id, Calendar lesson) {
         logger.info("Patch lesson id: {}", id);
         Calendar lessonFromDB = calendarRepository.findById(id)
@@ -430,15 +440,4 @@ public class CalendarServiceImpl implements CalendarService {
         }
     }
 
-
-    //nie sprawdzone
-
-    @Override
-    public List<Calendar> getLessonsByStudentId(Long studentId) {
-        List<Calendar> lessons = calendarRepository.getLessonsByStudentId(studentId);
-        if (lessons.isEmpty()) {
-            throw new CalendarException(CalendarError.CALENDAR_LESSONS_NOT_FOUND);
-        }
-        return lessons;
-    }
 }

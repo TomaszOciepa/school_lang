@@ -16,7 +16,7 @@ public interface CalendarRepository extends MongoRepository<Calendar, String> {
     List<Calendar> getLessonsByTeacherId(Long teacherId);
     //nie sprawdzone
 
-    @Query("{'studentIdList': ?0}")
+    @Query("{'attendanceList.studentId': ?0}")
     List<Calendar> getLessonsByStudentId(Long studentId);
 
 

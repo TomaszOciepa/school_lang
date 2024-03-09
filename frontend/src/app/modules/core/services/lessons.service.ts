@@ -30,6 +30,12 @@ export class LessonsService {
     );
   }
 
+  getLessonsByStudentId(studentId: number): Observable<Lesson[]> {
+    return this.http.get<Lesson[]>(
+      `${this.apiUrl}/student-lessons/${studentId}`
+    );
+  }
+
   addLesson(lesson: PostLesson): Observable<Lesson> {
     return this.http.post<Lesson>(this.apiUrl, lesson);
   }
