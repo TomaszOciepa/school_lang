@@ -13,29 +13,31 @@ const routes: Routes = [
   {
     path: 'courses',
     loadChildren: () =>
-      import('./modules/courses/courses.module').then((m) => m.CoursesModule),
+      import('./modules/admin/courses/courses.module').then(
+        (m) => m.CoursesModule
+      ),
     canActivate: [AuthGuard],
     data: {
-      roles: ['admin', 'user'],
+      roles: ['admin'],
     },
     title: 'Kursy',
   },
   {
     path: 'students',
     loadChildren: () =>
-      import('./modules/students/students.module').then(
+      import('./modules/admin/students/students.module').then(
         (m) => m.StudentsModule
       ),
     canActivate: [AuthGuard],
     data: {
-      roles: ['admin', 'user'],
+      roles: ['admin'],
     },
     title: 'Uczniowie',
   },
   {
     path: 'teachers',
     loadChildren: () =>
-      import('./modules/teachers/teachers.module').then(
+      import('./modules/admin/teachers/teachers.module').then(
         (m) => m.TeachersModule
       ),
     canActivate: [AuthGuard],
@@ -47,10 +49,12 @@ const routes: Routes = [
   {
     path: 'lessons',
     loadChildren: () =>
-      import('./modules/lessons/lessons.module').then((m) => m.LessonsModule),
+      import('./modules/admin/lessons/lessons.module').then(
+        (m) => m.LessonsModule
+      ),
     canActivate: [AuthGuard],
     data: {
-      roles: ['admin', 'user'],
+      roles: ['admin'],
     },
     title: 'lekcje',
   },

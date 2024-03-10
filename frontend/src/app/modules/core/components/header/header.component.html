@@ -3,37 +3,22 @@
     <span>Lang School</span>
     <span class="spacer"></span>
     <button mat-button routerLink="/">Strona główna</button>
-    <button
-      mat-button
-      routerLink="courses"
-      *ngIf="(isLoggedIn && isAdmin) || (isLoggedIn && isUser)"
-    >
-      Kursy
-    </button>
-    <button
-      mat-button
-      routerLink="lessons"
-      *ngIf="(isLoggedIn && isAdmin) || (isLoggedIn && isUser)"
-    >
-      Lekcje
-    </button>
-    <button
-      mat-button
-      routerLink="teachers"
-      *ngIf="(isLoggedIn && isAdmin) || (isLoggedIn && isUser)"
-    >
-      Nauczyciele
-    </button>
-    <button
-      mat-button
-      routerLink="students"
-      *ngIf="(isLoggedIn && isAdmin) || (isLoggedIn && isUser)"
-    >
-      Uczniowie
-    </button>
+
+    <ng-container *ngIf="isLoggedIn && isAdmin">
+      <app-admin></app-admin>
+    </ng-container>
+
+    <ng-container *ngIf="isLoggedIn && isTeacher">
+      <app-teacher></app-teacher>
+    </ng-container>
+
+    <ng-container *ngIf="isLoggedIn && isStudent">
+      <app-student></app-student>
+    </ng-container>
+
     <button *ngIf="!isLoggedIn" mat-button (click)="login()">Logowanie</button>
     <p *ngIf="isLoggedIn">
-      {{ userProfile?.firstName }} {{ userProfile?.lastName }}
+      {{ userProfile?.firstName }}
     </p>
     <button *ngIf="isLoggedIn" mat-button (click)="logout()">Wyloguj</button>
   </mat-toolbar>

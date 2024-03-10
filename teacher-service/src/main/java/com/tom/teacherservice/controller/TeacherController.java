@@ -34,6 +34,7 @@ public class TeacherController {
         teacherService.getTeacherById(teacherId);
     }
 
+//    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PreAuthorize("hasRole('admin')")
     @GetMapping
     public List<Teacher> getTeachers(@RequestParam(required = false) Status status) {
