@@ -127,6 +127,15 @@ export class LesonsTableComponent implements AfterViewInit {
     }
   }
 
+  addTeacherLesson() {
+    if (this.lessonsLimit == this.lessonsNumber) {
+      this.errMsg = 'Course Lesson Limit Reached.';
+      this.hideErrorMsg();
+    } else {
+      this.router.navigate(['/lessons/dodaj', { teacherId: this.teacherId }]);
+    }
+  }
+
   addLesson() {
     this.router.navigate(['/lessons/dodaj']);
   }

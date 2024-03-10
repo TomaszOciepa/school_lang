@@ -16,6 +16,15 @@
     Dodaj lekcje
   </button>
 
+  <button
+    *ngIf="switch === 'teacher'"
+    mat-raised-button
+    color="primary"
+    (click)="addTeacherLesson()"
+  >
+    Dodaj lekcje
+  </button>
+
   <div *ngIf="errMsg" class="alert alert-danger" role="alert">
     {{ errMsg }}
   </div>

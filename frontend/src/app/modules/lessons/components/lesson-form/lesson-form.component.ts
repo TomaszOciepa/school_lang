@@ -29,12 +29,14 @@ export class LessonFormComponent {
 
   newLesson: PostLesson = {} as PostLesson;
   coursesList!: Course[];
-  teacherList!: User[];
+  teacherList: User[] = [];
   startTimeStr: string = '';
   endTimeStr: string = '';
 
   courseId!: string | null;
+  teacherId!: number | null;
   course!: Course;
+  teacher!: User;
   errMsg!: string;
 
   observer: Observer<unknown> = {
@@ -50,9 +52,13 @@ export class LessonFormComponent {
       if (this.editMode) {
         window.location.reload();
       }
-      if (this.courseId) {
+      if (this.teacherId !== undefined) {
+        this.router.navigate(['/teachers/' + this.teacherId]);
+      }
+      if (this.courseId !== null) {
         this.router.navigate(['/courses/' + this.courseId]);
-      } else {
+      }
+      if (this.courseId == null && this.teacherId == undefined) {
         this.router.navigate(['/lessons']);
       }
     },
@@ -71,11 +77,22 @@ export class LessonFormComponent {
   ngOnInit(): void {
     this.courseId = this.route.snapshot.paramMap.get('id');
 
-    if (this.courseId == null) {
+    if (this.route.snapshot.paramMap.get('teacherId') !== null) {
+      this.teacherId = Number(this.route.snapshot.paramMap.get('teacherId'));
+      console.log('teacherId: ' + this.teacherId);
+      console.log('getTeacherById() courseId: ' + this.courseId);
+      this.getTeacherById(this.teacherId);
+    }
+
+    if (this.courseId == null && this.teacherId == undefined) {
+      console.log('getTeachers() courseId: ' + this.courseId);
+      console.log('teacherId: ' + this.teacherId);
       this.getTeachers();
     }
 
     if (this.courseId !== null) {
+      console.log('getCourseTeachers courseId: ' + this.courseId);
+      console.log('teacherId: ' + this.teacherId);
       this.getCourseTeachers(this.courseId);
     }
 
@@ -262,6 +279,20 @@ export class LessonFormComponent {
 
   private parseDateToStringFormat(date: string): string {
     return this.dateParser.parseDate(date);
+  }
+
+  private getTeacherById(teacherId: number) {
+    this.teacherService.getTeacherById(teacherId).subscribe({
+      next: (result) => {
+        console.log('result: ' + result);
+        this.teacher = result;
+        this.teacherList.push(this.teacher);
+      },
+      error: (err) => {
+        console.log(err);
+      },
+      complete: () => {},
+    });
   }
 
   private getTeachers() {
