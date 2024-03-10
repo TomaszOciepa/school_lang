@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Edycja nauczyciela</h1>
+<div mat-dialog-content>
+  <app-teacher-form
+    [teacher]="data.teacher"
+    [editMode]="true"
+    (closeDialog)="closeDialog()"
+  ></app-teacher-form>
+</div>

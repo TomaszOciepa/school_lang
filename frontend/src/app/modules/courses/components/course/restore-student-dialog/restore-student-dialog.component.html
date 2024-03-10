@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Czy napewno chcesz przywrócić studenta do kursu?</h1>
+<div mat-dialog-content>
+  <p>imię i nazwisko</p>
+  <p>{{ student.firstName }} {{ student.lastName }}</p>
+  <!-- <app-alert *ngIf="errorMessage">{{ errorMessage }}</app-alert> -->
+  <div *ngIf="errMsg" class="alert alert-danger" role="alert">
+    {{ errMsg }}
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button color="accent" mat-button mat-dialog-close>Anuluj</button>
+  <button
+    color="warn"
+    mat-button
+    (click)="restoreStudentToCourse()"
+    cdkFocusInitial
+  >
+    Przywróć
+  </button>
+</div>

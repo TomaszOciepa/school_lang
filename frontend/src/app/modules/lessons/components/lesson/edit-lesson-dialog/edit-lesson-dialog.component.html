@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Edytuj Lekcje</h1>
+<div mat-dialog-content>
+  <app-lesson-form
+    [lesson]="data.lesson"
+    [editMode]="true"
+    (closeDialog)="closeDialog()"
+  ></app-lesson-form>
+</div>
