@@ -79,20 +79,18 @@ export class LessonFormComponent {
 
     if (this.route.snapshot.paramMap.get('teacherId') !== null) {
       this.teacherId = Number(this.route.snapshot.paramMap.get('teacherId'));
-      console.log('teacherId: ' + this.teacherId);
-      console.log('getTeacherById() courseId: ' + this.courseId);
       this.getTeacherById(this.teacherId);
     }
 
     if (this.courseId == null && this.teacherId == undefined) {
-      console.log('getTeachers() courseId: ' + this.courseId);
-      console.log('teacherId: ' + this.teacherId);
-      this.getTeachers();
+      if (this.editMode && this.lesson.courseId !== null) {
+        this.getCourseTeachers(this.lesson.courseId);
+      } else {
+        this.getTeachers();
+      }
     }
 
     if (this.courseId !== null) {
-      console.log('getCourseTeachers courseId: ' + this.courseId);
-      console.log('teacherId: ' + this.teacherId);
       this.getCourseTeachers(this.courseId);
     }
 
