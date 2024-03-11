@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 import { KeycloakProfile } from 'keycloak-js';
-import { User } from '../../core/models/user.model';
-import { TeacherService } from '../../core/services/teacher.service';
+import { User } from '../../../core/models/user.model';
+import { TeacherService } from '../../../core/services/teacher.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({

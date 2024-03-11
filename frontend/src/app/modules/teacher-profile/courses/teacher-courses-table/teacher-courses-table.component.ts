@@ -1,9 +1,9 @@
 import { Component, ErrorHandler, Input, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { Course } from '../../core/models/course.model';
+import { Course } from '../../../core/models/course.model';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { CourseService } from '../../core/services/course.service';
+import { CourseService } from '../../../core/services/course.service';
 
 @Component({
   selector: 'app-teacher-courses-table',
