@@ -58,6 +58,24 @@ const routes: Routes = [
     },
     title: 'lekcje',
   },
+
+  //*************
+  //teacher-profile path
+  //****************************************
+
+  {
+    path: 'teacher-profile',
+    loadChildren: () =>
+      import('./modules/teacher-profile/teacher-profile.module').then(
+        (m) => m.TeacherProfileModule
+      ),
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['teacher'],
+    },
+    title: 'Moje kursy',
+  },
+
   { path: '**', component: PageNotFoundComponent, title: 'Page not found 404' },
 ];
 

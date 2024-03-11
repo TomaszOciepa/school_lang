@@ -72,15 +72,18 @@ public class TeacherController {
     @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/{id}")
     public void deleteTeacher(@PathVariable Long id) {
+        logger.info("Delete method deleteTeacher()");
         teacherService.deleteTeacher(id);
     }
 
-    //    nie sprawdzone
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @GetMapping("/email")
     public Teacher getTeacherByEmail(@RequestParam String email) {
+        logger.info("Get method getTeacherByEmail()");
         return teacherService.getTeacherByEmail(email);
     }
+
+    //    nie sprawdzone
 
     @PreAuthorize("hasRole('admin')")
     @PutMapping("/{id}")

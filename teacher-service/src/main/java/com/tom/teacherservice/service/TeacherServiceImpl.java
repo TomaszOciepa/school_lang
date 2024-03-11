@@ -91,17 +91,18 @@ public class TeacherServiceImpl implements TeacherService {
         }
         return teacherRepository.save(teacherFromDb);
     }
-    //nie sprawdzone
 
     @Override
     public Teacher getTeacherByEmail(String email) {
+        logger.info("getTeacherByEmail email: {}", email);
         Teacher teacher = teacherRepository.findByEmail(email)
                 .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
-        if (!Status.ACTIVE.equals(teacher.getStatus())) {
-            throw new TeacherException(TeacherError.TEACHER_IS_NOT_ACTIVE);
-        }
+//        if (!Status.ACTIVE.equals(teacher.getStatus())) {
+//            throw new TeacherException(TeacherError.TEACHER_IS_NOT_ACTIVE);
+//        }
         return teacher;
     }
+    //nie sprawdzone
 
     private void validateTeacherEmailExists(String email) {
         if (teacherRepository.existsByEmail(email)) {
