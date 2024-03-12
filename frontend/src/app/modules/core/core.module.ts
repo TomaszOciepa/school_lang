@@ -8,8 +8,13 @@ import { TeacherComponent } from './components/header/teacher/teacher.component'
 import { StudentComponent } from './components/header/student/student.component';
 
 @NgModule({
-  declarations: [HeaderComponent, AdminComponent, TeacherComponent, StudentComponent],
+  declarations: [
+    HeaderComponent,
+    AdminComponent,
+    TeacherComponent,
+    StudentComponent,
+  ],
   imports: [SharedModule, RouterModule, BrowserAnimationsModule],
-  exports: [HeaderComponent],
+  exports: [HeaderComponent, AdminComponent],
 })
 export class CoreModule {}

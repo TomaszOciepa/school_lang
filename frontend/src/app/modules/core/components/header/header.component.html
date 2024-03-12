@@ -4,16 +4,11 @@
     <span class="spacer"></span>
     <button mat-button routerLink="/">Strona główna</button>
 
-    <ng-container *ngIf="isLoggedIn && isAdmin">
-      <app-admin></app-admin>
-    </ng-container>
-
-    <ng-container *ngIf="isLoggedIn && isTeacher">
-      <app-teacher></app-teacher>
-    </ng-container>
-
-    <ng-container *ngIf="isLoggedIn && isStudent">
-      <app-student></app-student>
+    <ng-container *ngIf="isLoggedIn">
+      <button mat-button routerLink="courses">Kursy</button>
+      <button mat-button routerLink="lessons">Lekcje</button>
+      <button mat-button routerLink="teachers">Nauczyciele</button>
+      <button mat-button routerLink="students">Uczniowie</button>
     </ng-container>
 
     <button *ngIf="!isLoggedIn" mat-button (click)="login()">Logowanie</button>
