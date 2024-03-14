@@ -2,13 +2,13 @@ import { FormControl } from '@angular/forms';
 
 export interface EnrollemntInfo {
   id: number;
-  enrollmentData: Date;
-  status: string;
+  enrollmentData?: Date;
+  status?: string;
 }
 
 export type PostCourse = Omit<
   CourseResponse,
-  'id' | 'courseStudents' | 'courseTeachers' | 'participantsNumber'
+  'courseStudents' | 'participantsNumber'
 >;
 
 export interface CourseResponse {
@@ -20,8 +20,8 @@ export interface CourseResponse {
   lessonsLimit: number;
   startDate: string;
   endDate: string;
-  courseStudents: EnrollemntInfo;
-  courseTeachers: EnrollemntInfo;
+  courseStudents: EnrollemntInfo[];
+  courseTeachers: EnrollemntInfo[];
 }
 
 export class Course implements CourseResponse {
@@ -34,8 +34,8 @@ export class Course implements CourseResponse {
     public lessonsLimit: number,
     public startDate: string,
     public endDate: string,
-    public courseStudents: EnrollemntInfo,
-    public courseTeachers: EnrollemntInfo
+    public courseStudents: EnrollemntInfo[],
+    public courseTeachers: EnrollemntInfo[]
   ) {}
 }
 

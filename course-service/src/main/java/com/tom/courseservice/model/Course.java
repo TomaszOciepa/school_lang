@@ -27,6 +27,8 @@ public class Course {
     private Long lessonsLimit;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+//    private List<CourseStudents> courseStudents;
+//    private List<CourseTeachers> courseTeachers;
     private List<CourseStudents> courseStudents = new ArrayList<>();
     private List<CourseTeachers> courseTeachers = new ArrayList<>();
 

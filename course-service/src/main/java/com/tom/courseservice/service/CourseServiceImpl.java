@@ -55,6 +55,7 @@ public class CourseServiceImpl implements CourseService {
         logger.info("Setting participants number on 0L.");
         course.setParticipantsNumber(0L);
         logger.info("Save course on database.");
+        System.out.println(course.toString());
         return courseRepository.save(course);
     }
 
@@ -100,7 +101,7 @@ public class CourseServiceImpl implements CourseService {
         }
         logger.info("Create students id numbers list.");
         List<Long> idNumbers = courseStudents.stream()
-                .map(CourseStudents::getStudentId)
+                .map(CourseStudents::getId)
                 .collect(Collectors.toList());
 
 
@@ -123,7 +124,7 @@ public class CourseServiceImpl implements CourseService {
         }
         logger.info("Create teachers id numbers list.");
         List<Long> idNumbers = courseTeachers.stream()
-                .map(CourseTeachers::getTeacherId)
+                .map(CourseTeachers::getId)
                 .collect(Collectors.toList());
 
         logger.info("Fetching teachers by id number.");
@@ -219,7 +220,7 @@ public class CourseServiceImpl implements CourseService {
         Course courseFromDb = getCourseById(courseId, null);
         logger.info("Fetching course list done.");
 
-        if (!courseFromDb.getCourseTeachers().stream().anyMatch(t -> t.getTeacherId().equals(teacherId))) {
+        if (!courseFromDb.getCourseTeachers().stream().anyMatch(t -> t.getId().equals(teacherId))) {
             logger.info("No teacher on the list of enroll");
             throw new CourseException(CourseError.TEACHER_NO_ON_THE_LIST_OF_ENROLL);
         }
@@ -232,7 +233,7 @@ public class CourseServiceImpl implements CourseService {
 
         logger.info("Removing teachers from course.");
         List<CourseTeachers> courseTeacherList = courseFromDb.getCourseTeachers();
-        boolean removed = courseTeacherList.removeIf(teacher -> teacherId.equals(teacher.getTeacherId()));
+        boolean removed = courseTeacherList.removeIf(teacher -> teacherId.equals(teacher.getId()));
         if (!removed) {
             throw new CourseException(CourseError.TEACHER_NO_ON_THE_LIST_OF_ENROLL);
         }
@@ -300,12 +301,12 @@ public class CourseServiceImpl implements CourseService {
         }
 
         course.getCourseStudents().forEach(student -> {
-            if (student.getStudentId().equals(studentId) && student.getStatus().equals(Status.ACTIVE)) {
+            if (student.getId().equals(studentId) && student.getStatus().equals(Status.ACTIVE)) {
                 logger.warn("Student is ACTIVE.");
                 throw new CourseException(CourseError.STUDENT_IS_ACTIVE);
             }
 
-            if (student.getStudentId().equals(studentId)) {
+            if (student.getId().equals(studentId)) {
                 logger.info("Student with studentId: {} set status Active.", studentId);
                 student.setStatus(Status.ACTIVE);
             }
@@ -385,7 +386,7 @@ public class CourseServiceImpl implements CourseService {
             String firstName = student.getFirstName();
             String lastName = student.getLastName();
 
-            Optional<CourseStudents> first = courseStudents.stream().filter(s -> s.getStudentId().equals(id)).findFirst();
+            Optional<CourseStudents> first = courseStudents.stream().filter(s -> s.getId().equals(id)).findFirst();
             LocalDateTime enrollmentDate = first.get().getEnrollmentDate();
             Status status = first.get().getStatus();
 
@@ -403,7 +404,7 @@ public class CourseServiceImpl implements CourseService {
         }
         if (course.getCourseTeachers()
                 .stream()
-                .anyMatch((member -> teacherDto.getId().equals(member.getTeacherId())))) {
+                .anyMatch((member -> teacherDto.getId().equals(member.getId())))) {
             logger.warn("Teacher is already enrolled.");
             throw new CourseException(CourseError.TEACHER_ALREADY_ENROLLED);
         }
@@ -413,7 +414,7 @@ public class CourseServiceImpl implements CourseService {
         logger.info("Checking isStudentEnrolledInCourse");
         boolean match = course.getCourseStudents()
                 .stream()
-                .anyMatch((member -> studentId.equals(member.getStudentId())));
+                .anyMatch((member -> studentId.equals(member.getId())));
         if (match) {
             return true;
         } else {
@@ -431,7 +432,7 @@ public class CourseServiceImpl implements CourseService {
         logger.info("removeStudentFromCourseStudentList studentId: {}, courseName: {}", studentId, courseFromDb.getName());
         List<CourseStudents> courseStudentsList = courseFromDb.getCourseStudents();
 
-        boolean removed = courseStudentsList.removeIf(student -> studentId.equals(student.getStudentId()));
+        boolean removed = courseStudentsList.removeIf(student -> studentId.equals(student.getId()));
 
         if (!removed) {
             logger.warn("No student on the list of enroll");
@@ -444,7 +445,7 @@ public class CourseServiceImpl implements CourseService {
     private void setRemovedStatus(Long studentId, Course courseFromDb) {
         logger.info("setRemovedStatus for studentId: {} in courseName: {}", studentId, courseFromDb.getName());
         courseFromDb.getCourseStudents().stream().map(student -> {
-            if (student.getStudentId().equals(studentId)) {
+            if (student.getId().equals(studentId)) {
                 student.setStatus(Status.REMOVED);
             }
             return student;

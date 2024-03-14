@@ -2,16 +2,20 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { KeycloakProfile } from 'keycloak-js';
 import { Observer } from 'rxjs';
 
 import {
   Course,
+  EnrollemntInfo,
   PostCourse,
   PostCourseForm,
 } from 'src/app/modules/core/models/course.model';
 import { CourseService } from 'src/app/modules/core/services/course.service';
 import { DateParserService } from 'src/app/modules/core/services/date-parser.service';
 import { FormsService } from 'src/app/modules/core/services/forms.service';
+import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
+import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 
 @Component({
   selector: 'app-course-form',
@@ -46,15 +50,36 @@ export class CourseFormComponent {
   postCourse: PostCourse = {} as PostCourse;
   errMsg!: string;
 
+  isLoggedIn = false;
+  userProfile: KeycloakProfile | null = null;
+  isTeacher: boolean = false;
+  teacherEmail!: string | undefined;
+  teacherId!: number;
+
   constructor(
     private formService: FormsService,
+    private userProfileService: LoadUserProfileService,
     private courseService: CourseService,
+    private teacherService: TeacherService,
     private router: Router,
     private dateParser: DateParserService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.loadUserProfile();
     this.initForm();
+  }
+
+  async loadUserProfile(): Promise<void> {
+    await this.userProfileService.loadUserProfile();
+    this.isLoggedIn = this.userProfileService.isLoggedIn;
+    this.userProfile = this.userProfileService.userProfile;
+    this.isTeacher = this.userProfileService.isTeacher;
+
+    if (this.isTeacher) {
+      this.teacherEmail = this.userProfile?.email;
+      this.getTeacherByEmail();
+    }
   }
 
   getErrorMessage(control: FormControl) {
@@ -153,6 +178,16 @@ export class CourseFormComponent {
     if (this.courseForm.get('lessonsLimit')?.dirty) {
       this.postCourse.lessonsLimit = this.courseForm.getRawValue().lessonsLimit;
     }
+
+    if (this.isTeacher) {
+      console.log('siema ticzer');
+      console.log('teacher ID: ' + this.teacherId);
+      const id = this.teacherId;
+      console.log('id: ' + id);
+      const teacherInfo: EnrollemntInfo = { id: 12 };
+      this.postCourse.courseTeachers = [];
+      this.postCourse.courseTeachers.push(teacherInfo);
+    }
   }
 
   emitCLoseDialog() {
@@ -167,5 +202,17 @@ export class CourseFormComponent {
     setTimeout(() => {
       this.errMsg = '';
     }, 3000);
+  }
+
+  private getTeacherByEmail() {
+    this.teacherService.getTeacherByEmail(this.teacherEmail).subscribe({
+      next: (result) => {
+        this.teacherId = result.id;
+      },
+      error: (err) => {
+        console.log(err);
+      },
+      complete: () => {},
+    });
   }
 }

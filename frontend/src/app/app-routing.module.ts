@@ -16,7 +16,7 @@ const routes: Routes = [
       import('./modules/courses/courses.module').then((m) => m.CoursesModule),
     canActivate: [AuthGuard],
     data: {
-      roles: ['admin'],
+      roles: ['admin', 'teacher'],
     },
     title: 'Kursy',
   },
@@ -28,7 +28,7 @@ const routes: Routes = [
       ),
     canActivate: [AuthGuard],
     data: {
-      roles: ['admin'],
+      roles: ['admin', 'teacher'],
     },
     title: 'Uczniowie',
   },
@@ -40,7 +40,7 @@ const routes: Routes = [
       ),
     canActivate: [AuthGuard],
     data: {
-      roles: ['admin'],
+      roles: ['admin', 'teacher'],
     },
     title: 'nauczyciele',
   },
@@ -50,7 +50,7 @@ const routes: Routes = [
       import('./modules/lessons/lessons.module').then((m) => m.LessonsModule),
     canActivate: [AuthGuard],
     data: {
-      roles: ['admin'],
+      roles: ['admin', 'teacher'],
     },
     title: 'lekcje',
   },

@@ -22,6 +22,10 @@ export class TeacherService {
     return this.http.get<User>(`${this.apiUrl}/${id}`);
   }
 
+  getTeacherByEmail(email: string | undefined): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/email?email=${email}`);
+  }
+
   getTeachersByIdNumberNotEqual(id: number[]): Observable<User[]> {
     return this.http.post<User[]>(this.apiUrl + '/id-numbers-not-equal', id);
   }

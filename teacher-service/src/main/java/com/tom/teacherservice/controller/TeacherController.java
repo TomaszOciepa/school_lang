@@ -21,7 +21,7 @@ public class TeacherController {
     private final TeacherService teacherService;
 
     //sprawdzone
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('admin')or hasRole('teacher')")
     @PostMapping("/idNumbers")
     public List<Teacher> getTeachersByIdNumber(@RequestBody List<Long> idNumbers) {
         logger.info("Post method getTeachersByIdNumber()");
@@ -35,11 +35,18 @@ public class TeacherController {
     }
 
 //    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @GetMapping
     public List<Teacher> getTeachers(@RequestParam(required = false) Status status) {
         logger.info("Get method getTeachers()");
         return teacherService.getTeachers(status);
+    }
+
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @GetMapping("/email")
+    public Teacher getTeacherByEmail(@RequestParam String email) {
+        logger.info("Get method getTeacherByEmail()");
+        return teacherService.getTeacherByEmail(email);
     }
 
     @PostMapping("/id-numbers-not-equal")
@@ -76,11 +83,6 @@ public class TeacherController {
     }
 
     //    nie sprawdzone
-    @PreAuthorize("hasRole('admin')")
-    @GetMapping("/email")
-    public Teacher getTeacherByEmail(@RequestParam String email) {
-        return teacherService.getTeacherByEmail(email);
-    }
 
     @PreAuthorize("hasRole('admin')")
     @PutMapping("/{id}")
