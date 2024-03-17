@@ -15,6 +15,7 @@ export class LoadUserProfileService {
   constructor(private readonly keycloak: KeycloakService) {}
 
   public async loadUserProfile() {
+    console.log(' w środku LoadUserProfileService');
     this.isLoggedIn = await this.keycloak.isLoggedIn();
 
     if (this.isLoggedIn) {

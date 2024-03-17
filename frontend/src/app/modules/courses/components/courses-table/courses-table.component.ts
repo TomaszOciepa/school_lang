@@ -18,7 +18,7 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./courses-table.component.css'],
   providers: [DatePipe],
 })
-export class CoursesTableComponent implements AfterViewInit {
+export class CoursesTableComponent {
   displayedColumns: string[] = [
     'lp',
     'name',
@@ -34,9 +34,10 @@ export class CoursesTableComponent implements AfterViewInit {
   @Input('switch') switch!: string;
   @Input('teacherId') teacherId!: number;
   @Input('studentId') studentId!: number;
+
   constructor(private courseService: CourseService) {}
 
-  async ngAfterViewInit(): Promise<void> {
+  async ngOnInit(): Promise<void> {
     if (this.switch === 'teacher') {
       this.courseService.getCourseByTeacherId(this.teacherId).subscribe({
         next: (course) => {

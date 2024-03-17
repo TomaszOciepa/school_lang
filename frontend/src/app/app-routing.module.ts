@@ -16,7 +16,7 @@ const routes: Routes = [
       import('./modules/courses/courses.module').then((m) => m.CoursesModule),
     canActivate: [AuthGuard],
     data: {
-      roles: ['admin', 'teacher'],
+      roles: ['admin'],
     },
     title: 'Kursy',
   },

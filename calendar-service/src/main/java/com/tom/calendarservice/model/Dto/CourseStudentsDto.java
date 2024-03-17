@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CourseStudentsDto {
 
-    private Long studentId;
+    private Long id;
     private LocalDateTime enrollmentDate;
     private Status status;
 }

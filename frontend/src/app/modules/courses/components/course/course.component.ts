@@ -35,7 +35,7 @@ export class CourseComponent {
     private router: Router
   ) {}
 
-  async ngAfterViewInit(): Promise<void> {
+  async ngOnInit(): Promise<void> {
     this.route.params;
     this.route.params.subscribe((params) => {
       this.id = params['id'];

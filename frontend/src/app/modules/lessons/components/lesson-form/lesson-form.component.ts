@@ -294,7 +294,7 @@ export class LessonFormComponent {
   }
 
   private getTeachers() {
-    this.teacherService.getTeachers().subscribe({
+    this.teacherService.getTeachers('ACTIVE').subscribe({
       next: (result) => {
         this.teacherList = result;
       },

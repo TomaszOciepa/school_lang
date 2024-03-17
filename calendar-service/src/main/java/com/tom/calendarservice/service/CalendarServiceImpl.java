@@ -398,7 +398,7 @@ public class CalendarServiceImpl implements CalendarService {
 
     private void isTeacherEnrolledInCourse(Long teacherId, List<CourseTeachersDto> courseTeachers) {
         logger.info("Checking isTeacherEnrolledInCourse");
-        if (!courseTeachers.stream().anyMatch(teacherDto -> teacherDto.getTeacherId().equals(teacherId))) {
+        if (!courseTeachers.stream().anyMatch(teacherDto -> teacherDto.getId().equals(teacherId))) {
             logger.info("Teacher is not enrolled in course");
             throw new CalendarException(CalendarError.TEACHER_IS_NOT_ENROLLED_IN_COURSE);
         }
@@ -419,7 +419,7 @@ public class CalendarServiceImpl implements CalendarService {
                     .filter(student -> !student.getStatus().equals(Status.REMOVED))
                     .map(student -> {
                         AttendanceList attendance = new AttendanceList();
-                        attendance.setStudentId(student.getStudentId());
+                        attendance.setStudentId(student.getId());
                         attendance.setPresent(false);
                         return attendance;
                     }).collect(Collectors.toList());

@@ -184,7 +184,7 @@ export class CourseFormComponent {
       console.log('teacher ID: ' + this.teacherId);
       const id = this.teacherId;
       console.log('id: ' + id);
-      const teacherInfo: EnrollemntInfo = { id: 12 };
+      const teacherInfo: EnrollemntInfo = { id: id };
       this.postCourse.courseTeachers = [];
       this.postCourse.courseTeachers.push(teacherInfo);
     }

@@ -158,7 +158,7 @@ export class EnrollCourseDialogComponent implements OnInit {
   }
 
   getTeachers() {
-    this.teacherService.getTeachers().subscribe({
+    this.teacherService.getTeachers('ACTIVE').subscribe({
       next: (clients) => {
         this.dataSource = new MatTableDataSource<User>(clients);
         this.dataSource.paginator = this.paginator;
