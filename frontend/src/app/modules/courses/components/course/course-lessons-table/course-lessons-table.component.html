@@ -1,18 +1,5 @@
 <section class="mt-4">
-  <button
-    *ngIf="switch === 'course'"
-    mat-raised-button
-    color="primary"
-    (click)="addCourseLesson()"
-  >
-    Dodaj lekcje
-  </button>
-  <button
-    *ngIf="switch === 'lesson'"
-    mat-raised-button
-    color="primary"
-    (click)="addLesson()"
-  >
+  <button mat-raised-button color="primary" (click)="addLesson()">
     Dodaj lekcje
   </button>
 

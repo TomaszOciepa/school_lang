@@ -1,10 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  ErrorHandler,
-  Input,
-  ViewChild,
-} from '@angular/core';
+import { Component, ErrorHandler, Input, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -13,11 +7,11 @@ import { Lesson } from 'src/app/modules/core/models/lesson.model';
 import { LessonsService } from 'src/app/modules/core/services/lessons.service';
 
 @Component({
-  selector: 'app-lesons-table',
-  templateUrl: './lesons-table.component.html',
-  styleUrls: ['./lesons-table.component.css'],
+  selector: 'app-course-lessons-table',
+  templateUrl: './course-lessons-table.component.html',
+  styleUrls: ['./course-lessons-table.component.css'],
 })
-export class LesonsTableComponent {
+export class CourseLessonsTableComponent {
   displayedColumns: string[] = [
     'lp',
     'eventName',
@@ -33,7 +27,6 @@ export class LesonsTableComponent {
   @ViewChild(MatSort) sort!: MatSort;
   @Input('course-id') courseId!: string;
   @Input('lessons-limit') lessonsLimit!: number;
-  @Input('switch') switch: string = 'lesson';
 
   lessonsNumber!: number;
   errMsg!: string;
@@ -41,24 +34,7 @@ export class LesonsTableComponent {
   constructor(private lessonsService: LessonsService, private router: Router) {}
 
   async ngOnInit(): Promise<void> {
-    if (this.switch === 'lesson') {
-      this.getAllLessons();
-    } else if (this.switch === 'course') {
-      this.getLessonsByCourseId();
-    }
-  }
-
-  private getAllLessons() {
-    this.lessonsService.getAllLessons().subscribe({
-      next: (lesson) => {
-        this.dataSource = new MatTableDataSource<Lesson>(lesson);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-      },
-      error: (err: ErrorHandler) => {
-        console.log(err);
-      },
-    });
+    this.getLessonsByCourseId();
   }
 
   private getLessonsByCourseId() {
@@ -84,17 +60,13 @@ export class LesonsTableComponent {
     }
   }
 
-  addCourseLesson() {
+  addLesson() {
     if (this.lessonsLimit == this.lessonsNumber) {
       this.errMsg = 'Course Lesson Limit Reached.';
       this.hideErrorMsg();
     } else {
       this.router.navigate(['/lessons/dodaj', { id: this.courseId }]);
     }
-  }
-
-  addLesson() {
-    this.router.navigate(['/lessons/dodaj']);
   }
 
   private hideErrorMsg() {
