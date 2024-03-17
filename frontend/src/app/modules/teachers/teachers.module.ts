@@ -8,7 +8,6 @@ import { TeacherFormComponent } from './components/teacher-form/teacher-form.com
 import { SharedModule } from '../shared/shared.module';
 import { DeleteTeacherDialogComponent } from './components/teacher/delete-teacher-dialog/delete-teacher-dialog.component';
 import { EditTeacherDialogComponent } from './components/teacher/edit-teacher-dialog/edit-teacher-dialog.component';
-import { CoursesModule } from '../courses/courses.module';
 import { LessonsModule } from '../lessons/lessons.module';
 import { TeacherCoursesTableComponent } from './components/teacher/teacher-courses-table/teacher-courses-table.component';
 
@@ -22,6 +21,6 @@ import { TeacherCoursesTableComponent } from './components/teacher/teacher-cours
     EditTeacherDialogComponent,
     TeacherCoursesTableComponent,
   ],
-  imports: [SharedModule, TeachersRoutingModule, CoursesModule, LessonsModule],
+  imports: [SharedModule, TeachersRoutingModule, LessonsModule],
 })
 export class TeachersModule {}

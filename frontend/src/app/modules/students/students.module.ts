@@ -9,7 +9,6 @@ import { EditStudentDialogComponent } from './components/student/edit-student-di
 import { StudentComponent } from './components/student/student.component';
 import { StudentFormComponent } from './components/student-form/student-form.component';
 import { DeleteStudentDialogComponent } from './components/student/delete-student-dialog/delete-student-dialog.component';
-import { CoursesModule } from '../courses/courses.module';
 import { LessonsModule } from '../lessons/lessons.module';
 import { StudentCoursesTableComponent } from './components/student/student-courses-table/student-courses-table.component';
 
@@ -23,6 +22,6 @@ import { StudentCoursesTableComponent } from './components/student/student-cours
     DeleteStudentDialogComponent,
     StudentCoursesTableComponent,
   ],
-  imports: [SharedModule, StudentsRoutingModule, CoursesModule, LessonsModule],
+  imports: [SharedModule, StudentsRoutingModule, LessonsModule],
 })
 export class StudentsModule {}
