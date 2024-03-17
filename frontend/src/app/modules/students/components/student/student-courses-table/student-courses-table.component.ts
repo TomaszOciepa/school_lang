@@ -6,11 +6,11 @@ import { Course } from 'src/app/modules/core/models/course.model';
 import { CourseService } from 'src/app/modules/core/services/course.service';
 
 @Component({
-  selector: 'app-teacher-courses-table',
-  templateUrl: './teacher-courses-table.component.html',
-  styleUrls: ['./teacher-courses-table.component.css'],
+  selector: 'app-student-courses-table',
+  templateUrl: './student-courses-table.component.html',
+  styleUrls: ['./student-courses-table.component.css'],
 })
-export class TeacherCoursesTableComponent {
+export class StudentCoursesTableComponent {
   displayedColumns: string[] = [
     'lp',
     'name',
@@ -23,12 +23,13 @@ export class TeacherCoursesTableComponent {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  @Input('teacherId') teacherId!: number;
+  @Input('studentId') studentId!: number;
 
   constructor(private courseService: CourseService) {}
 
   async ngOnInit(): Promise<void> {
-    this.courseService.getCourseByTeacherId(this.teacherId).subscribe({
+    console.log();
+    this.courseService.getCourseByStudentId(this.studentId).subscribe({
       next: (course) => {
         this.dataSource = new MatTableDataSource<Course>(course);
         this.dataSource.paginator = this.paginator;

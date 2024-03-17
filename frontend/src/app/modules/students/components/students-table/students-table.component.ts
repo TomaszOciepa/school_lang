@@ -15,7 +15,7 @@ import { StudentService } from 'src/app/modules/core/services/student.service';
   templateUrl: './students-table.component.html',
   styleUrls: ['./students-table.component.css'],
 })
-export class StudentsTableComponent implements AfterViewInit {
+export class StudentsTableComponent {
   displayedColumns: string[] = [
     'lp',
     'firstName',
@@ -30,7 +30,7 @@ export class StudentsTableComponent implements AfterViewInit {
 
   constructor(private studentService: StudentService) {}
 
-  async ngAfterViewInit(): Promise<void> {
+  async ngOnInit(): Promise<void> {
     this.studentService.getStudents().subscribe({
       next: (clients) => {
         this.dataSource = new MatTableDataSource<User>(clients);
