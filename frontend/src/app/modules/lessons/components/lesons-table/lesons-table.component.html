@@ -1,14 +1,6 @@
 <section class="mt-4">
   <button
-    *ngIf="switch === 'course'"
-    mat-raised-button
-    color="primary"
-    (click)="addCourseLesson()"
-  >
-    Dodaj lekcje
-  </button>
-  <button
-    *ngIf="switch === 'lesson'"
+    *ngIf="role === 'ADMIN'"
     mat-raised-button
     color="primary"
     (click)="addLesson()"
@@ -16,10 +8,14 @@
     Dodaj lekcje
   </button>
 
-  <div *ngIf="errMsg" class="alert alert-danger" role="alert">
-    {{ errMsg }}
-  </div>
-
+  <button
+    *ngIf="role === 'TEACHER'"
+    mat-raised-button
+    color="primary"
+    (click)="addTeacherLesson()"
+  >
+    Dodaj lekcje
+  </button>
   <mat-form-field>
     <mat-label>Filtrowanie</mat-label>
     <input

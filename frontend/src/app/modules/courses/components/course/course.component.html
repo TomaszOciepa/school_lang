@@ -148,13 +148,21 @@
     <div class="col text-start">
       <div *ngIf="!teachers">
         <h2>Lista nauczycieli jest pusta...</h2>
-        <button class="btn btn-outline-info" (click)="openEnrollDialog(false)">
+        <button
+          *ngIf="role === 'ADMIN'"
+          class="btn btn-outline-info"
+          (click)="openEnrollDialog(false)"
+        >
           dodaj nauczyciela
         </button>
       </div>
       <div *ngIf="teachers">
         <h2>Nauczyciele</h2>
-        <button class="btn btn-outline-info" (click)="openEnrollDialog(false)">
+        <button
+          *ngIf="role === 'ADMIN'"
+          class="btn btn-outline-info"
+          (click)="openEnrollDialog(false)"
+        >
           dodaj nauczyciela
         </button>
         <table class="table">
@@ -177,6 +185,7 @@
               <td>{{ teacher.status }}</td>
               <td>
                 <button
+                  *ngIf="role === 'ADMIN'"
                   class="btn btn-outline-danger"
                   (click)="openUnEnrollTeacherDialog(teacher, false)"
                 >

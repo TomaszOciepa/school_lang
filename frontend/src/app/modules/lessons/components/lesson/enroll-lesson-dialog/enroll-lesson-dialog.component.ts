@@ -64,7 +64,7 @@ export class EnrollLessonDialogComponent implements OnInit {
   }
 
   private getStudents() {
-    this.studentServices.getStudents().subscribe({
+    this.studentServices.getStudents('ACTIVE').subscribe({
       next: (students) => {
         this.students = students;
         this.dataSource = new MatTableDataSource<User>(students);

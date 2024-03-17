@@ -4,6 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Course } from 'src/app/modules/core/models/course.model';
 import { CourseService } from 'src/app/modules/core/services/course.service';
+import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 
 @Component({
   selector: 'app-teacher-courses-table',
@@ -25,9 +26,15 @@ export class TeacherCoursesTableComponent {
   @ViewChild(MatSort) sort!: MatSort;
   @Input('teacherId') teacherId!: number;
 
-  constructor(private courseService: CourseService) {}
+  role!: string;
+
+  constructor(
+    private userProfileService: LoadUserProfileService,
+    private courseService: CourseService
+  ) {}
 
   async ngOnInit(): Promise<void> {
+    this.loadUserProfile();
     this.courseService.getCourseByTeacherId(this.teacherId).subscribe({
       next: (course) => {
         this.dataSource = new MatTableDataSource<Course>(course);
@@ -38,6 +45,13 @@ export class TeacherCoursesTableComponent {
         console.log(err);
       },
     });
+  }
+
+  async loadUserProfile(): Promise<void> {
+    await this.userProfileService.loadUserProfile();
+    if (this.userProfileService.isAdmin) {
+      this.role = 'ADMIN';
+    }
   }
 
   applyFilter(event: Event) {

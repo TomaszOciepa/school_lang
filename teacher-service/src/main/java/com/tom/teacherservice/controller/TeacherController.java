@@ -21,20 +21,21 @@ public class TeacherController {
     private final TeacherService teacherService;
 
     //sprawdzone
-    @PreAuthorize("hasRole('admin')or hasRole('teacher')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PostMapping("/idNumbers")
     public List<Teacher> getTeachersByIdNumber(@RequestBody List<Long> idNumbers) {
         logger.info("Post method getTeachersByIdNumber()");
         return teacherService.getTeachersByIdNumber(idNumbers);
     }
 
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @GetMapping("/teacher-is-active/{teacherId}")
     public void teacherIsActive(@PathVariable Long teacherId) {
         logger.info("Get method teacherIsActive()");
         teacherService.getTeacherById(teacherId);
     }
 
-//    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+
     @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @GetMapping
     public List<Teacher> getTeachers(@RequestParam(required = false) Status status) {
@@ -49,13 +50,14 @@ public class TeacherController {
         return teacherService.getTeacherByEmail(email);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @PostMapping("/id-numbers-not-equal")
     public List<Teacher> getTeachersByIdNumberNotEqual(@RequestBody List<Long> idNumbers) {
         logger.info("Post method getTeachersByIdNumberNotEqual()");
         return teacherService.getTeachersByIdNumberNotEqual(idNumbers);
     }
 
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @GetMapping("/{id}")
     public Teacher getTeacherById(@PathVariable Long id) {
         logger.info("Get method getTeacherById()");
@@ -69,7 +71,7 @@ public class TeacherController {
         return teacherService.addTeacher(teacher);
     }
 
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PatchMapping("/{id}")
     public Teacher patchTeacher(@PathVariable Long id, @RequestBody Teacher teacher) {
         logger.info("Patch method patchTeacher()");

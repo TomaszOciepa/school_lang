@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Lesson } from 'src/app/modules/core/models/lesson.model';
 import { LessonsService } from 'src/app/modules/core/services/lessons.service';
+import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 
 @Component({
   selector: 'app-teacher-lessons-table',
@@ -29,11 +30,24 @@ export class TeacherLessonsTableComponent {
 
   lessonsNumber!: number;
   errMsg!: string;
+  role!: string;
 
-  constructor(private lessonsService: LessonsService, private router: Router) {}
+  constructor(
+    private userProfileService: LoadUserProfileService,
+    private lessonsService: LessonsService,
+    private router: Router
+  ) {}
 
   async ngOnInit(): Promise<void> {
+    this.loadUserProfile();
     this.getLessonsByTeacherId();
+  }
+
+  async loadUserProfile(): Promise<void> {
+    await this.userProfileService.loadUserProfile();
+    if (this.userProfileService.isAdmin) {
+      this.role = 'ADMIN';
+    }
   }
 
   private getLessonsByTeacherId() {

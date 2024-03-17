@@ -21,54 +21,64 @@ public class StudentController {
     private final StudentService studentService;
 
     //    sprawdzone
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PostMapping("/idNumbers")
     public List<Student> getStudentsByIdNumbers(@RequestBody List<Long> idNumbers) {
         logger.info("Post method getStudentsByIdNumber().");
         return studentService.getStudentsByIdNumbers(idNumbers);
     }
-    @PreAuthorize("hasRole('admin')")
+
+
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @GetMapping
     public List<Student> getStudents(@RequestParam(required = false) Status status) {
         logger.info("Get method getStudents().");
         return studentService.getStudents(status);
     }
+
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PostMapping("/notIdNumbers")
     public List<Student> getStudentsByIdNumberNotEqual(@RequestBody List<Long> idNumbers) {
         logger.info("Post method getStudentsByIdNumberNotEqual().");
         return studentService.getStudentsByIdNumberNotEqual(idNumbers);
     }
 
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @GetMapping("/{id}")
     public Student getStudentById(@PathVariable Long id) {
         logger.info("GET method getStudentById().");
         return studentService.getStudentById(id);
     }
 
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PostMapping
     public Student addStudent(@RequestBody Student student) {
         logger.info("POST method addStudent().");
         return studentService.addStudent(student);
     }
 
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PatchMapping("/{id}")
     public Student patchStudent(@PathVariable Long id, @RequestBody Student student) {
         logger.info("PATCH method patchStudent().");
         return studentService.patchStudent(id, student);
     }
 
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @DeleteMapping("/{id}")
     public void deleteStudent(@PathVariable Long id) {
         logger.info("Delete method deleteStudent().");
         studentService.deleteStudent(id);
     }
-    
+
     //    nie sprawdzone
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @GetMapping("/email")
     public Student getStudentByEmail(@RequestParam String email) {
         return studentService.getStudentByEmail(email);
     }
 
-
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PostMapping("/emails")
     public List<Student> getStudentsByEmails(@RequestBody List<String> emails) {
         return studentService.getStudentsByEmails(emails);

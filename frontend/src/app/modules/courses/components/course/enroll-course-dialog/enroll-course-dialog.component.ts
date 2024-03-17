@@ -119,7 +119,7 @@ export class EnrollCourseDialogComponent implements OnInit {
           console.log('next: ' + response);
         },
         error: (err: HttpErrorResponse) => {
-          console.log('error: ' + err.error.message);
+          console.log('error: ' + err.status);
         },
         complete: () => {
           window.location.reload();
@@ -144,7 +144,7 @@ export class EnrollCourseDialogComponent implements OnInit {
   }
 
   getStudents() {
-    this.studentServices.getStudents().subscribe({
+    this.studentServices.getStudents('ACTIVE').subscribe({
       next: (clients) => {
         console.log(clients);
         this.dataSource = new MatTableDataSource<User>(clients);

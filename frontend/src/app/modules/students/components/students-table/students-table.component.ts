@@ -8,6 +8,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { User } from 'src/app/modules/core/models/user.model';
+import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 import { StudentService } from 'src/app/modules/core/services/student.service';
 
 @Component({
@@ -28,10 +29,20 @@ export class StudentsTableComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private studentService: StudentService) {}
+  status!: string;
+  role!: string;
+
+  constructor(
+    private userProfileService: LoadUserProfileService,
+    private studentService: StudentService
+  ) {}
 
   async ngOnInit(): Promise<void> {
-    this.studentService.getStudents().subscribe({
+    this.loadUserProfile();
+  }
+
+  private getStudents() {
+    this.studentService.getStudents(this.status).subscribe({
       next: (clients) => {
         this.dataSource = new MatTableDataSource<User>(clients);
         this.dataSource.paginator = this.paginator;
@@ -41,6 +52,22 @@ export class StudentsTableComponent {
         console.log(err);
       },
     });
+  }
+
+  async loadUserProfile(): Promise<void> {
+    await this.userProfileService.loadUserProfile();
+
+    if (this.userProfileService.isAdmin) {
+      this.status = '';
+      this.role = 'ADMIN';
+    }
+
+    if (this.userProfileService.isTeacher) {
+      this.status = 'ACTIVE';
+      this.role = 'TEACHER';
+    }
+
+    this.getStudents();
   }
 
   applyFilter(event: Event) {
