@@ -17,7 +17,7 @@ import { LessonsService } from 'src/app/modules/core/services/lessons.service';
   templateUrl: './lesons-table.component.html',
   styleUrls: ['./lesons-table.component.css'],
 })
-export class LesonsTableComponent implements AfterViewInit {
+export class LesonsTableComponent {
   displayedColumns: string[] = [
     'lp',
     'eventName',
@@ -42,7 +42,7 @@ export class LesonsTableComponent implements AfterViewInit {
 
   constructor(private lessonsService: LessonsService, private router: Router) {}
 
-  async ngAfterViewInit(): Promise<void> {
+  async ngOnInit(): Promise<void> {
     if (this.switch === 'lesson') {
       this.getAllLessons();
     } else if (this.switch === 'course') {

@@ -68,10 +68,13 @@
 
     <div class="row text-start p-md-3">
       <h2>Lekcje</h2>
-      <app-lesons-table
+      <!-- <app-lesons-table
         [switch]="'teacher'"
         [teacher-id]="teacher.id"
-      ></app-lesons-table>
+      ></app-lesons-table> -->
+      <app-teacher-lessons-table
+        [teacher-id]="teacher.id"
+      ></app-teacher-lessons-table>
     </div>
   </div>
 </div>
