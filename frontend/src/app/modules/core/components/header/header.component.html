@@ -5,10 +5,32 @@
     <button mat-button routerLink="/">Strona główna</button>
 
     <ng-container *ngIf="isLoggedIn">
-      <button mat-button routerLink="courses">Kursy</button>
-      <button mat-button routerLink="lessons">Lekcje</button>
-      <button mat-button routerLink="teachers">Nauczyciele</button>
-      <button mat-button routerLink="students">Uczniowie</button>
+      <button mat-button routerLink="courses" *ngIf="isAdmin || isTeacher">
+        Kursy
+      </button>
+      <button mat-button routerLink="lessons" *ngIf="isAdmin || isTeacher">
+        Lekcje
+      </button>
+      <button mat-button routerLink="teachers" *ngIf="isAdmin || isTeacher">
+        Nauczyciele
+      </button>
+      <button mat-button routerLink="students" *ngIf="isAdmin || isTeacher">
+        Uczniowie
+      </button>
+      <button mat-button routerLink="settings/teachers" *ngIf="isAdmin">
+        Ustawienia - t
+      </button>
+      <button mat-button routerLink="settings/students" *ngIf="isAdmin">
+        Ustawienia - s
+      </button>
+    </ng-container>
+
+    <ng-container *ngIf="isLoggedIn && isStudent">
+      <button mat-button routerLink="account-student/my-courses">Kursy</button>
+      <button mat-button routerLink="account-student/my-lessons">Lekcje</button>
+      <button mat-button routerLink="account-student/my-account">
+        Moje konto
+      </button>
     </ng-container>
 
     <button *ngIf="!isLoggedIn" mat-button (click)="login()">Logowanie</button>

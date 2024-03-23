@@ -20,7 +20,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
     List<Teacher> findAllByStatus(Status status);
     Optional<Teacher> findByEmail(String email);
-    //    nie sprawdzone
+
 
 
 

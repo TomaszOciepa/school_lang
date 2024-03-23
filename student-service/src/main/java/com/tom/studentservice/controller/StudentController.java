@@ -71,13 +71,14 @@ public class StudentController {
         studentService.deleteStudent(id);
     }
 
-    //    nie sprawdzone
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @GetMapping("/email")
     public Student getStudentByEmail(@RequestParam String email) {
+        logger.info("Get method getStudentByEmail().");
         return studentService.getStudentByEmail(email);
     }
 
+    //    nie sprawdzone
     @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PostMapping("/emails")
     public List<Student> getStudentsByEmails(@RequestBody List<String> emails) {

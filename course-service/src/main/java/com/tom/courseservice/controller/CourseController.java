@@ -37,7 +37,7 @@ public class CourseController {
         return courseService.getAllByStatus(status);
     }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @GetMapping("/{id}")
     Course getCourseById(@PathVariable String id, @RequestParam(required = false) Status status) {
         logger.info("Get method getCourseById()");
@@ -119,7 +119,7 @@ public class CourseController {
         return courseService.getCourseByTeacherId(teacherId);
     }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @GetMapping("/student-courses/{studentId}")
     public List<Course> getCourseByStudentId(@PathVariable Long studentId) {
         logger.info("Get method getCourseByStudentId()");

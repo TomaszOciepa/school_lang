@@ -23,6 +23,9 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<Student> getStudentsByIdNumbers(List<Long> idNumbers) {
         logger.info("Fetching students by id list numbers.");
+        if(idNumbers.isEmpty()){
+            logger.warn("Id list numbers is empty.");
+        }
         return studentRepository.findAllByIdIn(idNumbers);
     }
 
@@ -101,16 +104,20 @@ public class StudentServiceImpl implements StudentService {
         }
     }
 
-    //nie sprawdzone
     @Override
     public Student getStudentByEmail(String email) {
+        logger.info("Fetching student by email: {}", email);
         Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
         if (!Status.ACTIVE.equals(student.getStatus())) {
+            logger.info("Students is not active.");
             throw new StudentException(StudentError.STUDENT_IS_NOT_ACTIVE);
         }
         return student;
     }
+
+    //nie sprawdzone
+
 
     @Override
     public List<Student> getStudentsByEmails(List<String> emails) {

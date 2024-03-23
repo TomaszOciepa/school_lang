@@ -24,6 +24,10 @@ export class StudentService {
     return this.http.post<User[]>(this.apiUrl + '/idNumbers', id);
   }
 
+  getStudentByEmail(email: string | undefined): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/email?email=${email}`);
+  }
+
   addNewStudent(newStudent: PostUser): Observable<User> {
     return this.http.post<User>(this.apiUrl, newStudent);
   }

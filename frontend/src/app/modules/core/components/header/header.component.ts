@@ -11,9 +11,9 @@ import { LoadUserProfileService } from '../../services/load-user-profile.service
 export class HeaderComponent implements OnInit {
   public isLoggedIn = false;
   public userProfile: KeycloakProfile | null = null;
-  // public isAdmin: boolean = false;
-  // public isTeacher: boolean = false;
-  // public isStudent: boolean = false;
+  public isAdmin: boolean = false;
+  public isTeacher: boolean = false;
+  public isStudent: boolean = false;
 
   constructor(
     private readonly keycloak: KeycloakService,
@@ -28,9 +28,9 @@ export class HeaderComponent implements OnInit {
     await this.userProfileService.loadUserProfile();
     this.isLoggedIn = this.userProfileService.isLoggedIn;
     this.userProfile = this.userProfileService.userProfile;
-    // this.isAdmin = this.userProfileService.isAdmin;
-    // this.isTeacher = this.userProfileService.isTeacher;
-    // this.isStudent = this.userProfileService.isStudent;
+    this.isAdmin = this.userProfileService.isAdmin;
+    this.isTeacher = this.userProfileService.isTeacher;
+    this.isStudent = this.userProfileService.isStudent;
   }
 
   public login() {

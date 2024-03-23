@@ -1,14 +1,8 @@
-import {
-  AfterViewInit,
-  Component,
-  ErrorHandler,
-  ViewChild,
-} from '@angular/core';
+import { Component, ErrorHandler, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { User } from 'src/app/modules/core/models/user.model';
-import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 import { StudentService } from 'src/app/modules/core/services/student.service';
 
 @Component({
@@ -29,6 +23,9 @@ export class StudentsTableComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
+  status!: string;
+  role!: string;
+
   constructor(private studentService: StudentService) {}
 
   async ngOnInit(): Promise<void> {
@@ -36,7 +33,7 @@ export class StudentsTableComponent {
   }
 
   private getStudents() {
-    this.studentService.getStudents('ACTIVE').subscribe({
+    this.studentService.getStudents('INACTIVE').subscribe({
       next: (clients) => {
         this.dataSource = new MatTableDataSource<User>(clients);
         this.dataSource.paginator = this.paginator;

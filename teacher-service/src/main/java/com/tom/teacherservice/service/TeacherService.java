@@ -21,9 +21,9 @@ public interface TeacherService {
     Teacher patchTeacher(Long id, Teacher teacher);
 
     void deleteTeacher(Long id);
-
-    //    nie sprawdzone
     Teacher getTeacherByEmail(String email);
+    //    nie sprawdzone
+
 
     Teacher putTeacher(Long id, Teacher teacher);
 

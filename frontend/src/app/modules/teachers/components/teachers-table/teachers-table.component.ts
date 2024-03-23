@@ -36,27 +36,11 @@ export class TeachersTableComponent {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.loadUserProfile();
-  }
-
-  async loadUserProfile(): Promise<void> {
-    await this.userProfileService.loadUserProfile();
-
-    if (this.userProfileService.isAdmin) {
-      this.status = '';
-      this.role = 'ADMIN';
-    }
-
-    if (this.userProfileService.isTeacher) {
-      this.status = 'ACTIVE';
-      this.role = 'TEACHER';
-    }
-
     this.getTeachers();
   }
 
   private getTeachers() {
-    this.teacherService.getTeachers(this.status).subscribe({
+    this.teacherService.getTeachers('ACTIVE').subscribe({
       next: (clients) => {
         this.dataSource = new MatTableDataSource<User>(clients);
         this.dataSource.paginator = this.paginator;
