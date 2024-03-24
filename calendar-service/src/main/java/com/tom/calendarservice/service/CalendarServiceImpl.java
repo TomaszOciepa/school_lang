@@ -154,6 +154,7 @@ public class CalendarServiceImpl implements CalendarService {
 
         if (lesson.getTeacherId() != null) {
             logger.info("Changing teacher");
+            isTeacherActive(lesson.getTeacherId());
             CourseDto courseFromDb = courseServiceClient.getCourseById(lessonFromDB.getCourseId(), null);
             isTeacherEnrolledInCourse(lesson.getTeacherId(), courseFromDb.getCourseTeachers());
             lessonFromDB.setTeacherId(lesson.getTeacherId());

@@ -12,6 +12,8 @@ public interface TeacherService {
 
     Teacher getTeacherById(Long id);
 
+    void teacherIsActive(Long id);
+
     List<Teacher> getTeachers(Status status);
 
     List<Teacher> getTeachersByIdNumberNotEqual(List<Long> idNumbers);

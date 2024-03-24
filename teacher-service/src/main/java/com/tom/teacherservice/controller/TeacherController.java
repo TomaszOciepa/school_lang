@@ -33,7 +33,7 @@ public class TeacherController {
     @GetMapping("/teacher-is-active/{teacherId}")
     public void teacherIsActive(@PathVariable Long teacherId) {
         logger.info("Get method teacherIsActive()");
-        teacherService.getTeacherById(teacherId);
+        teacherService.teacherIsActive(teacherId);
     }
 
 

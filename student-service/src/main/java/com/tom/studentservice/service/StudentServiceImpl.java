@@ -5,9 +5,11 @@ import com.tom.studentservice.exception.StudentException;
 import com.tom.studentservice.model.Status;
 import com.tom.studentservice.model.Student;
 import com.tom.studentservice.repo.StudentRepository;
+import com.tom.studentservice.security.AuthenticationContext;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +20,7 @@ public class StudentServiceImpl implements StudentService {
 
     private static Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
     private final StudentRepository studentRepository;
+    private final AuthenticationContext authenticationContext;
 
     //sprawdzone
     @Override
@@ -49,13 +52,33 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student getStudentById(Long id) {
         logger.info("Fetching student by id: {}", id);
+
+        boolean result = authenticationContext();
+
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
-        if (!Status.ACTIVE.equals(student.getStatus())) {
+        if (!Status.ACTIVE.equals(student.getStatus()) && !result) {
             logger.info("Student is not Active.");
             throw new StudentException(StudentError.STUDENT_IS_NOT_ACTIVE);
         }
         return student;
+    }
+
+
+    private boolean authenticationContext() {
+        boolean result = false;
+
+        Authentication authentication = authenticationContext.getAuthentication();
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_admin"));
+        boolean isTeacher = authentication.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_teacher"));
+
+        if(isAdmin || isTeacher){
+            result = true;
+        }
+
+        return result;
     }
 
     @Override

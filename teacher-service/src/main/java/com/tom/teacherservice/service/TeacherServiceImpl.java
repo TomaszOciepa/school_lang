@@ -61,6 +61,19 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    public void teacherIsActive(Long id) {
+        logger.info("teacherIsActive() teacherId: {}", id);
+
+        Teacher teacher = teacherRepository.findById(id)
+                .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
+        if (!Status.ACTIVE.equals(teacher.getStatus())) {
+            logger.info("Teacher is not active");
+            throw new TeacherException(TeacherError.TEACHER_IS_NOT_ACTIVE);
+        }
+
+    }
+
+    @Override
     public List<Teacher> getTeachersByIdNumberNotEqual(List<Long> idNumbers) {
         logger.info("Fetching teachers where id number is not equal: {}", idNumbers.toString());
         return teacherRepository.findAllByIdNotInAndStatus(idNumbers, Status.ACTIVE);
