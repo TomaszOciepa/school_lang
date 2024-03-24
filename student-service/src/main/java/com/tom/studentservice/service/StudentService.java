@@ -14,8 +14,8 @@ public interface StudentService {
     Student getStudentByEmail(String email);
     Student addStudent(Student student);
     Student patchStudent(Long id, Student student);
-    void deleteStudent(Long id);
-
+    void deactivateStudentById(Long id);
+    void studentIsActive(Long id);
     //nie sprawdzone
 
     List<Student> getStudentsByEmails(List<String> emails);

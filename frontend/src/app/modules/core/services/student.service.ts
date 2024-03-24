@@ -36,8 +36,10 @@ export class StudentService {
     return this.http.patch<User>(`${this.apiUrl}/${id}`, editedStudent);
   }
 
-  deleteStudentById(id: number): Observable<Record<string, never>> {
-    return this.http.delete<Record<string, never>>(`${this.apiUrl}/${id}`);
+  deactivateStudentById(id: number): Observable<Record<string, never>> {
+    return this.http.delete<Record<string, never>>(
+      `${this.apiUrl}/deactivate/${id}`
+    );
   }
 
   getStudentById(id: number): Observable<User> {

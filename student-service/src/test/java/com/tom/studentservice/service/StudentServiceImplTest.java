@@ -203,7 +203,7 @@ class StudentServiceImplTest {
         student.setId(mockId);
         given(studentRepository.findById(mockId)).willReturn(Optional.of(student));
         //when
-        studentServiceImpl.deleteStudent(mockId);
+        studentServiceImpl.deactivateStudentById(mockId);
         //then
         verify(studentRepository, times(1)).findById(mockId);
         verify(studentRepository, times(1)).save(student);
@@ -220,7 +220,7 @@ class StudentServiceImplTest {
         given(studentRepository.findById(mockId)).willThrow(mockException);
         //when
         //then
-        assertThrows(StudentException.class, () -> studentServiceImpl.deleteStudent(mockId));
+        assertThrows(StudentException.class, () -> studentServiceImpl.deactivateStudentById(mockId));
     }
 
     @Test

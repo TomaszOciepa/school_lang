@@ -105,6 +105,14 @@ public class CourseController {
     }
 
     @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @DeleteMapping("/deactivate-student/{studentId}")
+    public ResponseEntity<?> deactivateStudent(@PathVariable Long studentId) {
+        logger.info("Delete method deactivateStudent()");
+        courseService.deactivateStudent(studentId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PostMapping("/restore/{courseId}/student/{studentId}")
     public ResponseEntity<?> restoreStudentToCourse(@PathVariable String courseId, @PathVariable Long studentId) {
         logger.info("Post method restoreStudentToCourse()");

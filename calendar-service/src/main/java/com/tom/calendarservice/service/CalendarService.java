@@ -33,7 +33,7 @@ public interface CalendarService {
     public boolean unEnrollStudent(String courseId, Long studentId);
 
     void enrollStudentLesson(String lessonId, Long studentId);
-
+    void deactivateStudent(Long studentId);
     void unEnrollStudentLesson(String lessonId, Long studentId);
 
 

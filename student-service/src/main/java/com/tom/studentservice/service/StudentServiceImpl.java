@@ -6,6 +6,7 @@ import com.tom.studentservice.model.Status;
 import com.tom.studentservice.model.Student;
 import com.tom.studentservice.repo.StudentRepository;
 import com.tom.studentservice.security.AuthenticationContext;
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,8 @@ public class StudentServiceImpl implements StudentService {
     private static Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
     private final StudentRepository studentRepository;
     private final AuthenticationContext authenticationContext;
+    private final CalendarServiceClient calendarServiceClient;
+    private final  CourseServiceClient courseServiceClient;
 
     //sprawdzone
     @Override
@@ -111,10 +114,22 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void deleteStudent(Long id) {
+    public void deactivateStudentById(Long id) {
         logger.info("deleteStudent studentId: {}", id);
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
+        try{
+            calendarServiceClient.deactivateStudent(id);
+        }catch (FeignException ex){
+            logger.error("FeignException occurred: {}", ex.getMessage());
+        }
+
+        try{
+            courseServiceClient.deactivateStudent(id);
+        }catch (FeignException ex){
+            logger.error("FeignException occurred: {}", ex.getMessage());
+        }
+
         student.setStatus(Status.INACTIVE);
         studentRepository.save(student);
     }
@@ -124,6 +139,18 @@ public class StudentServiceImpl implements StudentService {
         if (studentRepository.existsByEmail(email)) {
             logger.warn("Student email already exists.");
             throw new StudentException(StudentError.STUDENT_EMAIL_ALREADY_EXISTS);
+        }
+    }
+
+    @Override
+    public void studentIsActive(Long id) {
+        logger.info("studentIsActive() studentId: {}", id);
+
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
+        if (!Status.ACTIVE.equals(student.getStatus())) {
+            logger.info("Student is not active");
+            throw new StudentException(StudentError.STUDENT_IS_NOT_ACTIVE);
         }
     }
 

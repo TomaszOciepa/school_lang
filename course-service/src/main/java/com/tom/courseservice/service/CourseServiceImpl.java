@@ -10,6 +10,7 @@ import com.tom.courseservice.model.dto.CourseStudentDto;
 import com.tom.courseservice.model.dto.StudentDto;
 import com.tom.courseservice.model.dto.TeacherDto;
 import com.tom.courseservice.repo.CourseRepository;
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -289,6 +290,14 @@ public class CourseServiceImpl implements CourseService {
 
     public ResponseEntity<?> restoreStudentToCourse(String courseId, Long studentId) {
         logger.info("restoreStudentToCourse courseId: {}, studentId: {}", courseId, studentId);
+
+        try {
+            studentServiceClient.studentIsActive(studentId);
+        } catch (FeignException ex) {
+            logger.error("FeignException occurred: {}", ex.getMessage());
+            throw new CourseException(CourseError.STUDENT_IS_NOT_ACTIVE);
+        }
+
         Course course = getCourseById(courseId, null);
         if (course.getParticipantsLimit().equals(course.getParticipantsNumber())) {
             logger.warn("Course is full.");
@@ -340,12 +349,22 @@ public class CourseServiceImpl implements CourseService {
         return courses;
     }
 
-    public void removeTeacherWithAllCourses(Long teacherId){
+    @Override
+    public void removeTeacherWithAllCourses(Long teacherId) {
         logger.info("removeTeacherWithAllCourses(): {}", teacherId);
         List<Course> courseList = getCourseByTeacherId(teacherId);
         courseList.stream()
                 .forEach(course -> teacherCourseUnEnrollment(course.getId(), teacherId));
 
+    }
+
+    @Override
+    public void deactivateStudent(Long studentId) {
+        List<Course> courses = getCourseByStudentId(studentId);
+
+        courses.forEach(course -> {
+            studentCourseUnEnrollment(course.getId(), studentId);
+        });
     }
 
     private void isCourseStartDateIsAfterCourseEndDate(LocalDateTime startDate, LocalDateTime endDate) {

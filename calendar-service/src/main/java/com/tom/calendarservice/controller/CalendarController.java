@@ -91,10 +91,17 @@ public class CalendarController {
     }
 
     @PreAuthorize("hasRole('admin')")
-    @DeleteMapping("remove-teacher-lessons/{id}")
+    @DeleteMapping("/remove-teacher-lessons/{id}")
     public void deleteLessonsByTeacherId(@PathVariable Long id) {
         logger.info("Delete method deleteLessonsByTeacherId().");
         calendarService.deleteLessonsByTeacherId(id);
+    }
+
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @DeleteMapping("/remove/{id}")
+    public void deactivateStudent(@PathVariable Long id) {
+        logger.info("Delete method removeStudent().");
+        calendarService.deactivateStudent(id);
     }
 
     @PreAuthorize("hasRole('admin') or hasRole('teacher')")

@@ -70,7 +70,6 @@ public class TeacherServiceImpl implements TeacherService {
             logger.info("Teacher is not active");
             throw new TeacherException(TeacherError.TEACHER_IS_NOT_ACTIVE);
         }
-
     }
 
     @Override

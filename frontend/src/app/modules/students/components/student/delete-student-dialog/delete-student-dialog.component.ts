@@ -26,7 +26,7 @@ export class DeleteStudentDialogComponent {
   }
 
   onDelete() {
-    this.studentService.deleteStudentById(this.student.id).subscribe({
+    this.studentService.deactivateStudentById(this.student.id).subscribe({
       next: () => {
         this.dialogRef.close();
         this.router.navigate(['/students']);

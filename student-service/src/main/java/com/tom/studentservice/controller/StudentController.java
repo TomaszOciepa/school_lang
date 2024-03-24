@@ -28,7 +28,6 @@ public class StudentController {
         return studentService.getStudentsByIdNumbers(idNumbers);
     }
 
-
     @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @GetMapping
     public List<Student> getStudents(@RequestParam(required = false) Status status) {
@@ -65,10 +64,10 @@ public class StudentController {
     }
 
     @PreAuthorize("hasRole('admin') or hasRole('teacher')")
-    @DeleteMapping("/{id}")
-    public void deleteStudent(@PathVariable Long id) {
+    @DeleteMapping("/deactivate/{id}")
+    public void deactivateStudentById(@PathVariable Long id) {
         logger.info("Delete method deleteStudent().");
-        studentService.deleteStudent(id);
+        studentService.deactivateStudentById(id);
     }
 
     @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
@@ -76,6 +75,13 @@ public class StudentController {
     public Student getStudentByEmail(@RequestParam String email) {
         logger.info("Get method getStudentByEmail().");
         return studentService.getStudentByEmail(email);
+    }
+
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @GetMapping("/student-is-active/{studentId}")
+    public void studentIsActive(@PathVariable Long studentId) {
+        logger.info("Get method studentIsActive()");
+        studentService.studentIsActive(studentId);
     }
 
     //    nie sprawdzone

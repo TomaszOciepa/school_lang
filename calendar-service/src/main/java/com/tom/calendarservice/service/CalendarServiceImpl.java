@@ -41,7 +41,7 @@ public class CalendarServiceImpl implements CalendarService {
     public Calendar getLessonById(String id) {
         logger.info("Fetching lesson by id: {}.", id);
         Calendar lesson = calendarRepository.findById(id)
-                .orElseThrow(()-> new CalendarException(CalendarError.CALENDAR_LESSONS_NOT_FOUND));
+                .orElseThrow(() -> new CalendarException(CalendarError.CALENDAR_LESSONS_NOT_FOUND));
         return updateLessonStatus(lesson);
     }
 
@@ -110,6 +110,7 @@ public class CalendarServiceImpl implements CalendarService {
         }
         return lessons;
     }
+
     @Override
     public Calendar patchLesson(String id, Calendar lesson) {
         logger.info("Patch lesson id: {}", id);
@@ -186,9 +187,9 @@ public class CalendarServiceImpl implements CalendarService {
 
         List<Calendar> lessons = getLessonsByTeacherId(id);
 
-       lessons.stream()
-               .map(Calendar::getId)
-                       .forEach(calendarRepository::deleteById);
+        lessons.stream()
+                .map(Calendar::getId)
+                .forEach(calendarRepository::deleteById);
     }
 
     public boolean isTeacherAssignedToLessonInCourse(String courseId, Long teacherId) {
@@ -268,6 +269,14 @@ public class CalendarServiceImpl implements CalendarService {
         Calendar lessonFromDb = getLessonById(lessonId);
         lessonFromDb.getAttendanceList().removeIf(s -> s.getStudentId().equals(studentId));
         calendarRepository.save(lessonFromDb);
+    }
+
+    public void deactivateStudent(Long studentId) {
+        List<Calendar> lessons = getLessonsByStudentId(studentId);
+        lessons.forEach(lesson -> {
+            lesson.getAttendanceList().removeIf(attendance -> attendance.getStudentId().equals(studentId) && !attendance.isPresent());
+            calendarRepository.save(lesson);
+        });
     }
 
     private Calendar updateLessonStatus(Calendar lesson) {
