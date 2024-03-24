@@ -355,7 +355,14 @@ public class CourseServiceImpl implements CourseService {
         List<Course> courseList = getCourseByTeacherId(teacherId);
         courseList.stream()
                 .forEach(course -> teacherCourseUnEnrollment(course.getId(), teacherId));
+    }
 
+    @Override
+    public void removeStudentWithAllCourses(Long studentId) {
+        logger.info("removeStudentWithAllCourses(): {}", studentId);
+        List<Course> courseList = getCourseByStudentId(studentId);
+        courseList.stream()
+                .forEach(course -> studentCourseUnEnrollment(course.getId(), studentId));
     }
 
     @Override

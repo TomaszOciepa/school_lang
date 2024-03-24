@@ -23,13 +23,13 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final AuthenticationContext authenticationContext;
     private final CalendarServiceClient calendarServiceClient;
-    private final  CourseServiceClient courseServiceClient;
+    private final CourseServiceClient courseServiceClient;
 
     //sprawdzone
     @Override
     public List<Student> getStudentsByIdNumbers(List<Long> idNumbers) {
         logger.info("Fetching students by id list numbers.");
-        if(idNumbers.isEmpty()){
+        if (idNumbers.isEmpty()) {
             logger.warn("Id list numbers is empty.");
         }
         return studentRepository.findAllByIdIn(idNumbers);
@@ -77,7 +77,7 @@ public class StudentServiceImpl implements StudentService {
         boolean isTeacher = authentication.getAuthorities().stream()
                 .anyMatch(role -> role.getAuthority().equals("ROLE_teacher"));
 
-        if(isAdmin || isTeacher){
+        if (isAdmin || isTeacher) {
             result = true;
         }
 
@@ -118,20 +118,40 @@ public class StudentServiceImpl implements StudentService {
         logger.info("deleteStudent studentId: {}", id);
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
-        try{
+        try {
             calendarServiceClient.deactivateStudent(id);
-        }catch (FeignException ex){
+        } catch (FeignException ex) {
             logger.error("FeignException occurred: {}", ex.getMessage());
         }
 
-        try{
+        try {
             courseServiceClient.deactivateStudent(id);
-        }catch (FeignException ex){
+        } catch (FeignException ex) {
             logger.error("FeignException occurred: {}", ex.getMessage());
         }
 
         student.setStatus(Status.INACTIVE);
         studentRepository.save(student);
+    }
+
+    @Override
+    public void deleteStudentById(Long id) {
+        logger.info("Trying deleteStudent with id: {}.", id);
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
+
+        try {
+            calendarServiceClient.deleteStudentWithAllLessons(id);
+        } catch (FeignException ex) {
+            logger.error("FeignException occurred: {}", ex.getMessage());
+        }
+
+        try {
+            courseServiceClient.removeStudentWithAllCourses(id);
+        } catch (FeignException ex) {
+            logger.error("FeignException occurred: {}", ex.getMessage());
+        }
+        studentRepository.deleteById(id);
     }
 
     private void validateStudentEmailExists(String email) {

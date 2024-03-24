@@ -10,4 +10,7 @@ public interface CourseServiceClient {
 
     @DeleteMapping("/course/deactivate-student/{studentId}")
     ResponseEntity<?> deactivateStudent(@PathVariable Long studentId);
+
+    @DeleteMapping("/course/remove-student/{studentId}")
+    ResponseEntity<?> removeStudentWithAllCourses(@PathVariable Long studentId);
 }

@@ -42,6 +42,12 @@ export class StudentService {
     );
   }
 
+  deleteStudentById(id: number): Observable<Record<string, never>> {
+    return this.http.delete<Record<string, never>>(
+      `${this.apiUrl}/remove/${id}`
+    );
+  }
+
   getStudentById(id: number): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/${id}`);
   }

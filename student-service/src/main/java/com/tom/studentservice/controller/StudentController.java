@@ -70,6 +70,12 @@ public class StudentController {
         studentService.deactivateStudentById(id);
     }
 
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @DeleteMapping("/remove/{id}")
+    public void deleteStudentById(@PathVariable Long id) {
+        studentService.deleteStudentById(id);
+    }
+
     @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @GetMapping("/email")
     public Student getStudentByEmail(@RequestParam String email) {

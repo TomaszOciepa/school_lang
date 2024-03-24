@@ -12,6 +12,7 @@ import { DeleteStudentDialogComponent } from './components/student/delete-studen
 import { LessonsModule } from '../lessons/lessons.module';
 import { StudentCoursesTableComponent } from './components/student/student-courses-table/student-courses-table.component';
 import { StudentLessonsTableComponent } from './components/student/student-lessons-table/student-lessons-table.component';
+import { DropStudentDialogComponent } from './components/student/drop-student-dialog/drop-student-dialog.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { StudentLessonsTableComponent } from './components/student/student-lesso
     DeleteStudentDialogComponent,
     StudentCoursesTableComponent,
     StudentLessonsTableComponent,
+    DropStudentDialogComponent,
   ],
   imports: [SharedModule, StudentsRoutingModule, LessonsModule],
 })

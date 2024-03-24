@@ -15,6 +15,7 @@ public interface StudentService {
     Student addStudent(Student student);
     Student patchStudent(Long id, Student student);
     void deactivateStudentById(Long id);
+    void deleteStudentById(Long id);
     void studentIsActive(Long id);
     //nie sprawdzone
 

@@ -27,6 +27,8 @@ public interface CourseService {
     void deactivateStudent(Long studentId);
     void removeTeacherWithAllCourses(Long teacherId);
 
+    void removeStudentWithAllCourses(Long studentId);
+
 //    nie sprawdzone
 //    void changeCourseMemberStatus(String courseId, Long studentId, Status status);
 

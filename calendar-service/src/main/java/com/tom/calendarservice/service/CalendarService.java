@@ -36,6 +36,8 @@ public interface CalendarService {
     void deactivateStudent(Long studentId);
     void unEnrollStudentLesson(String lessonId, Long studentId);
 
+    void deleteStudentWithAllLessons(Long studentId);
+
 
 //    nie sprawdzone
 

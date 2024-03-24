@@ -9,4 +9,7 @@ public interface CalendarServiceClient {
 
     @DeleteMapping("/calendar/remove/{id}")
     void deactivateStudent(@PathVariable Long id);
+
+    @DeleteMapping("/calendar/remove-student-with-lessons/{id}")
+    public void deleteStudentWithAllLessons(@PathVariable Long id);
 }

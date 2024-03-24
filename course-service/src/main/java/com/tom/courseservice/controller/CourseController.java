@@ -141,4 +141,12 @@ public class CourseController {
         courseService.removeTeacherWithAllCourses(teacherId);
         return ResponseEntity.ok().build();
     }
+
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @DeleteMapping("/remove-student/{studentId}")
+    public ResponseEntity<?> removeStudentWithAllCourses(@PathVariable Long studentId) {
+        logger.info("Delete method removeTeacherWithAllCourses()");
+        courseService.removeStudentWithAllCourses(studentId);
+        return ResponseEntity.ok().build();
+    }
 }
