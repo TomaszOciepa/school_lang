@@ -51,4 +51,11 @@ export class StudentService {
   getStudentById(id: number): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/${id}`);
   }
+
+  restoreStudentAccount(id: number): Observable<Record<string, never>> {
+    return this.http.patch<Record<string, never>>(
+      `${this.apiUrl}/restore/${id}`,
+      null
+    );
+  }
 }

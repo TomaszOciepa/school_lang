@@ -9,8 +9,22 @@
           </button>
         </div>
         <div class="col p-3">
-          <button mat-raised-button color="warn" (click)="openDialog()">
+          <button
+            *ngIf="student && student.status == 'ACTIVE'"
+            mat-raised-button
+            color="warn"
+            (click)="openDialog()"
+          >
             dezaktywuj konto
+          </button>
+
+          <button
+            *ngIf="student && student.status == 'INACTIVE'"
+            mat-raised-button
+            color="warn"
+            (click)="openRestoreDialog()"
+          >
+            aktywuj konto
           </button>
         </div>
 

@@ -135,6 +135,12 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public void restoreStudentAccount(Long id){
+        Student student = getStudentById(id);
+        student.setStatus(Status.ACTIVE);
+        studentRepository.save(student);
+    }
+    @Override
     public void deleteStudentById(Long id) {
         logger.info("Trying deleteStudent with id: {}.", id);
         Student student = studentRepository.findById(id)

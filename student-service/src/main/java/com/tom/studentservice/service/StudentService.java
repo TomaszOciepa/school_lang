@@ -17,6 +17,7 @@ public interface StudentService {
     void deactivateStudentById(Long id);
     void deleteStudentById(Long id);
     void studentIsActive(Long id);
+    void restoreStudentAccount(Long id);
     //nie sprawdzone
 
     List<Student> getStudentsByEmails(List<String> emails);

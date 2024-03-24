@@ -90,6 +90,12 @@ public class StudentController {
         studentService.studentIsActive(studentId);
     }
 
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PatchMapping("/restore/{id}")
+    public void restoreStudentAccount(@PathVariable Long id) {
+        logger.info("Patch method restoreStudentAccount()");
+        studentService.restoreStudentAccount(id);
+    }
     //    nie sprawdzone
     @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PostMapping("/emails")

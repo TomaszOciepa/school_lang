@@ -6,6 +6,8 @@ import { StudentService } from 'src/app/modules/core/services/student.service';
 import { EditStudentDialogComponent } from './edit-student-dialog/edit-student-dialog.component';
 import { DeleteStudentDialogComponent } from './delete-student-dialog/delete-student-dialog.component';
 import { DropStudentDialogComponent } from './drop-student-dialog/drop-student-dialog.component';
+import { RestoreStudentDialogComponent } from 'src/app/modules/courses/components/course/restore-student-dialog/restore-student-dialog.component';
+import { RestoreStudentAccountDialogComponent } from './restore-student-account-dialog/restore-student-account-dialog.component';
 
 @Component({
   selector: 'app-student',
@@ -39,6 +41,14 @@ export class StudentComponent {
 
   openDialog() {
     const dialogRef = this.dialog.open(DeleteStudentDialogComponent, {
+      data: {
+        student: this.student,
+      },
+    });
+  }
+
+  openRestoreDialog() {
+    const dialogRef = this.dialog.open(RestoreStudentAccountDialogComponent, {
       data: {
         student: this.student,
       },
