@@ -340,6 +340,14 @@ public class CourseServiceImpl implements CourseService {
         return courses;
     }
 
+    public void removeTeacherWithAllCourses(Long teacherId){
+        logger.info("removeTeacherWithAllCourses(): {}", teacherId);
+        List<Course> courseList = getCourseByTeacherId(teacherId);
+        courseList.stream()
+                .forEach(course -> teacherCourseUnEnrollment(course.getId(), teacherId));
+
+    }
+
     private void isCourseStartDateIsAfterCourseEndDate(LocalDateTime startDate, LocalDateTime endDate) {
         logger.info("Checking isCourseStartDateIsAfterCourseEndDate");
         logger.info("Start date is: {}, end date is: {}.", startDate, endDate);
@@ -452,6 +460,7 @@ public class CourseServiceImpl implements CourseService {
         }).collect(Collectors.toList());
         courseRepository.save(courseFromDb);
     }
+
 //    nie sprawdzone
 
 //    private void validateCourseStatus(Course course) {

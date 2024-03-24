@@ -125,4 +125,12 @@ public class CourseController {
         logger.info("Get method getCourseByStudentId()");
         return courseService.getCourseByStudentId(studentId);
     }
+
+    @PreAuthorize("hasRole('admin')")
+    @DeleteMapping("/remove-teacher/{teacherId}")
+    public ResponseEntity<?> removeTeacherWithAllCourses(@PathVariable Long teacherId) {
+        logger.info("Delete method removeTeacherWithAllCourses()");
+        courseService.removeTeacherWithAllCourses(teacherId);
+        return ResponseEntity.ok().build();
+    }
 }

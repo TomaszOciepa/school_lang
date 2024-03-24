@@ -25,7 +25,7 @@ public interface CalendarService {
     Calendar patchLesson(String id, Calendar calendar);
 
     void deleteLessonsById(String id);
-
+    void deleteLessonsByTeacherId(Long teacherId);
     boolean isTeacherAssignedToLessonInCourse(String courseId, Long teacherId);
 
     void enrollStudent(String courseId, Long studentId);
@@ -35,6 +35,7 @@ public interface CalendarService {
     void enrollStudentLesson(String lessonId, Long studentId);
 
     void unEnrollStudentLesson(String lessonId, Long studentId);
+
 
 //    nie sprawdzone
 

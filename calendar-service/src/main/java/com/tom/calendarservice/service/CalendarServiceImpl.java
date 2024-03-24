@@ -179,6 +179,17 @@ public class CalendarServiceImpl implements CalendarService {
         calendarRepository.deleteById(id);
     }
 
+    @Override
+    public void deleteLessonsByTeacherId(Long id) {
+        logger.info("deleteLessonsByTeacherId: {}", id);
+
+        List<Calendar> lessons = getLessonsByTeacherId(id);
+
+       lessons.stream()
+               .map(Calendar::getId)
+                       .forEach(calendarRepository::deleteById);
+    }
+
     public boolean isTeacherAssignedToLessonInCourse(String courseId, Long teacherId) {
         logger.info("Checking isTeacherAssignedToLessonInCourse courseId: {}, teacherId: {}", courseId, teacherId);
         List<Calendar> courseLessonsList = getLessonsByCourseId(courseId);

@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DeleteTeacherDialogComponent } from './delete-teacher-dialog/delete-teacher-dialog.component';
 import { EditTeacherDialogComponent } from './edit-teacher-dialog/edit-teacher-dialog.component';
 import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
+import { DropTeacherDialogComponent } from './drop-teacher-dialog/drop-teacher-dialog.component';
 
 @Component({
   selector: 'app-teacher-details',
@@ -49,6 +50,14 @@ export class TeacherDetailsComponent implements OnInit {
 
   openDialog() {
     const dialogRef = this.dialog.open(DeleteTeacherDialogComponent, {
+      data: {
+        teacher: this.teacher,
+      },
+    });
+  }
+
+  openDropDialog() {
+    const dialogRef = this.dialog.open(DropTeacherDialogComponent, {
       data: {
         teacher: this.teacher,
       },

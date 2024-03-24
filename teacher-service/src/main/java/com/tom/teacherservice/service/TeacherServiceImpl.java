@@ -6,11 +6,11 @@ import com.tom.teacherservice.model.Status;
 import com.tom.teacherservice.model.Teacher;
 import com.tom.teacherservice.repo.TeacherRepository;
 import com.tom.teacherservice.security.AuthenticationContext;
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +21,8 @@ public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
     private final AuthenticationContext authenticationContext;
+    private final CalendarServiceClient calendarServiceClient;
+    private final  CourseServiceClient courseServiceClient;
     private static Logger logger = LoggerFactory.getLogger(TeacherServiceImpl.class);
 
     //sprawdzone
@@ -73,12 +75,26 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public void deleteTeacher(Long id) {
+    public void deactivateTeacherById(Long id) {
         logger.info("Trying deleteTeacher with id: {}.", id);
         Teacher teacher = teacherRepository.findById(id)
                 .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
         teacher.setStatus(Status.INACTIVE);
         teacherRepository.save(teacher);
+    }
+
+    @Override
+    public void deleteTeacherById(Long id) {
+        logger.info("Trying deleteTeacher with id: {}.", id);
+        Teacher teacher = teacherRepository.findById(id)
+                .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
+        calendarServiceClient.deleteLessonsByTeacherId(id);
+        try{
+            courseServiceClient.removeTeacherWithAllCourses(id);
+        }catch (FeignException ex){
+            logger.error("FeignException occurred: {}", ex.getMessage());
+        }
+        teacherRepository.deleteById(id);
     }
 
     @Override

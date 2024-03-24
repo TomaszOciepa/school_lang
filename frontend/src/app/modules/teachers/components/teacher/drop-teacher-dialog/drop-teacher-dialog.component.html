@@ -1,12 +1,13 @@
-<h1 mat-dialog-title>Czy napewno chcesz dezaktywować konto nauczyciela?</h1>
+<h1 mat-dialog-title>Czy napewno chcesz usunąć nauczyciela?</h1>
 <div mat-dialog-content>
   <p>{{ teacher.firstName }} {{ teacher.lastName }}</p>
-  <p>Nie będzie mógł się zalogować do systemu.</p>
+  <p>Usuniesz wszystkie lekcje nauczyciela.</p>
+  <p>Usuniesz nauczyciela z kursów do których jest przypisany.</p>
   <app-alert *ngIf="errorMessage">{{ errorMessage }}</app-alert>
 </div>
 <div mat-dialog-actions>
   <button color="accent" mat-button mat-dialog-close>Anuluj</button>
-  <button color="warn" mat-button (click)="onDelete()" cdkFocusInitial>
-    dezaktywuj
+  <button color="warn" mat-button (click)="onDrop()" cdkFocusInitial>
+    usuń
   </button>
 </div>

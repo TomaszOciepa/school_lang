@@ -17,12 +17,16 @@
       <button mat-button routerLink="students" *ngIf="isAdmin || isTeacher">
         Uczniowie
       </button>
-      <button mat-button routerLink="settings/teachers" *ngIf="isAdmin">
-        Ustawienia - t
-      </button>
-      <button mat-button routerLink="settings/students" *ngIf="isAdmin">
-        Ustawienia - s
-      </button>
+
+      <ng-container *ngIf="isAdmin">
+        <button mat-button [matMenuTriggerFor]="menu">Ustawienia</button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item routerLink="settings/students">studenci</button>
+          <button mat-menu-item routerLink="settings/teachers">
+            nauczyciele
+          </button>
+        </mat-menu>
+      </ng-container>
     </ng-container>
 
     <ng-container *ngIf="isLoggedIn && isStudent">

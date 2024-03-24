@@ -90,6 +90,13 @@ public class CalendarController {
         calendarService.deleteLessonsById(id);
     }
 
+    @PreAuthorize("hasRole('admin')")
+    @DeleteMapping("remove-teacher-lessons/{id}")
+    public void deleteLessonsByTeacherId(@PathVariable Long id) {
+        logger.info("Delete method deleteLessonsByTeacherId().");
+        calendarService.deleteLessonsByTeacherId(id);
+    }
+
     @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @GetMapping("/check-teacher-assignment/{courseId}/{teacherId}")
     public boolean isTeacherAssignedToLessonInCourse(@PathVariable String courseId, @PathVariable Long teacherId) {

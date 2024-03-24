@@ -20,7 +20,8 @@ public interface TeacherService {
 
     Teacher patchTeacher(Long id, Teacher teacher);
 
-    void deleteTeacher(Long id);
+    void deactivateTeacherById(Long id);
+    void deleteTeacherById(Long id);
     Teacher getTeacherByEmail(String email);
     //    nie sprawdzone
 

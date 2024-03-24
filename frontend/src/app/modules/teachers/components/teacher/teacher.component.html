@@ -9,8 +9,18 @@
           </button>
         </div>
         <div class="col p-3" *ngIf="role == 'ADMIN'">
-          <button mat-raised-button color="warn" (click)="openDialog()">
-            Usuń
+          <button
+            *ngIf="teacher && teacher.status == 'ACTIVE'"
+            mat-raised-button
+            color="warn"
+            (click)="openDialog()"
+          >
+            dezaktywuj konto
+          </button>
+        </div>
+        <div class="col p-3" *ngIf="role == 'ADMIN'">
+          <button mat-raised-button color="warn" (click)="openDropDialog()">
+            usuń
           </button>
         </div>
       </div>

@@ -241,7 +241,7 @@ class TeacherServiceImplTest {
         Long mockId = mockTeacher.getId();
         given(teacherRepository.findById(mockId)).willReturn(Optional.of(mockTeacher));
         //when
-        teacherServiceImpl.deleteTeacher(mockId);
+        teacherServiceImpl.deactivateTeacherById(mockId);
         //then
         verify(teacherRepository, times(1)).findById(mockId);
         verify(teacherRepository, times(1)).save(mockTeacher);

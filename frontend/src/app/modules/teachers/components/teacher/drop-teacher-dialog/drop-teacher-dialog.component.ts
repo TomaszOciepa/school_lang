@@ -5,16 +5,16 @@ import { User } from 'src/app/modules/core/models/user.model';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 
 @Component({
-  selector: 'app-delete-teacher-dialog',
-  templateUrl: './delete-teacher-dialog.component.html',
-  styleUrls: ['./delete-teacher-dialog.component.css'],
+  selector: 'app-drop-teacher-dialog',
+  templateUrl: './drop-teacher-dialog.component.html',
+  styleUrls: ['./drop-teacher-dialog.component.css'],
 })
-export class DeleteTeacherDialogComponent implements OnInit {
+export class DropTeacherDialogComponent implements OnInit {
   teacher!: User;
   errorMessage = '';
 
   constructor(
-    private dialogRef: MatDialogRef<DeleteTeacherDialogComponent>,
+    private dialogRef: MatDialogRef<DropTeacherDialogComponent>,
     @Inject(MAT_DIALOG_DATA) private data: { teacher: User },
     private teacherService: TeacherService,
     private router: Router
@@ -24,11 +24,11 @@ export class DeleteTeacherDialogComponent implements OnInit {
     this.teacher = this.data.teacher;
   }
 
-  onDelete() {
-    this.teacherService.deactivateTeacherById(this.teacher.id).subscribe({
+  onDrop() {
+    this.teacherService.deleteTeacherById(this.teacher.id).subscribe({
       next: () => {
         this.dialogRef.close();
-        this.router.navigate(['/teachers']);
+        this.router.navigate(['/settings/teachers']);
       },
       error: (err) => {
         this.errorMessage = err;

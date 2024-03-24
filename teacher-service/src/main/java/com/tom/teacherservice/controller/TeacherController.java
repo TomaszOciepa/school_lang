@@ -81,8 +81,14 @@ public class TeacherController {
 
     @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/{id}")
-    public void deleteTeacher(@PathVariable Long id) {
-        teacherService.deleteTeacher(id);
+    public void deactivateTeacherById(@PathVariable Long id) {
+        teacherService.deactivateTeacherById(id);
+    }
+
+    @PreAuthorize("hasRole('admin')")
+    @DeleteMapping("/remove/{id}")
+    public void deleteTeacherById(@PathVariable Long id) {
+        teacherService.deleteTeacherById(id);
     }
 
     //    nie sprawdzone

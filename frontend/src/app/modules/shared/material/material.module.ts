@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [],
@@ -29,6 +30,7 @@ import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
     MatDatepickerModule,
     MatNativeDateModule,
     NgxMatTimepickerModule,
+    MatMenuModule,
   ],
 })
 export class MaterialModule {}

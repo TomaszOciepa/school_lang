@@ -25,6 +25,8 @@ public interface CourseService {
     List<Course> getCourseByTeacherId(Long teacherId);
     List<Course> getCourseByStudentId(Long studentId);
 
+    void removeTeacherWithAllCourses(Long teacherId);
+
 //    nie sprawdzone
 //    void changeCourseMemberStatus(String courseId, Long studentId, Status status);
 
