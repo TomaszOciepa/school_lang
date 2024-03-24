@@ -80,6 +80,13 @@ public class TeacherController {
     }
 
     @PreAuthorize("hasRole('admin')")
+    @PatchMapping("/restore/{id}")
+    public void restoreTeacherAccount(@PathVariable Long id) {
+        logger.info("Patch method restoreTeacherAccount()");
+         teacherService.restoreTeacherAccount(id);
+    }
+
+    @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/{id}")
     public void deactivateTeacherById(@PathVariable Long id) {
         teacherService.deactivateTeacherById(id);

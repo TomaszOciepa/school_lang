@@ -128,6 +128,12 @@ public class TeacherServiceImpl implements TeacherService {
         }
         return teacher;
     }
+    @Override
+    public void restoreTeacherAccount(Long id){
+        Teacher teacher = getTeacherById(id);
+        teacher.setStatus(Status.ACTIVE);
+        teacherRepository.save(teacher);
+    }
     //nie sprawdzone
 
     private void validateTeacherEmailExists(String email) {

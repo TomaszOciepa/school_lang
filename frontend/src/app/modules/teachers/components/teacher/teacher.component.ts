@@ -7,6 +7,7 @@ import { DeleteTeacherDialogComponent } from './delete-teacher-dialog/delete-tea
 import { EditTeacherDialogComponent } from './edit-teacher-dialog/edit-teacher-dialog.component';
 import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 import { DropTeacherDialogComponent } from './drop-teacher-dialog/drop-teacher-dialog.component';
+import { RestoreTeacherAccountDialogComponent } from './restore-teacher-account-dialog/restore-teacher-account-dialog.component';
 
 @Component({
   selector: 'app-teacher-details',
@@ -58,6 +59,14 @@ export class TeacherDetailsComponent implements OnInit {
 
   openDropDialog() {
     const dialogRef = this.dialog.open(DropTeacherDialogComponent, {
+      data: {
+        teacher: this.teacher,
+      },
+    });
+  }
+
+  openRestoreDialog() {
+    const dialogRef = this.dialog.open(RestoreTeacherAccountDialogComponent, {
       data: {
         teacher: this.teacher,
       },

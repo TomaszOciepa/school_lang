@@ -12,6 +12,7 @@ import { LessonsModule } from '../lessons/lessons.module';
 import { TeacherCoursesTableComponent } from './components/teacher/teacher-courses-table/teacher-courses-table.component';
 import { TeacherLessonsTableComponent } from './components/teacher/teacher-lessons-table/teacher-lessons-table.component';
 import { DropTeacherDialogComponent } from './components/teacher/drop-teacher-dialog/drop-teacher-dialog.component';
+import { RestoreTeacherAccountDialogComponent } from './components/teacher/restore-teacher-account-dialog/restore-teacher-account-dialog.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { DropTeacherDialogComponent } from './components/teacher/drop-teacher-di
     TeacherCoursesTableComponent,
     TeacherLessonsTableComponent,
     DropTeacherDialogComponent,
+    RestoreTeacherAccountDialogComponent,
   ],
   imports: [SharedModule, TeachersRoutingModule, LessonsModule],
 })

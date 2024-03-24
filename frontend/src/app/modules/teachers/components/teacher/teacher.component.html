@@ -17,7 +17,17 @@
           >
             dezaktywuj konto
           </button>
+
+          <button
+            *ngIf="teacher && teacher.status == 'INACTIVE'"
+            mat-raised-button
+            color="warn"
+            (click)="openRestoreDialog()"
+          >
+            aktywuj konto
+          </button>
         </div>
+
         <div class="col p-3" *ngIf="role == 'ADMIN'">
           <button mat-raised-button color="warn" (click)="openDropDialog()">
             usuń

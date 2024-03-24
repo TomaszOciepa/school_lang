@@ -47,4 +47,11 @@ export class TeacherService {
   patchTeacher(id: number, editedTeacher: PostUser): Observable<User> {
     return this.http.patch<User>(`${this.apiUrl}/${id}`, editedTeacher);
   }
+
+  restoreTeacherAccount(id: number): Observable<Record<string, never>> {
+    return this.http.patch<Record<string, never>>(
+      `${this.apiUrl}/restore/${id}`,
+      null
+    );
+  }
 }
