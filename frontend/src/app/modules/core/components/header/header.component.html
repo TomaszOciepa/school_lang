@@ -18,6 +18,10 @@
         Uczniowie
       </button>
 
+      <button mat-button routerLink="user-account" *ngIf="isAdmin || isTeacher">
+        Moje konto
+      </button>
+
       <ng-container *ngIf="isAdmin">
         <button mat-button [matMenuTriggerFor]="menu">Ustawienia</button>
         <mat-menu #menu="matMenu">
@@ -38,9 +42,11 @@
     </ng-container>
 
     <button *ngIf="!isLoggedIn" mat-button (click)="login()">Logowanie</button>
-    <p *ngIf="isLoggedIn">
+    <!-- <p *ngIf="isLoggedIn">
       {{ userProfile?.firstName }}
-    </p>
-    <button *ngIf="isLoggedIn" mat-button (click)="logout()">Wyloguj</button>
+    </p> -->
+    <button *ngIf="isLoggedIn" mat-button (click)="logout()">
+      Wyloguj ({{ userProfile?.firstName }})
+    </button>
   </mat-toolbar>
 </nav>

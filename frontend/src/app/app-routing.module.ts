@@ -55,6 +55,18 @@ const routes: Routes = [
     title: 'lekcje',
   },
   {
+    path: 'user-account',
+    loadChildren: () =>
+      import('./modules/user-account/user-account.module').then(
+        (m) => m.UserAccountModule
+      ),
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['admin', 'teacher'],
+    },
+    title: 'moje konto',
+  },
+  {
     path: 'settings',
     loadChildren: () =>
       import('./modules/settings/settings.module').then(
