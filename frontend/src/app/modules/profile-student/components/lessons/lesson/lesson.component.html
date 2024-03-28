@@ -1,0 +1,47 @@
+<div class="container text-center" *ngIf="lesson && teacher">
+  <!-- Stack the columns on mobile by making one full-width and the other half-width -->
+
+  <div class="row">
+    <div class="col">
+      <figure class="text-start">
+        <blockquote class="blockquote">
+          <h2>{{ lesson.eventName }}</h2>
+        </blockquote>
+        <figcaption class="blockquote-footer">
+          <cite title="Source Title">{{ lesson.description }}</cite>
+        </figcaption>
+      </figure>
+    </div>
+    <div class="col text-start">
+      <h3>
+        <small class="text-body-secondary"> data rozpoczęcia: </small>
+        {{ lesson.startDate | date : "EEEE, d MMMM yyyy" }}
+      </h3>
+      <h3>
+        <small class="text-body-secondary"> czas: </small>
+        {{ lesson.startDate | date : "HH:mm" }} -
+        {{ lesson.endDate | date : "HH:mm" }}
+      </h3>
+      <h3 *ngIf="course">
+        <small class="text-body-secondary"> kurs: </small>
+        <a [routerLink]="'/account-student/course/' + course.id">{{
+          course.name
+        }}</a>
+      </h3>
+    </div>
+    <div class="col">
+      <ul class="list-group list-group-flush text-start">
+        <li class="list-group-item">
+          <small class="text-body-secondary">nauczyciel: </small>
+          <a [routerLink]="'/teachers/' + teacher.id"
+            >{{ teacher.firstName }} {{ teacher.lastName }}</a
+          >
+        </li>
+        <li class="list-group-item">
+          <small class="text-body-secondary">status: </small>
+          {{ lesson.status }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

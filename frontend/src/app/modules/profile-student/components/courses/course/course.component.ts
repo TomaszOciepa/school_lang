@@ -13,8 +13,6 @@ import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-
 export class CourseComponent {
   id!: string;
   course!: Course;
-  // students!: CourseMembers[];
-  // teachers!: User[];
 
   listUserId!: number[];
   errMsg!: string;
@@ -23,9 +21,7 @@ export class CourseComponent {
   constructor(
     private courseService: CourseService,
     private route: ActivatedRoute
-  ) // private dialog: MatDialog,
-  // private router: Router
-  {}
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.route.params;
@@ -33,8 +29,6 @@ export class CourseComponent {
       this.id = params['id'];
     });
     this.getCourseById(this.id);
-    // this.getCourseMembers(this.id);
-    // this.getCourseTeachers(this.id);
   }
 
   getCourseById(id: string) {
@@ -48,29 +42,4 @@ export class CourseComponent {
       complete: () => {},
     });
   }
-
-  // getCourseMembers(courseId: string) {
-  //   this.courseService.getCourseMembers(courseId).subscribe({
-  //     next: (student) => {
-  //       this.students = student;
-  //     },
-  //     error: (err: HttpErrorResponse) => {
-  //       console.log(err.error.message);
-  //     },
-  //     complete: () => {},
-  //   });
-  // }
-
-  // getCourseTeachers(courseId: string) {
-  //   this.courseService.getCourseTeachers(courseId).subscribe({
-  //     next: (teacher) => {
-  //       this.teachers = teacher;
-  //     },
-  //     error: (err: HttpErrorResponse) => {
-  //       console.log(err.error.message);
-  //       this.hideErrorMsg();
-  //     },
-  //     complete: () => {},
-  //   });
-  // }
 }

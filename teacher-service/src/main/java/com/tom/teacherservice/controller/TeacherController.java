@@ -58,7 +58,7 @@ public class TeacherController {
         return teacherService.getTeachersByIdNumberNotEqual(idNumbers);
     }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @GetMapping("/{id}")
     public Teacher getTeacherById(@PathVariable Long id) {
         logger.info("Get method getTeacherById()");

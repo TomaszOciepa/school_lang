@@ -27,14 +27,14 @@ public class CalendarController {
         return calendarService.getAllLessons();
     }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @GetMapping("/{id}")
     public Calendar getLessonById(@PathVariable String id) {
         logger.info("Get method getLessonById()");
         return calendarService.getLessonById(id);
     }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @GetMapping("/course-lessons/{courseId}")
     public List<Calendar> getLessonsByCourseId(@PathVariable String courseId) {
         logger.info("Get method getLessonsByCourseId() courseId: {}", courseId);
@@ -55,7 +55,7 @@ public class CalendarController {
         return calendarService.getLessonsByTeacherId(teacherId);
     }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @GetMapping("/student-lessons/{studentId}")
     public List<Calendar> getLessonsByStudentId(@PathVariable Long studentId) {
         logger.info("Get method getLessonsByStudentId()");

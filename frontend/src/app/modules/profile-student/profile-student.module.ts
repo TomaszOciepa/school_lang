@@ -9,6 +9,9 @@ import { MyAccountComponent } from './components/my-account/my-account.component
 import { SharedModule } from '../shared/shared.module';
 import { CoursesTableComponent } from './components/courses/courses-table/courses-table.component';
 import { CourseComponent } from './components/courses/course/course.component';
+import { LessonsTableComponent } from './components/lessons/lessons-table/lessons-table.component';
+import { LessonComponent } from './components/lessons/lesson/lesson.component';
+import { CourseLessonsTableComponent } from './components/courses/course-lessons-table/course-lessons-table.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +21,9 @@ import { CourseComponent } from './components/courses/course/course.component';
     MyAccountComponent,
     CoursesTableComponent,
     CourseComponent,
+    LessonsTableComponent,
+    LessonComponent,
+    CourseLessonsTableComponent,
   ],
   imports: [SharedModule, CommonModule, ProfileStudentRoutingModule],
 })
