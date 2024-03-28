@@ -33,9 +33,7 @@
       <ul class="list-group list-group-flush text-start">
         <li class="list-group-item">
           <small class="text-body-secondary">nauczyciel: </small>
-          <a [routerLink]="'/teachers/' + teacher.id"
-            >{{ teacher.firstName }} {{ teacher.lastName }}</a
-          >
+          {{ teacher.firstName }} {{ teacher.lastName }}
         </li>
         <li class="list-group-item">
           <small class="text-body-secondary">status: </small>

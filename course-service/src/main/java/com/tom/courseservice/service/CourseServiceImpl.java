@@ -129,6 +129,8 @@ public class CourseServiceImpl implements CourseService {
                 .collect(Collectors.toList());
 
         logger.info("Fetching teachers by id number.");
+        logger.info("lista: ");
+        idNumbers.stream().forEach(System.out::println);
         return teacherServiceClient.getTeachersByIdNumber(idNumbers);
     }
 

@@ -45,13 +45,6 @@
         <td mat-cell *matCellDef="let row">{{ row.status }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="participantsNumber">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>
-          Liczba studentów
-        </th>
-        <td mat-cell *matCellDef="let row">{{ row.attendanceList.length }}</td>
-      </ng-container>
-
       <ng-container matColumnDef="buttons">
         <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
         <td mat-cell *matCellDef="let row">

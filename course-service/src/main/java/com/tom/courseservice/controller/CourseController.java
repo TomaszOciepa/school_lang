@@ -51,7 +51,7 @@ public class CourseController {
         return courseService.getCourseMembers(courseId);
     }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @GetMapping("/teacher/{courseId}")
     public List<TeacherDto> getCourseTeachers(@PathVariable String courseId) {
         logger.info("Get method getCourseTeachers()");

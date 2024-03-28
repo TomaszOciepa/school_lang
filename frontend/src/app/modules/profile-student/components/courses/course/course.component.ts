@@ -2,8 +2,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Course } from 'src/app/modules/core/models/course.model';
+import { User } from 'src/app/modules/core/models/user.model';
 import { CourseService } from 'src/app/modules/core/services/course.service';
-import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 
 @Component({
   selector: 'app-course',
@@ -15,8 +15,8 @@ export class CourseComponent {
   course!: Course;
 
   listUserId!: number[];
-  errMsg!: string;
   role!: string;
+  teachers!: User[];
 
   constructor(
     private courseService: CourseService,
@@ -35,6 +35,20 @@ export class CourseComponent {
     this.courseService.getCourseById(id).subscribe({
       next: (response) => {
         this.course = response;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log(err.error.message);
+      },
+      complete: () => {
+        this.getCourseTeachers(this.id);
+      },
+    });
+  }
+
+  getCourseTeachers(courseId: string) {
+    this.courseService.getCourseTeachers(courseId).subscribe({
+      next: (teacher) => {
+        this.teachers = teacher;
       },
       error: (err: HttpErrorResponse) => {
         console.log(err.error.message);
