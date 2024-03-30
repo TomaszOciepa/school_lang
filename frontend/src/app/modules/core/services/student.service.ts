@@ -12,8 +12,8 @@ export class StudentService {
   constructor(private http: HttpClient) {}
 
   //ok
-  getStudents(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl + '?status=ACTIVE');
+  getStudents(status: string): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}?status=${status}`);
   }
 
   getStudentsByIdNumberNotEqual(id: number[]): Observable<User[]> {
@@ -24,6 +24,10 @@ export class StudentService {
     return this.http.post<User[]>(this.apiUrl + '/idNumbers', id);
   }
 
+  getStudentByEmail(email: string | undefined): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/email?email=${email}`);
+  }
+
   addNewStudent(newStudent: PostUser): Observable<User> {
     return this.http.post<User>(this.apiUrl, newStudent);
   }
@@ -32,11 +36,26 @@ export class StudentService {
     return this.http.patch<User>(`${this.apiUrl}/${id}`, editedStudent);
   }
 
+  deactivateStudentById(id: number): Observable<Record<string, never>> {
+    return this.http.delete<Record<string, never>>(
+      `${this.apiUrl}/deactivate/${id}`
+    );
+  }
+
   deleteStudentById(id: number): Observable<Record<string, never>> {
-    return this.http.delete<Record<string, never>>(`${this.apiUrl}/${id}`);
+    return this.http.delete<Record<string, never>>(
+      `${this.apiUrl}/remove/${id}`
+    );
   }
 
   getStudentById(id: number): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/${id}`);
+  }
+
+  restoreStudentAccount(id: number): Observable<Record<string, never>> {
+    return this.http.patch<Record<string, never>>(
+      `${this.apiUrl}/restore/${id}`,
+      null
+    );
   }
 }

@@ -1,12 +1,13 @@
-<h1 mat-dialog-title>Czy napewno chcesz usunąć ucznia?</h1>
+<h1 mat-dialog-title>Czy napewno chcesz dezaktywować konto studenta?</h1>
 <div mat-dialog-content>
   <p>Imię i nazwisko:</p>
   <p>{{ student.firstName }} {{ student.lastName }}</p>
+  <p>Nie będzie mógł się zalogować do systemu.</p>
   <app-alert *ngIf="errorMessage">{{ errorMessage }}</app-alert>
 </div>
 <div mat-dialog-actions>
   <button color="accent" mat-button mat-dialog-close>Anuluj</button>
   <button color="warn" mat-button (click)="onDelete()" cdkFocusInitial>
-    Usuń
+    dezaktywuj
   </button>
 </div>

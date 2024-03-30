@@ -192,11 +192,11 @@ class StudentControllerTest {
     void deleteStudentVerifyMethod() {
         MockitoAnnotations.openMocks(this);
         //given
-        willDoNothing().given(studentService).deleteStudent(1L);
+        willDoNothing().given(studentService).deactivateStudentById(1L);
         //when
-        studentController.deleteStudent(1L);
+        studentController.deactivateStudentById(1L);
         //then
-        verify(studentService).deleteStudent(1L);
+        verify(studentService).deactivateStudentById(1L);
     }
 
     @Test

@@ -16,7 +16,7 @@ const routes: Routes = [
       import('./modules/courses/courses.module').then((m) => m.CoursesModule),
     canActivate: [AuthGuard],
     data: {
-      roles: ['admin', 'user'],
+      roles: ['admin', 'teacher'],
     },
     title: 'Kursy',
   },
@@ -28,7 +28,7 @@ const routes: Routes = [
       ),
     canActivate: [AuthGuard],
     data: {
-      roles: ['admin', 'user'],
+      roles: ['admin', 'teacher'],
     },
     title: 'Uczniowie',
   },
@@ -40,7 +40,7 @@ const routes: Routes = [
       ),
     canActivate: [AuthGuard],
     data: {
-      roles: ['admin', 'user'],
+      roles: ['admin', 'teacher'],
     },
     title: 'nauczyciele',
   },
@@ -50,9 +50,45 @@ const routes: Routes = [
       import('./modules/lessons/lessons.module').then((m) => m.LessonsModule),
     canActivate: [AuthGuard],
     data: {
-      roles: ['admin', 'user'],
+      roles: ['admin', 'teacher'],
     },
     title: 'lekcje',
+  },
+  {
+    path: 'user-account',
+    loadChildren: () =>
+      import('./modules/user-account/user-account.module').then(
+        (m) => m.UserAccountModule
+      ),
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['admin', 'teacher'],
+    },
+    title: 'moje konto',
+  },
+  {
+    path: 'settings',
+    loadChildren: () =>
+      import('./modules/settings/settings.module').then(
+        (m) => m.SettingsModule
+      ),
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['admin'],
+    },
+    title: 'ustawienia',
+  },
+  {
+    path: 'account-student',
+    loadChildren: () =>
+      import('./modules/profile-student/profile-student.module').then(
+        (m) => m.ProfileStudentModule
+      ),
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['student'],
+    },
+    title: 'Moje konto',
   },
   { path: '**', component: PageNotFoundComponent, title: 'Page not found 404' },
 ];

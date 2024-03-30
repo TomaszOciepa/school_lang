@@ -24,6 +24,10 @@ public interface CourseService {
     ResponseEntity<?> restoreStudentToCourse(String courseId, Long studentId);
     List<Course> getCourseByTeacherId(Long teacherId);
     List<Course> getCourseByStudentId(Long studentId);
+    void deactivateStudent(Long studentId);
+    void removeTeacherWithAllCourses(Long teacherId);
+
+    void removeStudentWithAllCourses(Long studentId);
 
 //    nie sprawdzone
 //    void changeCourseMemberStatus(String courseId, Long studentId, Status status);

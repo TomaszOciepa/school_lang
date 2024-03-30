@@ -9,8 +9,28 @@
           </button>
         </div>
         <div class="col p-3">
-          <button mat-raised-button color="warn" (click)="openDialog()">
-            Usuń
+          <button
+            *ngIf="student && student.status == 'ACTIVE'"
+            mat-raised-button
+            color="warn"
+            (click)="openDialog()"
+          >
+            dezaktywuj konto
+          </button>
+
+          <button
+            *ngIf="student && student.status == 'INACTIVE'"
+            mat-raised-button
+            color="warn"
+            (click)="openRestoreDialog()"
+          >
+            aktywuj konto
+          </button>
+        </div>
+
+        <div class="col p-3">
+          <button mat-raised-button color="warn" (click)="openDropDialog()">
+            usuń
           </button>
         </div>
       </div>
@@ -58,18 +78,16 @@
 
     <div class="row text-start p-md-3">
       <h2>Kursy</h2>
-      <app-courses-table
-        [switch]="'student'"
+      <app-student-courses-table
         [studentId]="student.id"
-      ></app-courses-table>
+      ></app-student-courses-table>
     </div>
 
     <div class="row text-start p-md-3">
       <h2>Lekcje</h2>
-      <app-lesons-table
-        [switch]="'student'"
+      <app-student-lessons-table
         [student-id]="student.id"
-      ></app-lesons-table>
+      ></app-student-lessons-table>
     </div>
   </div>
 </div>

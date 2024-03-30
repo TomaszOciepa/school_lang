@@ -1,4 +1,10 @@
 <section class="mt-4">
+  <ng-container *ngIf="role == 'ADMIN'">
+    <button mat-raised-button color="primary" routerLink="/teachers/dodaj">
+      Dodaj Nauczyciela
+    </button>
+  </ng-container>
+
   <mat-form-field>
     <mat-label>Filtrowanie</mat-label>
     <input
@@ -60,7 +66,7 @@
     </table>
 
     <mat-paginator
-      [pageSizeOptions]="[5, 10, 25, 100]"
+      [pageSizeOptions]="[10, 25, 100]"
       aria-label="Wybierz stronę"
     ></mat-paginator>
   </div>

@@ -13,6 +13,7 @@ import { EnrollCourseDialogComponent } from './enroll-course-dialog/enroll-cours
 import { UnenrollCourseDialogComponent } from './unenroll-course-dialog/unenroll-course-dialog.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RestoreStudentDialogComponent } from './restore-student-dialog/restore-student-dialog.component';
+import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 
 @Component({
   selector: 'app-course',
@@ -27,23 +28,33 @@ export class CourseComponent {
 
   listUserId!: number[];
   errMsg!: string;
+  role!: string;
 
   constructor(
+    private userProfileService: LoadUserProfileService,
     private courseService: CourseService,
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private router: Router
   ) {}
 
-  async ngAfterViewInit(): Promise<void> {
+  async ngOnInit(): Promise<void> {
     this.route.params;
     this.route.params.subscribe((params) => {
       this.id = params['id'];
     });
-
+    this.loadUserProfile();
     this.getCourseById(this.id);
     this.getCourseMembers(this.id);
     this.getCourseTeachers(this.id);
+  }
+
+  async loadUserProfile(): Promise<void> {
+    await this.userProfileService.loadUserProfile();
+
+    if (this.userProfileService.isAdmin) {
+      this.role = 'ADMIN';
+    }
   }
 
   getCourseById(id: string) {

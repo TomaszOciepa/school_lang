@@ -81,11 +81,11 @@
   <div class="row">
     <div class="col text-start p-3">
       <h2>Lekcje</h2>
-      <app-lesons-table
+
+      <app-course-lessons-table
         [course-id]="course.id"
         [lessons-limit]="course.lessonsLimit"
-        [switch]="'course'"
-      ></app-lesons-table>
+      ></app-course-lessons-table>
     </div>
   </div>
 
@@ -148,13 +148,21 @@
     <div class="col text-start">
       <div *ngIf="!teachers">
         <h2>Lista nauczycieli jest pusta...</h2>
-        <button class="btn btn-outline-info" (click)="openEnrollDialog(false)">
+        <button
+          *ngIf="role === 'ADMIN'"
+          class="btn btn-outline-info"
+          (click)="openEnrollDialog(false)"
+        >
           dodaj nauczyciela
         </button>
       </div>
       <div *ngIf="teachers">
         <h2>Nauczyciele</h2>
-        <button class="btn btn-outline-info" (click)="openEnrollDialog(false)">
+        <button
+          *ngIf="role === 'ADMIN'"
+          class="btn btn-outline-info"
+          (click)="openEnrollDialog(false)"
+        >
           dodaj nauczyciela
         </button>
         <table class="table">
@@ -177,6 +185,7 @@
               <td>{{ teacher.status }}</td>
               <td>
                 <button
+                  *ngIf="role === 'ADMIN'"
                   class="btn btn-outline-danger"
                   (click)="openUnEnrollTeacherDialog(teacher, false)"
                 >

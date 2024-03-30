@@ -5,6 +5,7 @@ public enum StudentError {
     STUDENT_NOT_FOUND("Student does not exists."),
     STUDENT_IS_NOT_ACTIVE("Student is not Active."),
     STUDENT_EMAIL_ALREADY_EXISTS("Student email already exists."),
+    STUDENT_OPERATION_FORBIDDEN("Operation is forbidden."),
     COURSE_NAME_NOT_FOUND("Course name is not found");
 
     private String message;

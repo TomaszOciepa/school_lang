@@ -5,9 +5,12 @@ import com.tom.teacherservice.exception.TeacherException;
 import com.tom.teacherservice.model.Status;
 import com.tom.teacherservice.model.Teacher;
 import com.tom.teacherservice.repo.TeacherRepository;
+import com.tom.teacherservice.security.AuthenticationContext;
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +20,9 @@ import java.util.List;
 public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
-
+    private final AuthenticationContext authenticationContext;
+    private final CalendarServiceClient calendarServiceClient;
+    private final  CourseServiceClient courseServiceClient;
     private static Logger logger = LoggerFactory.getLogger(TeacherServiceImpl.class);
 
     //sprawdzone
@@ -40,13 +45,31 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public Teacher getTeacherById(Long id) {
         logger.info("Fetching teacher by id: {}", id);
+
+        Authentication authentication = authenticationContext.getAuthentication();
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_admin"));
+
+
+        Teacher teacher = teacherRepository.findById(id)
+                .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
+        if (!Status.ACTIVE.equals(teacher.getStatus()) && !isAdmin) {
+            logger.info("Teacher is not active");
+            throw new TeacherException(TeacherError.TEACHER_IS_NOT_ACTIVE);
+        }
+        return teacher;
+    }
+
+    @Override
+    public void teacherIsActive(Long id) {
+        logger.info("teacherIsActive() teacherId: {}", id);
+
         Teacher teacher = teacherRepository.findById(id)
                 .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
         if (!Status.ACTIVE.equals(teacher.getStatus())) {
             logger.info("Teacher is not active");
             throw new TeacherException(TeacherError.TEACHER_IS_NOT_ACTIVE);
         }
-        return teacher;
     }
 
     @Override
@@ -64,12 +87,26 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public void deleteTeacher(Long id) {
+    public void deactivateTeacherById(Long id) {
         logger.info("Trying deleteTeacher with id: {}.", id);
         Teacher teacher = teacherRepository.findById(id)
                 .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
         teacher.setStatus(Status.INACTIVE);
         teacherRepository.save(teacher);
+    }
+
+    @Override
+    public void deleteTeacherById(Long id) {
+        logger.info("Trying deleteTeacher with id: {}.", id);
+        Teacher teacher = teacherRepository.findById(id)
+                .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
+        calendarServiceClient.deleteLessonsByTeacherId(id);
+        try{
+            courseServiceClient.removeTeacherWithAllCourses(id);
+        }catch (FeignException ex){
+            logger.error("FeignException occurred: {}", ex.getMessage());
+        }
+        teacherRepository.deleteById(id);
     }
 
     @Override
@@ -91,17 +128,25 @@ public class TeacherServiceImpl implements TeacherService {
         }
         return teacherRepository.save(teacherFromDb);
     }
-    //nie sprawdzone
 
     @Override
     public Teacher getTeacherByEmail(String email) {
+        logger.info("Fetching teacher by email: {}", email);
         Teacher teacher = teacherRepository.findByEmail(email)
                 .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
         if (!Status.ACTIVE.equals(teacher.getStatus())) {
+            logger.info("Teacher is not active.");
             throw new TeacherException(TeacherError.TEACHER_IS_NOT_ACTIVE);
         }
         return teacher;
     }
+    @Override
+    public void restoreTeacherAccount(Long id){
+        Teacher teacher = getTeacherById(id);
+        teacher.setStatus(Status.ACTIVE);
+        teacherRepository.save(teacher);
+    }
+    //nie sprawdzone
 
     private void validateTeacherEmailExists(String email) {
         if (teacherRepository.existsByEmail(email)) {

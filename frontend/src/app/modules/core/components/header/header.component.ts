@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 import { KeycloakProfile } from 'keycloak-js';
+import { LoadUserProfileService } from '../../services/load-user-profile.service';
 
 @Component({
   selector: 'app-header',
@@ -11,27 +12,25 @@ export class HeaderComponent implements OnInit {
   public isLoggedIn = false;
   public userProfile: KeycloakProfile | null = null;
   public isAdmin: boolean = false;
-  public isUser: boolean = false;
+  public isTeacher: boolean = false;
+  public isStudent: boolean = false;
 
-  constructor(private readonly keycloak: KeycloakService) {}
+  constructor(
+    private readonly keycloak: KeycloakService,
+    private userProfileService: LoadUserProfileService
+  ) {}
 
   async ngOnInit(): Promise<void> {
-    this.isLoggedIn = await this.keycloak.isLoggedIn();
+    this.loadUserProfile();
+  }
 
-    if (this.isLoggedIn) {
-      this.userProfile = await this.keycloak.loadUserProfile();
-
-      const isAdmin = this.keycloak.isUserInRole('admin');
-      const isUser = this.keycloak.isUserInRole('user');
-
-      if (isAdmin) {
-        this.isAdmin = isAdmin;
-      }
-
-      if (isUser) {
-        this.isUser = isUser;
-      }
-    }
+  async loadUserProfile(): Promise<void> {
+    await this.userProfileService.loadUserProfile();
+    this.isLoggedIn = this.userProfileService.isLoggedIn;
+    this.userProfile = this.userProfileService.userProfile;
+    this.isAdmin = this.userProfileService.isAdmin;
+    this.isTeacher = this.userProfileService.isTeacher;
+    this.isStudent = this.userProfileService.isStudent;
   }
 
   public login() {

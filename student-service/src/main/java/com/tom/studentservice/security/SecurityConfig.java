@@ -22,6 +22,7 @@ public class SecurityConfig {
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakRoleConverter());
 
 
+
         http.cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((request) -> request
@@ -36,6 +37,7 @@ public class SecurityConfig {
         http.oauth2ResourceServer(
                 oauth2 -> oauth2.jwt
                         (jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter))
+
         );
 
 

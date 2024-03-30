@@ -45,5 +45,6 @@ public class CourseExceptionHandler {
     @ExceptionHandler(FeignException.class)
     public ResponseEntity<?> handleFeignException(FeignException e) {
         return ResponseEntity.status(e.status()).body(new JSONObject(e.contentUTF8()).toMap());
+
     }
 }

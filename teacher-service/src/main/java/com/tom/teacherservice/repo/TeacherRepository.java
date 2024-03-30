@@ -19,10 +19,11 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     boolean existsByEmail(String email);
 
     List<Teacher> findAllByStatus(Status status);
-    //    nie sprawdzone
-
-
     Optional<Teacher> findByEmail(String email);
+
+
+
+
 
 
 }

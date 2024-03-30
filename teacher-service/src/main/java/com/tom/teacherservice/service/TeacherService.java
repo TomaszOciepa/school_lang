@@ -12,6 +12,8 @@ public interface TeacherService {
 
     Teacher getTeacherById(Long id);
 
+    void teacherIsActive(Long id);
+
     List<Teacher> getTeachers(Status status);
 
     List<Teacher> getTeachersByIdNumberNotEqual(List<Long> idNumbers);
@@ -20,10 +22,15 @@ public interface TeacherService {
 
     Teacher patchTeacher(Long id, Teacher teacher);
 
-    void deleteTeacher(Long id);
+    void restoreTeacherAccount(Long id);
 
-    //    nie sprawdzone
+    void deactivateTeacherById(Long id);
+
+    void deleteTeacherById(Long id);
+
     Teacher getTeacherByEmail(String email);
+    //    nie sprawdzone
+
 
     Teacher putTeacher(Long id, Teacher teacher);
 

@@ -15,9 +15,9 @@ public interface CourseRepository extends MongoRepository<Course, String> {
     List<Course> getAllByStatus(Status status);
     Optional<Course> findByIdAndStatus(String id, Status status);
 
-    @Query("{'courseTeachers.teacherId': ?0}")
+    @Query("{'courseTeachers.id': ?0}")
     List<Course> getCoursesByTeacherId(Long teacherId);
 
-    @Query("{'courseStudents.studentId': ?0}")
+    @Query("{'courseStudents.id': ?0}")
     List<Course> getCoursesByStudentId(Long studentId);
 }

@@ -133,11 +133,11 @@ class TeacherControllerTest {
         MockitoAnnotations.openMocks(this);
         //given
         Long teacherId = 1L;
-        willDoNothing().given(teacherService).deleteTeacher(teacherId);
+        willDoNothing().given(teacherService).deactivateTeacherById(teacherId);
         //when
-        teacherController.deleteTeacher(teacherId);
+        teacherController.deactivateTeacherById(teacherId);
         //then
-        verify(teacherService, times(1)).deleteTeacher(teacherId);
+        verify(teacherService, times(1)).deactivateTeacherById(teacherId);
     }
 
     @Test

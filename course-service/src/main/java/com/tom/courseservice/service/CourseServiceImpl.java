@@ -10,6 +10,7 @@ import com.tom.courseservice.model.dto.CourseStudentDto;
 import com.tom.courseservice.model.dto.StudentDto;
 import com.tom.courseservice.model.dto.TeacherDto;
 import com.tom.courseservice.repo.CourseRepository;
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +56,7 @@ public class CourseServiceImpl implements CourseService {
         logger.info("Setting participants number on 0L.");
         course.setParticipantsNumber(0L);
         logger.info("Save course on database.");
+        System.out.println(course.toString());
         return courseRepository.save(course);
     }
 
@@ -100,7 +102,7 @@ public class CourseServiceImpl implements CourseService {
         }
         logger.info("Create students id numbers list.");
         List<Long> idNumbers = courseStudents.stream()
-                .map(CourseStudents::getStudentId)
+                .map(CourseStudents::getId)
                 .collect(Collectors.toList());
 
 
@@ -123,10 +125,12 @@ public class CourseServiceImpl implements CourseService {
         }
         logger.info("Create teachers id numbers list.");
         List<Long> idNumbers = courseTeachers.stream()
-                .map(CourseTeachers::getTeacherId)
+                .map(CourseTeachers::getId)
                 .collect(Collectors.toList());
 
         logger.info("Fetching teachers by id number.");
+        logger.info("lista: ");
+        idNumbers.stream().forEach(System.out::println);
         return teacherServiceClient.getTeachersByIdNumber(idNumbers);
     }
 
@@ -219,7 +223,7 @@ public class CourseServiceImpl implements CourseService {
         Course courseFromDb = getCourseById(courseId, null);
         logger.info("Fetching course list done.");
 
-        if (!courseFromDb.getCourseTeachers().stream().anyMatch(t -> t.getTeacherId().equals(teacherId))) {
+        if (!courseFromDb.getCourseTeachers().stream().anyMatch(t -> t.getId().equals(teacherId))) {
             logger.info("No teacher on the list of enroll");
             throw new CourseException(CourseError.TEACHER_NO_ON_THE_LIST_OF_ENROLL);
         }
@@ -232,7 +236,7 @@ public class CourseServiceImpl implements CourseService {
 
         logger.info("Removing teachers from course.");
         List<CourseTeachers> courseTeacherList = courseFromDb.getCourseTeachers();
-        boolean removed = courseTeacherList.removeIf(teacher -> teacherId.equals(teacher.getTeacherId()));
+        boolean removed = courseTeacherList.removeIf(teacher -> teacherId.equals(teacher.getId()));
         if (!removed) {
             throw new CourseException(CourseError.TEACHER_NO_ON_THE_LIST_OF_ENROLL);
         }
@@ -288,6 +292,14 @@ public class CourseServiceImpl implements CourseService {
 
     public ResponseEntity<?> restoreStudentToCourse(String courseId, Long studentId) {
         logger.info("restoreStudentToCourse courseId: {}, studentId: {}", courseId, studentId);
+
+        try {
+            studentServiceClient.studentIsActive(studentId);
+        } catch (FeignException ex) {
+            logger.error("FeignException occurred: {}", ex.getMessage());
+            throw new CourseException(CourseError.STUDENT_IS_NOT_ACTIVE);
+        }
+
         Course course = getCourseById(courseId, null);
         if (course.getParticipantsLimit().equals(course.getParticipantsNumber())) {
             logger.warn("Course is full.");
@@ -300,12 +312,12 @@ public class CourseServiceImpl implements CourseService {
         }
 
         course.getCourseStudents().forEach(student -> {
-            if (student.getStudentId().equals(studentId) && student.getStatus().equals(Status.ACTIVE)) {
+            if (student.getId().equals(studentId) && student.getStatus().equals(Status.ACTIVE)) {
                 logger.warn("Student is ACTIVE.");
                 throw new CourseException(CourseError.STUDENT_IS_ACTIVE);
             }
 
-            if (student.getStudentId().equals(studentId)) {
+            if (student.getId().equals(studentId)) {
                 logger.info("Student with studentId: {} set status Active.", studentId);
                 student.setStatus(Status.ACTIVE);
             }
@@ -337,6 +349,31 @@ public class CourseServiceImpl implements CourseService {
             throw new CourseException(CourseError.COURSE_NOT_FOUND);
         }
         return courses;
+    }
+
+    @Override
+    public void removeTeacherWithAllCourses(Long teacherId) {
+        logger.info("removeTeacherWithAllCourses(): {}", teacherId);
+        List<Course> courseList = getCourseByTeacherId(teacherId);
+        courseList.stream()
+                .forEach(course -> teacherCourseUnEnrollment(course.getId(), teacherId));
+    }
+
+    @Override
+    public void removeStudentWithAllCourses(Long studentId) {
+        logger.info("removeStudentWithAllCourses(): {}", studentId);
+        List<Course> courseList = getCourseByStudentId(studentId);
+        courseList.stream()
+                .forEach(course -> studentCourseUnEnrollment(course.getId(), studentId));
+    }
+
+    @Override
+    public void deactivateStudent(Long studentId) {
+        List<Course> courses = getCourseByStudentId(studentId);
+
+        courses.forEach(course -> {
+            studentCourseUnEnrollment(course.getId(), studentId);
+        });
     }
 
     private void isCourseStartDateIsAfterCourseEndDate(LocalDateTime startDate, LocalDateTime endDate) {
@@ -385,7 +422,7 @@ public class CourseServiceImpl implements CourseService {
             String firstName = student.getFirstName();
             String lastName = student.getLastName();
 
-            Optional<CourseStudents> first = courseStudents.stream().filter(s -> s.getStudentId().equals(id)).findFirst();
+            Optional<CourseStudents> first = courseStudents.stream().filter(s -> s.getId().equals(id)).findFirst();
             LocalDateTime enrollmentDate = first.get().getEnrollmentDate();
             Status status = first.get().getStatus();
 
@@ -403,7 +440,7 @@ public class CourseServiceImpl implements CourseService {
         }
         if (course.getCourseTeachers()
                 .stream()
-                .anyMatch((member -> teacherDto.getId().equals(member.getTeacherId())))) {
+                .anyMatch((member -> teacherDto.getId().equals(member.getId())))) {
             logger.warn("Teacher is already enrolled.");
             throw new CourseException(CourseError.TEACHER_ALREADY_ENROLLED);
         }
@@ -413,7 +450,7 @@ public class CourseServiceImpl implements CourseService {
         logger.info("Checking isStudentEnrolledInCourse");
         boolean match = course.getCourseStudents()
                 .stream()
-                .anyMatch((member -> studentId.equals(member.getStudentId())));
+                .anyMatch((member -> studentId.equals(member.getId())));
         if (match) {
             return true;
         } else {
@@ -431,7 +468,7 @@ public class CourseServiceImpl implements CourseService {
         logger.info("removeStudentFromCourseStudentList studentId: {}, courseName: {}", studentId, courseFromDb.getName());
         List<CourseStudents> courseStudentsList = courseFromDb.getCourseStudents();
 
-        boolean removed = courseStudentsList.removeIf(student -> studentId.equals(student.getStudentId()));
+        boolean removed = courseStudentsList.removeIf(student -> studentId.equals(student.getId()));
 
         if (!removed) {
             logger.warn("No student on the list of enroll");
@@ -444,13 +481,14 @@ public class CourseServiceImpl implements CourseService {
     private void setRemovedStatus(Long studentId, Course courseFromDb) {
         logger.info("setRemovedStatus for studentId: {} in courseName: {}", studentId, courseFromDb.getName());
         courseFromDb.getCourseStudents().stream().map(student -> {
-            if (student.getStudentId().equals(studentId)) {
+            if (student.getId().equals(studentId)) {
                 student.setStatus(Status.REMOVED);
             }
             return student;
         }).collect(Collectors.toList());
         courseRepository.save(courseFromDb);
     }
+
 //    nie sprawdzone
 
 //    private void validateCourseStatus(Course course) {

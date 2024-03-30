@@ -25,7 +25,7 @@ export class DeleteTeacherDialogComponent implements OnInit {
   }
 
   onDelete() {
-    this.teacherService.deleteTeacherById(this.teacher.id).subscribe({
+    this.teacherService.deactivateTeacherById(this.teacher.id).subscribe({
       next: () => {
         this.dialogRef.close();
         this.router.navigate(['/teachers']);

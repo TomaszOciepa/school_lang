@@ -8,6 +8,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { User } from 'src/app/modules/core/models/user.model';
+import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 import { StudentService } from 'src/app/modules/core/services/student.service';
 
 @Component({
@@ -15,7 +16,7 @@ import { StudentService } from 'src/app/modules/core/services/student.service';
   templateUrl: './students-table.component.html',
   styleUrls: ['./students-table.component.css'],
 })
-export class StudentsTableComponent implements AfterViewInit {
+export class StudentsTableComponent {
   displayedColumns: string[] = [
     'lp',
     'firstName',
@@ -30,8 +31,12 @@ export class StudentsTableComponent implements AfterViewInit {
 
   constructor(private studentService: StudentService) {}
 
-  async ngAfterViewInit(): Promise<void> {
-    this.studentService.getStudents().subscribe({
+  async ngOnInit(): Promise<void> {
+    this.getStudents();
+  }
+
+  private getStudents() {
+    this.studentService.getStudents('ACTIVE').subscribe({
       next: (clients) => {
         this.dataSource = new MatTableDataSource<User>(clients);
         this.dataSource.paginator = this.paginator;
