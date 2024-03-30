@@ -1,11 +1,9 @@
-import { Component, ErrorHandler, ViewChild } from '@angular/core';
+import { Component, ErrorHandler, Input, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Lesson } from 'src/app/modules/core/models/lesson.model';
 import { LessonsService } from 'src/app/modules/core/services/lessons.service';
-import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
-import { StudentService } from 'src/app/modules/core/services/student.service';
 
 @Component({
   selector: 'app-lessons-table',
@@ -26,39 +24,12 @@ export class LessonsTableComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  role!: string;
-  studentId!: number;
+  @Input('user-id') userId!: number;
 
-  constructor(
-    private lessonsService: LessonsService,
-    private userProfileService: LoadUserProfileService,
-    private studentService: StudentService
-  ) {}
+  constructor(private lessonsService: LessonsService) {}
 
   async ngOnInit(): Promise<void> {
-    this.loadUserProfile();
-  }
-
-  async loadUserProfile(): Promise<void> {
-    await this.userProfileService.loadUserProfile();
-
-    if (this.userProfileService.isStudent) {
-      this.role = 'STUDENT';
-
-      this.studentService
-        .getStudentByEmail(this.userProfileService.userProfile?.email)
-        .subscribe({
-          next: (result) => {
-            this.studentId = result.id;
-          },
-          error: (err: ErrorHandler) => {
-            console.log(err);
-          },
-          complete: () => {
-            this.getLessonsByStudentId(this.studentId);
-          },
-        });
-    }
+    this.getLessonsByStudentId(this.userId);
   }
 
   private getLessonsByStudentId(id: number) {

@@ -7,8 +7,10 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -42,17 +44,17 @@ public class StudentController {
         return studentService.getStudentsByIdNumberNotEqual(idNumbers);
     }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
-    @GetMapping("/{id}")
-    public Student getStudentById(@PathVariable Long id) {
-        logger.info("GET method getStudentById().");
-        return studentService.getStudentById(id);
-    }
+        @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
+        @GetMapping("/{id}")
+        public Student getStudentById(@PathVariable Long id) {
+            logger.info("GET method getStudentById().");
+            return studentService.getStudentById(id);
+        }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @PostMapping
     public Student addStudent(@RequestBody Student student) {
-        logger.info("POST method addStudent().");
+        logger.info("POST method addStudent()");
         return studentService.addStudent(student);
     }
 

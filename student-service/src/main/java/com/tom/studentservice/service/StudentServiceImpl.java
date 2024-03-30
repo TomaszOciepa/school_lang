@@ -6,6 +6,7 @@ import com.tom.studentservice.model.Status;
 import com.tom.studentservice.model.Student;
 import com.tom.studentservice.repo.StudentRepository;
 import com.tom.studentservice.security.AuthenticationContext;
+import com.tom.studentservice.security.JwtUtils;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ public class StudentServiceImpl implements StudentService {
     private final AuthenticationContext authenticationContext;
     private final CalendarServiceClient calendarServiceClient;
     private final CourseServiceClient courseServiceClient;
+    private final JwtUtils jwtUtils;
 
     //sprawdzone
     @Override
@@ -55,38 +57,44 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student getStudentById(Long id) {
         logger.info("Fetching student by id: {}", id);
-
-        boolean result = authenticationContext();
-
+        boolean isNotStudent = authenticationContext();
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
-        if (!Status.ACTIVE.equals(student.getStatus()) && !result) {
+        if (!Status.ACTIVE.equals(student.getStatus()) && !isNotStudent) {
             logger.info("Student is not Active.");
             throw new StudentException(StudentError.STUDENT_IS_NOT_ACTIVE);
         }
+
+        String emailFromJwt = jwtUtils.getUserEmailFromJwt();
+        if(!isNotStudent && !emailFromJwt.equals(student.getEmail())){
+            throw new StudentException(StudentError.STUDENT_OPERATION_FORBIDDEN);
+        }
+
         return student;
     }
 
 
     private boolean authenticationContext() {
         boolean result = false;
-
         Authentication authentication = authenticationContext.getAuthentication();
         boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(role -> role.getAuthority().equals("ROLE_admin"));
         boolean isTeacher = authentication.getAuthorities().stream()
                 .anyMatch(role -> role.getAuthority().equals("ROLE_teacher"));
-
         if (isAdmin || isTeacher) {
             result = true;
         }
-
         return result;
     }
 
     @Override
     public Student addStudent(Student student) {
         logger.info("Trying create new student.");
+        String emailFromJwt = jwtUtils.getUserEmailFromJwt();
+        boolean isNotStudent = authenticationContext();
+        if(!isNotStudent && !emailFromJwt.equals(student.getEmail())){
+            throw new StudentException(StudentError.STUDENT_OPERATION_FORBIDDEN);
+        }
         validateStudentEmailExists(student.getEmail());
         student.setStatus(Status.ACTIVE);
         return studentRepository.save(student);
@@ -135,11 +143,12 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void restoreStudentAccount(Long id){
+    public void restoreStudentAccount(Long id) {
         Student student = getStudentById(id);
         student.setStatus(Status.ACTIVE);
         studentRepository.save(student);
     }
+
     @Override
     public void deleteStudentById(Long id) {
         logger.info("Trying deleteStudent with id: {}.", id);

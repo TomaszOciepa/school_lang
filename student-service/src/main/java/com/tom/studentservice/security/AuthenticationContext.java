@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class AuthenticationContext {
 
     public Authentication getAuthentication() {
+
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
