@@ -2,10 +2,7 @@ package com.tom.courseservice.service;
 
 import com.tom.courseservice.exception.CourseError;
 import com.tom.courseservice.exception.CourseException;
-import com.tom.courseservice.model.Course;
-import com.tom.courseservice.model.CourseStudents;
-import com.tom.courseservice.model.CourseTeachers;
-import com.tom.courseservice.model.Status;
+import com.tom.courseservice.model.*;
 import com.tom.courseservice.model.dto.CourseStudentDto;
 import com.tom.courseservice.model.dto.StudentDto;
 import com.tom.courseservice.model.dto.TeacherDto;
@@ -91,6 +88,21 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<Course> getCoursesByLanguage(Language language) {
+        logger.info("Fetching courses language: {}.", language);
+       List<Course> courses = courseRepository.getCoursesByLanguage(language, Status.INACTIVE)
+               .stream()
+               .map(this::updateCourseStatus)
+               .collect(Collectors.toList());
+
+       if(courses.isEmpty()){
+           throw new CourseException(CourseError.COURSE_NOT_FOUND);
+       }
+
+       return courses;
+    }
+
+    @Override
     public List<CourseStudentDto> getCourseMembers(String courseId) {
         logger.info("Fetching courses by id: {}.", courseId);
         Course course = getCourseById(courseId, null);
@@ -104,11 +116,8 @@ public class CourseServiceImpl implements CourseService {
         List<Long> idNumbers = courseStudents.stream()
                 .map(CourseStudents::getId)
                 .collect(Collectors.toList());
-
-
         logger.info("Fetching students by id number.");
         List<StudentDto> studentsFromDb = studentServiceClient.getStudentsByIdNumbers(idNumbers);
-
         List<CourseStudentDto> courseStudentList = createCourseStudentList(courseStudents, studentsFromDb);
 
         return courseStudentList;
@@ -148,6 +157,11 @@ public class CourseServiceImpl implements CourseService {
                 throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
             }
             courseFromDb.setName(course.getName());
+        }
+
+        if(course.getLanguage() != null){
+            logger.info("Changing the course language...");
+            courseFromDb.setLanguage(course.getLanguage());
         }
 
         if (course.getParticipantsLimit() != null) {

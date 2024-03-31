@@ -24,6 +24,11 @@
         <td mat-cell *matCellDef="let row">{{ row.name }}</td>
       </ng-container>
 
+      <ng-container matColumnDef="language">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Język</th>
+        <td mat-cell *matCellDef="let row">{{ row.language }}</td>
+      </ng-container>
+
       <ng-container matColumnDef="startDate">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>
           Data rozpoczęcia

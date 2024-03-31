@@ -34,7 +34,6 @@ public class CalendarController {
         return calendarService.getLessonById(id);
     }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @GetMapping("/course-lessons/{courseId}")
     public List<Calendar> getLessonsByCourseId(@PathVariable String courseId) {
         logger.info("Get method getLessonsByCourseId() courseId: {}", courseId);

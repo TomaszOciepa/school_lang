@@ -20,6 +20,7 @@ export class CoursesTableComponent {
   displayedColumns: string[] = [
     'lp',
     'name',
+    'language',
     'startDate',
     'status',
     'participantsNumber',
@@ -37,8 +38,7 @@ export class CoursesTableComponent {
     private readonly keycloak: KeycloakService,
     private courseService: CourseService,
     private userProfileService: LoadUserProfileService,
-    private teacherService: TeacherService,
-    private studentService: StudentService
+    private teacherService: TeacherService
   ) {}
 
   async ngOnInit(): Promise<void> {

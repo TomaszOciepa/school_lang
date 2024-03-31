@@ -21,6 +21,12 @@ export class CourseService {
     return this.http.get<Course[]>(this.apiUrl);
   }
 
+  getCoursesByLanguage(language: string): Observable<Course[]> {
+    return this.http.get<Course[]>(
+      `${this.apiUrl}/course-offering/${language}`
+    );
+  }
+
   getCourseById(id: string): Observable<Course> {
     return this.http.get<Course>(`${this.apiUrl}/${id}`);
   }

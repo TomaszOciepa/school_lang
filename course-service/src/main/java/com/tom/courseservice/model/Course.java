@@ -22,13 +22,12 @@ public class Course {
     private String id;
     private String name;
     private Status status;
+    private Language language;
     private Long participantsLimit;
     private Long participantsNumber;
     private Long lessonsLimit;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-//    private List<CourseStudents> courseStudents;
-//    private List<CourseTeachers> courseTeachers;
     private List<CourseStudents> courseStudents = new ArrayList<>();
     private List<CourseTeachers> courseTeachers = new ArrayList<>();
 

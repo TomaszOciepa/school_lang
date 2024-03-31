@@ -12,6 +12,16 @@
     </div>
     <div>
       <mat-form-field>
+        <mat-label>Język</mat-label>
+        <mat-select formControlName="language">
+          <mat-option value="ENGLISH">Angielski</mat-option>
+          <mat-option value="POLISH">Polski</mat-option>
+          <mat-option value="GERMAN">Niemiecki</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
         <mat-label>Maksymalna ilość uczniów</mat-label>
         <input matInput formControlName="participantsLimit" />
         <mat-error *ngIf="controls.participantsLimit.invalid">{{
