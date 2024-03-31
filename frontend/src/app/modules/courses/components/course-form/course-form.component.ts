@@ -112,6 +112,10 @@ export class CourseFormComponent {
           ],
         }
       ),
+      language: new FormControl(this.editMode ? this.course.language : '', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
       lessonsLimit: new FormControl(
         this.editMode ? this.course.lessonsLimit : 0,
         {
@@ -156,6 +160,10 @@ export class CourseFormComponent {
   private generatePostCourseObj() {
     if (this.courseForm.get('name')?.dirty) {
       this.postCourse.name = this.courseForm.getRawValue().name;
+    }
+
+    if (this.courseForm.get('language')?.dirty) {
+      this.postCourse.language = this.courseForm.getRawValue().language;
     }
 
     if (this.courseForm.get('startDate')?.dirty) {

@@ -1,6 +1,7 @@
 package com.tom.courseservice.controller;
 
 import com.tom.courseservice.model.Course;
+import com.tom.courseservice.model.Language;
 import com.tom.courseservice.model.Status;
 import com.tom.courseservice.model.dto.CourseStudentDto;
 import com.tom.courseservice.model.dto.TeacherDto;
@@ -37,11 +38,16 @@ public class CourseController {
         return courseService.getAllByStatus(status);
     }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @GetMapping("/{id}")
     Course getCourseById(@PathVariable String id, @RequestParam(required = false) Status status) {
         logger.info("Get method getCourseById()");
         return courseService.getCourseById(id, status);
+    }
+
+    @GetMapping("/course-offering/{language}")
+    List<Course> getCoursesByLanguage(@PathVariable Language language) {
+        logger.info("Get method getCoursesByLanguage()");
+        return courseService.getCoursesByLanguage(language);
     }
 
     @PreAuthorize("hasRole('admin') or hasRole('teacher')")
@@ -51,7 +57,6 @@ public class CourseController {
         return courseService.getCourseMembers(courseId);
     }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @GetMapping("/teacher/{courseId}")
     public List<TeacherDto> getCourseTeachers(@PathVariable String courseId) {
         logger.info("Get method getCourseTeachers()");

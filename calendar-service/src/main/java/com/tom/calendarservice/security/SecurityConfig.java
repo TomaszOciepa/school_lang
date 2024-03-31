@@ -2,6 +2,7 @@ package com.tom.calendarservice.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,7 +25,7 @@ public class SecurityConfig {
         http.cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((request) -> request
-//                        .requestMatchers("/teacher").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/calendar/course-lessons/**").permitAll()
 //                        .requestMatchers("/teacher/all").hasAnyRole("user", "admin")
 //                        .requestMatchers("/teacher/id/**").hasRole("admin")
                         .anyRequest().authenticated())

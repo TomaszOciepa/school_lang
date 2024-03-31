@@ -15,6 +15,7 @@ export interface CourseResponse {
   id: string;
   name: string;
   status: string;
+  language: string;
   participantsLimit: number;
   participantsNumber: number;
   lessonsLimit: number;
@@ -29,6 +30,7 @@ export class Course implements CourseResponse {
     public id: string,
     public name: string,
     public status: string,
+    public language: string,
     public participantsLimit: number,
     public participantsNumber: number,
     public lessonsLimit: number,
@@ -42,6 +44,7 @@ export class Course implements CourseResponse {
 export interface PostCourseForm {
   name: FormControl<string>;
   // status: FormControl<string>;
+  language: FormControl<string>;
   participantsLimit: FormControl<number>;
   lessonsLimit: FormControl<number>;
   startDate: FormControl<Date | ''>;

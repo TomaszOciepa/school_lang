@@ -1,6 +1,7 @@
 package com.tom.courseservice.service;
 
 import com.tom.courseservice.model.Course;
+import com.tom.courseservice.model.Language;
 import com.tom.courseservice.model.Status;
 import com.tom.courseservice.model.dto.CourseStudentDto;
 import com.tom.courseservice.model.dto.TeacherDto;
@@ -13,6 +14,7 @@ public interface CourseService {
     Course addCourse(Course course);
     List<Course> getAllByStatus(Status status);
     Course getCourseById(String id, Status status);
+    List<Course> getCoursesByLanguage(Language language);
     List<CourseStudentDto> getCourseMembers(String courseId);
     List<TeacherDto> getCourseTeachers(String courseId);
     Course patchCourse(String id, Course course);
@@ -26,7 +28,6 @@ public interface CourseService {
     List<Course> getCourseByStudentId(Long studentId);
     void deactivateStudent(Long studentId);
     void removeTeacherWithAllCourses(Long teacherId);
-
     void removeStudentWithAllCourses(Long studentId);
 
 //    nie sprawdzone

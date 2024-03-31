@@ -22,7 +22,6 @@ public class TeacherController {
     private final TeacherService teacherService;
 
     //sprawdzone
-    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @PostMapping("/idNumbers")
     public List<Teacher> getTeachersByIdNumber(@RequestBody List<Long> idNumbers) {
         logger.info("Post method getTeachersByIdNumber()");
