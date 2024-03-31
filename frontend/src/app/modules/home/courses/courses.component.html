@@ -44,12 +44,32 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
         <td mat-cell *matCellDef="let row">
           <button
+            *ngIf="!isLoggedIn"
             mat-raised-button
             color="primary"
             [routerLink]="'/course/' + row.id"
           >
             szczegóły
           </button>
+
+          <ng-container *ngIf="isLoggedIn">
+            <button
+              *ngIf="isAdmin || isTeacher"
+              mat-raised-button
+              color="primary"
+              [routerLink]="'/courses/' + row.id"
+            >
+              szczegóły
+            </button>
+            <button
+              *ngIf="isStudent"
+              mat-raised-button
+              color="primary"
+              [routerLink]="'/account-student/course/' + row.id"
+            >
+              szczegóły
+            </button>
+          </ng-container>
         </td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

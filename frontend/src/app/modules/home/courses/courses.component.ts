@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Course } from '../../core/models/course.model';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { LoadUserProfileService } from '../../core/services/load-user-profile.service';
 
 @Component({
   selector: 'app-courses',
@@ -22,18 +23,26 @@ export class CoursesComponent implements OnInit {
   language!: string;
   title!: string;
 
+  isLoggedIn = false;
+  isAdmin: boolean = false;
+  isTeacher: boolean = false;
+  isStudent: boolean = false;
+
   constructor(
+    private userProfileService: LoadUserProfileService,
     private courseService: CourseService,
     private route: ActivatedRoute
   ) {}
 
-  ngOnInit() {
+  async ngOnInit(): Promise<void> {
     this.route.params.subscribe((params) => {
       this.language = params['language'];
     });
 
     this.setLang();
     this.getCourses();
+
+    this.loadUserProfile();
   }
 
   private setLang() {
@@ -65,6 +74,14 @@ export class CoursesComponent implements OnInit {
       },
       complete: () => {},
     });
+  }
+
+  async loadUserProfile(): Promise<void> {
+    await this.userProfileService.loadUserProfile();
+    this.isLoggedIn = this.userProfileService.isLoggedIn;
+    this.isAdmin = this.userProfileService.isAdmin;
+    this.isTeacher = this.userProfileService.isTeacher;
+    this.isStudent = this.userProfileService.isStudent;
   }
 
   applyFilter(event: Event) {
