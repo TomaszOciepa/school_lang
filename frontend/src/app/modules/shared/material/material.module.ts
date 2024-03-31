@@ -13,6 +13,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
   declarations: [],
@@ -31,6 +32,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MatNativeDateModule,
     NgxMatTimepickerModule,
     MatMenuModule,
+    MatCardModule,
   ],
 })
 export class MaterialModule {}

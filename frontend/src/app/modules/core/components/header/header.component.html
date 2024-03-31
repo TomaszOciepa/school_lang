@@ -1,29 +1,28 @@
 <nav>
   <mat-toolbar color="primary">
-    <span>Lang School</span>
+    <button mat-button routerLink="/"><span>Lang School</span></button>
     <span class="spacer"></span>
-    <button mat-button routerLink="/">Strona główna</button>
-
+    <button mat-button routerLink="course-offering">nasza oferta</button>
     <ng-container *ngIf="isLoggedIn">
       <button mat-button routerLink="courses" *ngIf="isAdmin || isTeacher">
-        Kursy
+        kursy
       </button>
       <button mat-button routerLink="lessons" *ngIf="isAdmin || isTeacher">
-        Lekcje
+        lekcje
       </button>
       <button mat-button routerLink="teachers" *ngIf="isAdmin || isTeacher">
-        Nauczyciele
+        nauczyciele
       </button>
       <button mat-button routerLink="students" *ngIf="isAdmin || isTeacher">
-        Uczniowie
+        uczniowie
       </button>
 
       <button mat-button routerLink="user-account" *ngIf="isAdmin || isTeacher">
-        Moje konto
+        moje konto
       </button>
 
       <ng-container *ngIf="isAdmin">
-        <button mat-button [matMenuTriggerFor]="menu">Ustawienia</button>
+        <button mat-button [matMenuTriggerFor]="menu">ustawienia</button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item routerLink="settings/students">studenci</button>
           <button mat-menu-item routerLink="settings/teachers">
@@ -34,19 +33,20 @@
     </ng-container>
 
     <ng-container *ngIf="isLoggedIn && isStudent">
-      <button mat-button routerLink="account-student/my-courses">Kursy</button>
-      <button mat-button routerLink="account-student/my-lessons">Lekcje</button>
+      <button mat-button routerLink="account-student/my-courses">kursy</button>
+      <button mat-button routerLink="account-student/my-lessons">lekcje</button>
       <button mat-button routerLink="account-student/my-account">
-        Moje konto
+        moje konto
       </button>
     </ng-container>
 
-    <button *ngIf="!isLoggedIn" mat-button (click)="login()">Logowanie</button>
+    <button mat-button routerLink="">kontakt</button>
+    <button *ngIf="!isLoggedIn" mat-button (click)="login()">logowanie</button>
     <!-- <p *ngIf="isLoggedIn">
       {{ userProfile?.firstName }}
     </p> -->
     <button *ngIf="isLoggedIn" mat-button (click)="logout()">
-      Wyloguj ({{ userProfile?.firstName }})
+      wyloguj ({{ userProfile?.firstName }})
     </button>
   </mat-toolbar>
 </nav>
