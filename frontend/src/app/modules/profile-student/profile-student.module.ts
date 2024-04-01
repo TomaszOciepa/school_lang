@@ -12,6 +12,7 @@ import { CourseComponent } from './components/courses/course/course.component';
 import { LessonsTableComponent } from './components/lessons/lessons-table/lessons-table.component';
 import { LessonComponent } from './components/lessons/lesson/lesson.component';
 import { CourseLessonsTableComponent } from './components/courses/course-lessons-table/course-lessons-table.component';
+import { EnrollToCourseComponent } from './components/enroll-to-course/enroll-to-course.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { CourseLessonsTableComponent } from './components/courses/course-lessons
     LessonsTableComponent,
     LessonComponent,
     CourseLessonsTableComponent,
+    EnrollToCourseComponent,
   ],
   imports: [SharedModule, CommonModule, ProfileStudentRoutingModule],
 })

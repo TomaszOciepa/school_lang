@@ -105,4 +105,14 @@ export class CourseService {
       `${this.apiUrl}/student-courses/${studentId}`
     );
   }
+
+  isStudentEnrolledInCourse(
+    course: Course,
+    studentId: number
+  ): Observable<boolean> {
+    return this.http.post<boolean>(
+      `${this.apiUrl}/is-student/${studentId}/enroll-course`,
+      course
+    );
+  }
 }

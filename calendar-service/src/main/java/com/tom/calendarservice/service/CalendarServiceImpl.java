@@ -7,11 +7,15 @@ import com.tom.calendarservice.model.Calendar;
 import com.tom.calendarservice.model.Dto.CourseDto;
 import com.tom.calendarservice.model.Dto.CourseStudentsDto;
 import com.tom.calendarservice.model.Dto.CourseTeachersDto;
+import com.tom.calendarservice.model.Dto.StudentDto;
 import com.tom.calendarservice.model.Status;
 import com.tom.calendarservice.repo.CalendarRepository;
+import com.tom.calendarservice.security.AuthenticationContext;
+import com.tom.calendarservice.security.JwtUtils;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,6 +31,9 @@ public class CalendarServiceImpl implements CalendarService {
     private final CalendarRepository calendarRepository;
     private final CourseServiceClient courseServiceClient;
     private final TeacherServiceClient teacherServiceClient;
+    private final AuthenticationContext authenticationContext;
+    private  final  StudentServiceClient studentServiceClient;
+    private final JwtUtils jwtUtils;
 
     //sprawdzone
     @Override
@@ -191,6 +198,7 @@ public class CalendarServiceImpl implements CalendarService {
                 .map(Calendar::getId)
                 .forEach(calendarRepository::deleteById);
     }
+
     @Override
     public boolean isTeacherAssignedToLessonInCourse(String courseId, Long teacherId) {
         logger.info("Checking isTeacherAssignedToLessonInCourse courseId: {}, teacherId: {}", courseId, teacherId);
@@ -202,11 +210,13 @@ public class CalendarServiceImpl implements CalendarService {
             return false;
         }
     }
+
     @Override
     public void enrollStudent(String courseId, Long studentId) {
         logger.info("Assign student to lesson.");
+        boolean isStudent = authenticationContext();
+        checkUserPermissions(studentId, isStudent);
         List<Calendar> lessons = getLessonsByCourseId(courseId);
-
         lessons.stream().map(lesson -> {
             if (!lesson.getAttendanceList().stream().anyMatch(s -> s.getStudentId().equals(studentId))) {
                 lesson.getAttendanceList().add(new AttendanceList(studentId));
@@ -214,6 +224,17 @@ public class CalendarServiceImpl implements CalendarService {
             return calendarRepository.save(lesson);
         }).collect(Collectors.toList());
     }
+
+    private void checkUserPermissions(Long studentId, boolean isStudent) {
+        logger.info("checking User Permissions.");
+        if(isStudent){
+            String loggedInUserEmail = jwtUtils.getUserEmailFromJwt();
+            StudentDto studentDto = studentServiceClient.getStudentById(studentId);
+            if(!loggedInUserEmail.equals(studentDto.getEmail()))
+            throw new CalendarException(CalendarError.STUDENT_OPERATION_FORBIDDEN);
+        }
+    }
+
     @Override
     public boolean unEnrollStudent(String courseId, Long studentId) {
         logger.info("unEnrollStudent courseId: {}, studentId: {}", courseId, studentId);
@@ -250,6 +271,7 @@ public class CalendarServiceImpl implements CalendarService {
         }
         return result;
     }
+
     @Override
     public void enrollStudentLesson(String lessonId, Long studentId) {
         logger.info("Trying enrollStudentLesson lessonId: {}, studentId: {}", lessonId, studentId);
@@ -263,6 +285,7 @@ public class CalendarServiceImpl implements CalendarService {
         lessonFromDb.getAttendanceList().add(new AttendanceList(studentId));
         calendarRepository.save(lessonFromDb);
     }
+
     @Override
     public void unEnrollStudentLesson(String lessonId, Long studentId) {
         logger.info("Trying unEnrollStudentLesson lessonId: {}, studentId: {}", lessonId, studentId);
@@ -270,6 +293,7 @@ public class CalendarServiceImpl implements CalendarService {
         lessonFromDb.getAttendanceList().removeIf(s -> s.getStudentId().equals(studentId));
         calendarRepository.save(lessonFromDb);
     }
+
     @Override
     public void deactivateStudent(Long studentId) {
         List<Calendar> lessons = getLessonsByStudentId(studentId);
@@ -278,14 +302,16 @@ public class CalendarServiceImpl implements CalendarService {
             calendarRepository.save(lesson);
         });
     }
+
     @Override
-    public void deleteStudentWithAllLessons(Long studentId){
+    public void deleteStudentWithAllLessons(Long studentId) {
         List<Calendar> lessons = getLessonsByStudentId(studentId);
         lessons.forEach(lesson -> {
             lesson.getAttendanceList().removeIf(attendance -> attendance.getStudentId().equals(studentId));
             calendarRepository.save(lesson);
         });
     }
+
     private Calendar updateLessonStatus(Calendar lesson) {
         logger.info("Updating lesson status.");
 
@@ -468,6 +494,17 @@ public class CalendarServiceImpl implements CalendarService {
             logger.info("Lesson end date is after course end date");
             throw new CalendarException(CalendarError.LESSON_END_DATE_IS_AFTER_COURSE_END_DATE);
         }
+    }
+
+    private boolean authenticationContext() {
+        boolean result = false;
+        Authentication authentication = authenticationContext.getAuthentication();
+        boolean isStudent = authentication.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_student"));
+        if (isStudent) {
+            result = true;
+        }
+        return result;
     }
 
 }

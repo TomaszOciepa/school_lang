@@ -1,0 +1,58 @@
+<ng-container>
+  <div *ngIf="isEnrollmentSuccessful" class="alert alert-success" role="alert">
+    <h3>
+      Gratulacje :)
+      <small class="text-body-secondary">Zapis potwierdzony</small>
+    </h3>
+    <button
+      mat-raised-button
+      color="primary"
+      [routerLink]="'/account-student/course/' + course.id"
+    >
+      zobacz kurs
+    </button>
+  </div>
+  <div *ngIf="errMsg" class="alert alert-danger" role="alert">
+    <h3>
+      {{ student.firstName }}
+      <small class="text-body-secondary">jesteś juz na tym kursie :)</small>
+    </h3>
+    <button
+      mat-raised-button
+      color="primary"
+      [routerLink]="'/account-student/course/' + course.id"
+    >
+      zobacz kurs
+    </button>
+  </div>
+</ng-container>
+
+<ng-container> </ng-container>
+
+<h2>Dziękujemy {{ student.firstName }}</h2>
+<h3>
+  <small class="text-body-secondary">Wybrałeś nasz kurs:</small>
+  {{ course.name }}
+</h3>
+<h3>
+  <small class="text-body-secondary">Data rozpoczęcia:</small>
+  {{ course.startDate | date : "EEEE, d MMMM yyyy" }}
+</h3>
+<h3>
+  <small class="text-body-secondary">Data zakończenia:</small>
+  {{ course.endDate | date : "EEEE, d MMMM yyyy" }}
+</h3>
+<h3>
+  <small class="text-body-secondary">Liczba lekcji:</small>
+  {{ course.lessonsLimit }}
+</h3>
+<h3>
+  <small class="text-body-secondary">Cena:</small>
+  ??? (obecnie za free.... ;-)
+</h3>
+
+<ng-container *ngIf="button">
+  <button mat-raised-button color="primary" (click)="enrollToCourse()">
+    Potwierdz zapis
+  </button>
+</ng-container>
