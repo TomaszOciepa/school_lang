@@ -7,11 +7,14 @@ import com.tom.courseservice.model.dto.CourseStudentDto;
 import com.tom.courseservice.model.dto.StudentDto;
 import com.tom.courseservice.model.dto.TeacherDto;
 import com.tom.courseservice.repo.CourseRepository;
+import com.tom.courseservice.security.AuthenticationContext;
+import com.tom.courseservice.security.JwtUtils;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,6 +32,8 @@ public class CourseServiceImpl implements CourseService {
     private final StudentServiceClient studentServiceClient;
     private final TeacherServiceClient teacherServiceClient;
     private final CalendarServiceClient calendarServiceClient;
+    private final AuthenticationContext authenticationContext;
+    private final JwtUtils jwtUtils;
 
     //sprawdzone
 
@@ -274,6 +279,12 @@ public class CourseServiceImpl implements CourseService {
             throw new CourseException(CourseError.STUDENT_ALREADY_ENROLLED);
         }
 
+        String loggedInUserEmail = jwtUtils.getUserEmailFromJwt();
+        boolean isStudent = authenticationContext();
+        if(isStudent && !loggedInUserEmail.equals(studentDto.getEmail())){
+            throw new CourseException(CourseError.STUDENT_OPERATION_FORBIDDEN);
+        }
+
         course.getCourseStudents().add(new CourseStudents(studentDto.getId(), Status.ACTIVE));
         course.incrementParticipantsNumber();
         courseRepository.save(course);
@@ -390,6 +401,19 @@ public class CourseServiceImpl implements CourseService {
         });
     }
 
+    @Override
+    public boolean isStudentEnrolledInCourse(Course course, Long studentId) {
+        logger.info("Checking isStudentEnrolledInCourse");
+        boolean match = course.getCourseStudents()
+                .stream()
+                .anyMatch((member -> studentId.equals(member.getId())));
+        if (match) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private void isCourseStartDateIsAfterCourseEndDate(LocalDateTime startDate, LocalDateTime endDate) {
         logger.info("Checking isCourseStartDateIsAfterCourseEndDate");
         logger.info("Start date is: {}, end date is: {}.", startDate, endDate);
@@ -460,18 +484,6 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
-    private boolean isStudentEnrolledInCourse(Course course, Long studentId) {
-        logger.info("Checking isStudentEnrolledInCourse");
-        boolean match = course.getCourseStudents()
-                .stream()
-                .anyMatch((member -> studentId.equals(member.getId())));
-        if (match) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     private ResponseEntity<?> enrollStudentToLessons(String curseId, Long studentId) {
         logger.info("Trying enrollStudentToLessons");
         calendarServiceClient.enrollStudent(curseId, studentId);
@@ -503,6 +515,16 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.save(courseFromDb);
     }
 
+    private boolean authenticationContext() {
+        boolean result = false;
+        Authentication authentication = authenticationContext.getAuthentication();
+        boolean isStudent = authentication.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_student"));
+        if (isStudent) {
+            result = true;
+        }
+        return result;
+    }
 //    nie sprawdzone
 
 //    private void validateCourseStatus(Course course) {

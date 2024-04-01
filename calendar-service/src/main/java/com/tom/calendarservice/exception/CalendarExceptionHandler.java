@@ -29,6 +29,8 @@ public class CalendarExceptionHandler {
                 || CalendarError.LESSON_LIMIT_REACHED_ERROR_MESSAGE.equals(e.getCalendarError())
         ) {
             httpStatus = HttpStatus.CONFLICT;
+        } else if (CalendarError.STUDENT_OPERATION_FORBIDDEN.equals(e.getCalendarError())) {
+            httpStatus = HttpStatus.FORBIDDEN;
         }
 
         return ResponseEntity.status(httpStatus).body(new ErrorInfo(e.getCalendarError().getMessage()));

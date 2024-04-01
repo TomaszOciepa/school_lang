@@ -23,6 +23,7 @@ public interface CourseService {
     void teacherCourseUnEnrollment(String courseId, Long teacherId);
     ResponseEntity<?> assignStudentToCourse(String courseId, Long studentId);
     void studentCourseUnEnrollment(String courseId, Long studentId);
+     boolean isStudentEnrolledInCourse(Course course, Long studentId);
     ResponseEntity<?> restoreStudentToCourse(String courseId, Long studentId);
     List<Course> getCourseByTeacherId(Long teacherId);
     List<Course> getCourseByStudentId(Long studentId);

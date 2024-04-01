@@ -6,6 +6,7 @@ import { MyAccountComponent } from '../profile-student/components/my-account/my-
 import { CourseComponent } from '../profile-student/components/courses/course/course.component';
 import { LessonComponent } from '../profile-student/components/lessons/lesson/lesson.component';
 import { ProfileStudentComponent } from './profile-student.component';
+import { EnrollToCourseComponent } from './components/enroll-to-course/enroll-to-course.component';
 
 const routes: Routes = [
   { path: '', component: ProfileStudentComponent },
@@ -14,6 +15,7 @@ const routes: Routes = [
   { path: 'my-account', component: MyAccountComponent },
   { path: 'course/:id', component: CourseComponent },
   { path: 'lesson/:id', component: LessonComponent },
+  { path: 'enroll-to-course/:id', component: EnrollToCourseComponent },
 ];
 
 @NgModule({

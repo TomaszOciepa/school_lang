@@ -118,7 +118,7 @@ public class CalendarController {
         return calendarService.isTeacherAssignedToLessonInCourse(courseId, teacherId);
     }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @PostMapping("/enroll-lessons/{courseId}/{studentId}")
     public ResponseEntity<?> enrollStudent(@PathVariable String courseId, @PathVariable Long studentId) {
         logger.info("Post method enrollStudent().");

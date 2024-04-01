@@ -93,7 +93,7 @@ public class CourseController {
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @PostMapping("/{courseId}/student/{studentId}")
     public ResponseEntity<?> assignStudentToCourse(@PathVariable String courseId, @PathVariable Long studentId) {
         logger.info("Post method assignStudentToCourse()");
@@ -153,5 +153,12 @@ public class CourseController {
         logger.info("Delete method removeTeacherWithAllCourses()");
         courseService.removeStudentWithAllCourses(studentId);
         return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('student')")
+    @PostMapping("/is-student/{studentId}/enroll-course")
+    public boolean isStudentEnrolledInCourse(@RequestBody Course course, @PathVariable Long studentId ){
+        logger.info("Get method isStudentEnrolledInCourse()");
+        return courseService.isStudentEnrolledInCourse(course, studentId);
     }
 }

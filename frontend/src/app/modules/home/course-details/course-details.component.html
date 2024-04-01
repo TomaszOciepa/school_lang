@@ -5,9 +5,43 @@
     <div class="col-6 col-md-4">
       <div class="row row-cols-2">
         <div class="col p-3">
-          <button mat-raised-button color="primary">Zapisz się</button>
+          <ng-container *ngIf="isLoggedIn">
+            <button
+              mat-raised-button
+              color="primary"
+              *ngIf="!isStudentEnrolled"
+              [routerLink]="'/account-student/enroll-to-course/' + courseId"
+            >
+              Zapisz się
+            </button>
+            <button
+              [disabled]="true"
+              mat-raised-button
+              color="primary"
+              *ngIf="isStudentEnrolled"
+            >
+              Zapisz się
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="!isLoggedIn">
+            <button
+              [disabled]="courseIsFull"
+              mat-raised-button
+              color="primary"
+              [routerLink]="'/account-student/enroll-to-course/' + courseId"
+            >
+              Zapisz się
+            </button>
+          </ng-container>
         </div>
       </div>
+      <ng-container *ngIf="courseIsFull">
+        <h4 class="text-red">Liczba uczestników osiągnięta</h4>
+      </ng-container>
+      <ng-container *ngIf="isStudentEnrolled">
+        <h4 class="text-red">Jesteś zapisany na kurs.</h4>
+      </ng-container>
     </div>
   </div>
 
