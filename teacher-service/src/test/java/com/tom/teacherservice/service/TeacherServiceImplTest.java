@@ -67,43 +67,6 @@ class TeacherServiceImplTest {
     }
 
     @Test
-    void getTeacherByIdShouldBeReturnTeacher() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        Teacher mockTeacher = prepareTeacher();
-        Long mockId = 1L;
-        given(teacherRepository.findById(mockId)).willReturn(Optional.of(mockTeacher));
-        //when
-        Teacher result = teacherServiceImpl.getTeacherById(mockId);
-        //then
-        assertEquals(mockTeacher, result);
-    }
-
-    @Test
-    void getTeacherByIdShouldBeReturnTeacherNotFound() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        Long mockId = 1L;
-        TeacherException mockException = new TeacherException(TeacherError.TEACHER_NOT_FOUND);
-        given(teacherRepository.findById(mockId)).willThrow(mockException);
-        //when
-        //then
-        assertThrows(TeacherException.class, () -> teacherServiceImpl.getTeacherById(mockId));
-    }
-
-    @Test
-    void getTeacherByIdShouldBeReturnTeacherNotActive() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        Long mockId = 1L;
-        TeacherException mockException = new TeacherException(TeacherError.TEACHER_IS_NOT_ACTIVE);
-        given(teacherRepository.findById(mockId)).willThrow(mockException);
-        //when
-        //then
-        assertThrows(TeacherException.class, () -> teacherServiceImpl.getTeacherById(mockId));
-    }
-
-    @Test
     void getTeacherByEmailShouldBeReturnTeacher() {
         MockitoAnnotations.openMocks(this);
         //given

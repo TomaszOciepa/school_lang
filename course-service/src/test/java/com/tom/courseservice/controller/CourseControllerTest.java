@@ -1,6 +1,7 @@
 package com.tom.courseservice.controller;
 
 import com.tom.courseservice.model.Course;
+import com.tom.courseservice.model.Language;
 import com.tom.courseservice.model.Status;
 import com.tom.courseservice.service.CourseService;
 import org.junit.jupiter.api.Test;
@@ -27,11 +28,11 @@ class CourseControllerTest {
 
     List<Course> prepareCourseData() {
         return Arrays.asList(
-                new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
+                new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, Language.ENGLISH, 20L, 0L, 10L,
                         LocalDateTime.of(2023, 12, 5, 00, 00),
                         LocalDateTime.of(2024, 03, 6, 00, 00),
                         Arrays.asList(), Arrays.asList()),
-                new Course("1111", "Kurs Angielski-B1", Status.ACTIVE, 20L, 0L, 10L,
+                new Course("1111", "Kurs Angielski-B1", Status.ACTIVE, Language.ENGLISH, 20L, 0L, 10L,
                         LocalDateTime.of(2023, 12, 5, 00, 00),
                         LocalDateTime.of(2024, 03, 6, 00, 00),
                         Arrays.asList(), Arrays.asList())
@@ -40,7 +41,7 @@ class CourseControllerTest {
     }
 
     Course prepareCourse() {
-        return new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
+        return new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, Language.ENGLISH,  20L, 0L, 10L,
                 LocalDateTime.of(2023, 12, 5, 00, 00),
                 LocalDateTime.of(2024, 03, 6, 00, 00),
                 Arrays.asList(), Arrays.asList());

@@ -105,7 +105,7 @@ class CalendarServiceImplTest {
         CourseDto courseMock = new CourseDto("65db2e090f93ba7046abef53", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
                 LocalDateTime.of(2023, 12, 5, 00, 00),
                 LocalDateTime.of(2024, 03, 6, 00, 00),
-                Arrays.asList(), Arrays.asList(new CourseTeachersDto(1L,  LocalDateTime.of(2023, 12, 5, 16, 00))));
+                Arrays.asList(), Arrays.asList(new CourseTeachersDto(1L,  LocalDateTime.of(2023, 12, 5, 16, 00), Status.ACTIVE)));
 
         given(calendarRepository.save(newLesson)).willReturn(newLesson);
         given(courseServiceClient.getCourseById(courseId, null)).willReturn(courseMock);
@@ -161,7 +161,7 @@ class CalendarServiceImplTest {
         CourseDto courseMock = new CourseDto("65db2e090f93ba7046abef53", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
                 LocalDateTime.of(2023, 12, 5, 00, 00),
                 LocalDateTime.of(2024, 03, 6, 00, 00),
-                Arrays.asList(), Arrays.asList(new CourseTeachersDto(1L,  LocalDateTime.of(2023, 12, 5, 16, 00))));
+                Arrays.asList(), Arrays.asList(new CourseTeachersDto(1L,  LocalDateTime.of(2023, 12, 5, 16, 00), Status.ACTIVE)));
 
         given(calendarRepository.findById(lessonId)).willReturn(Optional.ofNullable(mockCalendar));
         given(courseServiceClient.getCourseById(courseId, null)).willReturn(courseMock);
@@ -170,7 +170,7 @@ class CalendarServiceImplTest {
         Calendar result = calendarServiceImpl.patchLesson(lessonId, mockCalendar);
         //then
         assertEquals(mockCalendar, result);
-        verify(courseServiceClient, times(2)).getCourseById(courseId, null);
+        verify(courseServiceClient, times(3)).getCourseById(courseId, null);
     }
 
     @Test
@@ -186,7 +186,7 @@ class CalendarServiceImplTest {
         CourseDto courseMock = new CourseDto("65db2e090f93ba7046abef53", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
                 LocalDateTime.of(2023, 12, 5, 00, 00),
                 LocalDateTime.of(2024, 03, 6, 00, 00),
-                Arrays.asList(), Arrays.asList(new CourseTeachersDto(1L,  LocalDateTime.of(2023, 12, 5, 16, 00))));
+                Arrays.asList(), Arrays.asList(new CourseTeachersDto(1L,  LocalDateTime.of(2023, 12, 5, 16, 00), Status.ACTIVE)));
 
         given(calendarRepository.findById(lessonId)).willReturn(Optional.ofNullable(mockCalendar));
         given(courseServiceClient.getCourseById(courseId, null)).willReturn(courseMock);
@@ -210,7 +210,7 @@ class CalendarServiceImplTest {
         CourseDto courseMock = new CourseDto("65db2e090f93ba7046abef53", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
                 LocalDateTime.of(2023, 12, 5, 00, 00),
                 LocalDateTime.of(2024, 03, 6, 23, 59),
-                Arrays.asList(), Arrays.asList(new CourseTeachersDto(1L,  LocalDateTime.of(2023, 12, 5, 16, 00))));
+                Arrays.asList(), Arrays.asList(new CourseTeachersDto(1L,  LocalDateTime.of(2023, 12, 5, 16, 00), Status.ACTIVE)));
 
         given(calendarRepository.findById(lessonId)).willReturn(Optional.ofNullable(mockCalendar));
         given(courseServiceClient.getCourseById(courseId, null)).willReturn(courseMock);
@@ -233,7 +233,7 @@ class CalendarServiceImplTest {
         CourseDto courseMock = new CourseDto("65db2e090f93ba7046abef53", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
                 LocalDateTime.of(2023, 12, 5, 00, 00),
                 LocalDateTime.of(2024, 03, 6, 23, 59),
-                Arrays.asList(), Arrays.asList(new CourseTeachersDto(1L,  LocalDateTime.of(2023, 12, 5, 16, 00))));
+                Arrays.asList(), Arrays.asList(new CourseTeachersDto(1L,  LocalDateTime.of(2023, 12, 5, 16, 00), Status.ACTIVE)));
 
         given(calendarRepository.findById(lessonId)).willReturn(Optional.ofNullable(mockCalendar));
         given(courseServiceClient.getCourseById(courseId, null)).willReturn(courseMock);

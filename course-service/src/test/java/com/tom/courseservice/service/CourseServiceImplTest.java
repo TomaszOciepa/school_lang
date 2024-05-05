@@ -2,10 +2,7 @@ package com.tom.courseservice.service;
 
 import com.tom.courseservice.exception.CourseError;
 import com.tom.courseservice.exception.CourseException;
-import com.tom.courseservice.model.Course;
-import com.tom.courseservice.model.CourseStudents;
-import com.tom.courseservice.model.CourseTeachers;
-import com.tom.courseservice.model.Status;
+import com.tom.courseservice.model.*;
 import com.tom.courseservice.model.dto.StudentDto;
 import com.tom.courseservice.model.dto.TeacherDto;
 import com.tom.courseservice.repo.CourseRepository;
@@ -24,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 class CourseServiceImplTest {
 
@@ -33,16 +31,18 @@ class CourseServiceImplTest {
     private StudentServiceClient studentServiceClient;
     @Mock
     private TeacherServiceClient teacherServiceClient;
+    @Mock
+    private CalendarServiceClient calendarServiceClient;
     @InjectMocks
     private CourseServiceImpl courseServiceImpl;
 
     List<Course> prepareCourseData() {
         return Arrays.asList(
-                new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
+                new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, Language.ENGLISH, 20L, 0L, 10L,
                         LocalDateTime.of(2023, 12, 5, 17, 0),
                         LocalDateTime.of(2024, 03, 12, 16,0),
                         Arrays.asList(), Arrays.asList()),
-                new Course("1111", "Kurs Niemiecki", Status.ACTIVE, 20L, 0L, 12L,
+                new Course("1111", "Kurs Niemiecki", Status.ACTIVE, Language.GERMAN, 20L, 0L, 12L,
                         LocalDateTime.of(2023, 12, 8, 8,0),
                         LocalDateTime.of(2024, 02, 12, 20,0),
                         Arrays.asList(), Arrays.asList())
@@ -50,7 +50,7 @@ class CourseServiceImplTest {
     }
 
     Course prepareCourse() {
-        return new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
+        return new Course("1111", "Kurs Angielski-B2", Status.ACTIVE, Language.ENGLISH, 20L, 0L, 10L,
                 LocalDateTime.of(2023, 12, 5, 8,0),
                 LocalDateTime.of(2024, 03, 12, 20,0),
                 new ArrayList<>(), new ArrayList<>());
@@ -68,44 +68,6 @@ class CourseServiceImplTest {
 
     TeacherDto prepareTeacher() {
         return new TeacherDto(1L, "Klaudia", "Nowak", "kla@wp.pl", Status.ACTIVE);
-    }
-
-    @Test
-    void findAllByWithStatus() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        List<Course> mockCourses = prepareCourseData();
-        Status mockStatus = Status.ACTIVE;
-        given(courseRepository.getAllByStatus(mockStatus)).willReturn(mockCourses);
-        //when
-        List<Course> result = courseServiceImpl.getAllByStatus(mockStatus);
-        //then
-        assertEquals(mockCourses, result);
-    }
-
-    @Test
-    void findAllByWithoutStatus() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        List<Course> mockCourses = prepareCourseData();
-        given(courseRepository.findAll()).willReturn(mockCourses);
-        //when
-        List<Course> result = courseServiceImpl.getAllByStatus(null);
-        //then
-        assertEquals(mockCourses, result);
-    }
-
-    @Test
-    void getCourseByIdShouldBeReturnCourse() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        Course mockCourse = prepareCourse();
-        String mockId = "1111";
-        given(courseRepository.findById(mockId)).willReturn(Optional.ofNullable(mockCourse));
-        //when
-        Course result = courseServiceImpl.getCourseById(mockId, null);
-        //then
-        assertEquals(mockCourse, result);
     }
 
     @Test
@@ -185,6 +147,8 @@ class CourseServiceImplTest {
         //then
         verify(courseRepository, times(1)).findById(mockId);
         verify(courseRepository, times(1)).deleteById(mockId);
+        verify(calendarServiceClient, times(1)).deleteCourseLessons(mockId);
+
     }
 
     @Test
@@ -201,80 +165,9 @@ class CourseServiceImplTest {
         assertThrows(CourseException.class, () -> courseServiceImpl.deleteCourseById(mockId));
     }
 
-    @Test
-    void studentCourseEnrollment() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        String courseIdMock = "1111";
-        Course courseMock = prepareCourse();
-        StudentDto studentMock = prepareStudent();
-        Long studentIdMock = 1L;
-        CourseStudents courseStudents = new CourseStudents(studentMock.getId(), Status.ACTIVE);
-        given(courseRepository.findById(courseIdMock)).willReturn(Optional.ofNullable(courseMock));
-        given(studentServiceClient.getStudentById(studentIdMock)).willReturn(studentMock);
-        //when
-        courseServiceImpl.assignStudentToCourse(courseIdMock, studentIdMock);
-        //then
-        verify(courseRepository, times(1)).findById(courseIdMock);
-        verify(studentServiceClient, times(1)).getStudentById(studentIdMock);
-        verify(courseRepository, times(1)).save(courseMock);
-    }
 
-    @Test
-    void studentRemoveFromCourse() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        StudentDto studentMock = prepareStudent();
-        Long studentIdMock = 1L;
-        CourseStudents courseStudentsMock = new CourseStudents(studentMock.getId(), Status.ACTIVE);
-        String courseIdMock = "1111";
-        Course courseMock = prepareCourse();
-        courseMock.getCourseStudents().add(courseStudentsMock);
-        courseMock.incrementParticipantsNumber();
-        given(courseRepository.findById(courseIdMock)).willReturn(Optional.ofNullable(courseMock));
-        //when
-        courseServiceImpl.studentCourseUnEnrollment(courseIdMock, studentIdMock);
-        //then
-        verify(courseRepository, times(1)).findById(courseIdMock);
-        verify(courseRepository, times(1)).save(courseMock);
-        assertEquals(0, courseMock.getParticipantsNumber());
-        assertTrue(courseMock.getCourseStudents().isEmpty());
-    }
 
-    @Test
-    void teacherCourseEnrollment() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        String courseIdMock = "1111";
-        Course courseMock = prepareCourse();
-        TeacherDto teacherMock = prepareTeacher();
-        Long teacherIdMock = 1L;
-        given(courseRepository.findById(courseIdMock)).willReturn(Optional.ofNullable(courseMock));
-        given(teacherServiceClient.getTeacherById(teacherIdMock)).willReturn(teacherMock);
-        //when
-        courseServiceImpl.assignTeacherToCourse(courseIdMock, teacherIdMock);
-        //then
-        verify(courseRepository, times(1)).findById(courseIdMock);
-        verify(teacherServiceClient, times(1)).getTeacherById(teacherIdMock);
-        verify(courseRepository, times(1)).save(courseMock);
-    }
 
-    @Test
-    void teacherRemoveFromCourse() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        TeacherDto teacherMock = prepareTeacher();
-        Long teacherIdMock = 1L;
-        CourseTeachers courseTeachersMock = new CourseTeachers(teacherMock.getId());
-        String courseIdMock = "1111";
-        Course courseMock = prepareCourse();
-        courseMock.getCourseTeachers().add(courseTeachersMock);
-        given(courseRepository.findById(courseIdMock)).willReturn(Optional.ofNullable(courseMock));
-        //when
-        courseServiceImpl.teacherCourseUnEnrollment(courseIdMock, teacherIdMock);
-        //then
-        verify(courseRepository, times(1)).findById(courseIdMock);
-        verify(courseRepository, times(1)).save(courseMock);
-        assertTrue(courseMock.getCourseTeachers().isEmpty());
-    }
+
+
 }

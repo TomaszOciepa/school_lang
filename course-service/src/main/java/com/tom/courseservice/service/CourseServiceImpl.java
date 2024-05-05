@@ -13,6 +13,7 @@ import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final StudentServiceClient studentServiceClient;
     private final TeacherServiceClient teacherServiceClient;
+
     private final CalendarServiceClient calendarServiceClient;
     private final AuthenticationContext authenticationContext;
     private final JwtUtils jwtUtils;
