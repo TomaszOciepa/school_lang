@@ -1,0 +1,63 @@
+version: '3'
+services:
+  eureka-service:
+    platform: linux/amd64
+    build: ./eureka-service
+    container_name: "eureka-service"
+    ports:
+      - "8761:8761"
+    networks:
+      - lang-school-net
+  gateway-service:
+    platform: linux/amd64
+    build: ./gateway-service
+    container_name: "gateway-service"
+    ports:
+      - "9000:9000"
+    networks:
+      - lang-school-net
+    depends_on:
+      - eureka-service
+  student-service:
+    platform: linux/amd64
+    build: ./student-service
+    container_name: "student-service"
+    ports:
+      - "8091:8091"
+    networks:
+      - lang-school-net
+    depends_on:
+      - eureka-service
+  teacher-service:
+    platform: linux/amd64
+    build: ./teacher-service
+    container_name: "teacher-service"
+    ports:
+      - "8092:8092"
+    networks:
+      - lang-school-net
+    depends_on:
+      - eureka-service 
+  course-service:
+    platform: linux/amd64
+    build: ./course-service
+    container_name: "course-service"
+    ports:
+      - "8093:8093"
+    networks:
+      - lang-school-net
+    depends_on:
+      - eureka-service
+  calendar-service:
+    platform: linux/amd64
+    build: ./calendar-service
+    container_name: "calendar-service"
+    ports:
+      - "8094:8094"
+    networks:
+      - lang-school-net
+    depends_on:
+      - eureka-service     
+networks:
+  lang-school-net:
+    driver: bridge
