@@ -31,12 +31,26 @@ export class TeachersTableComponent {
   role!: string;
 
   constructor(
+    private readonly keycloak: KeycloakService,
     private teacherService: TeacherService,
     private userProfileService: LoadUserProfileService
   ) {}
 
   async ngOnInit(): Promise<void> {
+    this.loadUserProfile();
     this.getTeachers();
+  }
+
+  async loadUserProfile(): Promise<void> {
+    await this.userProfileService.loadUserProfile();
+
+    if (!this.userProfileService.isLoggedIn) {
+      this.login();
+    }
+
+    if (this.userProfileService.isAdmin) {
+      this.role = 'ADMIN';
+    }
   }
 
   private getTeachers() {
@@ -59,5 +73,9 @@ export class TeachersTableComponent {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  login() {
+    this.keycloak.login();
   }
 }
