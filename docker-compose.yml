@@ -13,6 +13,59 @@ services:
       - /Users/tom/devel/docker/lang-school/volume/student-service:/var/lib/mysql
     networks:
       - lang-school-net
+  mysql-teacher:
+    platform: linux/x86_64
+    build: ./teacher-service//src/main/resources/db
+    container_name: "mysql-teacher"
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: pass123
+      MYSQL_DATABASE: teacher
+    volumes:
+      - /Users/tom/devel/docker/lang-school/volume/teacher-service:/var/lib/mysql
+    networks:
+      - lang-school-net
+  mongo-course:
+    build: ./course-service//src/main/resources/db
+    image: mongo:latest
+    container_name: "mongo-course"
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass123 
+    volumes:
+      - /Users/tom/devel/docker/lang-school/volume/course-service:/data/db
+    networks:
+      - lang-school-net
+  mongo-calendar:
+    build: ./calendar-service//src/main/resources/db
+    image: mongo:latest
+    container_name: "mongo-calendar"
+    ports:
+      - "27016:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass123 
+    volumes:
+      - /Users/tom/devel/docker/lang-school/volume/calendar-service:/data/db
+    networks:
+      - lang-school-net
+  keycloak-service:
+    image: quay.io/keycloak/keycloak:23.0.3
+    container_name: keycloak
+    ports:
+      - "8030:8080"
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - TZ=Europe/Warsaw
+    volumes:
+      - /Users/tom/devel/docker/lang-school/volume/keycloak-service:/opt/keycloak/data/
+    command: ["start-dev"]
+    networks:
+      - lang-school-net            
   eureka-service:
     platform: linux/amd64
     build: ./eureka-service
@@ -51,6 +104,7 @@ services:
     networks:
       - lang-school-net
     depends_on:
+      - mysql-teacher
       - eureka-service 
   course-service:
     platform: linux/amd64
@@ -61,6 +115,7 @@ services:
     networks:
       - lang-school-net
     depends_on:
+      - mongo-course
       - eureka-service
   calendar-service:
     platform: linux/amd64
@@ -71,6 +126,7 @@ services:
     networks:
       - lang-school-net
     depends_on:
+      - mongo-calendar
       - eureka-service     
 networks:
   lang-school-net:
