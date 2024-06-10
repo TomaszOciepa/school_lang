@@ -1,0 +1,133 @@
+version: '3'
+services:
+  mysql-student:
+    platform: linux/x86_64
+    build: ./student-service//src/main/resources/db
+    container_name: "mysql-student"
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: pass123
+      MYSQL_DATABASE: student
+    volumes:
+      - /Users/tom/devel/docker/lang-school/volume/student-service:/var/lib/mysql
+    networks:
+      - lang-school-net
+  mysql-teacher:
+    platform: linux/x86_64
+    build: ./teacher-service//src/main/resources/db
+    container_name: "mysql-teacher"
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: pass123
+      MYSQL_DATABASE: teacher
+    volumes:
+      - /Users/tom/devel/docker/lang-school/volume/teacher-service:/var/lib/mysql
+    networks:
+      - lang-school-net
+  mongo-course:
+    build: ./course-service//src/main/resources/db
+    image: mongo:latest
+    container_name: "mongo-course"
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass123 
+    volumes:
+      - /Users/tom/devel/docker/lang-school/volume/course-service:/data/db
+    networks:
+      - lang-school-net
+  mongo-calendar:
+    build: ./calendar-service//src/main/resources/db
+    image: mongo:latest
+    container_name: "mongo-calendar"
+    ports:
+      - "27016:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass123 
+    volumes:
+      - /Users/tom/devel/docker/lang-school/volume/calendar-service:/data/db
+    networks:
+      - lang-school-net
+  keycloak-service:
+    image: quay.io/keycloak/keycloak:23.0.3
+    container_name: keycloak
+    ports:
+      - "8030:8080"
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - TZ=Europe/Warsaw
+    volumes:
+      - /Users/tom/devel/docker/lang-school/volume/keycloak-service:/opt/keycloak/data/
+    command: ["start-dev"]
+    networks:
+      - lang-school-net            
+  eureka-service:
+    platform: linux/amd64
+    build: ./eureka-service
+    container_name: "eureka-service"
+    ports:
+      - "8761:8761"
+    networks:
+      - lang-school-net
+  gateway-service:
+    platform: linux/amd64
+    build: ./gateway-service
+    container_name: "gateway-service"
+    ports:
+      - "9000:9000"
+    networks:
+      - lang-school-net
+    depends_on:
+      - eureka-service
+  student-service:
+    platform: linux/amd64
+    build: ./student-service
+    container_name: "student-service"
+    ports:
+      - "8091:8091"
+    networks:
+      - lang-school-net
+    depends_on:
+      - mysql-student
+      - eureka-service
+  teacher-service:
+    platform: linux/amd64
+    build: ./teacher-service
+    container_name: "teacher-service"
+    ports:
+      - "8092:8092"
+    networks:
+      - lang-school-net
+    depends_on:
+      - mysql-teacher
+      - eureka-service 
+  course-service:
+    platform: linux/amd64
+    build: ./course-service
+    container_name: "course-service"
+    ports:
+      - "8093:8093"
+    networks:
+      - lang-school-net
+    depends_on:
+      - mongo-course
+      - eureka-service
+  calendar-service:
+    platform: linux/amd64
+    build: ./calendar-service
+    container_name: "calendar-service"
+    ports:
+      - "8094:8094"
+    networks:
+      - lang-school-net
+    depends_on:
+      - mongo-calendar
+      - eureka-service     
+networks:
+  lang-school-net:
+    driver: bridge
