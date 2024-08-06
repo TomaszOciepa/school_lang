@@ -4,5 +4,5 @@ import com.tom.registration_service.model.UserDto;
 
 public interface RegisterService {
 
-    UserDto register(UserDto user);
+    UserDto register(UserDto user, String role);
 }

@@ -12,10 +12,13 @@ public class RegisterServiceImpl implements RegisterService {
     private final KeycloakService keycloakService;
 
     @Override
-    public UserDto register(UserDto user) {
-        keycloakService.createUser(user);
-
-        return studentService.addStudent(user);
-
+    public UserDto register(UserDto user, String role) {
+        keycloakService.createUser(user, role);
+        if( role.equals("student")){
+            return studentService.addStudent(user);
+        } else if (role.equals("teacher")) {
+            return null;
+        }
+        return null;
     }
 }

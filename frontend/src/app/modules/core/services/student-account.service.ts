@@ -30,34 +30,33 @@ export class StudentAccountService {
   }
 
   private async studentAccountIsExists(): Promise<void> {
-    try {
-      const result = await this.studentService
-        .getStudentByEmail(this.userProfileService.userProfile?.email)
-        .toPromise();
-
-      if (result && result.id) {
-        this.userId = result.id;
-      } else {
-        console.log('Student not found.');
-      }
-    } catch (error: any) {
-      if (error?.error?.message === 'Student does not exists.') {
-        await this.createStudentIfNotExists();
-      } else {
-        console.log(error);
-      }
+    // try {
+    const result = await this.studentService
+      .getStudentByEmail(this.userProfileService.userProfile?.email)
+      .toPromise();
+    if (result && result.id) {
+      this.userId = result.id;
+    } else {
+      console.log('Student not found.');
     }
+    // } catch (error: any) {
+    //   if (error?.error?.message === 'Student does not exists.') {
+    //     await this.createStudentIfNotExists();
+    //   } else {
+    //     console.log(error);
+    //   }
+    // }
   }
 
   private async createStudentIfNotExists(): Promise<void> {
-    try {
-      const userId = await this.firstLoginStudentAccountService
-        .createNewStudent()
-        .toPromise();
-      this.userId = userId ?? 0;
-    } catch (error) {
-      console.log(error);
-    }
+    // try {
+    //   const userId = await this.firstLoginStudentAccountService
+    //     .createNewStudent()
+    //     .toPromise();
+    //   this.userId = userId ?? 0;
+    // } catch (error) {
+    //   console.log(error);
+    // }
   }
 
   private login(): void {

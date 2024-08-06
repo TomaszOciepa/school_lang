@@ -4,6 +4,6 @@ import com.tom.registration_service.model.UserDto;
 
 public interface KeycloakService {
 
-    void createUser(UserDto user);
+    void createUser(UserDto user, String role);
 
 }

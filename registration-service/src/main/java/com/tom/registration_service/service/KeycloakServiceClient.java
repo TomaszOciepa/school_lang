@@ -1,15 +1,15 @@
 package com.tom.registration_service.service;
 
 
+import com.tom.registration_service.model.Role;
 import com.tom.registration_service.model.TokenResponse;
 import com.tom.registration_service.model.UserKeycloakDto;
 import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -27,4 +27,17 @@ public interface KeycloakServiceClient {
     @PostMapping(value = "/admin/realms/mango/users", consumes = MediaType.APPLICATION_JSON_VALUE)
     void createUser(@RequestHeader("Authorization") String authorization,
                     @RequestBody UserKeycloakDto userKeycloakDto);
+
+    @GetMapping(value = "/admin/realms/mango/roles/{role}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    Role getRole(@RequestHeader("Authorization") String authorization,
+                 @PathVariable("role") String role);
+
+    @GetMapping(value = "/admin/realms/mango/users", consumes = MediaType.APPLICATION_JSON_VALUE)
+    List<UserKeycloakDto> getUser(@RequestHeader("Authorization") String authorization,
+                 @RequestParam("email") String email);
+
+    @PostMapping(value = "/admin/realms/mango/users/{userId}/role-mappings/realm", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void assignRole(@RequestHeader("Authorization") String authorization,
+                    @PathVariable("userId") String userId,
+                    @RequestBody List<Role> role);
 }
