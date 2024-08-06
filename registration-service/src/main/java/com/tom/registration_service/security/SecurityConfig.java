@@ -25,7 +25,7 @@ public class SecurityConfig {
         http.cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((request) -> request
-//                        .requestMatchers(HttpMethod.POST, "/teacher/idNumbers").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/register").permitAll()
 //                        .requestMatchers("/teacher/all").hasAnyRole("user", "admin")
 //                        .requestMatchers("/teacher/id/**").hasRole("admin")
                         .anyRequest().authenticated())
