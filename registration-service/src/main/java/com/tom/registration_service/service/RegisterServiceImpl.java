@@ -9,15 +9,16 @@ import org.springframework.stereotype.Service;
 public class RegisterServiceImpl implements RegisterService {
 
     private final StudentService studentService;
+    private final TeacherService teacherService;
     private final KeycloakService keycloakService;
 
     @Override
     public UserDto register(UserDto user, String role) {
-        keycloakService.createUser(user, role);
+        keycloakService.createAccount(user, role);
         if( role.equals("student")){
-            return studentService.addStudent(user);
+            return studentService.createAccount(user);
         } else if (role.equals("teacher")) {
-            return null;
+            return teacherService.createAccount(user);
         }
         return null;
     }

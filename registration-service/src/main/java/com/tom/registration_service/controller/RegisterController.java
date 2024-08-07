@@ -13,9 +13,9 @@ public class RegisterController {
     private final RegisterService registerService;
 
     @PostMapping("/{role}")
-    public UserDto addStudent(@RequestBody UserDto student,
-                              @PathVariable String role ) {
-        return registerService.register(student, role);
+    public UserDto createAccount(@RequestBody UserDto user,
+                              @PathVariable String role) {
+        return registerService.register(user, role);
     }
 
 }
