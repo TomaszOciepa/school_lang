@@ -17,3 +17,5 @@ public interface StudentServiceClient {
     @GetMapping("/student/student-is-active/{studentId}")
     void studentIsActive(@PathVariable Long studentId);
 }
+
+
