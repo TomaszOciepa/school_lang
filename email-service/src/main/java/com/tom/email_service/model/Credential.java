@@ -1,13 +1,11 @@
-package com.tom.registration_service.model;
+package com.tom.email_service.model;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
-
 @Getter
 @Setter
-public class Credential{
+public class Credential {
     private String type;
     private String value;
     private boolean temporary;
