@@ -36,6 +36,7 @@ public class EmailService {
                         "Dziękujemy za rejestrację w naszym serwisie.\n"+
                         "Twój login to: "+account.getEmail() +"\n"+
                         "Twoje tymczasowe hasło to: "+ decryptPassword +"\n"+
+                        "Zaloguj się na lang-school"+"\n"+
                         "Serdecznie pozdrawiamy.\n"+
                         "Lang School"
 
