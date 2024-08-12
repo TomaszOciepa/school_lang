@@ -1,4 +1,4 @@
-package com.tom.registration_service.model;
+package com.tom.email_service.model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,6 @@ import java.util.List;
 @Getter
 @Setter
 public class UserKeycloakDto {
-
     private String id;
     private String firstName;
     private String lastName;

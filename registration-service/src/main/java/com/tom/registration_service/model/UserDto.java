@@ -22,4 +22,7 @@ public class UserDto {
         this.password = password;
         this.status = status;
     }
+
+    public UserDto() {
+    }
 }
