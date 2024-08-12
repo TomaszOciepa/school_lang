@@ -41,7 +41,12 @@
     </ng-container>
 
     <button mat-button routerLink="">kontakt</button>
-    <button *ngIf="!isLoggedIn" mat-button (click)="login()">logowanie</button>
+    <button *ngIf="!isLoggedIn" mat-button (click)="login()">
+      zaloguj się
+    </button>
+    <button *ngIf="!isLoggedIn" mat-button routerLink="register">
+      załóŻ konto
+    </button>
     <!-- <p *ngIf="isLoggedIn">
       {{ userProfile?.firstName }}
     </p> -->

@@ -11,6 +11,14 @@ const routes: Routes = [
     title: 'Lang School',
   },
   {
+    path: 'register',
+    loadChildren: () =>
+      import('./modules/create-account/create-account.module').then(
+        (m) => m.CreateAccountModule
+      ),
+    title: 'Lang School',
+  },
+  {
     path: 'courses',
     loadChildren: () =>
       import('./modules/courses/courses.module').then((m) => m.CoursesModule),
