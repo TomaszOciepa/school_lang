@@ -11,4 +11,7 @@ export const environment = {
 
   // apiUrlLessons: 'http://localhost:8094/calendar',
   apiUrlLessons: 'http://localhost:9000/calendar-service/calendar',
+
+  // registerService: 'http://localhost:8095/registration-service/register',
+  registerService: 'http://localhost:9000/registration-service/register',
 };
