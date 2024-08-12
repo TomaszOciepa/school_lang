@@ -5,6 +5,7 @@ import { Observer } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsService } from '../../core/services/forms.service';
 import { RegisterService } from '../../core/services/register.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register-form',
@@ -13,12 +14,14 @@ import { RegisterService } from '../../core/services/register.service';
 })
 export class RegisterFormComponent implements OnInit {
   userType: string | null = null;
+  errMsg!: string;
   userForm!: FormGroup<PostUserForm>;
   @Input() student!: User;
   @Output() closeDialog = new EventEmitter<void>();
   observer: Observer<unknown> = {
     next: () => {},
-    error: (err) => {
+    error: (err: HttpErrorResponse) => {
+      this.errMsg = err.error.message;
       console.log(err);
     },
     complete: () => {

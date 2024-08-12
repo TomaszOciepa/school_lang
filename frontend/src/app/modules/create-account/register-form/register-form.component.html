@@ -28,7 +28,9 @@
         }}</mat-error>
       </mat-form-field>
     </div>
-
+    <div *ngIf="errMsg" class="alert alert-danger" role="alert">
+      {{ errMsg }}
+    </div>
     <div class="d-flex justify-content-end">
       <button
         class="mx-1"
