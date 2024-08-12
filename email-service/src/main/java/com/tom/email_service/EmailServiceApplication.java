@@ -14,7 +14,6 @@ public class EmailServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EmailServiceApplication.class, args);
 	}
-
 	@Bean
 	public MessageConverter messageConverter(){
 		return new Jackson2JsonMessageConverter();
