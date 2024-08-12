@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsService } from '../../core/services/forms.service';
 import { RegisterService } from '../../core/services/register.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-register-form',
@@ -15,6 +16,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class RegisterFormComponent implements OnInit {
   userType: string | null = null;
   errMsg!: string;
+  isFormActive: boolean = true;
   userForm!: FormGroup<PostUserForm>;
   @Input() student!: User;
   @Output() closeDialog = new EventEmitter<void>();
@@ -22,17 +24,16 @@ export class RegisterFormComponent implements OnInit {
     next: () => {},
     error: (err: HttpErrorResponse) => {
       this.errMsg = err.error.message;
-      console.log(err);
     },
     complete: () => {
-      // this.router.navigate(['/students/']);
+      this.isFormActive = false;
     },
   };
 
   constructor(
     private formService: FormsService,
     private registerService: RegisterService,
-    private router: Router,
+    private readonly keycloak: KeycloakService,
     private route: ActivatedRoute
   ) {}
 
@@ -90,5 +91,9 @@ export class RegisterFormComponent implements OnInit {
         .subscribe(this.observer);
       return;
     }
+  }
+
+  public login() {
+    this.keycloak.login();
   }
 }

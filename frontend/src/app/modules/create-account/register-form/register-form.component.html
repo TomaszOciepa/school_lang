@@ -1,7 +1,16 @@
 <div class="teacher-form-wrapper mt-3">
-  <h2>ZałóŻ Konto {{ userType === "student" ? "Studenta" : "Nauczyciela" }}</h2>
-  <form [formGroup]="userForm" (ngSubmit)="createAccount()">
+  <form
+    *ngIf="isFormActive"
+    [formGroup]="userForm"
+    (ngSubmit)="createAccount()"
+  >
     <div>
+      <h2>
+        ZałóŻ Konto {{ userType === "student" ? "Studenta" : "Nauczyciela" }}
+      </h2>
+      <div *ngIf="errMsg" class="alert alert-danger" role="alert">
+        {{ errMsg }}
+      </div>
       <mat-form-field>
         <mat-label>Imię</mat-label>
         <input matInput formControlName="firstName" />
@@ -28,9 +37,6 @@
         }}</mat-error>
       </mat-form-field>
     </div>
-    <div *ngIf="errMsg" class="alert alert-danger" role="alert">
-      {{ errMsg }}
-    </div>
     <div class="d-flex justify-content-end">
       <button
         class="mx-1"
@@ -44,4 +50,19 @@
     </div>
     <!-- <app-alert *ngIf="errorMessage" [text]="errorMessage"></app-alert> -->
   </form>
+  <div *ngIf="!isFormActive">
+    <figure class="text-start">
+      <blockquote class="blockquote">
+        <h2>Dziękujemy za rejestracje.</h2>
+      </blockquote>
+      <figcaption class="blockquote-footer">
+        <cite title="Source Title"
+          >Sprawdz wiadomość email. Następnie zaloguj się.</cite
+        >
+      </figcaption>
+    </figure>
+    <button mat-raised-button color="primary" (click)="login()">
+      zaloguj się
+    </button>
+  </div>
 </div>
