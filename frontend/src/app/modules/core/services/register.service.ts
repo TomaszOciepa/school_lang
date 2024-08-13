@@ -8,15 +8,21 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class RegisterService {
-  apiUrl = environment.registerService;
+  apiUrl = environment.keycloakClientService;
 
   constructor(private http: HttpClient) {}
 
   createAccountStudent(newUser: PostUser): Observable<User> {
-    return this.http.post<User>(this.apiUrl + '/student', newUser);
+    return this.http.post<User>(
+      this.apiUrl + '/create-account/student',
+      newUser
+    );
   }
 
   createAccountTeacher(newUser: PostUser): Observable<User> {
-    return this.http.post<User>(this.apiUrl + '/teacher', newUser);
+    return this.http.post<User>(
+      this.apiUrl + '/create-account/teacher',
+      newUser
+    );
   }
 }
