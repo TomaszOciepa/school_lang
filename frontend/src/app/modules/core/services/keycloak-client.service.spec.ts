@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { RegisterService } from './register.service';
+import { RegisterService } from './keycloak-client.service';
 
 describe('RegisterService', () => {
   let service: RegisterService;

@@ -11,6 +11,7 @@ import com.tom.keycloak_client_service.util.PasswordGenerator;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -54,6 +55,24 @@ public class KeycloakServiceImpl implements KeycloakService {
         userKeycloakDto.getCredentials().get(0).setValue(encryptPass);
         assignRole(user, accessToken, role);
         return userKeycloakDto;
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteAccount(String email) {
+        String userId = null;
+        String accessToken = rootAuthenticationService.getAccessToken();
+        try {
+           userId = keycloakServiceClient.getUser(accessToken, email).get(0).getId();
+        }catch (FeignException ex) {
+            logger.error("FeignException occurred: {}", ex.getMessage());
+            if(ex.status() == 404){
+                throw new KeycloakException(KeycloakError.USER_NOT_FOUND);
+            }
+
+        }
+
+        keycloakServiceClient.deleteAccount(accessToken, userId);
+        return ResponseEntity.ok().build();
     }
 
     private void assignRole(UserDto user, String authorization, String role) {

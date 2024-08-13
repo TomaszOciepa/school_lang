@@ -38,4 +38,9 @@ public interface KeycloakServiceClient {
     void assignRole(@RequestHeader("Authorization") String authorization,
                     @PathVariable("userId") String userId,
                     @RequestBody List<Role> role);
+
+    @DeleteMapping(value = "/admin/realms/mango/users/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void deleteAccount(@RequestHeader("Authorization") String authorization,
+                       @PathVariable("id") String id
+                   );
 }

@@ -26,6 +26,7 @@ public class StudentServiceImpl implements StudentService {
     private final CalendarServiceClient calendarServiceClient;
     private final CourseServiceClient courseServiceClient;
     private final JwtUtils jwtUtils;
+    private final KeycloakServiceClient keycloakServiceClient;
 
     //sprawdzone
     @Override
@@ -167,6 +168,7 @@ public class StudentServiceImpl implements StudentService {
             logger.error("FeignException occurred: {}", ex.getMessage());
         }
         studentRepository.deleteById(id);
+        keycloakServiceClient.deleteAccount(student.getEmail());
     }
 
     private void validateStudentEmailExists(String email) {
