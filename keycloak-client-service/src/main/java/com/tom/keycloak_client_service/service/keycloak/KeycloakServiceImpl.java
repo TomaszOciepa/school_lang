@@ -59,6 +59,7 @@ public class KeycloakServiceImpl implements KeycloakService {
 
     @Override
     public ResponseEntity<Void> deleteAccount(String email) {
+        logger.info("Delete Account {}", email);
         String userId = null;
         String accessToken = rootAuthenticationService.getAccessToken();
         try {
@@ -72,6 +73,7 @@ public class KeycloakServiceImpl implements KeycloakService {
         }
 
         keycloakServiceClient.deleteAccount(accessToken, userId);
+        logger.info("Account deletion successful for {}", email);
         return ResponseEntity.ok().build();
     }
 
