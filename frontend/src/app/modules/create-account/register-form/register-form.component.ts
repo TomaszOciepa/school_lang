@@ -2,9 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PostUserForm, User } from '../../core/models/user.model';
 import { Observer } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FormsService } from '../../core/services/forms.service';
-import { RegisterService } from '../../core/services/register.service';
+import { KeycloakClientService } from '../../core/services/keycloak-client.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { KeycloakService } from 'keycloak-angular';
 
@@ -32,7 +32,7 @@ export class RegisterFormComponent implements OnInit {
 
   constructor(
     private formService: FormsService,
-    private registerService: RegisterService,
+    private keycloakClient: KeycloakClientService,
     private readonly keycloak: KeycloakService,
     private route: ActivatedRoute
   ) {}
@@ -79,14 +79,14 @@ export class RegisterFormComponent implements OnInit {
 
   createAccount() {
     if (this.userType == 'student') {
-      this.registerService
+      this.keycloakClient
         .createAccountStudent(this.userForm.getRawValue())
         .subscribe(this.observer);
       return;
     }
 
     if (this.userType == 'teacher') {
-      this.registerService
+      this.keycloakClient
         .createAccountTeacher(this.userForm.getRawValue())
         .subscribe(this.observer);
       return;

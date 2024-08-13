@@ -23,6 +23,7 @@ public class TeacherServiceImpl implements TeacherService {
     private final AuthenticationContext authenticationContext;
     private final CalendarServiceClient calendarServiceClient;
     private final  CourseServiceClient courseServiceClient;
+    private final KeycloakServiceClient keycloakServiceClient;
     private static Logger logger = LoggerFactory.getLogger(TeacherServiceImpl.class);
 
     //sprawdzone
@@ -107,6 +108,7 @@ public class TeacherServiceImpl implements TeacherService {
             logger.error("FeignException occurred: {}", ex.getMessage());
         }
         teacherRepository.deleteById(id);
+        keycloakServiceClient.deleteAccount(teacher.getEmail());
     }
 
     @Override

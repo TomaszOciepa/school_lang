@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class RegisterService {
+export class KeycloakClientService {
   apiUrl = environment.keycloakClientService;
 
   constructor(private http: HttpClient) {}
