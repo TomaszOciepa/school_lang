@@ -11,6 +11,7 @@ services:
       MYSQL_DATABASE: student
     volumes:
       - /Users/tom/devel/docker/lang-school/volume/student-service:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     networks:
       - lang-school-net
   mysql-teacher:
@@ -24,6 +25,7 @@ services:
       MYSQL_DATABASE: teacher
     volumes:
       - /Users/tom/devel/docker/lang-school/volume/teacher-service:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     networks:
       - lang-school-net
   mongo-course:

@@ -6,6 +6,7 @@ import com.tom.teacherservice.service.TeacherService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import org.springframework.web.bind.annotation.*;
@@ -73,7 +74,7 @@ public class TeacherController {
 
     @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PatchMapping("/{id}")
-    public Teacher patchTeacher(@PathVariable Long id, @RequestBody Teacher teacher) {
+    public ResponseEntity<Void> patchTeacher(@PathVariable Long id, @RequestBody Teacher teacher) {
         logger.info("Patch method patchTeacher()");
         return teacherService.patchTeacher(id, teacher);
     }

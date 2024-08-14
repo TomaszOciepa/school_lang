@@ -10,6 +10,7 @@ import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository teacherRepository;
     private final AuthenticationContext authenticationContext;
     private final CalendarServiceClient calendarServiceClient;
-    private final  CourseServiceClient courseServiceClient;
+    private final CourseServiceClient courseServiceClient;
     private final KeycloakServiceClient keycloakServiceClient;
     private static Logger logger = LoggerFactory.getLogger(TeacherServiceImpl.class);
 
@@ -102,9 +103,9 @@ public class TeacherServiceImpl implements TeacherService {
         Teacher teacher = teacherRepository.findById(id)
                 .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
         calendarServiceClient.deleteLessonsByTeacherId(id);
-        try{
+        try {
             courseServiceClient.removeTeacherWithAllCourses(id);
-        }catch (FeignException ex){
+        } catch (FeignException ex) {
             logger.error("FeignException occurred: {}", ex.getMessage());
         }
         teacherRepository.deleteById(id);
@@ -112,23 +113,49 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Teacher patchTeacher(Long id, Teacher teacher) {
+    public ResponseEntity<Void> patchTeacher(Long id, Teacher teacher) {
         logger.info("patchTeacher teacherId: {}", id);
         Teacher teacherFromDb = teacherRepository.findById(id)
                 .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
-        if (teacher.getFirstName() != null) {
+
+        try {
+            keycloakServiceClient.updateAccount(teacher, teacherFromDb.getEmail());
+        } catch (FeignException ex) {
+            logger.error("FeignException occurred: {}", ex.getMessage());
+            if(ex.status() == 409){
+                throw new TeacherException(TeacherError.TEACHER_EMAIL_ALREADY_EXISTS);
+            }
+        }
+
+        boolean dbUpdateNeeded = false;
+
+        if (teacher.getFirstName() != null && !teacher.getFirstName().equals(teacherFromDb.getFirstName())) {
             logger.info("Changing first name");
             teacherFromDb.setFirstName(teacher.getFirstName());
+            dbUpdateNeeded = true;
         }
-        if (teacher.getLastName() != null) {
+        if (teacher.getLastName() != null && !teacher.getLastName().equals(teacherFromDb.getLastName())) {
             logger.info("Changing last name");
             teacherFromDb.setLastName(teacher.getLastName());
+            dbUpdateNeeded = true;
         }
-        if (teacher.getStatus() != null) {
+        if (teacher.getStatus() != null && !teacher.getStatus().equals(teacherFromDb.getStatus())) {
             logger.info("Changing status");
             teacherFromDb.setStatus(teacher.getStatus());
+            dbUpdateNeeded = true;
         }
-        return teacherRepository.save(teacherFromDb);
+        if (teacher.getEmail() != null && !teacher.getEmail().equals(teacherFromDb.getEmail())) {
+            logger.info("Changing email");
+            teacherFromDb.setEmail(teacher.getEmail());
+            dbUpdateNeeded = true;
+        }
+
+        if (dbUpdateNeeded) {
+            teacherRepository.save(teacherFromDb);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @Override
@@ -142,8 +169,9 @@ public class TeacherServiceImpl implements TeacherService {
         }
         return teacher;
     }
+
     @Override
-    public void restoreTeacherAccount(Long id){
+    public void restoreTeacherAccount(Long id) {
         Teacher teacher = getTeacherById(id);
         teacher.setStatus(Status.ACTIVE);
         teacherRepository.save(teacher);

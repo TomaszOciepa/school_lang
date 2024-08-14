@@ -1,5 +1,8 @@
 <div class="teacher-form-wrapper mt-3">
   <h2 *ngIf="!editMode">Dodaj ucznia:</h2>
+  <div *ngIf="errMsg" class="alert alert-danger" role="alert">
+    {{ errMsg }}
+  </div>
   <form [formGroup]="studentForm" (ngSubmit)="onAddStudent()">
     <div>
       <mat-form-field>

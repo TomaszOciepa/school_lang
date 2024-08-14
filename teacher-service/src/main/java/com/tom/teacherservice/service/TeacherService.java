@@ -2,6 +2,7 @@ package com.tom.teacherservice.service;
 
 import com.tom.teacherservice.model.Status;
 import com.tom.teacherservice.model.Teacher;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface TeacherService {
 
     Teacher addTeacher(Teacher teacher);
 
-    Teacher patchTeacher(Long id, Teacher teacher);
+    ResponseEntity<Void> patchTeacher(Long id, Teacher teacher);
 
     void restoreTeacherAccount(Long id);
 

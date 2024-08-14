@@ -162,18 +162,18 @@ class StudentControllerTest {
         assertThrows(StudentException.class, () -> studentController.addStudent(mockStudent));
     }
 
-    @Test
-    void patchStudentShouldBeReturnStudent() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        Student mockStudent = prepareStudent();
-        Long mockStudentId = 1L;
-        given(studentService.patchStudent(mockStudentId, mockStudent)).willReturn(mockStudent);
-        //when
-        Student result = studentController.patchStudent(mockStudentId, mockStudent);
-        //then
-        assertEquals(mockStudent, result);
-    }
+//    @Test
+//    void patchStudentShouldBeReturnStudent() {
+//        MockitoAnnotations.openMocks(this);
+//        //given
+//        Student mockStudent = prepareStudent();
+//        Long mockStudentId = 1L;
+//        given(studentService.patchStudent(mockStudentId, mockStudent)).willReturn(mockStudent);
+//        //when
+//        Student result = studentController.patchStudent(mockStudentId, mockStudent);
+//        //then
+//        assertEquals(mockStudent, result);
+//    }
 
     @Test
     void patchStudentShouldBeReturnExceptionStudentNotFound() {

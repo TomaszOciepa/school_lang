@@ -9,4 +9,6 @@ public interface KeycloakService {
     UserKeycloakDto createAccount(UserDto user, String role);
 
    ResponseEntity<Void> deleteAccount(String userEmail);
+
+   ResponseEntity<Void> updateAccount(UserDto updateUserData, String email);
 }

@@ -11,6 +11,7 @@ import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -102,24 +103,50 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student patchStudent(Long id, Student student) {
+    public ResponseEntity<Void> patchStudent(Long id, Student student) {
         logger.info("patchStudent studentId: {}", id);
         Student studentFromDb = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
 
-        if (student.getFirstName() != null) {
+        try {
+            keycloakServiceClient.updateAccount(student, studentFromDb.getEmail());
+        } catch (FeignException ex) {
+            logger.error("FeignException occurred: {}", ex.getMessage());
+            if(ex.status() == 409){
+                throw new StudentException(StudentError.STUDENT_EMAIL_ALREADY_EXISTS);
+            }
+        }
+
+        boolean dbUpdateNeeded = false;
+
+        if (student.getFirstName() != null && !student.getFirstName().equals(studentFromDb.getFirstName())) {
             logger.info("Changing first name");
             studentFromDb.setFirstName(student.getFirstName());
+            dbUpdateNeeded = true;
         }
-        if (student.getLastName() != null) {
+        if (student.getLastName() != null && !student.getLastName().equals(studentFromDb.getLastName())) {
             logger.info("Changing last name");
             studentFromDb.setLastName(student.getLastName());
+            dbUpdateNeeded = true;
         }
-        if (student.getStatus() != null) {
+        if (student.getStatus() != null && !student.getStatus().equals(studentFromDb.getStatus())) {
             logger.info("Changing status");
             studentFromDb.setStatus(student.getStatus());
+            dbUpdateNeeded = true;
         }
-        return studentRepository.save(studentFromDb);
+
+        if(student.getEmail() != null && !student.getEmail().equals(studentFromDb.getEmail())){
+            logger.info("Changing status");
+            studentFromDb.setEmail(student.getEmail());
+            dbUpdateNeeded = true;
+        }
+
+        if(dbUpdateNeeded){
+            studentRepository.save(studentFromDb);
+            return ResponseEntity.ok().build();
+        }else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @Override

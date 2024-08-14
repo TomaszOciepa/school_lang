@@ -41,6 +41,11 @@ public interface KeycloakServiceClient {
 
     @DeleteMapping(value = "/admin/realms/mango/users/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     void deleteAccount(@RequestHeader("Authorization") String authorization,
-                       @PathVariable("id") String id
-                   );
+                       @PathVariable("id") String id);
+
+    @PutMapping(value = "/admin/realms/mango/users/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void updateAccount(@RequestHeader("Authorization") String authorization,
+                       @PathVariable("id") String id,
+                       @RequestBody UserKeycloakDto userKeycloakDto);
+
 }

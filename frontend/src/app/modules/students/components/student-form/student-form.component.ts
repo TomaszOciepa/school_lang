@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -14,6 +15,7 @@ import { StudentService } from 'src/app/modules/core/services/student.service';
 })
 export class StudentFormComponent {
   studentForm!: FormGroup<PostUserForm>;
+  errMsg!: string;
   @Input() editMode = false;
   @Input() student!: User;
   @Output() closeDialog = new EventEmitter<void>();
@@ -23,8 +25,8 @@ export class StudentFormComponent {
         this.emitCLoseDialog();
       }
     },
-    error: (err) => {
-      console.log(err);
+    error: (err: HttpErrorResponse) => {
+      this.errMsg = err.error.message;
     },
     complete: () => {
       if (this.editMode) {

@@ -13,6 +13,7 @@ public class UserKeycloakDto {
     private String firstName;
     private String lastName;
     private String email;
+    private String username;
     private boolean emailVerified;
     private boolean enabled;
     private List<Credential> credentials;
@@ -38,6 +39,7 @@ public class UserKeycloakDto {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
                 ", emailVerified=" + emailVerified +
                 ", enabled=" + enabled +
                 ", credentials=" + credentials +

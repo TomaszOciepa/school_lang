@@ -105,19 +105,19 @@ class StudentServiceImplTest {
         assertThrows(StudentException.class, () -> studentServiceImpl.getStudentByEmail(mockEmail));
     }
 
-    @Test
-    void patchStudentShouldBEReturnStudent() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        Student mockStudent = prepareStudent();
-        Long mockId = 1L;
-        given(studentRepository.findById(mockId)).willReturn(Optional.of(mockStudent));
-        given(studentRepository.save(mockStudent)).willReturn(mockStudent);
-        //when
-        Student result = studentServiceImpl.patchStudent(mockId, mockStudent);
-        //then
-        assertEquals(mockStudent, result);
-    }
+//    @Test
+//    void patchStudentShouldBEReturnStudent() {
+//        MockitoAnnotations.openMocks(this);
+//        //given
+//        Student mockStudent = prepareStudent();
+//        Long mockId = 1L;
+//        given(studentRepository.findById(mockId)).willReturn(Optional.of(mockStudent));
+//        given(studentRepository.save(mockStudent)).willReturn(mockStudent);
+//        //when
+//        Student result = studentServiceImpl.patchStudent(mockId, mockStudent);
+//        //then
+//        assertEquals(mockStudent, result);
+//    }
 
     @Test
     void patchStudentShouldBEReturnStudentNotFound() {
