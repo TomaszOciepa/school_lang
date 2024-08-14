@@ -3,6 +3,7 @@ package com.tom.keycloak_client_service.exception;
 public enum KeycloakError {
     USER_EMAIL_ALREADY_EXISTS("Email already exists."),
     ACCOUNT_CREATION_FAILED("Account creation failed."),
+    ACCOUNT_UPDATE_FAILED("Account update failed."),
     USER_NOT_FOUND("User not found.");
     private String message;
 

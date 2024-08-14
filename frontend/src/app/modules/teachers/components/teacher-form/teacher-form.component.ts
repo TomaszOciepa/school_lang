@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -13,6 +14,7 @@ import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 })
 export class TeacherFormComponent implements OnInit {
   teacherForm!: FormGroup<PostUserForm>;
+  errMsg!: string;
   @Input() editMode = false;
   @Input() teacher!: User;
   @Output() closeDialog = new EventEmitter<void>();
@@ -22,8 +24,8 @@ export class TeacherFormComponent implements OnInit {
         this.emitCLoseDialog();
       }
     },
-    error: (err) => {
-      console.log(err);
+    error: (err: HttpErrorResponse) => {
+      this.errMsg = err.error.message;
     },
     complete: () => {
       if (this.editMode) {

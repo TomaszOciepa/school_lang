@@ -77,6 +77,53 @@ public class KeycloakServiceImpl implements KeycloakService {
         return ResponseEntity.ok().build();
     }
 
+    @Override
+    public ResponseEntity<Void> updateAccount(UserDto updateUserData, String email) {
+        logger.info("Update Account {}", email);
+        String accessToken = rootAuthenticationService.getAccessToken();
+        List<UserKeycloakDto> userFromKeycloakDb = keycloakServiceClient.getUser(accessToken, email);
+        boolean dbUpdateNeeded = false;
+
+        if(updateUserData.getFirstName() != null
+                && !updateUserData.getFirstName().equals(userFromKeycloakDb.get(0).getFirstName())){
+            userFromKeycloakDb.get(0).setFirstName(updateUserData.getFirstName());
+            dbUpdateNeeded = true;
+        }
+
+        if(updateUserData.getLastName() != null
+                && !updateUserData.getLastName().equals(userFromKeycloakDb.get(0).getLastName())){
+            userFromKeycloakDb.get(0).setLastName(updateUserData.getLastName());
+            dbUpdateNeeded = true;
+        }
+
+        if(updateUserData.getEmail() != null
+                && !updateUserData.getEmail().equals(userFromKeycloakDb.get(0).getEmail())){
+            userFromKeycloakDb.get(0).setEmail(updateUserData.getEmail());
+            userFromKeycloakDb.get(0).setUsername(updateUserData.getEmail());
+            dbUpdateNeeded = true;
+        }
+
+        if(dbUpdateNeeded){
+            try{
+                keycloakServiceClient.updateAccount(
+                        accessToken,
+                        userFromKeycloakDb.get(0).getId(),
+                        userFromKeycloakDb.get(0)
+                );
+            }catch (FeignException ex) {
+                logger.error("FeignException occurred: {}", ex.getMessage());
+                if(ex.status() == 409){
+                    throw new KeycloakException(KeycloakError.USER_EMAIL_ALREADY_EXISTS);
+                }else {
+                    throw new KeycloakException(KeycloakError.ACCOUNT_UPDATE_FAILED);
+                }
+            }
+            return ResponseEntity.ok().build();
+        }else {
+            return ResponseEntity.noContent().build();
+        }
+    }
+
     private void assignRole(UserDto user, String authorization, String role) {
         String newUserId = keycloakServiceClient.getUser(authorization, user.getEmail()).get(0).getId();
         Role roleStudent = keycloakServiceClient.getRole(authorization, role);
