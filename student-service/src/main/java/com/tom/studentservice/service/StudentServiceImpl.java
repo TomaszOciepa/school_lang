@@ -92,11 +92,11 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student addStudent(Student student) {
         logger.info("Trying create new student.");
-        String emailFromJwt = jwtUtils.getUserEmailFromJwt();
-        boolean isNotStudent = authenticationContext();
-        if(!isNotStudent && !emailFromJwt.equals(student.getEmail())){
-            throw new StudentException(StudentError.STUDENT_OPERATION_FORBIDDEN);
-        }
+//        String emailFromJwt = jwtUtils.getUserEmailFromJwt();
+//        boolean isNotStudent = authenticationContext();
+//        if(!isNotStudent && !emailFromJwt.equals(student.getEmail())){
+//            throw new StudentException(StudentError.STUDENT_OPERATION_FORBIDDEN);
+//        }
         validateStudentEmailExists(student.getEmail());
         student.setStatus(Status.ACTIVE);
         return studentRepository.save(student);
@@ -107,6 +107,15 @@ public class StudentServiceImpl implements StudentService {
         logger.info("patchStudent studentId: {}", id);
         Student studentFromDb = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
+
+        boolean isNotStudent = authenticationContext();
+
+        if(!isNotStudent){
+            String emailFromJwt = jwtUtils.getUserEmailFromJwt();
+            if(!isNotStudent && !emailFromJwt.equals(studentFromDb.getEmail())){
+                throw new StudentException(StudentError.STUDENT_OPERATION_FORBIDDEN);
+            }
+        }
 
         try {
             keycloakServiceClient.updateAccount(student, studentFromDb.getEmail());
@@ -136,7 +145,7 @@ public class StudentServiceImpl implements StudentService {
         }
 
         if(student.getEmail() != null && !student.getEmail().equals(studentFromDb.getEmail())){
-            logger.info("Changing status");
+            logger.info("Changing email");
             studentFromDb.setEmail(student.getEmail());
             dbUpdateNeeded = true;
         }

@@ -6,12 +6,15 @@ import com.tom.keycloak_client_service.model.Credential;
 import com.tom.keycloak_client_service.model.Role;
 import com.tom.keycloak_client_service.model.UserDto;
 import com.tom.keycloak_client_service.model.UserKeycloakDto;
+import com.tom.keycloak_client_service.security.AuthenticationContext;
+import com.tom.keycloak_client_service.security.JwtUtils;
 import com.tom.keycloak_client_service.util.EncryptPassword;
 import com.tom.keycloak_client_service.util.PasswordGenerator;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,14 +28,18 @@ public class KeycloakServiceImpl implements KeycloakService {
     private final RootAuthenticationServiceImpl rootAuthenticationService;
     private final PasswordGenerator passwordGenerator;
     private final EncryptPassword encryptPassword;
+    private final AuthenticationContext authenticationContext;
+    private final JwtUtils jwtUtils;
 
     public KeycloakServiceImpl(
             KeycloakServiceClient keycloakServiceClient,
-            RootAuthenticationServiceImpl rootAuthenticationService, PasswordGenerator passwordGenerator, EncryptPassword encryptPassword) {
+            RootAuthenticationServiceImpl rootAuthenticationService, PasswordGenerator passwordGenerator, EncryptPassword encryptPassword, AuthenticationContext authenticationContext, JwtUtils jwtUtils) {
         this.keycloakServiceClient = keycloakServiceClient;
         this.rootAuthenticationService = rootAuthenticationService;
         this.passwordGenerator = passwordGenerator;
         this.encryptPassword = encryptPassword;
+        this.authenticationContext = authenticationContext;
+        this.jwtUtils = jwtUtils;
     }
 
 
@@ -82,6 +89,17 @@ public class KeycloakServiceImpl implements KeycloakService {
         logger.info("Update Account {}", email);
         String accessToken = rootAuthenticationService.getAccessToken();
         List<UserKeycloakDto> userFromKeycloakDb = keycloakServiceClient.getUser(accessToken, email);
+
+        boolean isNotStudent = authenticationContext();
+
+        if(!isNotStudent){
+            logger.info("inside isNotStudent");
+            String emailFromJwt = jwtUtils.getUserEmailFromJwt();
+            if(!isNotStudent && !emailFromJwt.equals(userFromKeycloakDb.get(0).getEmail())){
+                throw new KeycloakException(KeycloakError.OPERATION_FORBIDDEN);
+            }
+        }
+
         boolean dbUpdateNeeded = false;
 
         if (updateUserData.getFirstName() != null
@@ -165,5 +183,18 @@ public class KeycloakServiceImpl implements KeycloakService {
                 credentials
         );
         return userKeycloakDto;
+    }
+
+    private boolean authenticationContext() {
+        boolean result = false;
+        Authentication authentication = authenticationContext.getAuthentication();
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_admin"));
+        boolean isTeacher = authentication.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_teacher"));
+        if (isAdmin || isTeacher) {
+            result = true;
+        }
+        return result;
     }
 }

@@ -1,4 +1,16 @@
 <div class="row" *ngIf="student">
+  <div class="row">
+    <div class="col-md-8"></div>
+    <div class="col-6 col-md-4">
+      <div class="row row-cols-2">
+        <div class="col p-3">
+          <button mat-raised-button color="primary" (click)="openEditDialog()">
+            Edycja
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="col">
     <figure class="text-start">
       <blockquote class="blockquote">

@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -52,14 +51,14 @@ public class StudentController {
             return studentService.getStudentById(id);
         }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PostMapping
     public Student addStudent(@RequestBody Student student) {
         logger.info("POST method addStudent()");
         return studentService.addStudent(student);
     }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @PatchMapping("/{id}")
     public ResponseEntity<Void> patchStudent(@PathVariable Long id, @RequestBody Student student) {
         logger.info("PATCH method patchStudent().");
