@@ -154,6 +154,12 @@ public class StudentServiceImpl implements StudentService {
         logger.info("deleteStudent studentId: {}", id);
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentException(StudentError.STUDENT_NOT_FOUND));
+        try{
+            keycloakServiceClient.enabledAccount(student.getEmail(), false);
+        }catch (FeignException ex) {
+            logger.error("FeignException occurred: {}", ex.getMessage());
+        }
+
         try {
             calendarServiceClient.deactivateStudent(id);
         } catch (FeignException ex) {
@@ -173,6 +179,13 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void restoreStudentAccount(Long id) {
         Student student = getStudentById(id);
+
+        try{
+            keycloakServiceClient.enabledAccount(student.getEmail(), true);
+        }catch (FeignException ex) {
+            logger.error("FeignException occurred: {}", ex.getMessage());
+        }
+
         student.setStatus(Status.ACTIVE);
         studentRepository.save(student);
     }

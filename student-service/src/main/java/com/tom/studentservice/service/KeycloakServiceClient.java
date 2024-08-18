@@ -3,10 +3,7 @@ package com.tom.studentservice.service;
 import com.tom.studentservice.model.Student;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "KEYCLOAK-CLIENT-SERVICE")
 public interface KeycloakServiceClient {
@@ -15,4 +12,7 @@ public interface KeycloakServiceClient {
     ResponseEntity<?> deleteAccount(@PathVariable String email);
     @PutMapping("/keycloak/update-account/{email}")
     ResponseEntity<?> updateAccount(@RequestBody Student student, @PathVariable String email);
+
+    @PutMapping("/keycloak/enabled-account/{email}")
+    ResponseEntity<Void> enabledAccount(@PathVariable String email, @RequestParam boolean enabled);
 }

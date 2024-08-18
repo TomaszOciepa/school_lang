@@ -29,11 +29,15 @@ public class KeycloakController {
         return keycloakService.deleteAccount(email);
     }
 
-
     @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PutMapping("/update-account/{email}")
     public ResponseEntity<Void> updateAccount(@RequestBody UserDto user, @PathVariable String email) {
         return keycloakService.updateAccount(user, email);
     }
 
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PutMapping("/enabled-account/{email}")
+    public ResponseEntity<Void> enabledAccount(@PathVariable String email, @RequestParam boolean enabled) {
+        return keycloakService.enabledAccount(email, enabled);
+    }
 }

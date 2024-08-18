@@ -39,14 +39,14 @@ public class KeycloakServiceImpl implements KeycloakService {
     @Override
     public UserKeycloakDto createAccount(UserDto user, String role) {
         String password = passwordGenerator.generatePassword();
-        UserKeycloakDto userKeycloakDto = getUserData(user,password);
+        UserKeycloakDto userKeycloakDto = getUserData(user, password);
         String accessToken = rootAuthenticationService.getAccessToken();
 
         try {
             keycloakServiceClient.createUser(accessToken, userKeycloakDto);
         } catch (FeignException ex) {
             logger.error("FeignException occurred: {}", ex.getMessage());
-            if(ex.status() == 409){
+            if (ex.status() == 409) {
                 throw new KeycloakException(KeycloakError.USER_EMAIL_ALREADY_EXISTS);
             }
 
@@ -63,10 +63,10 @@ public class KeycloakServiceImpl implements KeycloakService {
         String userId = null;
         String accessToken = rootAuthenticationService.getAccessToken();
         try {
-           userId = keycloakServiceClient.getUser(accessToken, email).get(0).getId();
-        }catch (FeignException ex) {
+            userId = keycloakServiceClient.getUser(accessToken, email).get(0).getId();
+        } catch (FeignException ex) {
             logger.error("FeignException occurred: {}", ex.getMessage());
-            if(ex.status() == 404){
+            if (ex.status() == 404) {
                 throw new KeycloakException(KeycloakError.USER_NOT_FOUND);
             }
 
@@ -84,42 +84,63 @@ public class KeycloakServiceImpl implements KeycloakService {
         List<UserKeycloakDto> userFromKeycloakDb = keycloakServiceClient.getUser(accessToken, email);
         boolean dbUpdateNeeded = false;
 
-        if(updateUserData.getFirstName() != null
-                && !updateUserData.getFirstName().equals(userFromKeycloakDb.get(0).getFirstName())){
+        if (updateUserData.getFirstName() != null
+                && !updateUserData.getFirstName().equals(userFromKeycloakDb.get(0).getFirstName())) {
             userFromKeycloakDb.get(0).setFirstName(updateUserData.getFirstName());
             dbUpdateNeeded = true;
         }
 
-        if(updateUserData.getLastName() != null
-                && !updateUserData.getLastName().equals(userFromKeycloakDb.get(0).getLastName())){
+        if (updateUserData.getLastName() != null
+                && !updateUserData.getLastName().equals(userFromKeycloakDb.get(0).getLastName())) {
             userFromKeycloakDb.get(0).setLastName(updateUserData.getLastName());
             dbUpdateNeeded = true;
         }
 
-        if(updateUserData.getEmail() != null
-                && !updateUserData.getEmail().equals(userFromKeycloakDb.get(0).getEmail())){
+        if (updateUserData.getEmail() != null
+                && !updateUserData.getEmail().equals(userFromKeycloakDb.get(0).getEmail())) {
             userFromKeycloakDb.get(0).setEmail(updateUserData.getEmail());
             userFromKeycloakDb.get(0).setUsername(updateUserData.getEmail());
             dbUpdateNeeded = true;
         }
 
-        if(dbUpdateNeeded){
-            try{
+        if (dbUpdateNeeded) {
+            try {
                 keycloakServiceClient.updateAccount(
                         accessToken,
                         userFromKeycloakDb.get(0).getId(),
                         userFromKeycloakDb.get(0)
                 );
-            }catch (FeignException ex) {
+            } catch (FeignException ex) {
                 logger.error("FeignException occurred: {}", ex.getMessage());
-                if(ex.status() == 409){
+                if (ex.status() == 409) {
                     throw new KeycloakException(KeycloakError.USER_EMAIL_ALREADY_EXISTS);
-                }else {
+                } else {
                     throw new KeycloakException(KeycloakError.ACCOUNT_UPDATE_FAILED);
                 }
             }
             return ResponseEntity.ok().build();
-        }else {
+        } else {
+            return ResponseEntity.noContent().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<Void> enabledAccount(String email, boolean enabled) {
+        logger.info("Enabled Account {} set: {}", email, enabled);
+        String accessToken = rootAuthenticationService.getAccessToken();
+
+        List<UserKeycloakDto> userFromKeycloakDb = keycloakServiceClient.getUser(accessToken, email);
+        userFromKeycloakDb.get(0).setEnabled(enabled);
+
+        try {
+            keycloakServiceClient.updateAccount(
+                    accessToken,
+                    userFromKeycloakDb.get(0).getId(),
+                    userFromKeycloakDb.get(0)
+            );
+            return ResponseEntity.noContent().build();
+        } catch (FeignException ex) {
+            logger.error("FeignException occurred: {}", ex.getMessage());
             return ResponseEntity.noContent().build();
         }
     }
@@ -131,6 +152,7 @@ public class KeycloakServiceImpl implements KeycloakService {
         roles.add(roleStudent);
         keycloakServiceClient.assignRole(authorization, newUserId, roles);
     }
+
     private UserKeycloakDto getUserData(UserDto user, String password) {
         List<Credential> credentials = new ArrayList<>();
         credentials.add(new Credential("password", password, true));
