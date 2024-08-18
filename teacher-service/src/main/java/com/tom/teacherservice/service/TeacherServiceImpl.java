@@ -6,6 +6,7 @@ import com.tom.teacherservice.model.Status;
 import com.tom.teacherservice.model.Teacher;
 import com.tom.teacherservice.repo.TeacherRepository;
 import com.tom.teacherservice.security.AuthenticationContext;
+import com.tom.teacherservice.security.JwtUtils;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
     private final AuthenticationContext authenticationContext;
+    private final JwtUtils jwtUtils;
     private final CalendarServiceClient calendarServiceClient;
     private final CourseServiceClient courseServiceClient;
     private final KeycloakServiceClient keycloakServiceClient;
@@ -118,6 +120,15 @@ public class TeacherServiceImpl implements TeacherService {
         Teacher teacherFromDb = teacherRepository.findById(id)
                 .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
 
+        boolean isTeacher = authenticationContext();
+
+        if(isTeacher){
+            String emailFromJwt = jwtUtils.getUserEmailFromJwt();
+            if(isTeacher && !emailFromJwt.equals(teacherFromDb.getEmail())){
+                throw new TeacherException(TeacherError.TEACHER_OPERATION_FORBIDDEN);
+            }
+        }
+        
         try {
             keycloakServiceClient.updateAccount(teacher, teacherFromDb.getEmail());
         } catch (FeignException ex) {
@@ -197,5 +208,16 @@ public class TeacherServiceImpl implements TeacherService {
                     teacherFromDb.setStatus(teacher.getStatus());
                     return teacherRepository.save(teacherFromDb);
                 }).orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
+    }
+
+    private boolean authenticationContext() {
+        boolean result = false;
+        Authentication authentication = authenticationContext.getAuthentication();
+        boolean isTeacher = authentication.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_teacher"));
+        if (isTeacher) {
+            result = true;
+        }
+        return result;
     }
 }

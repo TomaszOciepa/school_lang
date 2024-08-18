@@ -6,14 +6,23 @@
       </blockquote>
     </figure>
   </div>
-  <div class="col text-start">
+  <div class="col text-start" *ngIf="user">
     <h3>
       <small class="text-body-secondary"> imię i nazwisko: </small>
-      {{ firstName }} {{ lastName }}
+      {{ user.firstName }} {{ user.lastName }}
     </h3>
     <h3>
       <small class="text-body-secondary"> adress email;</small>
-      {{ email }}
+      {{ user.email }}
     </h3>
+  </div>
+  <div class="col">
+    <div class="row row-cols-2">
+      <div class="col p-3">
+        <button mat-raised-button color="primary" (click)="openEditDialog()">
+          Edycja
+        </button>
+      </div>
+    </div>
   </div>
 </div>
