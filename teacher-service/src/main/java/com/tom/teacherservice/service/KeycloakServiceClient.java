@@ -3,10 +3,7 @@ package com.tom.teacherservice.service;
 import com.tom.teacherservice.model.Teacher;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "KEYCLOAK-CLIENT-SERVICE")
 public interface KeycloakServiceClient {
@@ -16,4 +13,7 @@ public interface KeycloakServiceClient {
 
     @PutMapping("/keycloak/update-account/{email}")
     ResponseEntity<?> updateAccount(@RequestBody Teacher teacher, @PathVariable String email);
+
+    @PutMapping("/keycloak/enabled-account/{email}")
+    ResponseEntity<Void> enabledAccount(@PathVariable String email, @RequestParam boolean enabled);
 }

@@ -49,6 +49,10 @@ public class KeycloakServiceImpl implements KeycloakService {
         UserKeycloakDto userKeycloakDto = getUserData(user, password);
         String accessToken = rootAuthenticationService.getAccessToken();
 
+        if(role.equals("teacher")){
+            userKeycloakDto.setEnabled(false);
+        }
+
         try {
             keycloakServiceClient.createUser(accessToken, userKeycloakDto);
         } catch (FeignException ex) {

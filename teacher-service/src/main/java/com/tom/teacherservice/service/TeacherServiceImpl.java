@@ -86,7 +86,7 @@ public class TeacherServiceImpl implements TeacherService {
     public Teacher addTeacher(Teacher teacher) {
         logger.info("Trying create new teacher.");
         validateTeacherEmailExists(teacher.getEmail());
-        teacher.setStatus(Status.ACTIVE);
+        teacher.setStatus(Status.INACTIVE);
         return teacherRepository.save(teacher);
     }
 
@@ -95,6 +95,13 @@ public class TeacherServiceImpl implements TeacherService {
         logger.info("Trying deleteTeacher with id: {}.", id);
         Teacher teacher = teacherRepository.findById(id)
                 .orElseThrow(() -> new TeacherException(TeacherError.TEACHER_NOT_FOUND));
+
+        try{
+            keycloakServiceClient.enabledAccount(teacher.getEmail(), false);
+        }catch (FeignException ex) {
+            logger.error("FeignException occurred: {}", ex.getMessage());
+        }
+
         teacher.setStatus(Status.INACTIVE);
         teacherRepository.save(teacher);
     }
@@ -184,6 +191,12 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public void restoreTeacherAccount(Long id) {
         Teacher teacher = getTeacherById(id);
+
+        try{
+            keycloakServiceClient.enabledAccount(teacher.getEmail(), true);
+        }catch (FeignException ex) {
+            logger.error("FeignException occurred: {}", ex.getMessage());
+        }
         teacher.setStatus(Status.ACTIVE);
         teacherRepository.save(teacher);
     }
