@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name = "keycloak", url = "http://localhost:8030")
+@FeignClient(name = "keycloak", url = "${keycloak.url}")
 public interface KeycloakServiceClient {
 
     @PostMapping(value = "/realms/master/protocol/openid-connect/token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)

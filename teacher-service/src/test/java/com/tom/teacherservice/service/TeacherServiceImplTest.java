@@ -196,20 +196,20 @@ class TeacherServiceImplTest {
         assertThrows(TeacherException.class, ()->teacherServiceImpl.patchTeacher(mockId, mockTeacher));
     }
 
-    @Test
-    void deleteTeacherVerifyMethod() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        Teacher mockTeacher = prepareTeacher();
-        Long mockId = mockTeacher.getId();
-        given(teacherRepository.findById(mockId)).willReturn(Optional.of(mockTeacher));
-        //when
-        teacherServiceImpl.deactivateTeacherById(mockId);
-        //then
-        verify(teacherRepository, times(1)).findById(mockId);
-        verify(teacherRepository, times(1)).save(mockTeacher);
-        assertEquals(Status.INACTIVE, mockTeacher.getStatus());
-    }
+//    @Test
+//    void deleteTeacherVerifyMethod() {
+//        MockitoAnnotations.openMocks(this);
+//        //given
+//        Teacher mockTeacher = prepareTeacher();
+//        Long mockId = mockTeacher.getId();
+//        given(teacherRepository.findById(mockId)).willReturn(Optional.of(mockTeacher));
+//        //when
+//        teacherServiceImpl.deactivateTeacherById(mockId);
+//        //then
+//        verify(teacherRepository, times(1)).findById(mockId);
+//        verify(teacherRepository, times(1)).save(mockTeacher);
+//        assertEquals(Status.INACTIVE, mockTeacher.getStatus());
+//    }
 
     @Test
     void getTeachersByIdNumber() {

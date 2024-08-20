@@ -129,7 +129,40 @@ services:
       - lang-school-net
     depends_on:
       - mongo-calendar
-      - eureka-service     
+      - eureka-service
+  email-service:
+    platform: linux/amd64
+    build: ./email-service
+    container_name: "email-service"
+    ports:
+      - "8096:8096"
+    networks:
+      - lang-school-net
+    depends_on:
+      - rabbitmq-service
+      - eureka-service
+  keycloak-client-service:
+    platform: linux/amd64
+    build: ./keycloak-client-service
+    container_name: "keycloak-client-service"
+    ports:
+      - "8095:8095"
+    networks:
+      - lang-school-net
+  rabbitmq-service:
+    image: rabbitmq:3.13-management
+    container_name: "rabbitmq-service"
+    hostname: mango-rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: pass
+    volumes:
+      - /Users/tom/devel/docker/lang-school/volume/rabbitmq-service:/var/lib/rabbitmq
+    networks:
+      - lang-school-net            
 networks:
   lang-school-net:
     driver: bridge
