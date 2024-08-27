@@ -14,6 +14,7 @@ services:
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     networks:
       - lang-school-net
+
   mysql-teacher:
     platform: linux/x86_64
     build: ./teacher-service//src/main/resources/db
@@ -28,6 +29,7 @@ services:
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     networks:
       - lang-school-net
+
   mongo-course:
     build: ./course-service//src/main/resources/db
     image: mongo:latest
@@ -41,6 +43,7 @@ services:
       - /Users/tom/devel/docker/lang-school/volume/course-service:/data/db
     networks:
       - lang-school-net
+
   mongo-calendar:
     build: ./calendar-service//src/main/resources/db
     image: mongo:latest
@@ -54,6 +57,7 @@ services:
       - /Users/tom/devel/docker/lang-school/volume/calendar-service:/data/db
     networks:
       - lang-school-net
+
   keycloak-service:
     image: quay.io/keycloak/keycloak:23.0.3
     container_name: keycloak
@@ -68,6 +72,12 @@ services:
     command: ["start-dev"]
     networks:
       - lang-school-net            
+    depends_on:
+      - mysql-student
+      - mysql-teacher
+      - mongo-course
+      - mongo-calendar
+
   eureka-service:
     platform: linux/amd64
     build: ./eureka-service
@@ -76,6 +86,12 @@ services:
       - "8761:8761"
     networks:
       - lang-school-net
+    depends_on:
+      - mysql-student
+      - mysql-teacher
+      - mongo-course
+      - mongo-calendar
+
   gateway-service:
     platform: linux/amd64
     build: ./gateway-service
@@ -86,6 +102,7 @@ services:
       - lang-school-net
     depends_on:
       - eureka-service
+
   student-service:
     platform: linux/amd64
     build: ./student-service
@@ -97,6 +114,7 @@ services:
     depends_on:
       - mysql-student
       - eureka-service
+
   teacher-service:
     platform: linux/amd64
     build: ./teacher-service
@@ -107,7 +125,8 @@ services:
       - lang-school-net
     depends_on:
       - mysql-teacher
-      - eureka-service 
+      - eureka-service
+
   course-service:
     platform: linux/amd64
     build: ./course-service
@@ -119,6 +138,7 @@ services:
     depends_on:
       - mongo-course
       - eureka-service
+
   calendar-service:
     platform: linux/amd64
     build: ./calendar-service
@@ -130,6 +150,7 @@ services:
     depends_on:
       - mongo-calendar
       - eureka-service
+
   email-service:
     platform: linux/amd64
     build: ./email-service
@@ -141,6 +162,7 @@ services:
     depends_on:
       - rabbitmq-service
       - eureka-service
+
   keycloak-client-service:
     platform: linux/amd64
     build: ./keycloak-client-service
@@ -149,6 +171,9 @@ services:
       - "8095:8095"
     networks:
       - lang-school-net
+    depends_on:
+      - keycloak-service
+
   rabbitmq-service:
     image: rabbitmq:3.13-management
     container_name: "rabbitmq-service"
@@ -163,6 +188,7 @@ services:
       - /Users/tom/devel/docker/lang-school/volume/rabbitmq-service:/var/lib/rabbitmq
     networks:
       - lang-school-net            
+
 networks:
   lang-school-net:
     driver: bridge
