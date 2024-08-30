@@ -94,7 +94,8 @@ export class CourseComponent {
     });
   }
 
-  openDialog() {
+  openDialog(deleteSound: HTMLAudioElement) {
+    deleteSound.play();
     const dialogRef = this.dialog.open(DeleteCourseDialogComponent, {
       data: {
         course: this.course,

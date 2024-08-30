@@ -1,71 +1,75 @@
-<div class="container text-center" *ngIf="course">
-  <!-- Stack the columns on mobile by making one full-width and the other half-width -->
-  <div class="row">
-    <div class="col-md-8"></div>
-    <div class="col-6 col-md-4">
-      <div class="row row-cols-2">
-        <div class="col p-3">
-          <button mat-raised-button color="primary" (click)="openEditDialog()">
-            Edytuj kurs
-          </button>
-        </div>
-        <div class="col p-3">
-          <button mat-raised-button color="warn" (click)="openDialog()">
-            Usuń kurs
-          </button>
+<section class="slider-area slider-area2" *ngIf="course">
+  <div class="slider-active">
+    <!-- Single Slider -->
+    <div class="single-slider slider-height2">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-8 col-lg-11 col-md-12">
+            <div class="hero__caption hero__caption2">
+              <figure class="text-start">
+                <blockquote class="blockquote">
+                  <h1 data-animation="bounceIn" data-delay="0.2s">
+                    {{ course.name }}
+                  </h1>
+                </blockquote>
+                <figcaption class="blockquote-footer">
+                  kurs języka
+                  <cite title="Source Title">{{ course.language }}</cite>
+                </figcaption>
+              </figure>
+            </div>
+            <div *ngIf="course">
+              <button class="pushable" (click)="openEditDialog()">
+                <span class="shadow"></span>
+                <span class="edge"></span>
+                <span class="front">Edytuj</span>
+              </button>
+              <audio
+                #deleteSound
+                src="../../../../../assets/sound/windows_98_error.mp3"
+                preload="auto"
+              ></audio>
+              <button class="pushable" (click)="openDialog(deleteSound)">
+                <span class="shadow"></span>
+                <span class="edge"></span>
+                <span class="front">Usuń</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+</section>
 
+<div class="container text-center my-margin" *ngIf="course">
   <div class="row">
-    <div class="col">
-      <figure class="text-start">
-        <blockquote class="blockquote">
-          <h2>{{ course.name }}</h2>
-        </blockquote>
-        <figcaption class="blockquote-footer">
-          kurs języka <cite title="Source Title">{{ course.language }}</cite>
-        </figcaption>
-      </figure>
-    </div>
     <div class="col text-start">
       <h3>
-        Start kursu:
-        <small class="text-body-secondary">
-          {{ course.startDate | date : "EEEE, d MMMM yyyy" }}
-        </small>
+        <small class="text-body-secondary"> Start: </small>
+        {{ course.startDate | date : "EEEE, d MMMM yyyy" }}
       </h3>
       <h3>
-        Koniec kursu:
-        <small class="text-body-secondary">
-          {{ course.endDate | date : "EEEE, d MMMM yyyy" }}
-        </small>
-      </h3>
-
-      <h3>
-        Status:
-        <small class="text-body-secondary">
-          {{ course.status }}
-        </small>
+        <small class="text-body-secondary"> Koniec: </small>
+        {{ course.endDate | date : "EEEE, d MMMM yyyy" }}
       </h3>
     </div>
-    <div class="col">
-      <ul class="list-group list-group-flush text-start">
+    <div class="col text-start">
+      <ul class="list-group list-group-flush text-start course-details">
         <li class="list-group-item">
-          maksymalna liczba lekcji:
+          ilość lekcji:
           <small class="text-body-secondary">{{ course.lessonsLimit }}</small>
+        </li>
+        <li class="list-group-item">
+          ilość miejsc:
+          <small class="text-body-secondary">{{
+            course.participantsLimit
+          }}</small>
         </li>
         <li class="list-group-item">
           liczba studentów:
           <small class="text-body-secondary">{{
             course.participantsNumber
-          }}</small>
-        </li>
-        <li class="list-group-item">
-          maksymalna liczba studentów:
-          <small class="text-body-secondary">{{
-            course.participantsLimit
           }}</small>
         </li>
         <li class="list-group-item">
@@ -75,6 +79,14 @@
           }}</small>
         </li>
       </ul>
+    </div>
+    <div class="col">
+      <h3>
+        Status:
+        <small class="text-body-secondary">
+          {{ course.status }}
+        </small>
+      </h3>
     </div>
   </div>
 

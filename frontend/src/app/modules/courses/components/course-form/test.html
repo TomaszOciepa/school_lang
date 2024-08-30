@@ -1,0 +1,85 @@
+<div class="container">
+  <div class="text">Contact us Form</div>
+  <form [formGroup]="courseForm" (ngSubmit)="onAddCourse()">
+    <div class="form-row">
+      <div class="input-data">
+        <mat-form-field>
+          <mat-label>Nazwa</mat-label>
+          <input type="text" matInput formControlName="name" />
+          <div class="underline"></div>
+          <!-- <label for="">First Name</label> -->
+          <mat-error *ngIf="controls.name.invalid"
+            >{{ getErrorMessage(controls.name) }}</mat-error
+          >
+        </mat-form-field>
+      </div>
+
+      <div class="input-data">
+        <mat-form-field>
+          <mat-label>Język</mat-label>
+          <mat-select formControlName="language">
+            <mat-option value="ENGLISH">Angielski</mat-option>
+            <mat-option value="POLISH">Polski</mat-option>
+            <mat-option value="GERMAN">Niemiecki</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="input-data">
+        <mat-form-field>
+          <mat-label>Maksymalna ilość uczniów</mat-label>
+          <input type="text" matInput formControlName="participantsLimit" />
+          <div class="underline"></div>
+          <mat-error *ngIf="controls.participantsLimit.invalid"
+            >{{ getErrorMessage(controls.participantsLimit) }}</mat-error
+          >
+        </mat-form-field>
+      </div>
+      <div class="input-data">
+        <mat-form-field>
+          <mat-label>Liczba lekcji</mat-label>
+          <input type="text" matInput formControlName="lessonsLimit" />
+          <div class="underline"></div>
+          <mat-error *ngIf="controls.lessonsLimit.invalid"
+            >{{ getErrorMessage(controls.lessonsLimit) }}</mat-error
+          >
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="input-data">
+        <mat-form-field>
+          <mat-label>Data rozpoczęcia i zakończenia</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input
+              matStartDate
+              placeholder="Start date"
+              formControlName="startDate"
+            />
+            <input
+              matEndDate
+              placeholder="End date"
+              formControlName="endDate"
+            />
+          </mat-date-range-input>
+          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+    <div *ngIf="errMsg" class="alert alert-danger" role="alert">
+      {{ errMsg }}
+    </div>
+    <div class="form-row submit-btn">
+      <div class="input-data">
+        <div class="inner"></div>
+        <input type="submit" value="submit" />
+      </div>
+    </div>
+  </form>
+</div>
