@@ -18,7 +18,7 @@
 <div [ngClass]="{ 'my-form-container': !editMode }">
   <div class="course-form" [ngClass]="{ 'full-width': editMode }">
     <div class="teacher-form-wrapper mt-3">
-      <form [formGroup]="courseForm" (ngSubmit)="onAddCourse()">
+      <form [formGroup]="courseForm">
         <div>
           <mat-form-field>
             <mat-label>Nazwa</mat-label>
@@ -97,6 +97,7 @@
           <button
             class="pushable"
             type="submit"
+            (click)="onAddCourse()"
             [disabled]="courseForm.invalid"
           >
             <span class="shadow"></span>

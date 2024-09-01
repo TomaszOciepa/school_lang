@@ -90,9 +90,9 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row" style="margin-bottom: 60px">
     <div class="col text-start p-3">
-      <h2>Lekcje</h2>
+      <h1>Lekcje</h1>
 
       <app-course-lessons-table
         [course-id]="course.id"
@@ -106,8 +106,11 @@
     <div class="col text-start">
       <div *ngIf="!students">
         <h2>Lista studentów jest pusta...</h2>
-        <button class="btn btn-outline-info" (click)="openEnrollDialog(true)">
-          dodaj studenta
+
+        <button class="pushable" type="submit" (click)="openEnrollDialog(true)">
+          <span class="shadow"></span>
+          <span class="edge"></span>
+          <span class="front"> dodaj studenta</span>
         </button>
       </div>
       <div *ngIf="students">
@@ -115,10 +118,13 @@
         <div *ngIf="errMsg" class="alert alert-danger" role="alert">
           {{ errMsg }}
         </div>
-        <button class="btn btn-outline-info" (click)="openEnrollDialog(true)">
-          dodaj studenta
+
+        <button class="pushable" type="submit" (click)="openEnrollDialog(true)">
+          <span class="shadow"></span>
+          <span class="edge"></span>
+          <span class="front"> dodaj studenta</span>
         </button>
-        <table class="table">
+        <table class="table" style="font-size: medium">
           <thead>
             <tr>
               <th scope="col">lp.</th>
@@ -137,19 +143,31 @@
               </td>
               <td>{{ student.status }}</td>
               <td>
+                <audio
+                  #deleteSound
+                  src="../../../../../assets/sound/windows_98_error.mp3"
+                  preload="auto"
+                ></audio>
                 <button
                   *ngIf="student.status != 'REMOVED'"
-                  class="btn btn-outline-danger"
-                  (click)="openUnEnrollStudentDialog(student, true)"
+                  class="pushable"
+                  (click)="
+                    openUnEnrollStudentDialog(student, true, deleteSound)
+                  "
                 >
-                  usuń
+                  <span class="shadow"></span>
+                  <span class="edge"></span>
+                  <span class="front">Usuń</span>
                 </button>
+
                 <button
                   *ngIf="student.status == 'REMOVED'"
-                  class="btn btn-outline-primary"
+                  class="pushable"
                   (click)="restoreStudentToCourseDialog(student)"
                 >
-                  przywróć
+                  <span class="shadow"></span>
+                  <span class="edge"></span>
+                  <span class="front">przywróć</span>
                 </button>
               </td>
             </tr>
@@ -162,22 +180,28 @@
         <h2>Lista nauczycieli jest pusta...</h2>
         <button
           *ngIf="role === 'ADMIN'"
-          class="btn btn-outline-info"
+          class="pushable"
+          type="submit"
           (click)="openEnrollDialog(false)"
         >
-          dodaj nauczyciela
+          <span class="shadow"></span>
+          <span class="edge"></span>
+          <span class="front">dodaj nauczyciela</span>
         </button>
       </div>
       <div *ngIf="teachers">
         <h2>Nauczyciele</h2>
         <button
           *ngIf="role === 'ADMIN'"
-          class="btn btn-outline-info"
+          class="pushable"
+          type="submit"
           (click)="openEnrollDialog(false)"
         >
-          dodaj nauczyciela
+          <span class="shadow"></span>
+          <span class="edge"></span>
+          <span class="front">dodaj nauczyciela</span>
         </button>
-        <table class="table">
+        <table class="table" style="font-size: medium">
           <thead>
             <tr>
               <th scope="col">lp.</th>
@@ -196,12 +220,22 @@
               </td>
               <td>{{ teacher.status }}</td>
               <td>
+                <audio
+                  #deleteSound
+                  src="../../../../../assets/sound/windows_98_error.mp3"
+                  preload="auto"
+                ></audio>
                 <button
                   *ngIf="role === 'ADMIN'"
-                  class="btn btn-outline-danger"
-                  (click)="openUnEnrollTeacherDialog(teacher, false)"
+                  class="pushable"
+                  type="submit"
+                  (click)="
+                    openUnEnrollTeacherDialog(teacher, false, deleteSound)
+                  "
                 >
-                  usuń
+                  <span class="shadow"></span>
+                  <span class="edge"></span>
+                  <span class="front">usuń</span>
                 </button>
               </td>
             </tr>

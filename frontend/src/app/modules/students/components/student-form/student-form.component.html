@@ -1,5 +1,22 @@
-<div class="teacher-form-wrapper mt-3">
-  <h2 *ngIf="!editMode">Dodaj ucznia:</h2>
+<section class="slider-area slider-area2" *ngIf="!editMode">
+  <div class="slider-active">
+    <div class="single-slider slider-height2">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-8 col-lg-11 col-md-12">
+            <div class="hero__caption hero__caption2">
+              <h1 *ngIf="!editMode" data-animation="bounceIn" data-delay="0.2s">
+                dodaj ucznia:
+              </h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="student-form-wrapper mt-3" style="margin-bottom: 40px">
   <div *ngIf="errMsg" class="alert alert-danger" role="alert">
     {{ errMsg }}
   </div>

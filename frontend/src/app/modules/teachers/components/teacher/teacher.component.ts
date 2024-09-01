@@ -57,7 +57,8 @@ export class TeacherDetailsComponent implements OnInit {
     });
   }
 
-  openDropDialog() {
+  openDropDialog(deleteSound: HTMLAudioElement) {
+    deleteSound.play();
     const dialogRef = this.dialog.open(DropTeacherDialogComponent, {
       data: {
         teacher: this.teacher,
@@ -74,6 +75,7 @@ export class TeacherDetailsComponent implements OnInit {
   }
 
   openEditDialog() {
+    console.log('techaer id: ' + this.teacher.id);
     const dialogRef = this.dialog.open(EditTeacherDialogComponent, {
       data: {
         teacher: this.teacher,

@@ -12,9 +12,6 @@ import { EditTeacherDialogComponent } from '../teachers/components/teacher/edit-
 })
 export class UserAccountComponent implements OnInit {
   user: User = {} as User;
-  // email?: string;
-  // firstName?: string;
-  // lastName?: string;
 
   constructor(
     private userProfileService: LoadUserProfileService,
@@ -29,16 +26,17 @@ export class UserAccountComponent implements OnInit {
   async loadUserProfile(): Promise<void> {
     await this.userProfileService.loadUserProfile();
 
-    if (this.userProfileService.isLoggedIn && this.userProfileService.isAdmin) {
-      this.user.email = this.userProfileService.userProfile?.email ?? '';
-      this.user.firstName =
-        this.userProfileService.userProfile?.firstName ?? '';
-      this.user.lastName = this.userProfileService.userProfile?.lastName ?? '';
-    }
+    // if (this.userProfileService.isLoggedIn && this.userProfileService.isAdmin) {
+    //   this.user.email = this.userProfileService.userProfile?.email ?? '';
+    //   this.user.firstName =
+    //     this.userProfileService.userProfile?.firstName ?? '';
+    //   this.user.lastName = this.userProfileService.userProfile?.lastName ?? '';
+    // }
 
     if (
-      this.userProfileService.isLoggedIn &&
-      this.userProfileService.isTeacher
+      this.userProfileService.isLoggedIn
+      //  &&
+      // this.userProfileService.isTeacher
     ) {
       this.getTeacher(this.userProfileService.userProfile?.email);
     }
@@ -47,15 +45,13 @@ export class UserAccountComponent implements OnInit {
   getTeacher(email?: string) {
     this.teacherService.getTeacherByEmail(email).subscribe({
       next: (result) => {
-        // this.user.email = result.email;
-        // this.user.firstName = result.firstName;
-        // this.user.lastName = result.lastName;
         this.user = result;
       },
     });
   }
 
   openEditDialog() {
+    console.log('user id: ');
     const dialogRef = this.dialog.open(EditTeacherDialogComponent, {
       data: {
         teacher: this.user,
