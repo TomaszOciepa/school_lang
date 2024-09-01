@@ -94,7 +94,8 @@ export class CourseComponent {
     });
   }
 
-  openDialog() {
+  openDialog(deleteSound: HTMLAudioElement) {
+    deleteSound.play();
     const dialogRef = this.dialog.open(DeleteCourseDialogComponent, {
       data: {
         course: this.course,
@@ -154,7 +155,12 @@ export class CourseComponent {
     }
   }
 
-  openUnEnrollStudentDialog(user: CourseMembers, studentIsEnabled: boolean) {
+  openUnEnrollStudentDialog(
+    user: CourseMembers,
+    studentIsEnabled: boolean,
+    deleteSound: HTMLAudioElement
+  ) {
+    deleteSound.play();
     const dialogRef = this.dialog.open(UnenrollCourseDialogComponent, {
       data: {
         studentIsEnabled: studentIsEnabled,
@@ -166,7 +172,12 @@ export class CourseComponent {
     });
   }
 
-  openUnEnrollTeacherDialog(user: User, studentIsEnabled: boolean) {
+  openUnEnrollTeacherDialog(
+    user: User,
+    studentIsEnabled: boolean,
+    deleteSound: HTMLAudioElement
+  ) {
+    deleteSound.play();
     const dialogRef = this.dialog.open(UnenrollCourseDialogComponent, {
       data: {
         studentIsEnabled: studentIsEnabled,

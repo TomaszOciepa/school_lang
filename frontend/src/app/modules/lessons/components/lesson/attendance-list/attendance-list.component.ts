@@ -79,7 +79,8 @@ export class AttendanceListComponent implements OnInit {
     });
   }
 
-  openUnEnrollDialog(user: AttendanceList) {
+  openUnEnrollDialog(user: AttendanceList, deleteSound: HTMLAudioElement) {
+    deleteSound.play();
     const dialogRef = this.dialog.open(UnEnrollLessonDialogComponent, {
       data: {
         lessonId: this.lesson.id,

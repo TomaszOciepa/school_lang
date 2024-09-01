@@ -1,84 +1,77 @@
-<div class="container text-center">
-  <div class="row">
-    <div class="col-md-8"></div>
-    <div class="col-6 col-md-4">
-      <div class="row row-cols-2">
-        <div class="col p-3" *ngIf="role == 'ADMIN'">
-          <button mat-raised-button color="primary" (click)="openEditDialog()">
-            Edycja
-          </button>
-        </div>
-        <div class="col p-3" *ngIf="role == 'ADMIN'">
-          <button
-            *ngIf="teacher && teacher.status == 'ACTIVE'"
-            mat-raised-button
-            color="warn"
-            (click)="openDialog()"
-          >
-            dezaktywuj konto
-          </button>
+<section class="slider-area slider-area2">
+  <div class="slider-active">
+    <!-- Single Slider -->
+    <div class="single-slider slider-height2">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-8 col-lg-11 col-md-12">
+            <div class="hero__caption hero__caption2" *ngIf="teacher">
+              <figure class="text-start">
+                <blockquote class="blockquote">
+                  <h1 data-animation="bounceIn" data-delay="0.2s">
+                    {{ teacher.firstName }} {{ teacher.lastName }}
+                  </h1>
+                  <h2 style="color: white">
+                    {{ teacher.email }}
+                  </h2>
+                </blockquote>
+                <figcaption
+                  class="blockquote-footer"
+                  style="color: wheat; font-size: medium"
+                >
+                  <cite title="Source Title">{{ teacher.status }}</cite>
+                </figcaption>
+              </figure>
+            </div>
+            <button class="pushable" (click)="openEditDialog()">
+              <span class="shadow"></span>
+              <span class="edge"></span>
+              <span class="front">Edycja</span>
+            </button>
 
-          <button
-            *ngIf="teacher && teacher.status == 'INACTIVE'"
-            mat-raised-button
-            color="warn"
-            (click)="openRestoreDialog()"
-          >
-            aktywuj konto
-          </button>
-        </div>
+            <button
+              *ngIf="teacher && teacher.status == 'ACTIVE' && role == 'ADMIN'"
+              class="pushable"
+              (click)="openDialog()"
+            >
+              <span class="shadow"></span>
+              <span class="edge"></span>
+              <span class="front">dezaktywuj konto</span>
+            </button>
 
-        <div class="col p-3" *ngIf="role == 'ADMIN'">
-          <button mat-raised-button color="warn" (click)="openDropDialog()">
-            usuń
-          </button>
+            <button
+              *ngIf="teacher && teacher.status == 'INACTIVE' && role == 'ADMIN'"
+              class="pushable"
+              (click)="openRestoreDialog()"
+            >
+              <span class="shadow"></span>
+              <span class="edge"></span>
+              <span class="front">aktywuj konto</span>
+            </button>
+
+            <audio
+              #deleteSound
+              src="../../../../../assets/sound/windows_98_error.mp3"
+              preload="auto"
+            ></audio>
+            <button
+              *ngIf="role == 'ADMIN'"
+              class="pushable"
+              (click)="openDropDialog(deleteSound)"
+            >
+              <span class="shadow"></span>
+              <span class="edge"></span>
+              <span class="front">Usuń</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
+</section>
 
+<div class="container text-center">
   <div class="row" *ngIf="teacher">
-    <div class="col">
-      <figure class="text-start">
-        <blockquote class="blockquote">
-          <h2>nauczyciel</h2>
-        </blockquote>
-        <figcaption class="blockquote-footer">
-          w szkole... <cite title="Source Title">Lang school</cite>
-        </figcaption>
-      </figure>
-    </div>
-    <div class="col text-start">
-      <h3>
-        <small class="text-body-secondary"> imię i nazwisko: </small>
-        {{ teacher.firstName }} {{ teacher.lastName }}
-      </h3>
-      <h3>
-        <small class="text-body-secondary"> adress email;</small>
-        {{ teacher.email }}
-      </h3>
-
-      <h3>
-        <small class="text-body-secondary">status:</small>
-        {{ teacher.status }}
-      </h3>
-    </div>
-    <div class="col">
-      <ul class="list-group list-group-flush text-start">
-        <li class="list-group-item">
-          Liczba studentów:
-          <small class="text-body-secondary"></small>
-        </li>
-        <li class="list-group-item">
-          liczba kursów:
-          <small class="text-body-secondary"></small>
-        </li>
-        <li class="list-group-item">
-          Liczba lekcji:
-          <small class="text-body-secondary"></small>
-        </li>
-      </ul>
-    </div>
     <div class="row text-start p-md-3">
       <h2>Kursy</h2>
       <app-teacher-courses-table

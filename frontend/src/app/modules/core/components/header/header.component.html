@@ -1,4 +1,4 @@
-<nav>
+<!-- <nav>
   <mat-toolbar color="primary">
     <button mat-button routerLink="/"><span>Lang School</span></button>
     <span class="spacer"></span>
@@ -47,11 +47,102 @@
     <button *ngIf="!isLoggedIn" mat-button routerLink="register">
       załóŻ konto
     </button>
-    <!-- <p *ngIf="isLoggedIn">
-      {{ userProfile?.firstName }}
-    </p> -->
     <button *ngIf="isLoggedIn" mat-button (click)="logout()">
       wyloguj ({{ userProfile?.firstName }})
     </button>
   </mat-toolbar>
-</nav>
+</nav> -->
+
+<!-- Header Start -->
+<div class="header-area header-transparent">
+  <div class="main-header">
+    <div class="header-bottom header-sticky">
+      <div class="container-fluid">
+        <div class="row align-items-center">
+          <!-- Logo -->
+          <div class="col-xl-2 col-lg-2">
+            <div class="logo">
+              <a href="index.html"
+                ><img src="assets/img/logo/logo.png" alt=""
+              /></a>
+            </div>
+          </div>
+          <div class="col-xl-10 col-lg-10">
+            <div
+              class="menu-wrapper d-flex align-items-center justify-content-end"
+            >
+              <!-- Main-menu -->
+              <div class="main-menu d-none d-lg-block">
+                <nav>
+                  <ul id="navigation">
+                    <li class="active"><a routerLink="/">Home</a></li>
+                    <li class="active">
+                      <a routerLink="course-offering">Oferta</a>
+                    </li>
+                    <li *ngIf="isAdmin || isTeacher">
+                      <a routerLink="courses">Kursy</a>
+                    </li>
+                    <li *ngIf="isAdmin || isTeacher">
+                      <a routerLink="lessons">Lekcje</a>
+                    </li>
+                    <li *ngIf="isAdmin || isTeacher">
+                      <a routerLink="teachers">Nauczyciele</a>
+                    </li>
+                    <li *ngIf="isAdmin || isTeacher">
+                      <a routerLink="students">Uczniowie</a>
+                    </li>
+                    <li *ngIf="isAdmin || isTeacher">
+                      <a routerLink="user-account">Moje konto</a>
+                    </li>
+                    <li *ngIf="isAdmin">
+                      <a href="#">Ustawienia</a>
+                      <ul class="submenu">
+                        <li><a routerLink="settings/students">Studenci</a></li>
+                        <li>
+                          <a routerLink="settings/teachers">Nauczyciele</a>
+                        </li>
+                      </ul>
+                    </li>
+
+                    <ng-container *ngIf="isLoggedIn && isStudent">
+                      <li>
+                        <a routerLink="account-student/my-courses">Kursy</a>
+                      </li>
+                      <li>
+                        <a routerLink="account-student/my-lessons">Lekcje</a>
+                      </li>
+                      <li>
+                        <a routerLink="account-student/my-account"
+                          >Moje konto</a
+                        >
+                      </li>
+                    </ng-container>
+
+                    <li *ngIf="!isLoggedIn"><a routerLink="">Kontakt</a></li>
+                    <!-- Button -->
+                    <li *ngIf="!isLoggedIn" class="button-header margin-left">
+                      <a routerLink="register" class="btn">Dołącz</a>
+                    </li>
+                    <li *ngIf="!isLoggedIn" class="button-header">
+                      <a (click)="login()" class="btn btn3">Zaloguj</a>
+                    </li>
+                    <li *ngIf="isLoggedIn" class="button-header">
+                      <a (click)="logout()" class="btn btn3"
+                        >Wyloguj ({{ userProfile?.firstName }})</a
+                      >
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+          <!-- Mobile Menu -->
+          <div class="col-12">
+            <div class="mobile_menu d-block d-lg-none"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Header End -->

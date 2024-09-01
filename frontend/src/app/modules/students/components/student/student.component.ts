@@ -55,7 +55,8 @@ export class StudentComponent {
     });
   }
 
-  openDropDialog() {
+  openDropDialog(deleteSound: HTMLAudioElement) {
+    deleteSound.play();
     const dialogRef = this.dialog.open(DropStudentDialogComponent, {
       data: {
         student: this.student,

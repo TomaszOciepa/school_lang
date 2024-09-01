@@ -77,7 +77,8 @@ export class LessonComponent implements OnInit {
     });
   }
 
-  openDialog() {
+  openDialog(deleteSound: HTMLAudioElement) {
+    deleteSound.play();
     const dialogRef = this.dialog.open(DeleteLessonDialogComponent, {
       data: {
         lesson: this.lesson,

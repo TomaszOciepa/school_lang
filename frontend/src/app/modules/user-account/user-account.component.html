@@ -1,28 +1,36 @@
-<div class="row">
-  <div class="col">
-    <figure class="text-start">
-      <blockquote class="blockquote">
-        <h2>Twoje dane</h2>
-      </blockquote>
-    </figure>
-  </div>
-  <div class="col text-start" *ngIf="user">
-    <h3>
-      <small class="text-body-secondary"> imię i nazwisko: </small>
-      {{ user.firstName }} {{ user.lastName }}
-    </h3>
-    <h3>
-      <small class="text-body-secondary"> adress email;</small>
-      {{ user.email }}
-    </h3>
-  </div>
-  <div class="col">
-    <div class="row row-cols-2">
-      <div class="col p-3">
-        <button mat-raised-button color="primary" (click)="openEditDialog()">
-          Edycja
-        </button>
+<section class="slider-area slider-area2">
+  <div class="slider-active">
+    <!-- Single Slider -->
+    <div class="single-slider slider-height2">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-8 col-lg-11 col-md-12">
+            <div class="hero__caption hero__caption2" *ngIf="user">
+              <figure class="text-start">
+                <blockquote class="blockquote">
+                  <h1 data-animation="bounceIn" data-delay="0.2s">
+                    {{ user.firstName }} {{ user.lastName }}
+                  </h1>
+                  <h2 style="color: white">
+                    {{ user.email }}
+                  </h2>
+                </blockquote>
+                <figcaption
+                  class="blockquote-footer"
+                  style="color: wheat; font-size: medium"
+                >
+                  <cite title="Source Title">{{ user.status }}</cite>
+                </figcaption>
+              </figure>
+            </div>
+            <button class="pushable" (click)="openEditDialog()">
+              <span class="shadow"></span>
+              <span class="edge"></span>
+              <span class="front">Edycja</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</section>

@@ -1,34 +1,50 @@
-<div class="container text-center" *ngIf="lesson && teacher">
-  <!-- Stack the columns on mobile by making one full-width and the other half-width -->
-  <div class="row">
-    <div class="col-md-8"></div>
-    <div class="col-6 col-md-4">
-      <div class="row row-cols-2">
-        <div class="col p-3">
-          <button mat-raised-button color="primary" (click)="openEditDialog()">
-            Edytuj
-          </button>
-        </div>
-        <div class="col p-3">
-          <button mat-raised-button color="warn" (click)="openDialog()">
-            Usuń
-          </button>
+<section class="slider-area slider-area2" *ngIf="lesson">
+  <div class="slider-active">
+    <!-- Single Slider -->
+    <div class="single-slider slider-height2">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-8 col-lg-11 col-md-12">
+            <div class="hero__caption hero__caption2">
+              <figure class="text-start">
+                <blockquote class="blockquote">
+                  <h1 data-animation="bounceIn" data-delay="0.2s">
+                    {{ lesson.eventName }}
+                  </h1>
+                </blockquote>
+                <figcaption class="blockquote-footer">
+                  <cite title="Source Title">{{ lesson.description }}</cite>
+                </figcaption>
+              </figure>
+            </div>
+            <div>
+              <button class="pushable" (click)="openEditDialog()">
+                <span class="shadow"></span>
+                <span class="edge"></span>
+                <span class="front">Edytuj</span>
+              </button>
+              <audio
+                #deleteSound
+                src="../../../../../assets/sound/windows_98_error.mp3"
+                preload="auto"
+              ></audio>
+              <button class="pushable" (click)="openDialog(deleteSound)">
+                <span class="shadow"></span>
+                <span class="edge"></span>
+                <span class="front">Usuń</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+</section>
 
-  <div class="row">
-    <div class="col">
-      <figure class="text-start">
-        <blockquote class="blockquote">
-          <h2>{{ lesson.eventName }}</h2>
-        </blockquote>
-        <figcaption class="blockquote-footer">
-          <cite title="Source Title">{{ lesson.description }}</cite>
-        </figcaption>
-      </figure>
-    </div>
+<div class="container text-center" *ngIf="lesson && teacher">
+  <!-- Stack the columns on mobile by making one full-width and the other half-width -->
+
+  <div class="row my-margin">
     <div class="col text-start">
       <h3>
         <small class="text-body-secondary"> data rozpoczęcia: </small>
@@ -44,7 +60,7 @@
         <a [routerLink]="'/courses/' + course.id">{{ course.name }}</a>
       </h3>
     </div>
-    <div class="col">
+    <div class="col" style="font-size: medium">
       <ul class="list-group list-group-flush text-start">
         <li class="list-group-item">
           <small class="text-body-secondary">nauczyciel: </small>
@@ -61,8 +77,10 @@
   </div>
   <div class="row text-start">
     <div *ngIf="!lesson.courseId">
-      <button mat-raised-button color="primary" (click)="openEnrollDialog()">
-        dodaj studenta
+      <button class="pushable" (click)="openEnrollDialog()">
+        <span class="shadow"></span>
+        <span class="edge"></span>
+        <span class="front">dodaj studenta</span>
       </button>
     </div>
 
