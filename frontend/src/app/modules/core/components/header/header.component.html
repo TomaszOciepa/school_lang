@@ -1,59 +1,4 @@
-<!-- <nav>
-  <mat-toolbar color="primary">
-    <button mat-button routerLink="/"><span>Lang School</span></button>
-    <span class="spacer"></span>
-    <button mat-button routerLink="course-offering">nasza oferta</button>
-    <ng-container *ngIf="isLoggedIn">
-      <button mat-button routerLink="courses" *ngIf="isAdmin || isTeacher">
-        kursy
-      </button>
-      <button mat-button routerLink="lessons" *ngIf="isAdmin || isTeacher">
-        lekcje
-      </button>
-      <button mat-button routerLink="teachers" *ngIf="isAdmin || isTeacher">
-        nauczyciele
-      </button>
-      <button mat-button routerLink="students" *ngIf="isAdmin || isTeacher">
-        uczniowie
-      </button>
-
-      <button mat-button routerLink="user-account" *ngIf="isAdmin || isTeacher">
-        moje konto
-      </button>
-
-      <ng-container *ngIf="isAdmin">
-        <button mat-button [matMenuTriggerFor]="menu">ustawienia</button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item routerLink="settings/students">studenci</button>
-          <button mat-menu-item routerLink="settings/teachers">
-            nauczyciele
-          </button>
-        </mat-menu>
-      </ng-container>
-    </ng-container>
-
-    <ng-container *ngIf="isLoggedIn && isStudent">
-      <button mat-button routerLink="account-student/my-courses">kursy</button>
-      <button mat-button routerLink="account-student/my-lessons">lekcje</button>
-      <button mat-button routerLink="account-student/my-account">
-        moje konto
-      </button>
-    </ng-container>
-
-    <button mat-button routerLink="">kontakt</button>
-    <button *ngIf="!isLoggedIn" mat-button (click)="login()">
-      zaloguj się
-    </button>
-    <button *ngIf="!isLoggedIn" mat-button routerLink="register">
-      załóŻ konto
-    </button>
-    <button *ngIf="isLoggedIn" mat-button (click)="logout()">
-      wyloguj ({{ userProfile?.firstName }})
-    </button>
-  </mat-toolbar>
-</nav> -->
-
-<!-- Header Start -->
+  <!-- Header Start -->
 <div class="header-area header-transparent">
   <div class="main-header">
     <div class="header-bottom header-sticky">
@@ -117,7 +62,6 @@
                         >
                       </li>
                     </ng-container>
-
                     <li *ngIf="!isLoggedIn"><a routerLink="">Kontakt</a></li>
                     <!-- Button -->
                     <li *ngIf="!isLoggedIn" class="button-header margin-left">
