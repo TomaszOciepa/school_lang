@@ -17,6 +17,7 @@ export class CoursesTableComponent {
     'startDate',
     'status',
     'participantsNumber',
+    'price',
     'buttons',
   ];
   dataSource!: MatTableDataSource<Course>;

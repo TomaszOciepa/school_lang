@@ -23,6 +23,7 @@ export class CoursesTableComponent {
     'language',
     'startDate',
     'status',
+    'price',
     'participantsNumber',
     'buttons',
   ];

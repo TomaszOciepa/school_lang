@@ -13,7 +13,14 @@ import { LoadUserProfileService } from '../../core/services/load-user-profile.se
   styleUrls: ['./courses.component.css'],
 })
 export class CoursesComponent implements OnInit {
-  displayedColumns: string[] = ['lp', 'name', 'language', 'date', 'buttons'];
+  displayedColumns: string[] = [
+    'lp',
+    'name',
+    'language',
+    'date',
+    'price',
+    'buttons',
+  ];
 
   dataSource!: MatTableDataSource<Course>;
 
