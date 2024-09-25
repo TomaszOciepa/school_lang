@@ -15,6 +15,6 @@ public interface OrderRepository extends MongoRepository<Order, String> {
     @Query("{'orderNumber': ?0}")
     Optional<Order> getByOrderNumber(String orderNumber);
 
-    @Query("{'orderNumber': ?0}")
+//    @Query("{'orderNumber': ?0}")
     boolean existsByOrderNumber(String orderNumber);
 }

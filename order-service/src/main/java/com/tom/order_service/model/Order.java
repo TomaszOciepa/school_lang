@@ -22,7 +22,7 @@ public class Order {
     private String paymentServiceNumber;
     private LocalDateTime createDate;
     private Long studentId;
-    private Long courseId;
+    private String courseId;
     private Status status;
     private String totalAmount;
 

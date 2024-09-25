@@ -5,6 +5,7 @@ import { Course } from 'src/app/modules/core/models/course.model';
 import { User } from 'src/app/modules/core/models/user.model';
 import { CourseService } from 'src/app/modules/core/services/course.service';
 import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
+import { OrderService } from 'src/app/modules/core/services/order.service';
 import { StudentService } from 'src/app/modules/core/services/student.service';
 
 @Component({
@@ -24,6 +25,7 @@ export class EnrollToCourseComponent {
   constructor(
     private userProfileService: LoadUserProfileService,
     private courseService: CourseService,
+    private orderService: OrderService,
     private studentService: StudentService,
     private route: ActivatedRoute
   ) {}
@@ -69,22 +71,20 @@ export class EnrollToCourseComponent {
   }
 
   enrollToCourse() {
-    this.courseService
-      .assignStudentToCourse(this.courseId, this.student.id)
-      .subscribe({
-        next: (response) => {
-          console.log('next: ' + response);
-        },
-        error: (err: HttpErrorResponse) => {
-          if (err.error.message == 'Student already enrolled on this course') {
-            this.errMsg = true;
-            this.button = false;
-          }
-        },
-        complete: () => {
-          this.isEnrollmentSuccessful = true;
+    this.orderService.createOrder(this.courseId, this.student.id).subscribe({
+      next: (response) => {
+        console.log('next: ' + response);
+      },
+      error: (err: HttpErrorResponse) => {
+        if (err.error.message == 'Student already enrolled on this course') {
+          this.errMsg = true;
           this.button = false;
-        },
-      });
+        }
+      },
+      complete: () => {
+        this.isEnrollmentSuccessful = true;
+        this.button = false;
+      },
+    });
   }
 }

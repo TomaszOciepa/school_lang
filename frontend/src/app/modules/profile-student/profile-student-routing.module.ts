@@ -7,6 +7,7 @@ import { CourseComponent } from '../profile-student/components/courses/course/co
 import { LessonComponent } from '../profile-student/components/lessons/lesson/lesson.component';
 import { ProfileStudentComponent } from './profile-student.component';
 import { EnrollToCourseComponent } from './components/enroll-to-course/enroll-to-course.component';
+import { PaymentsComponent } from './components/payments/payments.component';
 
 const routes: Routes = [
   { path: '', component: ProfileStudentComponent },
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'my-account', component: MyAccountComponent },
   { path: 'course/:id', component: CourseComponent },
   { path: 'lesson/:id', component: LessonComponent },
+  { path: 'my-payments', component: PaymentsComponent },
   { path: 'enroll-to-course/:id', component: EnrollToCourseComponent },
 ];
 

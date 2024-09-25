@@ -17,6 +17,7 @@ public interface CourseService {
     List<Course> getCoursesByLanguage(Language language);
     List<CourseStudentDto> getCourseMembers(String courseId);
     List<TeacherDto> getCourseTeachers(String courseId);
+    String  getCourseTotalAmount(String id);
     Course patchCourse(String id, Course course);
     void deleteCourseById(String id);
     void assignTeacherToCourse(String courseId, Long teacherId);

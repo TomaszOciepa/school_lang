@@ -5,6 +5,7 @@ import com.tom.order_service.service.OrderService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,10 +48,10 @@ public class OrderController {
     }
 
     @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
-    @PostMapping
-    public Order createOrder(@RequestBody Order order) {
+    @PostMapping("/course/{courseId}/student/{studentId}")
+    public ResponseEntity<Void> createOrder(@PathVariable String courseId, @PathVariable Long studentId) {
         logger.info("Post method createOrder().");
-        return orderService.create(order);
+        return orderService.create(courseId, studentId);
     }
 
     @PreAuthorize("hasRole('admin')")

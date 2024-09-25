@@ -13,6 +13,8 @@ import { LessonsTableComponent } from './components/lessons/lessons-table/lesson
 import { LessonComponent } from './components/lessons/lesson/lesson.component';
 import { CourseLessonsTableComponent } from './components/courses/course-lessons-table/course-lessons-table.component';
 import { EnrollToCourseComponent } from './components/enroll-to-course/enroll-to-course.component';
+import { PaymentsComponent } from './components/payments/payments.component';
+import { PaymentsTableComponent } from './components/payments/payments-table/payments-table.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,8 @@ import { EnrollToCourseComponent } from './components/enroll-to-course/enroll-to
     LessonComponent,
     CourseLessonsTableComponent,
     EnrollToCourseComponent,
+    PaymentsComponent,
+    PaymentsTableComponent,
   ],
   imports: [SharedModule, CommonModule, ProfileStudentRoutingModule],
 })

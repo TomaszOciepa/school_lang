@@ -155,6 +155,12 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public String getCourseTotalAmount(String id) {
+        Course courseFromDb = getCourseById(id, null);
+        return courseFromDb.getPrice();
+    }
+
+    @Override
     public Course patchCourse(String id, Course course) {
         logger.info("Fetching course by ID from the database: {}", id);
         Course courseFromDb = courseRepository.findById(id).orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
