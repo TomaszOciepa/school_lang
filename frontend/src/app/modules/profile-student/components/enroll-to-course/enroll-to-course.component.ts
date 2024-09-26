@@ -73,7 +73,8 @@ export class EnrollToCourseComponent {
   enrollToCourse() {
     this.orderService.createOrder(this.courseId, this.student.id).subscribe({
       next: (response) => {
-        console.log('next: ' + response);
+        console.log('URL payment: ' + response);
+        window.location.href = response;
       },
       error: (err: HttpErrorResponse) => {
         if (err.error.message == 'Student already enrolled on this course') {

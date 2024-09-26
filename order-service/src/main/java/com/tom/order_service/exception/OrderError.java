@@ -5,6 +5,7 @@ public enum OrderError {
     ORDER_NOT_FOUND("Order does not exists"),
 
     ORDER_OPERATION_FORBIDDEN("Operation is forbidden."),
+    ORDER_URL_IS_EMPTY("Payment system unavailable."),
     ORDER_STUDENT_ID_CANNOT_BE_EMPTY("Student id cannot be empty"),
     ORDER_TOTAL_AMOUNT_CANNOT_BE_EMPTY("Total amount id cannot be empty"),
     ORDER_COURSE_ID_CANNOT_BE_EMPTY("Course id cannot be empty"),

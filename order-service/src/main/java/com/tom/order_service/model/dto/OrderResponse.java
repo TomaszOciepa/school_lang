@@ -1,6 +1,5 @@
-package com.tom.payment_service.model;
+package com.tom.order_service.model.dto;
 
-import com.tom.payment_service.model.payu.StatusResponse;
 import lombok.*;
 
 @Getter

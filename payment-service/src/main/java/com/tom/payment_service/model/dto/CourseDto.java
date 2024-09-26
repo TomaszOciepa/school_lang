@@ -18,4 +18,5 @@ public class CourseDto {
     private Long lessonsLimit;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private String price;
 }

@@ -15,7 +15,7 @@ public interface OrderService {
 
     Order getByOrderNumber(String number);
 
-    ResponseEntity<Void> create(String courseId, Long studentId);
+    String create(String courseId, Long studentId);
 
     void deleteOrderById(String id);
 

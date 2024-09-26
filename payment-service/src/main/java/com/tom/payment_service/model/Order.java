@@ -1,5 +1,6 @@
 package com.tom.payment_service.model;
 
+import com.tom.payment_service.model.payu.StatusResponse;
 import lombok.*;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class OrderRequest {
+public class Order {
 
     private String notifyUrl;
     private String customerIp;
@@ -18,6 +19,7 @@ public class OrderRequest {
     private String currencyCode;
     private String totalAmount;
     private String extOrderId;
+    private StatusResponse status;
     private Buyer buyer;
     private List<Product> products;
 }

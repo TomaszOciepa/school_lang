@@ -4,6 +4,7 @@ import com.tom.order_service.exception.OrderError;
 import com.tom.order_service.exception.OrderException;
 import com.tom.order_service.model.Order;
 import com.tom.order_service.model.Status;
+import com.tom.order_service.model.dto.OrderResponse;
 import com.tom.order_service.repo.OrderRepository;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderNumberGenerator orderNumberGenerator;
     private final StudentServiceClient studentServiceClient;
     private final CourseServiceClient courseServiceClient;
+    private final  PaymentServiceClient paymentServiceClient;
 
 
     @Override
@@ -51,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseEntity<Void> create(String courseId, Long studentId) {
+    public String create(String courseId, Long studentId) {
 
         if (studentId == null ){
             throw new OrderException(OrderError.ORDER_STUDENT_ID_CANNOT_BE_EMPTY);
@@ -88,9 +90,22 @@ public class OrderServiceImpl implements OrderService {
         order.setCreateDate(LocalDateTime.now());
 
 
-        orderRepo.save(order);
+        String redirectUri = "";
+        try {
+            OrderResponse orderResponse = paymentServiceClient.createPayment(order);
+            order.setPaymentServiceNumber(orderResponse.getOrderId());
+            redirectUri = orderResponse.getRedirectUri();
+            if(redirectUri == ""){
+                orderRepo.save(order);
+                throw new OrderException(OrderError.ORDER_URL_IS_EMPTY);
+            }
+            order.setStatus(Status.COMPLETED);
+            orderRepo.save(order);
+        } catch (FeignException ex) {
+            logger.error("FeignException occurred: {}", ex.getMessage());
+        }
 
-       return ResponseEntity.ok().build();
+       return redirectUri;
     }
 
     @Override

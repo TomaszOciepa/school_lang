@@ -49,7 +49,7 @@ public class OrderController {
 
     @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @PostMapping("/course/{courseId}/student/{studentId}")
-    public ResponseEntity<Void> createOrder(@PathVariable String courseId, @PathVariable Long studentId) {
+    public String createOrder(@PathVariable String courseId, @PathVariable Long studentId) {
         logger.info("Post method createOrder().");
         return orderService.create(courseId, studentId);
     }

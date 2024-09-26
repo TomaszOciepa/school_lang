@@ -28,10 +28,13 @@ export class OrderService {
     return this.http.get<Order>(`${this.apiUrl}/number/${number}`);
   }
 
-  createOrder(courseId: String, studentId: number): Observable<HttpStatusCode> {
-    return this.http.post<HttpStatusCode>(
+  createOrder(courseId: String, studentId: number): Observable<string> {
+    return this.http.post<string>(
       `${this.apiUrl}/course/${courseId}/student/${studentId}`,
-      []
+      [],
+      {
+        responseType: 'text' as 'json',
+      }
     );
   }
 
