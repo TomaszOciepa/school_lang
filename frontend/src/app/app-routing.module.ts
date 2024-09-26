@@ -63,6 +63,18 @@ const routes: Routes = [
     title: 'lekcje',
   },
   {
+    path: 'payments',
+    loadChildren: () =>
+      import('./modules/payments/payments.module').then(
+        (m) => m.PaymentsModule
+      ),
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['admin'],
+    },
+    title: 'płatności',
+  },
+  {
     path: 'user-account',
     loadChildren: () =>
       import('./modules/user-account/user-account.module').then(

@@ -82,6 +82,18 @@
           </td>
         </ng-container>
 
+        <ng-container matColumnDef="price">
+          <th
+            class="my-table-bg-color"
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+          >
+            cena
+          </th>
+          <td mat-cell *matCellDef="let row">{{ row.price || 0 }} zł</td>
+        </ng-container>
+
         <ng-container matColumnDef="buttons">
           <th
             class="my-table-bg-color"

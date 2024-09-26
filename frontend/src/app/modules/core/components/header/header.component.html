@@ -1,4 +1,4 @@
-  <!-- Header Start -->
+<!-- Header Start -->
 <div class="header-area header-transparent">
   <div class="main-header">
     <div class="header-bottom header-sticky">
@@ -34,17 +34,22 @@
                       <a routerLink="teachers">Nauczyciele</a>
                     </li>
                     <li *ngIf="isAdmin || isTeacher">
-                      <a routerLink="students">Uczniowie</a>
+                      <a routerLink="students">Studenci</a>
                     </li>
+
                     <li *ngIf="isAdmin || isTeacher">
                       <a routerLink="user-account">Moje konto</a>
                     </li>
+
                     <li *ngIf="isAdmin">
                       <a href="#">Ustawienia</a>
                       <ul class="submenu">
                         <li><a routerLink="settings/students">Studenci</a></li>
                         <li>
                           <a routerLink="settings/teachers">Nauczyciele</a>
+                        </li>
+                        <li>
+                          <a routerLink="payments">Płatności</a>
                         </li>
                       </ul>
                     </li>
@@ -57,9 +62,19 @@
                         <a routerLink="account-student/my-lessons">Lekcje</a>
                       </li>
                       <li>
-                        <a routerLink="account-student/my-account"
-                          >Moje konto</a
-                        >
+                        <a href="#">Moje konto</a>
+                        <ul class="submenu">
+                          <li>
+                            <a routerLink="account-student/my-account"
+                              >moje dane</a
+                            >
+                          </li>
+                          <li>
+                            <a routerLink="account-student/my-payments"
+                              >Płatności</a
+                            >
+                          </li>
+                        </ul>
                       </li>
                     </ng-container>
                     <li *ngIf="!isLoggedIn"><a routerLink="">Kontakt</a></li>

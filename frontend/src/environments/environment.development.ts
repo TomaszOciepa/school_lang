@@ -12,6 +12,9 @@ export const environment = {
   // apiUrlLessons: 'http://localhost:8094/calendar',
   apiUrlLessons: 'http://localhost:9000/calendar-service/calendar',
 
+  // apiUrlOrder: 'http://localhost:8097/order',
+  apiUrlOrder: 'http://localhost:9000/order-service/order',
+
   // keycloakClientService: 'http://localhost:8095/keycloak-client-service/keycloak',
   keycloakClientService:
     'http://localhost:9000/keycloak-client-service/keycloak',

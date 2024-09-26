@@ -50,6 +50,10 @@ public class CourseServiceImpl implements CourseService {
             throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
         }
 
+        if(course.getPrice() == null){
+            throw new CourseException(CourseError.COURSE_PRICE_IS_EMPTY);
+        }
+
         logger.info("Setting the end date of the course.");
         LocalDateTime endDate = course.getEndDate();
         course.setEndDate(endDate.plusHours(23).plusMinutes(59));
@@ -151,6 +155,12 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public String getCourseTotalAmount(String id) {
+        Course courseFromDb = getCourseById(id, null);
+        return courseFromDb.getPrice();
+    }
+
+    @Override
     public Course patchCourse(String id, Course course) {
         logger.info("Fetching course by ID from the database: {}", id);
         Course courseFromDb = courseRepository.findById(id).orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
@@ -164,6 +174,11 @@ public class CourseServiceImpl implements CourseService {
                 throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
             }
             courseFromDb.setName(course.getName());
+        }
+
+        if(course.getPrice() != null){
+            logger.info("Changing the course price...");
+            courseFromDb.setPrice(course.getPrice());
         }
 
         if(course.getLanguage() != null){

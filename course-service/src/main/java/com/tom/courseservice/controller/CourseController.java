@@ -38,6 +38,7 @@ public class CourseController {
         return courseService.getAllByStatus(status);
     }
 
+    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @GetMapping("/{id}")
     Course getCourseById(@PathVariable String id, @RequestParam(required = false) Status status) {
         logger.info("Get method getCourseById()");
@@ -48,6 +49,11 @@ public class CourseController {
     List<Course> getCoursesByLanguage(@PathVariable Language language) {
         logger.info("Get method getCoursesByLanguage()");
         return courseService.getCoursesByLanguage(language);
+    }
+    @GetMapping("/{id}/total-amount")
+    String getCourseTotalAmount(@PathVariable String id) {
+        logger.info("Get method getCourseTotalAmount()");
+        return courseService.getCourseTotalAmount(id);
     }
 
     @PreAuthorize("hasRole('admin') or hasRole('teacher')")

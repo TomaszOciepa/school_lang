@@ -69,6 +69,18 @@
           <td mat-cell *matCellDef="let row">{{ row.status }}</td>
         </ng-container>
 
+        <ng-container matColumnDef="price">
+          <th
+            class="my-table-bg-color"
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+          >
+            Cena
+          </th>
+          <td mat-cell *matCellDef="let row">{{ row.price || 0 }} zł</td>
+        </ng-container>
+
         <ng-container matColumnDef="participantsNumber">
           <th
             class="my-table-bg-color"

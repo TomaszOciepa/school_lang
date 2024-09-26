@@ -100,6 +100,14 @@ export class CourseFormComponent {
           Validators.maxLength(50),
         ],
       }),
+      price: new FormControl<string>(this.editMode ? this.course.price : '', {
+        nonNullable: true,
+        validators: [
+          Validators.required,
+          Validators.minLength(1),
+          Validators.maxLength(10),
+        ],
+      }),
       participantsLimit: new FormControl(
         this.editMode ? this.course.participantsLimit : 0,
         {
@@ -162,6 +170,10 @@ export class CourseFormComponent {
       this.postCourse.name = this.courseForm.getRawValue().name;
     }
 
+    if (this.courseForm.get('price')?.dirty) {
+      this.postCourse.price = this.courseForm.getRawValue().price;
+    }
+
     if (this.courseForm.get('language')?.dirty) {
       this.postCourse.language = this.courseForm.getRawValue().language;
     }
@@ -188,8 +200,6 @@ export class CourseFormComponent {
     }
 
     if (this.isTeacher) {
-      console.log('siema ticzer');
-      console.log('teacher ID: ' + this.teacherId);
       const id = this.teacherId;
       console.log('id: ' + id);
       const teacherInfo: EnrollemntInfo = { id: id };

@@ -22,6 +22,7 @@ public class Course {
     private String id;
     private String name;
     private Status status;
+    private String price;
     private Language language;
     private Long participantsLimit;
     private Long participantsNumber;

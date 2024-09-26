@@ -9,7 +9,6 @@ import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { registerLocaleData } from '@angular/common';
 import localePl from '@angular/common/locales/pl';
 import { LOCALE_ID } from '@angular/core';
-import { HomeRoutingModule } from './modules/home/home-routing.module';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
