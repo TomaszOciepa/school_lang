@@ -86,6 +86,8 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalAmount(totalAmount);
         order.setStatus(Status.WAITING_FOR_PAYMENT);
         order.setCreateDate(LocalDateTime.now());
+
+
         orderRepo.save(order);
 
        return ResponseEntity.ok().build();
