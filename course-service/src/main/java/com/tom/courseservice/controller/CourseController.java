@@ -38,7 +38,6 @@ public class CourseController {
         return courseService.getAllByStatus(status);
     }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @GetMapping("/{id}")
     Course getCourseById(@PathVariable String id, @RequestParam(required = false) Status status) {
         logger.info("Get method getCourseById()");
