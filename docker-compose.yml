@@ -69,6 +69,7 @@ services:
       - TZ=Europe/Warsaw
     volumes:
       - /Users/tom/devel/docker/lang-school/volume/keycloak-service:/opt/keycloak/data/
+      - /Users/tom/IdeaProjects/school_lang/keycloak-theme:/opt/keycloak/themes/
     command: ["start-dev"]
     networks:
       - lang-school-net            
