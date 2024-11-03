@@ -58,6 +58,20 @@ services:
     networks:
       - lang-school-net
 
+  mongo-order:
+    build: ./order-service//src/main/resources/db
+    image: mongo:latest
+    container_name: "mongo-order"
+    ports:
+      - "27015:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass123 
+    volumes:
+      - /Users/tom/devel/docker/lang-school/volume/order-service:/data/db
+    networks:
+      - lang-school-net      
+
   keycloak-service:
     image: quay.io/keycloak/keycloak:23.0.3
     container_name: keycloak
@@ -151,6 +165,29 @@ services:
     depends_on:
       - mongo-calendar
       - eureka-service
+
+  order-service:
+    platform: linux/amd64
+    build: ./order-service
+    container_name: "order-service"
+    ports:
+      - "8097:8097"
+    networks:
+      - lang-school-net
+    depends_on:
+      - mongo-order
+      - eureka-service    
+
+  payment-service:
+    platform: linux/amd64
+    build: ./payment-service
+    container_name: "payment-service"
+    ports:
+      - "8098:8098"
+    networks:
+      - lang-school-net
+    depends_on:
+      - eureka-service 
 
   email-service:
     platform: linux/amd64
