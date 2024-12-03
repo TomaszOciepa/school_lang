@@ -210,20 +210,38 @@ public class CourseServiceImpl implements CourseService {
             courseFromDb.setLessonsLimit(course.getLessonsLimit());
         }
 
-        if (course.getStartDate() != null) {
-            logger.info("Changing the course start date ...");
-            isCourseStartDateIsAfterCourseEndDate(course.getStartDate(), course.getEndDate());
-            courseFromDb.setStartDate(course.getStartDate());
+
+        if (course.getStartDate() != null || course.getEndDate() != null) {
+            boolean startDateChanged = course.getStartDate() != null;
+            boolean endDateChanged = course.getEndDate() != null;
+
+            if (startDateChanged) {
+                logger.info("Changing the course start date ...");
+                isCourseStartDateIsAfterCourseEndDate(course.getStartDate(), course.getEndDate());
+            }
+
+            if (endDateChanged) {
+                logger.info("Changing the course end date ...");
+                LocalDateTime adjustedEndDate = course.getEndDate().plusHours(23).plusMinutes(59);
+                course.setEndDate(adjustedEndDate);
+                isCourseEndDateIsBeforeCourseStartDate(course.getEndDate(), course.getStartDate());
+            }
+
+            // Perform shared operation if either date has changed
+            if (startDateChanged || endDateChanged) {
+                course.setId(courseFromDb.getId());
+                calendarServiceClient.areLessonsWithinNewCourseDates(course);
+            }
+
+            if (startDateChanged) {
+                courseFromDb.setStartDate(course.getStartDate());
+            }
+
+            if (endDateChanged) {
+                courseFromDb.setEndDate(course.getEndDate());
+            }
         }
 
-        if (course.getEndDate() != null) {
-            logger.info("Changing the course end date ...");
-            LocalDateTime endDate = course.getEndDate();
-            course.setEndDate(endDate.plusHours(23).plusMinutes(59));
-
-            isCourseEndDateIsBeforeCourseStartDate(course.getEndDate(), course.getStartDate());
-            courseFromDb.setEndDate(course.getEndDate());
-        }
 
         return courseRepository.save(courseFromDb);
     }

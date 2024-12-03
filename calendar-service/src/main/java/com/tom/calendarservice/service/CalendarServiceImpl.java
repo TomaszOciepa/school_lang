@@ -312,6 +312,22 @@ public class CalendarServiceImpl implements CalendarService {
         });
     }
 
+    @Override
+    public boolean areLessonsWithinNewCourseDates(CourseDto course) {
+        logger.info("Are Lessons With in New Course Dates");
+        List<Calendar> lessons = getLessonsByCourseId(course.getId());
+        LocalDateTime courseStartDate = course.getStartDate();
+        LocalDateTime courseEndDate = course.getEndDate();
+
+        for (Calendar lesson: lessons){
+            isLessonStartDateBeforeCourseStartDate(lesson.getStartDate(), courseStartDate);
+            isLessonStartDateAfterCourseEndDate(lesson.getStartDate(), courseEndDate);
+        }
+
+        return true;
+    }
+
+
     private Calendar updateLessonStatus(Calendar lesson) {
         logger.info("Updating lesson status.");
 
