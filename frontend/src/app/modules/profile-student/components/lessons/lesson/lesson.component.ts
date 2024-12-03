@@ -14,9 +14,11 @@ import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 })
 export class LessonComponent {
   id!: string;
+  userId!: number;
   lesson!: Lesson;
   teacher!: User;
   course!: Course;
+  lessonAttendance!: boolean;
 
   constructor(
     private lessonsService: LessonsService,
@@ -29,6 +31,7 @@ export class LessonComponent {
     this.route.params;
     this.route.params.subscribe((params) => {
       this.id = params['id'];
+      this.userId = params['userId'];
     });
     this.getLesson(this.id);
   }
@@ -46,6 +49,11 @@ export class LessonComponent {
         if (this.lesson.courseId !== '' && this.lesson.courseId !== null) {
           this.getCourse(this.lesson.courseId);
         }
+
+        const attendance = this.lesson.attendanceList.find(
+          (s) => s.studentId == this.userId
+        );
+        this.lessonAttendance = attendance?.present ?? false;
       },
     });
   }
