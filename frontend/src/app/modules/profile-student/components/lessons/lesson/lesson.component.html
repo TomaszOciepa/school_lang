@@ -58,6 +58,13 @@
           <small class="text-body-secondary">status: </small>
           {{ lesson.status }}
         </li>
+        <li class="list-group-item">
+          <small class="text-body-secondary">obecność: </small>
+          <ng-container *ngIf="this.lessonAttendance"> obecny </ng-container>
+          <ng-container *ngIf="this.lessonAttendance == false">
+            nieobecny
+          </ng-container>
+        </li>
       </ul>
     </div>
   </div>

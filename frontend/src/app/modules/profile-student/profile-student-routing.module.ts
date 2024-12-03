@@ -15,7 +15,7 @@ const routes: Routes = [
   { path: 'my-lessons', component: LessonsComponent },
   { path: 'my-account', component: MyAccountComponent },
   { path: 'course/:id', component: CourseComponent },
-  { path: 'lesson/:id', component: LessonComponent },
+  { path: 'lesson/:id/s/:userId', component: LessonComponent },
   { path: 'my-payments', component: PaymentsComponent },
   { path: 'enroll-to-course/:id', component: EnrollToCourseComponent },
 ];
