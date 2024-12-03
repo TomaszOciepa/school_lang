@@ -4,6 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Lesson } from 'src/app/modules/core/models/lesson.model';
 import { LessonsService } from 'src/app/modules/core/services/lessons.service';
+import { StudentAccountService } from 'src/app/modules/core/services/student-account.service';
 
 @Component({
   selector: 'app-course-lessons-table',
@@ -26,11 +27,20 @@ export class CourseLessonsTableComponent {
   @ViewChild(MatSort) sort!: MatSort;
 
   @Input('course-id') courseId!: string;
-
-  constructor(private lessonsService: LessonsService) {}
+  userId!: number;
+  constructor(
+    private lessonsService: LessonsService,
+    private studentAccount: StudentAccountService
+  ) {}
 
   async ngOnInit(): Promise<void> {
+    this.loadUserProfile();
     this.getLessonsByCourseId(this.courseId);
+  }
+
+  async loadUserProfile(): Promise<void> {
+    await this.studentAccount.loadUserProfile();
+    this.userId = this.studentAccount.userId;
   }
 
   private getLessonsByCourseId(id: string) {
