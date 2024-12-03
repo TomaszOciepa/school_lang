@@ -79,8 +79,18 @@
           >
             Status
           </th>
-          <td mat-cell *matCellDef="let row">{{ row.status }}</td>
-        </ng-container>
+          <td mat-cell *matCellDef="let row">
+            <ng-container *ngIf="row.status === 'ACTIVE'">
+              Aktywna
+            </ng-container>
+            <ng-container *ngIf="row.status === 'FINISHED'">
+              Zakończona
+            </ng-container>
+            <ng-container *ngIf="row.status === 'INACTIVE'">
+              Oczekiwana
+            </ng-container>
+          </td></ng-container
+        >
 
         <ng-container matColumnDef="participantsNumber">
           <th
