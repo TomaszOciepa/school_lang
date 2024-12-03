@@ -32,7 +32,7 @@ public class CalendarServiceImpl implements CalendarService {
     private final CourseServiceClient courseServiceClient;
     private final TeacherServiceClient teacherServiceClient;
     private final AuthenticationContext authenticationContext;
-    private  final  StudentServiceClient studentServiceClient;
+    private final StudentServiceClient studentServiceClient;
     private final JwtUtils jwtUtils;
 
     //sprawdzone
@@ -165,6 +165,26 @@ public class CalendarServiceImpl implements CalendarService {
             isTeacherActive(lesson.getTeacherId());
             CourseDto courseFromDb = courseServiceClient.getCourseById(lessonFromDB.getCourseId(), null);
             isTeacherEnrolledInCourse(lesson.getTeacherId(), courseFromDb.getCourseTeachers());
+
+            List<Calendar> lessonsByTeacherId = getLessonsByTeacherId(lesson.getTeacherId());
+
+            LocalDateTime startDate = null;
+            LocalDateTime endDate = null;
+
+            if (lesson.getStartDate() == null) {
+                startDate = lessonFromDB.getStartDate();
+            } else {
+                startDate = lesson.getStartDate();
+            }
+
+            if (lesson.getEndDate() == null) {
+                endDate = lessonFromDB.getEndDate();
+            } else {
+                endDate = lesson.getEndDate();
+            }
+
+            isTeacherAvailableOnTimeSlot(lessonsByTeacherId, startDate, endDate);
+
             lessonFromDB.setTeacherId(lesson.getTeacherId());
         }
 
@@ -227,11 +247,11 @@ public class CalendarServiceImpl implements CalendarService {
 
     private void checkUserPermissions(Long studentId, boolean isStudent) {
         logger.info("checking User Permissions.");
-        if(isStudent){
+        if (isStudent) {
             String loggedInUserEmail = jwtUtils.getUserEmailFromJwt();
             StudentDto studentDto = studentServiceClient.getStudentById(studentId);
-            if(!loggedInUserEmail.equals(studentDto.getEmail()))
-            throw new CalendarException(CalendarError.STUDENT_OPERATION_FORBIDDEN);
+            if (!loggedInUserEmail.equals(studentDto.getEmail()))
+                throw new CalendarException(CalendarError.STUDENT_OPERATION_FORBIDDEN);
         }
     }
 
@@ -319,7 +339,7 @@ public class CalendarServiceImpl implements CalendarService {
         LocalDateTime courseStartDate = course.getStartDate();
         LocalDateTime courseEndDate = course.getEndDate();
 
-        for (Calendar lesson: lessons){
+        for (Calendar lesson : lessons) {
             isLessonStartDateBeforeCourseStartDate(lesson.getStartDate(), courseStartDate);
             isLessonStartDateAfterCourseEndDate(lesson.getStartDate(), courseEndDate);
         }
