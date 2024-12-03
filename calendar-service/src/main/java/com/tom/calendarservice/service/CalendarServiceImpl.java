@@ -32,7 +32,7 @@ public class CalendarServiceImpl implements CalendarService {
     private final CourseServiceClient courseServiceClient;
     private final TeacherServiceClient teacherServiceClient;
     private final AuthenticationContext authenticationContext;
-    private  final  StudentServiceClient studentServiceClient;
+    private final StudentServiceClient studentServiceClient;
     private final JwtUtils jwtUtils;
 
     //sprawdzone
@@ -129,42 +129,87 @@ public class CalendarServiceImpl implements CalendarService {
             lessonFromDB.setEventName(lesson.getEventName());
         }
 
-        if (lesson.getStartDate() != null) {
-            logger.info("Changing the start date...");
-            if (lesson.getEndDate() == null) {
-                lesson.setEndDate(lessonFromDB.getEndDate());
+        if (lesson.getStartDate() != null || lesson.getEndDate() != null) {
+            boolean startDateChanged = lesson.getStartDate() != null;
+            boolean endDateChanged = lesson.getEndDate() != null;
+
+
+            Long teacherId = null;
+
+            if (lesson.getTeacherId() == null) {
+                teacherId = lessonFromDB.getTeacherId();
+            } else {
+                teacherId = lesson.getTeacherId();
             }
 
-            isLessonStartDateIsAfterLessonEndDate(lesson.getStartDate(), lesson.getEndDate());
+            List<Calendar> lessonsByTeacherId = getLessonsByTeacherId(teacherId);
 
-            if (lessonFromDB.getCourseId() != null) {
-                CourseDto courseFromDB = courseServiceClient.getCourseById(lessonFromDB.getCourseId(), null);
-                isLessonStartDateBeforeCourseStartDate(lesson.getStartDate(), courseFromDB.getStartDate());
-                isLessonStartDateAfterCourseEndDate(lesson.getStartDate(), courseFromDB.getEndDate());
+            if (startDateChanged) {
+                logger.info("Changing the lesson start date ...");
+                System.out.println("godzina rozpoczecia :" + lesson.getStartDate());
+                if (lesson.getEndDate() == null) {
+                    lesson.setEndDate(lessonFromDB.getEndDate());
+                }
+
+                isLessonStartDateIsAfterLessonEndDate(lesson.getStartDate(), lesson.getEndDate());
+
+                if (lessonFromDB.getCourseId() != null) {
+                    CourseDto courseFromDB = courseServiceClient.getCourseById(lessonFromDB.getCourseId(), null);
+                    isLessonStartDateBeforeCourseStartDate(lesson.getStartDate(), courseFromDB.getStartDate());
+                    isLessonStartDateAfterCourseEndDate(lesson.getStartDate(), courseFromDB.getEndDate());
+                }
+
+                isTeacherAvailableOnTimeSlot(lessonsByTeacherId, lesson.getStartDate(), lesson.getEndDate());
+
+                lessonFromDB.setStartDate(lesson.getStartDate());
             }
-            lessonFromDB.setStartDate(lesson.getStartDate());
+
+            if (endDateChanged) {
+                logger.info("Changing the lesson end date ...");
+                System.out.println("godzina zakonczenia :" + lesson.getEndDate());
+                if (lesson.getStartDate() == null) {
+                    lesson.setStartDate(lessonFromDB.getStartDate());
+                }
+                isLessonStartDateIsAfterLessonEndDate(lesson.getStartDate(), lesson.getEndDate());
+
+                if (lessonFromDB.getCourseId() != null) {
+                    CourseDto courseFromDB = courseServiceClient.getCourseById(lessonFromDB.getCourseId(), null);
+                    isLessonEndDateBeforeCourseStartDate(lesson.getEndDate(), courseFromDB.getStartDate());
+                    isLessonEndDateAfterCourseEndDate(lesson.getEndDate(), courseFromDB.getEndDate());
+                }
+
+                isTeacherAvailableOnTimeSlot(lessonsByTeacherId, lesson.getStartDate(), lesson.getEndDate());
+                lessonFromDB.setEndDate(lesson.getEndDate());
+
+            }
         }
 
-        if (lesson.getEndDate() != null) {
-            logger.info("Changing the end date...");
-            if (lesson.getStartDate() == null) {
-                lesson.setStartDate(lessonFromDB.getStartDate());
-            }
-            isLessonStartDateIsAfterLessonEndDate(lesson.getStartDate(), lesson.getEndDate());
-
-            if (lessonFromDB.getCourseId() != null) {
-                CourseDto courseFromDB = courseServiceClient.getCourseById(lessonFromDB.getCourseId(), null);
-                isLessonEndDateBeforeCourseStartDate(lesson.getEndDate(), courseFromDB.getStartDate());
-                isLessonEndDateAfterCourseEndDate(lesson.getEndDate(), courseFromDB.getEndDate());
-            }
-            lessonFromDB.setEndDate(lesson.getEndDate());
-        }
 
         if (lesson.getTeacherId() != null) {
             logger.info("Changing teacher");
             isTeacherActive(lesson.getTeacherId());
             CourseDto courseFromDb = courseServiceClient.getCourseById(lessonFromDB.getCourseId(), null);
             isTeacherEnrolledInCourse(lesson.getTeacherId(), courseFromDb.getCourseTeachers());
+
+            List<Calendar> lessonsByTeacherId = getLessonsByTeacherId(lesson.getTeacherId());
+
+            LocalDateTime startDate = null;
+            LocalDateTime endDate = null;
+
+            if (lesson.getStartDate() == null) {
+                startDate = lessonFromDB.getStartDate();
+            } else {
+                startDate = lesson.getStartDate();
+            }
+
+            if (lesson.getEndDate() == null) {
+                endDate = lessonFromDB.getEndDate();
+            } else {
+                endDate = lesson.getEndDate();
+            }
+
+            isTeacherAvailableOnTimeSlot(lessonsByTeacherId, startDate, endDate);
+
             lessonFromDB.setTeacherId(lesson.getTeacherId());
         }
 
@@ -227,11 +272,11 @@ public class CalendarServiceImpl implements CalendarService {
 
     private void checkUserPermissions(Long studentId, boolean isStudent) {
         logger.info("checking User Permissions.");
-        if(isStudent){
+        if (isStudent) {
             String loggedInUserEmail = jwtUtils.getUserEmailFromJwt();
             StudentDto studentDto = studentServiceClient.getStudentById(studentId);
-            if(!loggedInUserEmail.equals(studentDto.getEmail()))
-            throw new CalendarException(CalendarError.STUDENT_OPERATION_FORBIDDEN);
+            if (!loggedInUserEmail.equals(studentDto.getEmail()))
+                throw new CalendarException(CalendarError.STUDENT_OPERATION_FORBIDDEN);
         }
     }
 
@@ -319,7 +364,7 @@ public class CalendarServiceImpl implements CalendarService {
         LocalDateTime courseStartDate = course.getStartDate();
         LocalDateTime courseEndDate = course.getEndDate();
 
-        for (Calendar lesson: lessons){
+        for (Calendar lesson : lessons) {
             isLessonStartDateBeforeCourseStartDate(lesson.getStartDate(), courseStartDate);
             isLessonStartDateAfterCourseEndDate(lesson.getStartDate(), courseEndDate);
         }
