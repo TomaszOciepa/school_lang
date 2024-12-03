@@ -88,7 +88,15 @@
       <h3>
         Status:
         <small class="text-body-secondary">
-          {{ course.status }}
+          <ng-container *ngIf="course.status === 'ACTIVE'">
+            Aktywny
+          </ng-container>
+          <ng-container *ngIf="course.status === 'FINISHED'">
+            Zakończony
+          </ng-container>
+          <ng-container *ngIf="course.status === 'INACTIVE'">
+            Oczekiwany
+          </ng-container>
         </small>
       </h3>
     </div>
@@ -145,7 +153,17 @@
                   {{ student.firstName }} {{ student.lastName }}
                 </a>
               </td>
-              <td>{{ student.status }}</td>
+              <td>
+                <ng-container *ngIf="student.status === 'ACTIVE'">
+                  Aktywny
+                </ng-container>
+                <ng-container *ngIf="student.status === 'INACTIVE'">
+                  Nieaktywny
+                </ng-container>
+                <ng-container *ngIf="student.status === 'REMOVED'">
+                  Usunięty
+                </ng-container>
+              </td>
               <td>
                 <audio
                   #deleteSound
@@ -222,7 +240,18 @@
                   {{ teacher.firstName }} {{ teacher.lastName }}
                 </a>
               </td>
-              <td>{{ teacher.status }}</td>
+              <td>
+                <ng-container *ngIf="teacher.status === 'ACTIVE'">
+                  Aktywny
+                </ng-container>
+                <ng-container *ngIf="teacher.status === 'INACTIVE'">
+                  Nieaktywny
+                </ng-container>
+                <ng-container *ngIf="teacher.status === 'REMOVED'">
+                  Usunięty
+                </ng-container>
+              </td>
+
               <td>
                 <audio
                   #deleteSound

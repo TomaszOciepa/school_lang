@@ -46,7 +46,15 @@
       <h3>
         Status:
         <small class="text-body-secondary">
-          {{ course.status }}
+          <ng-container *ngIf="course.status === 'ACTIVE'">
+            Aktywny
+          </ng-container>
+          <ng-container *ngIf="course.status === 'FINISHED'">
+            Zakończony
+          </ng-container>
+          <ng-container *ngIf="course.status === 'INACTIVE'">
+            Oczekiwany
+          </ng-container>
         </small>
       </h3>
 

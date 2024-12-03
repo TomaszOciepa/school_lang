@@ -19,7 +19,14 @@
                   class="blockquote-footer"
                   style="color: wheat; font-size: medium"
                 >
-                  <cite title="Source Title">{{ student.status }}</cite>
+                  <cite title="Source Title">
+                    <ng-container *ngIf="student.status === 'ACTIVE'">
+                      Aktywny
+                    </ng-container>
+                    <ng-container *ngIf="student.status === 'INACTIVE'">
+                      Nieaktywny
+                    </ng-container>
+                  </cite>
                 </figcaption>
               </figure>
             </div>

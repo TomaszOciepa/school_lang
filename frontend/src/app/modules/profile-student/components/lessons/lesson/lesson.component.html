@@ -56,7 +56,15 @@
         </li>
         <li class="list-group-item">
           <small class="text-body-secondary">status: </small>
-          {{ lesson.status }}
+          <ng-container *ngIf="lesson.status === 'ACTIVE'">
+            Aktywna
+          </ng-container>
+          <ng-container *ngIf="lesson.status === 'FINISHED'">
+            Zakończona
+          </ng-container>
+          <ng-container *ngIf="lesson.status === 'INACTIVE'">
+            Oczekiwana
+          </ng-container>
         </li>
         <li class="list-group-item">
           <small class="text-body-secondary">obecność: </small>

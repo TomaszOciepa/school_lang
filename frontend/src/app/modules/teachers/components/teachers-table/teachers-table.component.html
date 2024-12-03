@@ -67,8 +67,18 @@
           >
             status
           </th>
-          <td mat-cell *matCellDef="let row">{{ row.status }}</td>
-        </ng-container>
+          <td mat-cell *matCellDef="let row">
+            <ng-container *ngIf="row.status === 'ACTIVE'">
+              Aktywny
+            </ng-container>
+            <ng-container *ngIf="row.status === 'INACTIVE'">
+              Nieaktywny
+            </ng-container>
+            <ng-container *ngIf="row.status === 'REMOVED'">
+              Usunięty
+            </ng-container>
+          </td></ng-container
+        >
 
         <ng-container matColumnDef="buttons">
           <th
