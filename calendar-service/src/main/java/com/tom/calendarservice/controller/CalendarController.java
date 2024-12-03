@@ -1,6 +1,7 @@
 package com.tom.calendarservice.controller;
 
 import com.tom.calendarservice.model.Calendar;
+import com.tom.calendarservice.model.Dto.CourseDto;
 import com.tom.calendarservice.service.CalendarService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -148,5 +149,13 @@ public class CalendarController {
         calendarService.unEnrollStudentLesson(lessonId, studentId);
         return ResponseEntity.ok().build();
     }
+
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PostMapping("/are-lessons-within-new-course-dates")
+    public boolean areLessonsWithinNewCourseDates(@RequestBody CourseDto course) {
+        logger.info("Post method areLessonsWithinNewCourseDates().");
+        return calendarService.areLessonsWithinNewCourseDates(course);
+    }
+
 
 }
