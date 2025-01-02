@@ -1,6 +1,8 @@
 package com.tom.calendarservice.model.Dto;
 
+import com.tom.calendarservice.model.LessonFrequency;
 import com.tom.calendarservice.model.Status;
+import com.tom.calendarservice.model.TimeRange;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -24,4 +26,8 @@ public class CourseDto {
     private LocalDateTime endDate;
     private List<CourseStudentsDto> courseStudents = new ArrayList<>();
     private List<CourseTeachersDto> courseTeachers = new ArrayList<>();
+    private TimeRange timeRange;
+    private Long lessonDuration;
+    private Long teacherId;
+    private LessonFrequency lessonFrequency;
 }

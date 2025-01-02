@@ -24,6 +24,11 @@ export interface CourseResponse {
   endDate: string;
   courseStudents: EnrollemntInfo[];
   courseTeachers: EnrollemntInfo[];
+  timeRange: string;
+  lessonDuration: number;
+  teacherId: number;
+  courseId: string;
+  lessonFrequency: string;
 }
 
 export class Course implements CourseResponse {
@@ -39,19 +44,27 @@ export class Course implements CourseResponse {
     public startDate: string,
     public endDate: string,
     public courseStudents: EnrollemntInfo[],
-    public courseTeachers: EnrollemntInfo[]
+    public courseTeachers: EnrollemntInfo[],
+    public timeRange: string,
+    public lessonDuration: number,
+    public teacherId: number,
+    public courseId: string,
+    public lessonFrequency: string
   ) {}
 }
 
 export interface PostCourseForm {
   name: FormControl<string>;
-  // status: FormControl<string>;
   price: FormControl<string>;
   language: FormControl<string>;
   participantsLimit: FormControl<number>;
   lessonsLimit: FormControl<number>;
   startDate: FormControl<Date | ''>;
   endDate: FormControl<Date | ''>;
+  timeRange: FormControl<string>;
+  lessonDuration: FormControl<string>;
+  teacherId: FormControl<string>;
+  lessonFrequency: FormControl<string>;
 }
 
 export interface CourseMembers {

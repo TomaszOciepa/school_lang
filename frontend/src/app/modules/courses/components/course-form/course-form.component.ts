@@ -11,6 +11,7 @@ import {
   PostCourse,
   PostCourseForm,
 } from 'src/app/modules/core/models/course.model';
+import { User } from 'src/app/modules/core/models/user.model';
 import { CourseService } from 'src/app/modules/core/services/course.service';
 import { DateParserService } from 'src/app/modules/core/services/date-parser.service';
 import { FormsService } from 'src/app/modules/core/services/forms.service';
@@ -48,6 +49,7 @@ export class CourseFormComponent {
 
   courseForm!: FormGroup<PostCourseForm>;
   postCourse: PostCourse = {} as PostCourse;
+  // generateLesson: GenerateLessonsResponse = {} as GenerateLessonsResponse;
   errMsg!: string;
 
   isLoggedIn = false;
@@ -55,6 +57,7 @@ export class CourseFormComponent {
   isTeacher: boolean = false;
   teacherEmail!: string | undefined;
   teacherId!: number;
+  teacherList: User[] = [];
 
   constructor(
     private formService: FormsService,
@@ -67,6 +70,7 @@ export class CourseFormComponent {
 
   async ngOnInit(): Promise<void> {
     this.loadUserProfile();
+    this.getTeachers();
     this.initForm();
   }
 
@@ -149,11 +153,45 @@ export class CourseFormComponent {
           validators: [Validators.required],
         }
       ),
+      timeRange: new FormControl<string>('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+      lessonDuration: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+
+      teacherId: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+
+      lessonFrequency: new FormControl<string>('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+    });
+  }
+
+  private getTeachers() {
+    this.teacherService.getTeachers('ACTIVE').subscribe({
+      next: (result) => {
+        this.teacherList = result;
+      },
+      error: (err) => {
+        console.log(err);
+      },
+      complete: () => {},
     });
   }
 
   onAddCourse() {
     this.generatePostCourseObj();
+
+    if (!this.editMode) {
+      this.generateLessons();
+    }
 
     if (this.editMode) {
       this.courseService
@@ -201,10 +239,36 @@ export class CourseFormComponent {
 
     if (this.isTeacher) {
       const id = this.teacherId;
-      console.log('id: ' + id);
       const teacherInfo: EnrollemntInfo = { id: id };
       this.postCourse.courseTeachers = [];
       this.postCourse.courseTeachers.push(teacherInfo);
+    }
+  }
+
+  generateLessons() {
+    if (this.courseForm.get('timeRange')?.dirty) {
+      this.postCourse.timeRange = this.courseForm.getRawValue().timeRange;
+    }
+
+    if (this.courseForm.get('lessonDuration')?.dirty) {
+      this.postCourse.lessonDuration = parseInt(
+        this.courseForm.getRawValue().lessonDuration,
+        10
+      );
+    }
+
+    if (!this.isTeacher) {
+      if (this.courseForm.get('teacherId')?.dirty) {
+        this.postCourse.teacherId = parseInt(
+          this.courseForm.getRawValue().teacherId,
+          10
+        );
+      }
+    }
+
+    if (this.courseForm.get('lessonFrequency')?.dirty) {
+      this.postCourse.lessonFrequency =
+        this.courseForm.getRawValue().lessonFrequency;
     }
   }
 

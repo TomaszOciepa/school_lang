@@ -8,11 +8,6 @@
     {{ errMsg }}
   </div>
 
-  <button class="pushable" (click)="generateLessons()">
-    <span class="shadow"></span>
-    <span class="edge"></span>
-    <span class="front">Generuj lekcje automatycznie</span>
-  </button>
   <mat-form-field>
     <mat-label>Wyszukaj...</mat-label>
     <input matInput (keyup)="applyFilter($event)" placeholder="..." #input />

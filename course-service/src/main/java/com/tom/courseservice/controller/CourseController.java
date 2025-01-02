@@ -2,6 +2,7 @@ package com.tom.courseservice.controller;
 
 import com.tom.courseservice.model.Course;
 import com.tom.courseservice.model.Language;
+import com.tom.courseservice.model.LessonScheduleRequest;
 import com.tom.courseservice.model.Status;
 import com.tom.courseservice.model.dto.CourseStudentDto;
 import com.tom.courseservice.model.dto.TeacherDto;

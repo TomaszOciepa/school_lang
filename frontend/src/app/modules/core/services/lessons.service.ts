@@ -2,11 +2,7 @@ import { HttpClient, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
-import {
-  GenerateLessonsResponse,
-  Lesson,
-  PostLesson,
-} from '../models/lesson.model';
+import { Lesson, PostLesson } from '../models/lesson.model';
 
 @Injectable({
   providedIn: 'root',
@@ -68,15 +64,6 @@ export class LessonsService {
     return this.http.post<HttpStatusCode>(
       `${this.apiUrl}/un-enroll-student-lessons/${lessonId}/${studentId}`,
       []
-    );
-  }
-
-  generateLessons(
-    generateLesson: GenerateLessonsResponse
-  ): Observable<HttpStatusCode> {
-    return this.http.post<HttpStatusCode>(
-      `${this.apiUrl}/generate-course-timetable`,
-      generateLesson
     );
   }
 }
