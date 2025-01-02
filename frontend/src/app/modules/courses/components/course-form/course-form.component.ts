@@ -49,7 +49,6 @@ export class CourseFormComponent {
 
   courseForm!: FormGroup<PostCourseForm>;
   postCourse: PostCourse = {} as PostCourse;
-  // generateLesson: GenerateLessonsResponse = {} as GenerateLessonsResponse;
   errMsg!: string;
 
   isLoggedIn = false;

@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -415,8 +416,7 @@ public class CalendarServiceImpl implements CalendarService {
                 case DAILY:
                     lessonStartDate = daily(lessonStartDate);
                 case WEEKLY:
-                    // For weekly, allow only one lesson per week
-//                return lessonsScheduledThisWeek < 1;
+                    lessonStartDate = weekly(lessonStartDate);
                 case TWICE_A_WEEK:
                     // Allow up to two lessons per week on weekdays
 //                return lessonsScheduledThisWeek < 2 && dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY;
@@ -438,6 +438,17 @@ public class CalendarServiceImpl implements CalendarService {
 
         } while (numberLessonsToCreate > 0);
 
+    }
+
+    private LocalDateTime weekly(LocalDateTime lessonStartDate) {
+        LocalDateTime nextWeek = lessonStartDate.plusWeeks(1);
+        LocalDateTime nextMonday = nextWeek
+                .with(DayOfWeek.MONDAY)
+                .withHour(lessonStartDate.getHour())
+                .withMinute(lessonStartDate.getMinute())
+                .withSecond(lessonStartDate.getSecond());
+
+        return nextMonday;
     }
 
     private LocalDateTime daily(LocalDateTime lessonStartDate) {

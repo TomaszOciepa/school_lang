@@ -114,7 +114,8 @@
           <mat-form-field>
             <mat-label>Częstotliwość lekcji</mat-label>
             <mat-select formControlName="lessonFrequency">
-              <mat-option value="DAILY">CODZIENNIE</mat-option>
+              <mat-option value="DAILY">Codziennie</mat-option>
+              <mat-option value="WEEKLY">Raz w tygodniu</mat-option>
             </mat-select>
             <!-- <input matInput formControlName="timeRange" /> -->
             <mat-error *ngIf="controls.lessonFrequency.invalid">{{
