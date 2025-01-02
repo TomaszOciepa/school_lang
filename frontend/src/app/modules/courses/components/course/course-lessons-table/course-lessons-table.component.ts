@@ -69,6 +69,15 @@ export class CourseLessonsTableComponent {
     }
   }
 
+  generateLessons() {
+    if (this.lessonsLimit == this.lessonsNumber) {
+      this.errMsg = 'Course Lesson Limit Reached.';
+      this.hideErrorMsg();
+    } else {
+      this.router.navigate(['/lessons/generated', { id: this.courseId }]);
+    }
+  }
+
   private hideErrorMsg() {
     setTimeout(() => {
       this.errMsg = '';

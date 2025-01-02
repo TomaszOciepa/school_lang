@@ -1,9 +1,7 @@
 package com.tom.calendarservice.model.Dto;
 
 import com.tom.calendarservice.model.Status;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,6 +10,8 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class CourseDto {
 
     private String id;

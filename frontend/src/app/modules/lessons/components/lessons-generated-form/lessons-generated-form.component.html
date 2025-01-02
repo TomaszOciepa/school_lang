@@ -1,0 +1,97 @@
+<section class="slider-area slider-area2">
+  <div class="slider-active">
+    <div class="single-slider slider-height2">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-8 col-lg-11 col-md-12">
+            <div class="hero__caption hero__caption2">
+              <h1 data-animation="bounceIn" data-delay="0.2s">
+                Dodawanie lekcji.
+              </h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="my-form-container">
+  <div class="course-form full-width">
+    <form [formGroup]="lessonsGeneratedForm">
+      <div>
+        <mat-form-field>
+          <mat-label>Rodzaj kursu</mat-label>
+          <mat-select formControlName="timeRange">
+            <mat-option value="MORNING">Kurs poranny 7:00 - 12:00</mat-option>
+            <mat-option value="AFTERNOON"
+              >Kurs popołudniowy 12:00 - 18:00</mat-option
+            >
+            <mat-option value="EVENING"
+              >Kurs wieczorny 18:00 - 22:00</mat-option
+            >
+          </mat-select>
+          <!-- <input matInput formControlName="timeRange" /> -->
+          <mat-error *ngIf="controls.timeRange.invalid">{{
+            getErrorMessage(controls.timeRange)
+          }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field>
+          <mat-label>Czas trwania lekcji</mat-label>
+          <mat-select formControlName="lessonDuration">
+            <mat-option value="45">45 min</mat-option>
+            <mat-option value="60">60 min</mat-option>
+          </mat-select>
+          <!-- <input matInput formControlName="lessonDuration" /> -->
+          <mat-error *ngIf="controls.lessonDuration.invalid">{{
+            getErrorMessage(controls.lessonDuration)
+          }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field>
+          <mat-label>Częstotliwość lekcji</mat-label>
+          <mat-select formControlName="lessonFrequency">
+            <mat-option value="DAILY">CODZIENNIE</mat-option>
+          </mat-select>
+          <!-- <input matInput formControlName="timeRange" /> -->
+          <mat-error *ngIf="controls.lessonFrequency.invalid">{{
+            getErrorMessage(controls.lessonFrequency)
+          }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field>
+          <mat-label>Nauczyciel</mat-label>
+          <mat-select formControlName="teacherId">
+            <mat-option
+              *ngFor="let teacher of teacherList"
+              value="{{ teacher.id }}"
+              >{{ teacher.firstName }} {{ teacher.lastName }}</mat-option
+            >
+          </mat-select>
+          <mat-error *ngIf="controls.teacherId.invalid">{{
+            getErrorMessage(controls.teacherId)
+          }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="errMsg" class="alert alert-danger" role="alert">
+        {{ errMsg }}
+      </div>
+
+      <button class="pushable" type="submit" (click)="generateLessons()">
+        <span class="shadow"></span>
+        <span class="edge"></span>
+        <span class="front">Utwórz</span>
+      </button>
+
+      <!-- <app-alert *ngIf="errorMessage" [text]="errorMessage"></app-alert> -->
+    </form>
+  </div>
+</div>

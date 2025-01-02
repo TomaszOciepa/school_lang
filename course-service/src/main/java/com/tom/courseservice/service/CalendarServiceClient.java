@@ -25,4 +25,7 @@ public interface CalendarServiceClient {
 
     @PostMapping("/calendar/are-lessons-within-new-course-dates")
     public boolean areLessonsWithinNewCourseDates(@RequestBody Course course);
+
+    @PostMapping("/calendar/updateCourseDateTime")
+    public Course updateCourseDateTime(@RequestBody Course course);
 }

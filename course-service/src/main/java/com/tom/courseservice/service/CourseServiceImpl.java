@@ -13,7 +13,6 @@ import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -37,7 +36,6 @@ public class CourseServiceImpl implements CourseService {
     private final AuthenticationContext authenticationContext;
     private final JwtUtils jwtUtils;
 
-    //sprawdzone
 
     @Override
     public Course addCourse(Course course) {
@@ -89,12 +87,14 @@ public class CourseServiceImpl implements CourseService {
             logger.info("Fetching courses with status: {}.", status);
             return courseRepository.findByIdAndStatus(id, status)
                     .map(this::updateCourseStatus)
+                    .map(this::updateCourseDataTime)
                     .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
         }
 
         logger.info("Fetching courses without status: {}.", status);
         return courseRepository.findById(id)
                 .map(this::updateCourseStatus)
+                .map(this::updateCourseDataTime)
                 .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
     }
 
@@ -465,6 +465,11 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
+    private Course updateCourseDataTime(Course course){
+        logger.info("Updating course data time");
+       return calendarServiceClient.updateCourseDateTime(course);
+    }
+
     private Course updateCourseStatus(Course course) {
         logger.info("Updating course status");
         if (course.getStartDate().isAfter(LocalDateTime.now())) {
@@ -484,6 +489,7 @@ public class CourseServiceImpl implements CourseService {
 
         return courseRepository.save(course);
     }
+
 
     private List<CourseStudentDto> createCourseStudentList(List<CourseStudents> courseStudents, List<StudentDto> studentsFromDb) {
         logger.info("Creating course student list.");

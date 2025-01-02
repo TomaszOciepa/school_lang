@@ -2,6 +2,7 @@ package com.tom.calendarservice.service;
 
 import com.tom.calendarservice.model.Calendar;
 import com.tom.calendarservice.model.Dto.CourseDto;
+import com.tom.calendarservice.model.Dto.LessonScheduleRequest;
 
 import java.util.List;
 
@@ -40,6 +41,8 @@ public interface CalendarService {
     void deleteStudentWithAllLessons(Long studentId);
 
     boolean areLessonsWithinNewCourseDates(CourseDto course);
+    void generateCourseTimetable(LessonScheduleRequest lessonScheduleRequest);
+    CourseDto updateCourseDateTime(CourseDto courseDto);
 //    nie sprawdzone
 
     //    Calendar addEvent(EventRequest eventRequest);
