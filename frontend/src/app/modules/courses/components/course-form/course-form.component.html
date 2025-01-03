@@ -114,8 +114,17 @@
           <mat-form-field>
             <mat-label>Częstotliwość lekcji</mat-label>
             <mat-select formControlName="lessonFrequency">
+              <mat-option value="WEEKENDS_ONLY">Tylko weekendy</mat-option>
               <mat-option value="DAILY">Codziennie</mat-option>
               <mat-option value="WEEKLY">Raz w tygodniu</mat-option>
+              <mat-option value="TWICE_A_WEEK">Dwa razy w tygodniu</mat-option>
+              <mat-option value="THREE_A_WEEK">Trzy razy w tygodniu</mat-option>
+              <mat-option value="FOUR_A_WEEK"
+                >Cztery razy w tygodniu</mat-option
+              >
+              <mat-option value="WEEKDAYS_ONLY"
+                >Od Poniedziałku do Piątku</mat-option
+              >
             </mat-select>
             <!-- <input matInput formControlName="timeRange" /> -->
             <mat-error *ngIf="controls.lessonFrequency.invalid">{{
