@@ -14,8 +14,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.IsoFields;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -396,6 +398,7 @@ public class CalendarServiceImpl implements CalendarService {
         LocalDateTime startDate = setLessonStartDate(timeRangeStart, courseFromDb.getStartDate());
         long numberLessonsToCreate = courseFromDb.getLessonsLimit();
         int lessonsPerWeek = determineLessonsPerWeek(frequency);
+        LocalDateTime currentDayStart = startDate;
 
         List<DayOfWeek> preferredDays = setPreferredDays(frequency);
 
@@ -403,7 +406,9 @@ public class CalendarServiceImpl implements CalendarService {
             int lessonsThisWeek = 0;
 
             for (DayOfWeek day : preferredDays) {
-                LocalDateTime currentDayStart = moveToNextAvailableDay(startDate, day).withHour(timeRangeStart.getHour()).withMinute(timeRangeStart.getMinute());
+                if(!frequency.equals(LessonFrequency.DAILY)){
+                    currentDayStart = moveToNextAvailableDay(startDate, day).withHour(timeRangeStart.getHour()).withMinute(timeRangeStart.getMinute());
+                }
 
                 if(numberLessonsToCreate == 0){
                     break;
@@ -425,6 +430,11 @@ public class CalendarServiceImpl implements CalendarService {
 
                         numberLessonsToCreate--;
                         lessonsThisWeek++;
+
+                        if (frequency.equals(LessonFrequency.DAILY)) {
+                            currentDayStart = currentDayStart.plusDays(1).withHour(timeRangeStart.getHour()).withMinute(timeRangeStart.getMinute());
+                            break;
+                        }
 
                         if (lessonsThisWeek >= lessonsPerWeek) {
                             startDate = currentDayStart.with(DayOfWeek.MONDAY).plusWeeks(1).withHour(timeRangeStart.getHour()).withMinute(timeRangeStart.getMinute());
