@@ -31,6 +31,10 @@ public class Course {
     private LocalDateTime endDate;
     private List<CourseStudents> courseStudents = new ArrayList<>();
     private List<CourseTeachers> courseTeachers = new ArrayList<>();
+    private TimeRange timeRange;
+    private Long lessonDuration;
+    private Long teacherId;
+    private LessonFrequency lessonFrequency;
 
     public void incrementParticipantsNumber(){
         participantsNumber++;

@@ -13,7 +13,6 @@ import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -37,10 +36,10 @@ public class CourseServiceImpl implements CourseService {
     private final AuthenticationContext authenticationContext;
     private final JwtUtils jwtUtils;
 
-    //sprawdzone
 
     @Override
     public Course addCourse(Course course) {
+        LessonScheduleRequest lessonScheduleRequest = new LessonScheduleRequest();
         logger.info("Adding new course: {}", course);
         logger.info("Removing white spaces from the name.");
         course.setName(course.getName().trim());
@@ -50,7 +49,7 @@ public class CourseServiceImpl implements CourseService {
             throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
         }
 
-        if(course.getPrice() == null){
+        if (course.getPrice() == null) {
             throw new CourseException(CourseError.COURSE_PRICE_IS_EMPTY);
         }
 
@@ -64,8 +63,22 @@ public class CourseServiceImpl implements CourseService {
         logger.info("Setting participants number on 0L.");
         course.setParticipantsNumber(0L);
         logger.info("Save course on database.");
-        System.out.println(course.toString());
-        return courseRepository.save(course);
+
+        List<CourseTeachers> courseTeachers = course.getCourseTeachers();
+        courseTeachers.add(new CourseTeachers(course.getTeacherId()));
+        course.setCourseTeachers(courseTeachers);
+
+        Course courseFromDb = courseRepository.save(course);
+
+        lessonScheduleRequest.setTimeRange(courseFromDb.getTimeRange());
+        lessonScheduleRequest.setLessonDuration(courseFromDb.getLessonDuration());
+        lessonScheduleRequest.setTeacherId(course.getTeacherId());
+        lessonScheduleRequest.setCourseId(courseFromDb.getId());
+        lessonScheduleRequest.setLessonFrequency(courseFromDb.getLessonFrequency());
+
+        calendarServiceClient.generateCourseTimetable(lessonScheduleRequest);
+
+        return courseFromDb;
     }
 
     @Override
@@ -89,28 +102,30 @@ public class CourseServiceImpl implements CourseService {
             logger.info("Fetching courses with status: {}.", status);
             return courseRepository.findByIdAndStatus(id, status)
                     .map(this::updateCourseStatus)
+                    .map(this::updateCourseDataTime)
                     .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
         }
 
         logger.info("Fetching courses without status: {}.", status);
         return courseRepository.findById(id)
                 .map(this::updateCourseStatus)
+                .map(this::updateCourseDataTime)
                 .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
     }
 
     @Override
     public List<Course> getCoursesByLanguage(Language language) {
         logger.info("Fetching courses language: {}.", language);
-       List<Course> courses = courseRepository.getCoursesByLanguage(language, Status.INACTIVE)
-               .stream()
-               .map(this::updateCourseStatus)
-               .collect(Collectors.toList());
+        List<Course> courses = courseRepository.getCoursesByLanguage(language, Status.INACTIVE)
+                .stream()
+                .map(this::updateCourseStatus)
+                .collect(Collectors.toList());
 
-       if(courses.isEmpty()){
-           throw new CourseException(CourseError.COURSE_NOT_FOUND);
-       }
+        if (courses.isEmpty()) {
+            throw new CourseException(CourseError.COURSE_NOT_FOUND);
+        }
 
-       return courses;
+        return courses;
     }
 
     @Override
@@ -176,12 +191,12 @@ public class CourseServiceImpl implements CourseService {
             courseFromDb.setName(course.getName());
         }
 
-        if(course.getPrice() != null){
+        if (course.getPrice() != null) {
             logger.info("Changing the course price...");
             courseFromDb.setPrice(course.getPrice());
         }
 
-        if(course.getLanguage() != null){
+        if (course.getLanguage() != null) {
             logger.info("Changing the course language...");
             courseFromDb.setLanguage(course.getLanguage());
         }
@@ -192,7 +207,7 @@ public class CourseServiceImpl implements CourseService {
                 throw new CourseException(CourseError.COURSE_PARTICIPANTS_NUMBER_IS_BIGGER_THEN_PARTICIPANTS_LIMIT);
             }
 
-            if (course.getParticipantsLimit() == courseFromDb.getParticipantsNumber()) {
+            if (course.getParticipantsLimit().equals(courseFromDb.getParticipantsNumber())) {
                 courseFromDb.setStatus(Status.FULL);
             }
 
@@ -316,7 +331,7 @@ public class CourseServiceImpl implements CourseService {
 
         String loggedInUserEmail = jwtUtils.getUserEmailFromJwt();
         boolean isStudent = authenticationContext();
-        if(isStudent && !loggedInUserEmail.equals(studentDto.getEmail())){
+        if (isStudent && !loggedInUserEmail.equals(studentDto.getEmail())) {
             throw new CourseException(CourseError.STUDENT_OPERATION_FORBIDDEN);
         }
 
@@ -465,6 +480,11 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
+    private Course updateCourseDataTime(Course course) {
+        logger.info("Updating course data time");
+        return calendarServiceClient.updateCourseDateTime(course);
+    }
+
     private Course updateCourseStatus(Course course) {
         logger.info("Updating course status");
         if (course.getStartDate().isAfter(LocalDateTime.now())) {
@@ -484,6 +504,7 @@ public class CourseServiceImpl implements CourseService {
 
         return courseRepository.save(course);
     }
+
 
     private List<CourseStudentDto> createCourseStudentList(List<CourseStudents> courseStudents, List<StudentDto> studentsFromDb) {
         logger.info("Creating course student list.");

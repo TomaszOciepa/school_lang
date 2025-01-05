@@ -9,4 +9,5 @@ public interface TeacherServiceClient {
 
     @GetMapping("/teacher/teacher-is-active/{teacherId}")
     void teacherIsActive(@PathVariable Long teacherId);
+
 }

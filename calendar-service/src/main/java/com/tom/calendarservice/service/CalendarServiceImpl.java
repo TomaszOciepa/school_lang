@@ -2,13 +2,8 @@ package com.tom.calendarservice.service;
 
 import com.tom.calendarservice.exception.CalendarError;
 import com.tom.calendarservice.exception.CalendarException;
-import com.tom.calendarservice.model.AttendanceList;
-import com.tom.calendarservice.model.Calendar;
-import com.tom.calendarservice.model.Dto.CourseDto;
-import com.tom.calendarservice.model.Dto.CourseStudentsDto;
-import com.tom.calendarservice.model.Dto.CourseTeachersDto;
-import com.tom.calendarservice.model.Dto.StudentDto;
-import com.tom.calendarservice.model.Status;
+import com.tom.calendarservice.model.*;
+import com.tom.calendarservice.model.Dto.*;
 import com.tom.calendarservice.repo.CalendarRepository;
 import com.tom.calendarservice.security.AuthenticationContext;
 import com.tom.calendarservice.security.JwtUtils;
@@ -18,8 +13,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.IsoFields;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -372,6 +373,196 @@ public class CalendarServiceImpl implements CalendarService {
         return true;
     }
 
+    @Override
+    public void generateCourseTimetable(LessonScheduleRequest lessonScheduleRequest) {
+        logger.info("Trying generateCourseTimetable lessonScheduleRequest: {}", lessonScheduleRequest);
+        CourseDto courseFromDb = courseServiceClient.getCourseById(lessonScheduleRequest.getCourseId(), null);
+        List<Calendar> lessonsByTeacher = getLessonsByTeacherId(lessonScheduleRequest.getTeacherId());
+
+        scheduleLessons(lessonScheduleRequest, lessonsByTeacher, courseFromDb, lessonScheduleRequest.getLessonFrequency());
+
+    }
+
+    private LocalDateTime setLessonStartDate(LocalTime timeRangeStart, LocalDateTime courseStartDate) {
+        return LocalDateTime.of(courseStartDate.getYear(),
+                courseStartDate.getMonth().getValue(),
+                courseStartDate.getDayOfMonth(),
+                timeRangeStart.getHour(),
+                timeRangeStart.getMinute());
+
+    }
+
+    private void scheduleLessons(LessonScheduleRequest lessonScheduleRequest, List<Calendar> lessonsByTeacher, CourseDto courseFromDb, LessonFrequency frequency) {
+        LocalTime timeRangeStart = setTimeRange(lessonScheduleRequest.getTimeRange(), "start");
+        LocalTime timeRangeEnd = setTimeRange(lessonScheduleRequest.getTimeRange(), "end");
+        LocalDateTime startDate = setLessonStartDate(timeRangeStart, courseFromDb.getStartDate());
+        long numberLessonsToCreate = courseFromDb.getLessonsLimit();
+        int lessonsPerWeek = determineLessonsPerWeek(frequency);
+        LocalDateTime currentDayStart = startDate;
+
+        List<DayOfWeek> preferredDays = setPreferredDays(frequency);
+
+        while (numberLessonsToCreate > 0) {
+            int lessonsThisWeek = 0;
+
+            for (DayOfWeek day : preferredDays) {
+                if(!frequency.equals(LessonFrequency.DAILY)){
+                    currentDayStart = moveToNextAvailableDay(startDate, day).withHour(timeRangeStart.getHour()).withMinute(timeRangeStart.getMinute());
+                }
+
+                if(numberLessonsToCreate == 0){
+                    break;
+                }
+
+                while (currentDayStart.toLocalTime().isBefore(timeRangeEnd)) {
+                    LocalDateTime endDate = currentDayStart.plusMinutes(lessonScheduleRequest.getLessonDuration());
+
+                    boolean teacherAvailable = isTeacherAvailable(lessonsByTeacher, currentDayStart, endDate);
+
+                    if (teacherAvailable) {
+                        Calendar newLesson = generateNewLesson(
+                                (int) (courseFromDb.getLessonsLimit() - numberLessonsToCreate + 1),
+                                currentDayStart, endDate,
+                                lessonScheduleRequest.getTeacherId(),
+                                courseFromDb
+                        );
+                        calendarRepository.save(newLesson);
+
+                        numberLessonsToCreate--;
+                        lessonsThisWeek++;
+
+                        if (frequency.equals(LessonFrequency.DAILY)) {
+                            currentDayStart = currentDayStart.plusDays(1).withHour(timeRangeStart.getHour()).withMinute(timeRangeStart.getMinute());
+                            break;
+                        }
+
+                        if (lessonsThisWeek >= lessonsPerWeek) {
+                            startDate = currentDayStart.with(DayOfWeek.MONDAY).plusWeeks(1).withHour(timeRangeStart.getHour()).withMinute(timeRangeStart.getMinute());
+                            break;
+                        }
+
+                        startDate = moveToNextLesson(currentDayStart, day, preferredDays);
+                        break;
+                    }
+
+                    currentDayStart = currentDayStart.plusHours(1);
+
+                }
+
+                if (lessonsThisWeek >= lessonsPerWeek) {
+                    break;
+                }
+            }
+
+            if (lessonsThisWeek < lessonsPerWeek) {
+                startDate = startDate.with(DayOfWeek.MONDAY).plusWeeks(1).withHour(timeRangeStart.getHour()).withMinute(timeRangeStart.getMinute());
+            }
+        }
+    }
+
+    private List<DayOfWeek> setPreferredDays(LessonFrequency frequency) {
+
+        return switch (frequency) {
+            case DAILY ->
+                    Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+            case WEEKDAYS_ONLY ->
+                    Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY);
+            case FOUR_A_WEEK ->
+                    Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.WEDNESDAY);
+            case WEEKENDS_ONLY ->
+                    Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+            default ->
+                    Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY, DayOfWeek.TUESDAY, DayOfWeek.THURSDAY);
+        };
+    }
+
+    private int determineLessonsPerWeek(LessonFrequency frequency) {
+        return switch (frequency) {
+            case DAILY -> 7;
+            case WEEKDAYS_ONLY -> 5;
+            case FOUR_A_WEEK -> 4;
+            case THREE_A_WEEK -> 3;
+            case TWICE_A_WEEK, WEEKENDS_ONLY -> 2;
+            case WEEKLY -> 1;
+            default -> throw new IllegalArgumentException("Unsupported frequency: " + frequency);
+        };
+    }
+
+    private LocalDateTime moveToNextAvailableDay(LocalDateTime currentDate, DayOfWeek targetDay) {
+        while (currentDate.getDayOfWeek() != targetDay) {
+            currentDate = currentDate.plusDays(1);
+        }
+        return currentDate;
+    }
+
+    private LocalDateTime moveToNextLesson(LocalDateTime currentDate, DayOfWeek currentDay, List<DayOfWeek> preferredDays) {
+        int currentIndex = preferredDays.indexOf(currentDay);
+        if (currentIndex == -1 || currentIndex + 1 >= preferredDays.size()) {
+            return currentDate.plusWeeks(1).with(DayOfWeek.MONDAY);
+        }
+        return currentDate.with(preferredDays.get(currentIndex + 1));
+    }
+
+
+    private LocalTime setTimeRange(TimeRange timeRange, String range) {
+        LocalTime time = null;
+
+        switch (timeRange) {
+            case MORNING:
+                if (range.equals("start")) {
+                    time = LocalTime.of(7, 0);
+                }
+                if (range.equals("end")) {
+                    time = LocalTime.of(12, 0);
+                }
+                break;
+            case AFTERNOON:
+                if (range.equals("start")) {
+                    time = LocalTime.of(12, 0);
+                }
+                if (range.equals("end")) {
+                    time = LocalTime.of(18, 0);
+                }
+                break;
+            case EVENING:
+                if (range.equals("start")) {
+                    time = LocalTime.of(18, 0);
+                }
+                if (range.equals("end")) {
+                    time = LocalTime.of(22, 0);
+                }
+                break;
+
+            default:
+                throw new IllegalArgumentException("Unknown TimeRange");
+        }
+        return time;
+    }
+
+
+    private Calendar generateNewLesson(int counter, LocalDateTime startDate, LocalDateTime endDate, Long teacherId, CourseDto courseFromDb) {
+        Calendar newLesson = new Calendar();
+        newLesson.setEventName("Lekcja " + counter);
+        newLesson.setStartDate(startDate);
+        newLesson.setEndDate(endDate);
+        newLesson.setTeacherId(teacherId);
+        newLesson.setCourseId(courseFromDb.getId());
+        newLesson.setDescription("Lekcja " + counter + ". Została wygenerowana automatycznie.");
+        List<AttendanceList> attendanceLists = addStudentsToAttendanceList(courseFromDb.getCourseStudents());
+        newLesson.setAttendanceList(attendanceLists);
+        return newLesson;
+    }
+
+    private boolean isTeacherAvailable(List<Calendar> lessons, LocalDateTime startDate, LocalDateTime endDate) {
+        logger.info("Checking isTeacherAvailable");
+        for (Calendar lesson : lessons) {
+            if (startDate.isBefore(lesson.getEndDate()) && endDate.isAfter(lesson.getStartDate())) {
+                logger.info("Teacher is not available at this time slot. Lesson collision.");
+                return false;
+            }
+        }
+        return true;
+    }
 
     private Calendar updateLessonStatus(Calendar lesson) {
         logger.info("Updating lesson status.");
@@ -556,6 +747,29 @@ public class CalendarServiceImpl implements CalendarService {
             throw new CalendarException(CalendarError.LESSON_END_DATE_IS_AFTER_COURSE_END_DATE);
         }
     }
+
+    public CourseDto updateCourseDateTime(CourseDto courseDto) {
+        List<Calendar> lessons = getLessonsByCourseId(courseDto.getId());
+
+        if (!lessons.isEmpty()) {
+
+            Calendar earliestLesson = lessons.stream()
+                    .min(Comparator.comparing(Calendar::getStartDate))
+                    .orElseThrow(() -> new IllegalStateException("Nie udało się znaleźć najwcześniejszej lekcji"));
+
+            Calendar latestLesson = lessons.stream()
+                    .max(Comparator.comparing(Calendar::getEndDate))
+                    .orElseThrow(() -> new IllegalStateException("Nie udało się znaleźć najpóźniejszej lekcji"));
+
+
+            courseDto.setStartDate(LocalDateTime.of(earliestLesson.getStartDate().getYear(), earliestLesson.getStartDate().getMonth(), earliestLesson.getStartDate().getDayOfMonth(), 0, 0));
+            courseDto.setEndDate(latestLesson.getEndDate());
+
+        }
+
+        return courseDto;
+    }
+
 
     private boolean authenticationContext() {
         boolean result = false;

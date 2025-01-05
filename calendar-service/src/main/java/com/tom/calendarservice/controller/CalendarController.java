@@ -2,6 +2,7 @@ package com.tom.calendarservice.controller;
 
 import com.tom.calendarservice.model.Calendar;
 import com.tom.calendarservice.model.Dto.CourseDto;
+import com.tom.calendarservice.model.Dto.LessonScheduleRequest;
 import com.tom.calendarservice.service.CalendarService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -17,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/calendar")
 public class CalendarController {
-    private static Logger logger = LoggerFactory.getLogger(CalendarController.class);
+    private static final Logger logger = LoggerFactory.getLogger(CalendarController.class);
     private final CalendarService calendarService;
 
     //sprawdzone
@@ -157,5 +158,21 @@ public class CalendarController {
         return calendarService.areLessonsWithinNewCourseDates(course);
     }
 
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PostMapping("/generate-course-timetable")
+    public ResponseEntity<?> generateCourseTimetable(@RequestBody LessonScheduleRequest lessonScheduleRequest) {
+        logger.info("Post method generateCourseTimetable().");
+         calendarService.generateCourseTimetable(lessonScheduleRequest);
+         return ResponseEntity.ok().build();
+    }
+
+
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PostMapping("/updateCourseDateTime")
+    public CourseDto updateCourseDateTime(@RequestBody CourseDto courseDto) {
+        logger.info("Post updateCourseDateTime().");
+       return calendarService.updateCourseDateTime(courseDto);
+
+    }
 
 }

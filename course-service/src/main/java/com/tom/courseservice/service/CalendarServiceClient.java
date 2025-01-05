@@ -1,6 +1,7 @@
 package com.tom.courseservice.service;
 
 import com.tom.courseservice.model.Course;
+import com.tom.courseservice.model.LessonScheduleRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,4 +26,10 @@ public interface CalendarServiceClient {
 
     @PostMapping("/calendar/are-lessons-within-new-course-dates")
     public boolean areLessonsWithinNewCourseDates(@RequestBody Course course);
+
+    @PostMapping("/calendar/updateCourseDateTime")
+    public Course updateCourseDateTime(@RequestBody Course course);
+
+    @PostMapping("/calendar/generate-course-timetable")
+    public ResponseEntity<?> generateCourseTimetable(@RequestBody LessonScheduleRequest lessonScheduleRequest);
 }
