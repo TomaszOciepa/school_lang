@@ -6,6 +6,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @FeignClient(name = "CALENDAR-SERVICE")
 public interface CalendarServiceClient {
 
@@ -31,5 +33,5 @@ public interface CalendarServiceClient {
     public Course updateCourseDateTime(@RequestBody Course course);
 
     @PostMapping("/calendar/generate-course-timetable")
-    public ResponseEntity<?> generateCourseTimetable(@RequestBody LessonScheduleRequest lessonScheduleRequest);
+    public Course generateCourseTimetable(@RequestBody LessonScheduleRequest lessonScheduleRequest);
 }

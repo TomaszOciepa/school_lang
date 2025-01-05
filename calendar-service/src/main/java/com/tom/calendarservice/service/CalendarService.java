@@ -4,6 +4,7 @@ import com.tom.calendarservice.model.Calendar;
 import com.tom.calendarservice.model.Dto.CourseDto;
 import com.tom.calendarservice.model.Dto.LessonScheduleRequest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CalendarService {
@@ -41,7 +42,7 @@ public interface CalendarService {
     void deleteStudentWithAllLessons(Long studentId);
 
     boolean areLessonsWithinNewCourseDates(CourseDto course);
-    void generateCourseTimetable(LessonScheduleRequest lessonScheduleRequest);
+    CourseDto generateCourseTimetable(LessonScheduleRequest lessonScheduleRequest);
     CourseDto updateCourseDateTime(CourseDto courseDto);
 //    nie sprawdzone
 

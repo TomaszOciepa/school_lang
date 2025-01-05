@@ -374,12 +374,12 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public void generateCourseTimetable(LessonScheduleRequest lessonScheduleRequest) {
+    public CourseDto generateCourseTimetable(LessonScheduleRequest lessonScheduleRequest) {
         logger.info("Trying generateCourseTimetable lessonScheduleRequest: {}", lessonScheduleRequest);
         CourseDto courseFromDb = courseServiceClient.getCourseById(lessonScheduleRequest.getCourseId(), null);
         List<Calendar> lessonsByTeacher = getLessonsByTeacherId(lessonScheduleRequest.getTeacherId());
 
-        scheduleLessons(lessonScheduleRequest, lessonsByTeacher, courseFromDb, lessonScheduleRequest.getLessonFrequency());
+        return scheduleLessons(lessonScheduleRequest, lessonsByTeacher, courseFromDb, lessonScheduleRequest.getLessonFrequency());
 
     }
 
@@ -392,7 +392,7 @@ public class CalendarServiceImpl implements CalendarService {
 
     }
 
-    private void scheduleLessons(LessonScheduleRequest lessonScheduleRequest, List<Calendar> lessonsByTeacher, CourseDto courseFromDb, LessonFrequency frequency) {
+    private CourseDto scheduleLessons(LessonScheduleRequest lessonScheduleRequest, List<Calendar> lessonsByTeacher, CourseDto courseFromDb, LessonFrequency frequency) {
         LocalTime timeRangeStart = setTimeRange(lessonScheduleRequest.getTimeRange(), "start");
         LocalTime timeRangeEnd = setTimeRange(lessonScheduleRequest.getTimeRange(), "end");
         LocalDateTime startDate = setLessonStartDate(timeRangeStart, courseFromDb.getStartDate());
@@ -401,6 +401,9 @@ public class CalendarServiceImpl implements CalendarService {
         LocalDateTime currentDayStart = startDate;
 
         List<DayOfWeek> preferredDays = setPreferredDays(frequency);
+        LocalDateTime firstLessonStartDate = null;
+        LocalDateTime lastLessonEndDate = null;
+
 
         while (numberLessonsToCreate > 0) {
             int lessonsThisWeek = 0;
@@ -426,7 +429,11 @@ public class CalendarServiceImpl implements CalendarService {
                                 lessonScheduleRequest.getTeacherId(),
                                 courseFromDb
                         );
-                        calendarRepository.save(newLesson);
+
+                        if((int) (courseFromDb.getLessonsLimit() - numberLessonsToCreate + 1) == 1){
+                            firstLessonStartDate = currentDayStart;
+                        }
+                        lastLessonEndDate = calendarRepository.save(newLesson).getEndDate();
 
                         numberLessonsToCreate--;
                         lessonsThisWeek++;
@@ -458,6 +465,10 @@ public class CalendarServiceImpl implements CalendarService {
                 startDate = startDate.with(DayOfWeek.MONDAY).plusWeeks(1).withHour(timeRangeStart.getHour()).withMinute(timeRangeStart.getMinute());
             }
         }
+        CourseDto courseObjWithFirstAndLastLessonDate = new CourseDto();
+        courseObjWithFirstAndLastLessonDate.setStartDate(firstLessonStartDate);
+        courseObjWithFirstAndLastLessonDate.setEndDate(lastLessonEndDate);
+        return courseObjWithFirstAndLastLessonDate;
     }
 
     private List<DayOfWeek> setPreferredDays(LessonFrequency frequency) {

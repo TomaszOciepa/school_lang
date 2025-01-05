@@ -62,23 +62,27 @@ public class CourseServiceImpl implements CourseService {
 
         logger.info("Setting participants number on 0L.");
         course.setParticipantsNumber(0L);
-        logger.info("Save course on database.");
 
         List<CourseTeachers> courseTeachers = course.getCourseTeachers();
         courseTeachers.add(new CourseTeachers(course.getTeacherId()));
         course.setCourseTeachers(courseTeachers);
+        lessonScheduleRequest.setTeacherId(course.getTeacherId());
 
+        logger.info("Save course on database.");
         Course courseFromDb = courseRepository.save(course);
 
         lessonScheduleRequest.setTimeRange(courseFromDb.getTimeRange());
         lessonScheduleRequest.setLessonDuration(courseFromDb.getLessonDuration());
-        lessonScheduleRequest.setTeacherId(course.getTeacherId());
         lessonScheduleRequest.setCourseId(courseFromDb.getId());
         lessonScheduleRequest.setLessonFrequency(courseFromDb.getLessonFrequency());
 
-        calendarServiceClient.generateCourseTimetable(lessonScheduleRequest);
+        Course objWithFirstAndLastLessonDate = calendarServiceClient.generateCourseTimetable(lessonScheduleRequest);
+        System.out.println("Obejt objWithFirstAndLastLessonDate: "+ objWithFirstAndLastLessonDate.toString());
 
-        return courseFromDb;
+        logger.info("Edit startDate and EndDate.");
+        Course course1 = patchCourse(courseFromDb.getId(), objWithFirstAndLastLessonDate);
+        System.out.println("Kurs po edycji: "+ course1.toString());
+        return course1;
     }
 
     @Override
@@ -103,14 +107,12 @@ public class CourseServiceImpl implements CourseService {
 
             return courseRepository.findByIdAndStatus(id, status)
                     .map(this::updateCourseStatus)
-                    .map(this::updateCourseDataTime)
                     .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
         }
 
         logger.info("Fetching courses without status: {}.", status);
         return courseRepository.findById(id)
                 .map(this::updateCourseStatus)
-                .map(this::updateCourseDataTime)
                 .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
     }
 
@@ -238,8 +240,7 @@ public class CourseServiceImpl implements CourseService {
 
             if (endDateChanged) {
                 logger.info("Changing the course end date ...");
-                LocalDateTime adjustedEndDate = course.getEndDate().plusHours(23).plusMinutes(59);
-                course.setEndDate(adjustedEndDate);
+                course.setEndDate(course.getEndDate());
                 isCourseEndDateIsBeforeCourseStartDate(course.getEndDate(), course.getStartDate());
             }
 
@@ -479,11 +480,6 @@ public class CourseServiceImpl implements CourseService {
         if (endDate.isBefore(startTime) || endDate.isEqual(startTime)) {
             throw new CourseException(CourseError.COURSE_END_DATE_IS_BEFORE_START_DATE);
         }
-    }
-
-    private Course updateCourseDataTime(Course course) {
-        logger.info("Updating course data time");
-        return calendarServiceClient.updateCourseDateTime(course);
     }
 
     private Course updateCourseStatus(Course course) {
