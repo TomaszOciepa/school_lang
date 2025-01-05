@@ -61,6 +61,7 @@ export class CourseComponent {
     this.courseService.getCourseById(id).subscribe({
       next: (response) => {
         this.course = response;
+        console.log('Kur:' + JSON.stringify(response));
       },
       error: (err: HttpErrorResponse) => {
         console.log(err.error.message);

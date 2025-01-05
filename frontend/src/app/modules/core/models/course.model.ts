@@ -67,6 +67,15 @@ export interface PostCourseForm {
   lessonFrequency: FormControl<string>;
 }
 
+export interface EditCourseForm {
+  name: FormControl<string>;
+  language: FormControl<string>;
+  participantsLimit: FormControl<number>;
+  lessonsLimit: FormControl<number>;
+  startDate: FormControl<Date | ''>;
+  endDate: FormControl<Date | ''>;
+}
+
 export interface CourseMembers {
   id: number;
   firstName: string;

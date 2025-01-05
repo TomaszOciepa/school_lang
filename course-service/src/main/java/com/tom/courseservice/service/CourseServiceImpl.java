@@ -100,6 +100,7 @@ public class CourseServiceImpl implements CourseService {
     public Course getCourseById(String id, Status status) {
         if (status != null) {
             logger.info("Fetching courses with status: {}.", status);
+
             return courseRepository.findByIdAndStatus(id, status)
                     .map(this::updateCourseStatus)
                     .map(this::updateCourseDataTime)
@@ -503,6 +504,7 @@ public class CourseServiceImpl implements CourseService {
         }
 
         return courseRepository.save(course);
+
     }
 
 
