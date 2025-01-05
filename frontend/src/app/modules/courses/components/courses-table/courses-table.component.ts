@@ -8,7 +8,6 @@ import { DatePipe } from '@angular/common';
 import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 import { KeycloakService } from 'keycloak-angular';
-import { StudentService } from 'src/app/modules/core/services/student.service';
 
 @Component({
   selector: 'app-courses-table',

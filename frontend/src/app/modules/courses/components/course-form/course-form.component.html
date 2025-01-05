@@ -1,11 +1,11 @@
-<section class="slider-area slider-area2" *ngIf="!editMode">
+<section class="slider-area slider-area2">
   <div class="slider-active">
     <div class="single-slider slider-height2">
       <div class="container">
         <div class="row">
           <div class="col-xl-8 col-lg-11 col-md-12">
             <div class="hero__caption hero__caption2">
-              <h1 *ngIf="!editMode" data-animation="bounceIn" data-delay="0.2s">
+              <h1 data-animation="bounceIn" data-delay="0.2s">
                 Utwórz nowy kurs
               </h1>
             </div>
@@ -15,8 +15,8 @@
     </div>
   </div>
 </section>
-<div [ngClass]="{ 'my-form-container': !editMode }">
-  <div class="course-form" [ngClass]="{ 'full-width': editMode }">
+<div [ngClass]="">
+  <div class="course-form">
     <div class="teacher-form-wrapper mt-3">
       <form [formGroup]="courseForm">
         <div>
@@ -61,7 +61,7 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div *ngIf="!this.editMode">
+        <div>
           <mat-form-field>
             <mat-label>Rodzaj kursu</mat-label>
             <mat-select formControlName="timeRange">
@@ -97,7 +97,7 @@
             }}</mat-error>
           </mat-form-field>
         </div>
-        <div *ngIf="!this.editMode">
+        <div>
           <mat-form-field>
             <mat-label>Czas trwania lekcji</mat-label>
             <mat-select formControlName="lessonDuration">
@@ -110,7 +110,7 @@
             }}</mat-error>
           </mat-form-field>
         </div>
-        <div *ngIf="!this.editMode">
+        <div>
           <mat-form-field>
             <mat-label>Częstotliwość lekcji</mat-label>
             <mat-select formControlName="lessonFrequency">
@@ -133,7 +133,7 @@
           </mat-form-field>
         </div>
         <div *ngIf="!isTeacher">
-          <mat-form-field *ngIf="!this.editMode">
+          <mat-form-field>
             <mat-label>Nauczyciel</mat-label>
             <mat-select formControlName="teacherId">
               <mat-option
@@ -160,12 +160,7 @@
           {{ errMsg }}
         </div>
         <div class="d-flex justify-content-end">
-          <button
-            class="pushable"
-            type="submit"
-            *ngIf="editMode"
-            (click)="emitCLoseDialog()"
-          >
+          <button class="pushable" type="submit" (click)="emitCLoseDialog()">
             <span class="shadow"></span>
             <span class="edge"></span>
             <span class="front"> Anuluj</span>
@@ -179,9 +174,7 @@
           >
             <span class="shadow"></span>
             <span class="edge"></span>
-            <span class="front">
-              {{ editMode ? "Zapisz" : "Dodaj nowy kurs" }}</span
-            >
+            <span class="front">Dodaj nowy kurs</span>
           </button>
         </div>
       </form>

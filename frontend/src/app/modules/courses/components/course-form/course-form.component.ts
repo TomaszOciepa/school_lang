@@ -1,12 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { KeycloakProfile } from 'keycloak-js';
 import { Observer } from 'rxjs';
 
 import {
-  Course,
   EnrollemntInfo,
   PostCourse,
   PostCourseForm,
@@ -24,26 +23,16 @@ import { TeacherService } from 'src/app/modules/core/services/teacher.service';
   styleUrls: ['./course-form.component.css'],
 })
 export class CourseFormComponent {
-  @Input() editMode = false;
-  @Input() course: Course = {} as Course;
   @Output() closeDialog = new EventEmitter<void>();
 
   observer: Observer<unknown> = {
-    next: () => {
-      if (this.editMode) {
-        this.emitCLoseDialog();
-      }
-    },
+    next: () => {},
     error: (err: HttpErrorResponse) => {
       this.errMsg = err.error.message;
       this.hideErrorMsg();
     },
     complete: () => {
-      if (this.editMode) {
-        window.location.reload();
-      } else {
-        this.router.navigate(['/courses']);
-      }
+      this.router.navigate(['/courses']);
     },
   };
 
@@ -95,7 +84,7 @@ export class CourseFormComponent {
 
   private initForm() {
     this.courseForm = new FormGroup<PostCourseForm>({
-      name: new FormControl<string>(this.editMode ? this.course.name : '', {
+      name: new FormControl<string>('', {
         nonNullable: true,
         validators: [
           Validators.required,
@@ -103,7 +92,7 @@ export class CourseFormComponent {
           Validators.maxLength(50),
         ],
       }),
-      price: new FormControl<string>(this.editMode ? this.course.price : '', {
+      price: new FormControl<string>('', {
         nonNullable: true,
         validators: [
           Validators.required,
@@ -111,47 +100,35 @@ export class CourseFormComponent {
           Validators.maxLength(10),
         ],
       }),
-      participantsLimit: new FormControl(
-        this.editMode ? this.course.participantsLimit : 0,
-        {
-          nonNullable: true,
-          validators: [
-            Validators.required,
-            Validators.min(1),
-            Validators.max(26),
-            Validators.pattern('[1-9][0-9]*'),
-          ],
-        }
-      ),
-      language: new FormControl(this.editMode ? this.course.language : '', {
+      participantsLimit: new FormControl(0, {
+        nonNullable: true,
+        validators: [
+          Validators.required,
+          Validators.min(1),
+          Validators.max(26),
+          Validators.pattern('[1-9][0-9]*'),
+        ],
+      }),
+      language: new FormControl('', {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      lessonsLimit: new FormControl(
-        this.editMode ? this.course.lessonsLimit : 0,
-        {
-          nonNullable: true,
-          validators: [
-            Validators.required,
-            Validators.min(1),
-            Validators.pattern('[1-9][0-9]*'),
-          ],
-        }
-      ),
-      startDate: new FormControl(
-        this.editMode ? new Date(this.course.startDate) : '',
-        {
-          nonNullable: true,
-          validators: [Validators.required],
-        }
-      ),
-      endDate: new FormControl(
-        this.editMode ? new Date(this.course.endDate) : '',
-        {
-          nonNullable: true,
-          validators: [Validators.required],
-        }
-      ),
+      lessonsLimit: new FormControl(0, {
+        nonNullable: true,
+        validators: [
+          Validators.required,
+          Validators.min(1),
+          Validators.pattern('[1-9][0-9]*'),
+        ],
+      }),
+      startDate: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+      endDate: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
       timeRange: new FormControl<string>('', {
         nonNullable: true,
         validators: [Validators.required],
@@ -187,18 +164,7 @@ export class CourseFormComponent {
 
   onAddCourse() {
     this.generatePostCourseObj();
-
-    if (!this.editMode) {
-      this.generateLessons();
-    }
-
-    if (this.editMode) {
-      this.courseService
-        .patchCourse(this.course.id, this.postCourse)
-        .subscribe(this.observer);
-      return;
-    }
-
+    this.generateLessons();
     this.courseService.addCourse(this.postCourse).subscribe(this.observer);
   }
 
