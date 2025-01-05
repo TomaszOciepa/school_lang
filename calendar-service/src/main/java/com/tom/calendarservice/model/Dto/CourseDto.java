@@ -1,5 +1,6 @@
 package com.tom.calendarservice.model.Dto;
 
+import com.tom.calendarservice.model.Language;
 import com.tom.calendarservice.model.LessonFrequency;
 import com.tom.calendarservice.model.Status;
 import com.tom.calendarservice.model.TimeRange;
@@ -19,6 +20,8 @@ public class CourseDto {
     private String id;
     private String name;
     private Status status;
+    private String price;
+    private Language language;
     private Long participantsLimit;
     private Long participantsNumber;
     private Long lessonsLimit;

@@ -13,6 +13,7 @@ import { UnenrollCourseDialogComponent } from './components/course/unenroll-cour
 import { LessonsModule } from '../lessons/lessons.module';
 import { RestoreStudentDialogComponent } from './components/course/restore-student-dialog/restore-student-dialog.component';
 import { CourseLessonsTableComponent } from './components/course/course-lessons-table/course-lessons-table.component';
+import { CourseEditFormComponent } from './components/course-edit-form/course-edit-form.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { CourseLessonsTableComponent } from './components/course/course-lessons-
     UnenrollCourseDialogComponent,
     RestoreStudentDialogComponent,
     CourseLessonsTableComponent,
+    CourseEditFormComponent,
   ],
   imports: [SharedModule, CoursesRoutingModule, LessonsModule],
   exports: [CoursesTableComponent],
