@@ -211,26 +211,33 @@ public class CalendarServiceImpl implements CalendarService {
         Calendar savedLesson = calendarRepository.save(lessonFromDB);
 
         if (updateCourseDate) {
-            LocalDateTime earliestLesson = findEarliestLesson(lessonFromDB.getCourseId());
-            LocalDateTime latestLesson = findLatestLesson(lessonFromDB.getCourseId());
-
-            CourseDto objUpdateCourseDate = new CourseDto();
-            objUpdateCourseDate.setId(lessonFromDB.getCourseId());
-            objUpdateCourseDate.setStartDate(earliestLesson);
-            objUpdateCourseDate.setEndDate(latestLesson);
-
-            rabbitTemplate.convertAndSend("update-course-date", objUpdateCourseDate);
+            updateCourseDateTime(lessonFromDB.getCourseId());
         }
 
         return savedLesson;
     }
 
+    private void updateCourseDateTime(String courseId) {
+        logger.info("Update Course DateTime for courseId: {}", courseId);
+        LocalDateTime earliestLesson = findEarliestLesson(courseId);
+        LocalDateTime latestLesson = findLatestLesson(courseId);
+
+        CourseDto objUpdateCourseDate = new CourseDto();
+        objUpdateCourseDate.setId(courseId);
+        objUpdateCourseDate.setStartDate(earliestLesson);
+        objUpdateCourseDate.setEndDate(latestLesson);
+        rabbitTemplate.convertAndSend("update-course-date", objUpdateCourseDate);
+    }
+
     @Override
     public void deleteLessonsById(String id) {
-        logger.info("Delete lesson lessonId: {}", id);
-        calendarRepository.findById(id)
+        Calendar lessonFromDb = calendarRepository.findById(id)
                 .orElseThrow(() -> new CalendarException(CalendarError.CALENDAR_NOT_FOUND));
+        logger.info("Delete lesson lessonId: {}", id);
         calendarRepository.deleteById(id);
+        if (lessonFromDb.getCourseId() != null) {
+            updateCourseDateTime(lessonFromDb.getCourseId());
+        }
     }
 
     @Override
@@ -560,20 +567,16 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     private Calendar updateLessonStatus(Calendar lesson) {
-        logger.info("Updating lesson status.");
 
         if (lesson.getStartDate().isAfter(LocalDateTime.now())) {
-            logger.info("Changing lesson status: {}", Status.INACTIVE);
             lesson.setStatus(Status.INACTIVE);
         }
 
         if (lesson.getStartDate().isBefore(LocalDateTime.now()) && lesson.getEndDate().isAfter(LocalDateTime.now())) {
-            logger.info("Changing lesson status: {}", Status.ACTIVE);
             lesson.setStatus(Status.ACTIVE);
         }
 
         if (lesson.getEndDate().isBefore(LocalDateTime.now())) {
-            logger.info("Changing lesson status: {}", Status.FINISHED);
             lesson.setStatus(Status.FINISHED);
         }
 
@@ -609,8 +612,6 @@ public class CalendarServiceImpl implements CalendarService {
             isCourseHaveLessonAvailableOnTimeSlot(calendar.getCourseId(), calendar.getStartDate(), calendar.getEndDate());
         }
 
-        isLessonStartDateBeforeCourseStartDate(calendar.getStartDate(), courseFromDb.getStartDate());
-        isLessonStartDateAfterCourseEndDate(calendar.getStartDate(), courseFromDb.getEndDate());
         isTeacherEnrolledInCourse(calendar.getTeacherId(), courseFromDb.getCourseTeachers());
         isTeacherActive(calendar.getTeacherId());
 
@@ -621,7 +622,10 @@ public class CalendarServiceImpl implements CalendarService {
 
         List<AttendanceList> attendanceLists = addStudentsToAttendanceList(courseFromDb.getCourseStudents());
         calendar.setAttendanceList(attendanceLists);
-        return calendarRepository.save(calendar);
+        Calendar savedLesson = calendarRepository.save(calendar);
+
+        updateCourseDateTime(savedLesson.getCourseId());
+        return savedLesson;
     }
 
     private boolean isTeacherHaveLessons(Long teacherId) {
@@ -678,22 +682,6 @@ public class CalendarServiceImpl implements CalendarService {
                 logger.info("Teacher is not available at this time slot. Lesson collision.");
                 throw new CalendarException(CalendarError.TEACHER_BUSY_AT_TIME_SLOT);
             }
-        }
-    }
-
-    private void isLessonStartDateBeforeCourseStartDate(LocalDateTime lessonStartDate, LocalDateTime courseStartDate) {
-        logger.info("Checking isLessonStartDateBeforeCourseStartDate");
-        if (lessonStartDate.isBefore(courseStartDate)) {
-            logger.info("Lesson start date is before course start date");
-            throw new CalendarException(CalendarError.LESSON_START_DATE_IS_BEFORE_COURSE_START_DATE);
-        }
-    }
-
-    private void isLessonStartDateAfterCourseEndDate(LocalDateTime lessonStartDate, LocalDateTime courseEndDate) {
-        logger.info("Checking isLessonStartDateAfterCourseEndDate");
-        if (lessonStartDate.isAfter(courseEndDate)) {
-            logger.info("Lesson start date is after course end date");
-            throw new CalendarException(CalendarError.LESSON_START_DATE_IS_AFTER_COURSE_END_DATE);
         }
     }
 
