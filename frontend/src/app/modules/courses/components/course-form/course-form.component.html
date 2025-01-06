@@ -132,7 +132,7 @@
             }}</mat-error>
           </mat-form-field>
         </div>
-        <div *ngIf="!isTeacher">
+        <div *ngIf="isTeacher">
           <mat-form-field>
             <mat-label>Nauczyciel</mat-label>
             <mat-select formControlName="teacherId">

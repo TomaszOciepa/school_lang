@@ -71,17 +71,6 @@ public class CalendarServiceImpl implements CalendarService {
         return getLessonsByCourseId(courseId).size();
     }
 
-    public void deleteCourseLessons(String courseId) {
-        logger.info("Delete lessons by courseId: {}", courseId);
-        logger.info("Fetching lessons list.");
-        List<Calendar> lessonsList = getLessonsByCourseId(courseId);
-
-        lessonsList.forEach(lesson -> {
-            logger.info("Delete lesson id: {}", lesson.getId());
-            deleteLessonsById(lesson.getId());
-        });
-    }
-
     @Override
     public Calendar addLesson(Calendar calendar) {
         Calendar lesson;
@@ -235,6 +224,7 @@ public class CalendarServiceImpl implements CalendarService {
                 .orElseThrow(() -> new CalendarException(CalendarError.CALENDAR_NOT_FOUND));
         logger.info("Delete lesson lessonId: {}", id);
         calendarRepository.deleteById(id);
+
         if (lessonFromDb.getCourseId() != null) {
             updateCourseDateTime(lessonFromDb.getCourseId());
         }
@@ -249,6 +239,19 @@ public class CalendarServiceImpl implements CalendarService {
         lessons.stream()
                 .map(Calendar::getId)
                 .forEach(calendarRepository::deleteById);
+    }
+
+    public void deleteCourseLessons(String courseId) {
+
+        logger.info("Delete lessons by courseId: {}", courseId);
+        logger.info("Fetching lessons list.");
+        List<Calendar> lessonsList = getLessonsByCourseId(courseId);
+
+        lessonsList.forEach(lesson -> {
+            logger.info("Delete lesson id: {}", lesson.getId());
+//            deleteLessonsById(lesson.getId());
+            calendarRepository.deleteById(lesson.getId());
+        });
     }
 
     @Override
@@ -715,21 +718,21 @@ public class CalendarServiceImpl implements CalendarService {
         }
     }
 
-    private void isLessonEndDateBeforeCourseStartDate(LocalDateTime lessonEndDate, LocalDateTime courseStartDate) {
-        logger.info("Checking isLessonEndDateBeforeCourseStartDate");
-        if (lessonEndDate.isBefore(courseStartDate)) {
-            logger.info("Lesson end date is before course start date");
-            throw new CalendarException(CalendarError.LESSON_END_DATE_IS_BEFORE_COURSE_START_DATE);
-        }
-    }
-
-    private void isLessonEndDateAfterCourseEndDate(LocalDateTime lessonEndDate, LocalDateTime courseEndDate) {
-        logger.info("Checking isLessonEndDateAfterCourseEndDate");
-        if (lessonEndDate.isAfter(courseEndDate)) {
-            logger.info("Lesson end date is after course end date");
-            throw new CalendarException(CalendarError.LESSON_END_DATE_IS_AFTER_COURSE_END_DATE);
-        }
-    }
+//    private void isLessonEndDateBeforeCourseStartDate(LocalDateTime lessonEndDate, LocalDateTime courseStartDate) {
+//        logger.info("Checking isLessonEndDateBeforeCourseStartDate");
+//        if (lessonEndDate.isBefore(courseStartDate)) {
+//            logger.info("Lesson end date is before course start date");
+//            throw new CalendarException(CalendarError.LESSON_END_DATE_IS_BEFORE_COURSE_START_DATE);
+//        }
+//    }
+//
+//    private void isLessonEndDateAfterCourseEndDate(LocalDateTime lessonEndDate, LocalDateTime courseEndDate) {
+//        logger.info("Checking isLessonEndDateAfterCourseEndDate");
+//        if (lessonEndDate.isAfter(courseEndDate)) {
+//            logger.info("Lesson end date is after course end date");
+//            throw new CalendarException(CalendarError.LESSON_END_DATE_IS_AFTER_COURSE_END_DATE);
+//        }
+//    }
 
     private LocalDateTime findEarliestLesson(String courseId) {
         List<Calendar> lessons = getLessonsByCourseId(courseId);

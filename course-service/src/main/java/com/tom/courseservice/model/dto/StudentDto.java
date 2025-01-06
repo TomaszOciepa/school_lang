@@ -2,10 +2,12 @@ package com.tom.courseservice.model.dto;
 
 import com.tom.courseservice.model.Status;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class StudentDto {
 
     private Long id;

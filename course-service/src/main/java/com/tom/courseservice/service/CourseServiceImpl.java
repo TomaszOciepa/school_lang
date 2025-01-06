@@ -269,9 +269,9 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.findById(id)
                 .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
         logger.info("Delete course.");
+        calendarServiceClient.deleteCourseLessons(id);
         courseRepository.deleteById(id);
         logger.info("Delete course lessons.");
-        calendarServiceClient.deleteCourseLessons(id);
     }
 
     @Override

@@ -44,7 +44,7 @@ export class CourseFormComponent {
   userProfile: KeycloakProfile | null = null;
   isTeacher: boolean = false;
   teacherEmail!: string | undefined;
-  teacherId!: number;
+  teacherIdNumber!: number;
   teacherList: User[] = [];
 
   constructor(
@@ -58,7 +58,7 @@ export class CourseFormComponent {
 
   async ngOnInit(): Promise<void> {
     this.loadUserProfile();
-    this.getTeachers();
+
     this.initForm();
   }
 
@@ -71,6 +71,10 @@ export class CourseFormComponent {
     if (this.isTeacher) {
       this.teacherEmail = this.userProfile?.email;
       this.getTeacherByEmail();
+    }
+
+    if (!this.isTeacher) {
+      this.getTeachers();
     }
   }
 
@@ -138,10 +142,13 @@ export class CourseFormComponent {
         validators: [Validators.required],
       }),
 
-      teacherId: new FormControl('', {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
+      teacherId: new FormControl(
+        this.isTeacher ? this.teacherIdNumber.toString() : '',
+        {
+          nonNullable: true,
+          validators: [Validators.required],
+        }
+      ),
 
       lessonFrequency: new FormControl<string>('', {
         nonNullable: true,
@@ -203,7 +210,7 @@ export class CourseFormComponent {
     }
 
     if (this.isTeacher) {
-      const id = this.teacherId;
+      const id = this.teacherIdNumber;
       const teacherInfo: EnrollemntInfo = { id: id };
       this.postCourse.courseTeachers = [];
       this.postCourse.courseTeachers.push(teacherInfo);
@@ -222,7 +229,7 @@ export class CourseFormComponent {
       );
     }
 
-    if (!this.isTeacher) {
+    if (this.isTeacher) {
       if (this.courseForm.get('teacherId')?.dirty) {
         this.postCourse.teacherId = parseInt(
           this.courseForm.getRawValue().teacherId,
@@ -254,7 +261,8 @@ export class CourseFormComponent {
   private getTeacherByEmail() {
     this.teacherService.getTeacherByEmail(this.teacherEmail).subscribe({
       next: (result) => {
-        this.teacherId = result.id;
+        this.teacherIdNumber = result.id;
+        this.teacherList.push(result);
       },
       error: (err) => {
         console.log(err);

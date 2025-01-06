@@ -72,8 +72,6 @@ export interface EditCourseForm {
   language: FormControl<string>;
   participantsLimit: FormControl<number>;
   lessonsLimit: FormControl<number>;
-  startDate: FormControl<Date | ''>;
-  endDate: FormControl<Date | ''>;
 }
 
 export interface CourseMembers {

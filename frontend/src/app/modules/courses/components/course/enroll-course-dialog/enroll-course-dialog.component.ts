@@ -132,7 +132,6 @@ export class EnrollCourseDialogComponent implements OnInit {
       .getStudentsByIdNumberNotEqual(this.usersIdEnrolled)
       .subscribe({
         next: (clients) => {
-          console.log(clients);
           this.dataSource = new MatTableDataSource<User>(clients);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
