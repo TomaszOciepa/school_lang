@@ -10,14 +10,13 @@ import com.tom.calendarservice.security.JwtUtils;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.IsoFields;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -35,6 +34,7 @@ public class CalendarServiceImpl implements CalendarService {
     private final AuthenticationContext authenticationContext;
     private final StudentServiceClient studentServiceClient;
     private final JwtUtils jwtUtils;
+    private final RabbitTemplate rabbitTemplate;
 
     //sprawdzone
     @Override
@@ -119,11 +119,14 @@ public class CalendarServiceImpl implements CalendarService {
         return lessons;
     }
 
+
     @Override
     public Calendar patchLesson(String id, Calendar lesson) {
         logger.info("Patch lesson id: {}", id);
         Calendar lessonFromDB = calendarRepository.findById(id)
                 .orElseThrow(() -> new CalendarException(CalendarError.CALENDAR_NOT_FOUND));
+
+        boolean updateCourseDate = false;
 
         if (lesson.getEventName() != null) {
             logger.info("Changing the event name...");
@@ -134,54 +137,36 @@ public class CalendarServiceImpl implements CalendarService {
             boolean startDateChanged = lesson.getStartDate() != null;
             boolean endDateChanged = lesson.getEndDate() != null;
 
-
-            Long teacherId = null;
-
-            if (lesson.getTeacherId() == null) {
-                teacherId = lessonFromDB.getTeacherId();
-            } else {
-                teacherId = lesson.getTeacherId();
-            }
-
-            List<Calendar> lessonsByTeacherId = getLessonsByTeacherId(teacherId);
+            List<Calendar> lessonsByTeacherId = getLessonsByTeacherId(lesson.getTeacherId());
 
             if (startDateChanged) {
                 logger.info("Changing the lesson start date ...");
-                System.out.println("godzina rozpoczecia :" + lesson.getStartDate());
                 if (lesson.getEndDate() == null) {
                     lesson.setEndDate(lessonFromDB.getEndDate());
                 }
 
                 isLessonStartDateIsAfterLessonEndDate(lesson.getStartDate(), lesson.getEndDate());
+                isTeacherAvailableOnTimeSlot(lessonsByTeacherId, lesson.getStartDate(), lesson.getEndDate());
+                lessonFromDB.setStartDate(lesson.getStartDate());
 
                 if (lessonFromDB.getCourseId() != null) {
-                    CourseDto courseFromDB = courseServiceClient.getCourseById(lessonFromDB.getCourseId(), null);
-                    isLessonStartDateBeforeCourseStartDate(lesson.getStartDate(), courseFromDB.getStartDate());
-                    isLessonStartDateAfterCourseEndDate(lesson.getStartDate(), courseFromDB.getEndDate());
+                    updateCourseDate = true;
                 }
-
-                isTeacherAvailableOnTimeSlot(lessonsByTeacherId, lesson.getStartDate(), lesson.getEndDate());
-
-                lessonFromDB.setStartDate(lesson.getStartDate());
             }
 
             if (endDateChanged) {
                 logger.info("Changing the lesson end date ...");
-                System.out.println("godzina zakonczenia :" + lesson.getEndDate());
                 if (lesson.getStartDate() == null) {
                     lesson.setStartDate(lessonFromDB.getStartDate());
                 }
+
                 isLessonStartDateIsAfterLessonEndDate(lesson.getStartDate(), lesson.getEndDate());
-
-                if (lessonFromDB.getCourseId() != null) {
-                    CourseDto courseFromDB = courseServiceClient.getCourseById(lessonFromDB.getCourseId(), null);
-                    isLessonEndDateBeforeCourseStartDate(lesson.getEndDate(), courseFromDB.getStartDate());
-                    isLessonEndDateAfterCourseEndDate(lesson.getEndDate(), courseFromDB.getEndDate());
-                }
-
                 isTeacherAvailableOnTimeSlot(lessonsByTeacherId, lesson.getStartDate(), lesson.getEndDate());
                 lessonFromDB.setEndDate(lesson.getEndDate());
 
+                if (lessonFromDB.getCourseId() != null) {
+                    updateCourseDate = true;
+                }
             }
         }
 
@@ -210,7 +195,6 @@ public class CalendarServiceImpl implements CalendarService {
             }
 
             isTeacherAvailableOnTimeSlot(lessonsByTeacherId, startDate, endDate);
-
             lessonFromDB.setTeacherId(lesson.getTeacherId());
         }
 
@@ -223,7 +207,22 @@ public class CalendarServiceImpl implements CalendarService {
             logger.info("Changing attendance list");
             lessonFromDB.setAttendanceList(lesson.getAttendanceList());
         }
-        return calendarRepository.save(lessonFromDB);
+
+        Calendar savedLesson = calendarRepository.save(lessonFromDB);
+
+        if (updateCourseDate) {
+            LocalDateTime earliestLesson = findEarliestLesson(lessonFromDB.getCourseId());
+            LocalDateTime latestLesson = findLatestLesson(lessonFromDB.getCourseId());
+
+            CourseDto objUpdateCourseDate = new CourseDto();
+            objUpdateCourseDate.setId(lessonFromDB.getCourseId());
+            objUpdateCourseDate.setStartDate(earliestLesson);
+            objUpdateCourseDate.setEndDate(latestLesson);
+
+            rabbitTemplate.convertAndSend("update-course-date", objUpdateCourseDate);
+        }
+
+        return savedLesson;
     }
 
     @Override
@@ -358,20 +357,6 @@ public class CalendarServiceImpl implements CalendarService {
         });
     }
 
-    @Override
-    public boolean areLessonsWithinNewCourseDates(CourseDto course) {
-        logger.info("Are Lessons With in New Course Dates");
-        List<Calendar> lessons = getLessonsByCourseId(course.getId());
-        LocalDateTime courseStartDate = course.getStartDate();
-        LocalDateTime courseEndDate = course.getEndDate();
-
-        for (Calendar lesson : lessons) {
-            isLessonStartDateBeforeCourseStartDate(lesson.getStartDate(), courseStartDate);
-            isLessonStartDateAfterCourseEndDate(lesson.getStartDate(), courseEndDate);
-        }
-
-        return true;
-    }
 
     @Override
     public CourseDto generateCourseTimetable(LessonScheduleRequest lessonScheduleRequest) {
@@ -409,11 +394,11 @@ public class CalendarServiceImpl implements CalendarService {
             int lessonsThisWeek = 0;
 
             for (DayOfWeek day : preferredDays) {
-                if(!frequency.equals(LessonFrequency.DAILY)){
+                if (!frequency.equals(LessonFrequency.DAILY)) {
                     currentDayStart = moveToNextAvailableDay(startDate, day).withHour(timeRangeStart.getHour()).withMinute(timeRangeStart.getMinute());
                 }
 
-                if(numberLessonsToCreate == 0){
+                if (numberLessonsToCreate == 0) {
                     break;
                 }
 
@@ -430,7 +415,7 @@ public class CalendarServiceImpl implements CalendarService {
                                 courseFromDb
                         );
 
-                        if((int) (courseFromDb.getLessonsLimit() - numberLessonsToCreate + 1) == 1){
+                        if ((int) (courseFromDb.getLessonsLimit() - numberLessonsToCreate + 1) == 1) {
                             firstLessonStartDate = currentDayStart;
                         }
                         lastLessonEndDate = calendarRepository.save(newLesson).getEndDate();
@@ -480,8 +465,7 @@ public class CalendarServiceImpl implements CalendarService {
                     Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY);
             case FOUR_A_WEEK ->
                     Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.WEDNESDAY);
-            case WEEKENDS_ONLY ->
-                    Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+            case WEEKENDS_ONLY -> Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
             default ->
                     Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY, DayOfWeek.TUESDAY, DayOfWeek.THURSDAY);
         };
@@ -759,26 +743,21 @@ public class CalendarServiceImpl implements CalendarService {
         }
     }
 
-    public CourseDto updateCourseDateTime(CourseDto courseDto) {
-        List<Calendar> lessons = getLessonsByCourseId(courseDto.getId());
+    private LocalDateTime findEarliestLesson(String courseId) {
+        List<Calendar> lessons = getLessonsByCourseId(courseId);
 
-        if (!lessons.isEmpty()) {
+        return lessons.stream()
+                .min(Comparator.comparing(Calendar::getStartDate))
+                .orElseThrow(() -> new CalendarException(CalendarError.CALENDAR_LESSONS_NOT_FOUND)).getStartDate();
 
-            Calendar earliestLesson = lessons.stream()
-                    .min(Comparator.comparing(Calendar::getStartDate))
-                    .orElseThrow(() -> new IllegalStateException("Nie udało się znaleźć najwcześniejszej lekcji"));
+    }
 
-            Calendar latestLesson = lessons.stream()
-                    .max(Comparator.comparing(Calendar::getEndDate))
-                    .orElseThrow(() -> new IllegalStateException("Nie udało się znaleźć najpóźniejszej lekcji"));
+    private LocalDateTime findLatestLesson(String courseId) {
+        List<Calendar> lessons = getLessonsByCourseId(courseId);
 
-
-            courseDto.setStartDate(LocalDateTime.of(earliestLesson.getStartDate().getYear(), earliestLesson.getStartDate().getMonth(), earliestLesson.getStartDate().getDayOfMonth(), 0, 0));
-            courseDto.setEndDate(latestLesson.getEndDate());
-
-        }
-
-        return courseDto;
+        return lessons.stream()
+                .max(Comparator.comparing(Calendar::getEndDate))
+                .orElseThrow(() -> new CalendarException(CalendarError.CALENDAR_LESSONS_NOT_FOUND)).getEndDate();
     }
 
 

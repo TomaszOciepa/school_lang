@@ -13,6 +13,7 @@ import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,12 @@ public class CourseServiceImpl implements CourseService {
     private final AuthenticationContext authenticationContext;
     private final JwtUtils jwtUtils;
 
+
+    @RabbitListener(queues = "update-course-date")
+    public void updateCourseDate(Course course){
+        logger.info("RabbitMq updateCourseDate {}", course);
+        patchCourse(course.getId(), course);
+    }
 
     @Override
     public Course addCourse(Course course) {
@@ -244,12 +251,6 @@ public class CourseServiceImpl implements CourseService {
                 isCourseEndDateIsBeforeCourseStartDate(course.getEndDate(), course.getStartDate());
             }
 
-            // Perform shared operation if either date has changed
-            if (startDateChanged || endDateChanged) {
-                course.setId(courseFromDb.getId());
-                calendarServiceClient.areLessonsWithinNewCourseDates(course);
-            }
-
             if (startDateChanged) {
                 courseFromDb.setStartDate(course.getStartDate());
             }
@@ -258,8 +259,6 @@ public class CourseServiceImpl implements CourseService {
                 courseFromDb.setEndDate(course.getEndDate());
             }
         }
-
-
         return courseRepository.save(courseFromDb);
     }
 

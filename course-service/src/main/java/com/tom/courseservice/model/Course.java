@@ -1,9 +1,6 @@
 package com.tom.courseservice.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class Course {
 
@@ -44,6 +42,4 @@ public class Course {
         participantsNumber--;
     }
 
-    public Course() {
-    }
 }

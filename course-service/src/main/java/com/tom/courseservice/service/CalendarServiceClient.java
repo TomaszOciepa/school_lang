@@ -26,12 +26,6 @@ public interface CalendarServiceClient {
     @GetMapping("/calendar/un-enroll-lessons/{courseId}/{studentId}")
     public boolean unEnrollStudent(@PathVariable String courseId, @PathVariable Long studentId);
 
-    @PostMapping("/calendar/are-lessons-within-new-course-dates")
-    public boolean areLessonsWithinNewCourseDates(@RequestBody Course course);
-
-    @PostMapping("/calendar/updateCourseDateTime")
-    public Course updateCourseDateTime(@RequestBody Course course);
-
     @PostMapping("/calendar/generate-course-timetable")
     public Course generateCourseTimetable(@RequestBody LessonScheduleRequest lessonScheduleRequest);
 }

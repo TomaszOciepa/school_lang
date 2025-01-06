@@ -153,26 +153,10 @@ public class CalendarController {
     }
 
     @PreAuthorize("hasRole('admin') or hasRole('teacher')")
-    @PostMapping("/are-lessons-within-new-course-dates")
-    public boolean areLessonsWithinNewCourseDates(@RequestBody CourseDto course) {
-        logger.info("Post method areLessonsWithinNewCourseDates().");
-        return calendarService.areLessonsWithinNewCourseDates(course);
-    }
-
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PostMapping("/generate-course-timetable")
     public CourseDto generateCourseTimetable(@RequestBody LessonScheduleRequest lessonScheduleRequest) {
         logger.info("Post method generateCourseTimetable().");
          return calendarService.generateCourseTimetable(lessonScheduleRequest);
-
-    }
-
-
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
-    @PostMapping("/updateCourseDateTime")
-    public CourseDto updateCourseDateTime(@RequestBody CourseDto courseDto) {
-        logger.info("Post updateCourseDateTime().");
-       return calendarService.updateCourseDateTime(courseDto);
 
     }
 

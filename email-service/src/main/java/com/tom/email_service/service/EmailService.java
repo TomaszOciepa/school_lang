@@ -39,7 +39,6 @@ public class EmailService {
                         "Zaloguj się na lang-school"+"\n"+
                         "Serdecznie pozdrawiamy.\n"+
                         "Lang School"
-
         );
         message.setFrom("lang.school@gmail.com");
 
