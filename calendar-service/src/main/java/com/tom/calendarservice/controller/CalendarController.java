@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -152,26 +153,10 @@ public class CalendarController {
     }
 
     @PreAuthorize("hasRole('admin') or hasRole('teacher')")
-    @PostMapping("/are-lessons-within-new-course-dates")
-    public boolean areLessonsWithinNewCourseDates(@RequestBody CourseDto course) {
-        logger.info("Post method areLessonsWithinNewCourseDates().");
-        return calendarService.areLessonsWithinNewCourseDates(course);
-    }
-
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PostMapping("/generate-course-timetable")
-    public ResponseEntity<?> generateCourseTimetable(@RequestBody LessonScheduleRequest lessonScheduleRequest) {
+    public CourseDto generateCourseTimetable(@RequestBody LessonScheduleRequest lessonScheduleRequest) {
         logger.info("Post method generateCourseTimetable().");
-         calendarService.generateCourseTimetable(lessonScheduleRequest);
-         return ResponseEntity.ok().build();
-    }
-
-
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
-    @PostMapping("/updateCourseDateTime")
-    public CourseDto updateCourseDateTime(@RequestBody CourseDto courseDto) {
-        logger.info("Post updateCourseDateTime().");
-       return calendarService.updateCourseDateTime(courseDto);
+         return calendarService.generateCourseTimetable(lessonScheduleRequest);
 
     }
 

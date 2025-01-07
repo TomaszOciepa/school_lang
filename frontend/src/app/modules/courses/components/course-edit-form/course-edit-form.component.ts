@@ -110,28 +110,8 @@ export class CourseEditFormComponent {
           Validators.pattern('[1-9][0-9]*'),
         ],
       }),
-      startDate: new FormControl(new Date(this.course.startDate), {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
-      endDate: new FormControl(new Date(this.course.endDate), {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
     });
   }
-
-  // private getTeachers() {
-  //   this.teacherService.getTeachers('ACTIVE').subscribe({
-  //     next: (result) => {
-  //       this.teacherList = result;
-  //     },
-  //     error: (err) => {
-  //       console.log(err);
-  //     },
-  //     complete: () => {},
-  //   });
-  // }
 
   onAddCourse() {
     this.generateCourseObj();
@@ -149,24 +129,6 @@ export class CourseEditFormComponent {
 
     if (this.courseForm.get('language')?.dirty) {
       this.postCourse.language = this.courseForm.getRawValue().language;
-    }
-
-    if (this.courseForm.get('startDate')?.dirty) {
-      this.postCourse.startDate = this.parseDateToStringFormat(
-        this.courseForm.getRawValue().startDate.toString()
-      );
-      this.postCourse.endDate = this.parseDateToStringFormat(
-        this.courseForm.getRawValue().endDate.toString()
-      );
-    }
-
-    if (this.courseForm.get('endDate')?.dirty) {
-      this.postCourse.startDate = this.parseDateToStringFormat(
-        this.courseForm.getRawValue().startDate.toString()
-      );
-      this.postCourse.endDate = this.parseDateToStringFormat(
-        this.courseForm.getRawValue().endDate.toString()
-      );
     }
 
     if (this.courseForm.get('participantsLimit')?.dirty) {

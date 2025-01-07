@@ -40,12 +40,6 @@ public interface CalendarService {
 
     void deleteStudentWithAllLessons(Long studentId);
 
-    boolean areLessonsWithinNewCourseDates(CourseDto course);
-    void generateCourseTimetable(LessonScheduleRequest lessonScheduleRequest);
-    CourseDto updateCourseDateTime(CourseDto courseDto);
-//    nie sprawdzone
-
-    //    Calendar addEvent(EventRequest eventRequest);
-
+    CourseDto generateCourseTimetable(LessonScheduleRequest lessonScheduleRequest);
 
 }

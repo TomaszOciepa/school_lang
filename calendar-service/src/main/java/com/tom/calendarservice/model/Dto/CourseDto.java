@@ -1,5 +1,6 @@
 package com.tom.calendarservice.model.Dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tom.calendarservice.model.Language;
 import com.tom.calendarservice.model.LessonFrequency;
 import com.tom.calendarservice.model.Status;
@@ -25,7 +26,9 @@ public class CourseDto {
     private Long participantsLimit;
     private Long participantsNumber;
     private Long lessonsLimit;
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startDate;
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endDate;
     private List<CourseStudentsDto> courseStudents = new ArrayList<>();
     private List<CourseTeachersDto> courseTeachers = new ArrayList<>();

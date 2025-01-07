@@ -6,6 +6,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @FeignClient(name = "CALENDAR-SERVICE")
 public interface CalendarServiceClient {
 
@@ -24,12 +26,6 @@ public interface CalendarServiceClient {
     @GetMapping("/calendar/un-enroll-lessons/{courseId}/{studentId}")
     public boolean unEnrollStudent(@PathVariable String courseId, @PathVariable Long studentId);
 
-    @PostMapping("/calendar/are-lessons-within-new-course-dates")
-    public boolean areLessonsWithinNewCourseDates(@RequestBody Course course);
-
-    @PostMapping("/calendar/updateCourseDateTime")
-    public Course updateCourseDateTime(@RequestBody Course course);
-
     @PostMapping("/calendar/generate-course-timetable")
-    public ResponseEntity<?> generateCourseTimetable(@RequestBody LessonScheduleRequest lessonScheduleRequest);
+    public Course generateCourseTimetable(@RequestBody LessonScheduleRequest lessonScheduleRequest);
 }

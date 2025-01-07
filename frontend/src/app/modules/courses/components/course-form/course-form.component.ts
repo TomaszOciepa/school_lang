@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -6,7 +7,6 @@ import { KeycloakProfile } from 'keycloak-js';
 import { Observer } from 'rxjs';
 
 import {
-  EnrollemntInfo,
   PostCourse,
   PostCourseForm,
 } from 'src/app/modules/core/models/course.model';
@@ -44,7 +44,7 @@ export class CourseFormComponent {
   userProfile: KeycloakProfile | null = null;
   isTeacher: boolean = false;
   teacherEmail!: string | undefined;
-  teacherId!: number;
+  teacherIdNumber!: number;
   teacherList: User[] = [];
 
   constructor(
@@ -58,7 +58,7 @@ export class CourseFormComponent {
 
   async ngOnInit(): Promise<void> {
     this.loadUserProfile();
-    this.getTeachers();
+
     this.initForm();
   }
 
@@ -71,6 +71,10 @@ export class CourseFormComponent {
     if (this.isTeacher) {
       this.teacherEmail = this.userProfile?.email;
       this.getTeacherByEmail();
+    }
+
+    if (!this.isTeacher) {
+      this.getTeachers();
     }
   }
 
@@ -121,11 +125,7 @@ export class CourseFormComponent {
           Validators.pattern('[1-9][0-9]*'),
         ],
       }),
-      startDate: new FormControl('', {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
-      endDate: new FormControl('', {
+      startDate: new FormControl(new Date(), {
         nonNullable: true,
         validators: [Validators.required],
       }),
@@ -138,10 +138,13 @@ export class CourseFormComponent {
         validators: [Validators.required],
       }),
 
-      teacherId: new FormControl('', {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
+      teacherId: new FormControl(
+        this.isTeacher ? this.teacherIdNumber.toString() : '',
+        {
+          nonNullable: true,
+          validators: [Validators.required],
+        }
+      ),
 
       lessonFrequency: new FormControl<string>('', {
         nonNullable: true,
@@ -165,6 +168,7 @@ export class CourseFormComponent {
   onAddCourse() {
     this.generatePostCourseObj();
     this.generateLessons();
+    console.log('send form ' + JSON.stringify(this.postCourse));
     this.courseService.addCourse(this.postCourse).subscribe(this.observer);
   }
 
@@ -181,17 +185,24 @@ export class CourseFormComponent {
       this.postCourse.language = this.courseForm.getRawValue().language;
     }
 
-    if (this.courseForm.get('startDate')?.dirty) {
-      this.postCourse.startDate = this.parseDateToStringFormat(
-        this.courseForm.getRawValue().startDate.toString()
-      );
-    }
+    const selectedDate: Date = this.courseForm.getRawValue().startDate;
 
-    if (this.courseForm.get('endDate')?.dirty) {
-      this.postCourse.endDate = this.parseDateToStringFormat(
-        this.courseForm.getRawValue().endDate.toString()
-      );
-    }
+    // Tworzenie daty z ustawioną godziną na 12:00, aby uniknąć przesunięć stref czasowych
+    const localDate = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate(),
+      12,
+      0,
+      0
+    );
+
+    // Pobranie daty w formacie 'yyyy-MM-dd'
+
+    // Zapis daty do obiektu
+    this.postCourse.startDate = localDate;
+
+    // this.postCourse.startDate = this.courseForm.getRawValue().startDate;
 
     if (this.courseForm.get('participantsLimit')?.dirty) {
       this.postCourse.participantsLimit =
@@ -200,13 +211,6 @@ export class CourseFormComponent {
 
     if (this.courseForm.get('lessonsLimit')?.dirty) {
       this.postCourse.lessonsLimit = this.courseForm.getRawValue().lessonsLimit;
-    }
-
-    if (this.isTeacher) {
-      const id = this.teacherId;
-      const teacherInfo: EnrollemntInfo = { id: id };
-      this.postCourse.courseTeachers = [];
-      this.postCourse.courseTeachers.push(teacherInfo);
     }
   }
 
@@ -222,13 +226,11 @@ export class CourseFormComponent {
       );
     }
 
-    if (!this.isTeacher) {
-      if (this.courseForm.get('teacherId')?.dirty) {
-        this.postCourse.teacherId = parseInt(
-          this.courseForm.getRawValue().teacherId,
-          10
-        );
-      }
+    if (this.courseForm.get('teacherId')?.dirty) {
+      this.postCourse.teacherId = parseInt(
+        this.courseForm.getRawValue().teacherId,
+        10
+      );
     }
 
     if (this.courseForm.get('lessonFrequency')?.dirty) {
@@ -254,7 +256,8 @@ export class CourseFormComponent {
   private getTeacherByEmail() {
     this.teacherService.getTeacherByEmail(this.teacherEmail).subscribe({
       next: (result) => {
-        this.teacherId = result.id;
+        this.teacherIdNumber = result.id;
+        this.teacherList.push(result);
       },
       error: (err) => {
         console.log(err);

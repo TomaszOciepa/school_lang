@@ -61,7 +61,6 @@ export class CourseComponent {
     this.courseService.getCourseById(id).subscribe({
       next: (response) => {
         this.course = response;
-        console.log('Kur:' + JSON.stringify(response));
       },
       error: (err: HttpErrorResponse) => {
         console.log(err.error.message);
@@ -75,9 +74,7 @@ export class CourseComponent {
       next: (student) => {
         this.students = student;
       },
-      error: (err: HttpErrorResponse) => {
-        console.log(err.error.message);
-      },
+      error: (err: HttpErrorResponse) => {},
       complete: () => {},
     });
   }

@@ -13,6 +13,7 @@ import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,12 @@ public class CourseServiceImpl implements CourseService {
     private final JwtUtils jwtUtils;
 
 
+    @RabbitListener(queues = "update-course-date")
+    public void updateCourseDate(Course course){
+        logger.info("RabbitMq updateCourseDate {}", course);
+        patchCourse(course.getId(), course);
+    }
+
     @Override
     public Course addCourse(Course course) {
         LessonScheduleRequest lessonScheduleRequest = new LessonScheduleRequest();
@@ -53,30 +60,28 @@ public class CourseServiceImpl implements CourseService {
             throw new CourseException(CourseError.COURSE_PRICE_IS_EMPTY);
         }
 
-        logger.info("Setting the end date of the course.");
-        LocalDateTime endDate = course.getEndDate();
-        course.setEndDate(endDate.plusHours(23).plusMinutes(59));
-
-        logger.info("Checking if start date is after end date.");
-        isCourseStartDateIsAfterCourseEndDate(course.getStartDate(), course.getEndDate());
-
         logger.info("Setting participants number on 0L.");
         course.setParticipantsNumber(0L);
-        logger.info("Save course on database.");
+        LocalDateTime time = LocalDateTime.of(course.getStartDate().getYear(), course.getStartDate().getMonth(), course.getStartDate().getDayOfMonth(), 0, 0);
+        System.out.println(" nowy czas "+ time);
+        course.setStartDate(time);
+        course.setEndDate(time);
 
         List<CourseTeachers> courseTeachers = course.getCourseTeachers();
         courseTeachers.add(new CourseTeachers(course.getTeacherId()));
         course.setCourseTeachers(courseTeachers);
+        lessonScheduleRequest.setTeacherId(course.getTeacherId());
 
+        logger.info("Save course on database.");
         Course courseFromDb = courseRepository.save(course);
 
         lessonScheduleRequest.setTimeRange(courseFromDb.getTimeRange());
         lessonScheduleRequest.setLessonDuration(courseFromDb.getLessonDuration());
-        lessonScheduleRequest.setTeacherId(course.getTeacherId());
         lessonScheduleRequest.setCourseId(courseFromDb.getId());
         lessonScheduleRequest.setLessonFrequency(courseFromDb.getLessonFrequency());
 
-        calendarServiceClient.generateCourseTimetable(lessonScheduleRequest);
+        Course objWithFirstAndLastLessonDate = calendarServiceClient.generateCourseTimetable(lessonScheduleRequest);
+        System.out.println("Obejt objWithFirstAndLastLessonDate: "+ objWithFirstAndLastLessonDate.toString());
 
         return courseFromDb;
     }
@@ -103,14 +108,12 @@ public class CourseServiceImpl implements CourseService {
 
             return courseRepository.findByIdAndStatus(id, status)
                     .map(this::updateCourseStatus)
-                    .map(this::updateCourseDataTime)
                     .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
         }
 
         logger.info("Fetching courses without status: {}.", status);
         return courseRepository.findById(id)
                 .map(this::updateCourseStatus)
-                .map(this::updateCourseDataTime)
                 .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
     }
 
@@ -238,15 +241,8 @@ public class CourseServiceImpl implements CourseService {
 
             if (endDateChanged) {
                 logger.info("Changing the course end date ...");
-                LocalDateTime adjustedEndDate = course.getEndDate().plusHours(23).plusMinutes(59);
-                course.setEndDate(adjustedEndDate);
+                course.setEndDate(course.getEndDate());
                 isCourseEndDateIsBeforeCourseStartDate(course.getEndDate(), course.getStartDate());
-            }
-
-            // Perform shared operation if either date has changed
-            if (startDateChanged || endDateChanged) {
-                course.setId(courseFromDb.getId());
-                calendarServiceClient.areLessonsWithinNewCourseDates(course);
             }
 
             if (startDateChanged) {
@@ -257,8 +253,6 @@ public class CourseServiceImpl implements CourseService {
                 courseFromDb.setEndDate(course.getEndDate());
             }
         }
-
-
         return courseRepository.save(courseFromDb);
     }
 
@@ -269,9 +263,9 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.findById(id)
                 .orElseThrow(() -> new CourseException(CourseError.COURSE_NOT_FOUND));
         logger.info("Delete course.");
+        calendarServiceClient.deleteCourseLessons(id);
         courseRepository.deleteById(id);
         logger.info("Delete course lessons.");
-        calendarServiceClient.deleteCourseLessons(id);
     }
 
     @Override
@@ -479,11 +473,6 @@ public class CourseServiceImpl implements CourseService {
         if (endDate.isBefore(startTime) || endDate.isEqual(startTime)) {
             throw new CourseException(CourseError.COURSE_END_DATE_IS_BEFORE_START_DATE);
         }
-    }
-
-    private Course updateCourseDataTime(Course course) {
-        logger.info("Updating course data time");
-        return calendarServiceClient.updateCourseDateTime(course);
     }
 
     private Course updateCourseStatus(Course course) {
