@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -184,7 +185,24 @@ export class CourseFormComponent {
       this.postCourse.language = this.courseForm.getRawValue().language;
     }
 
-    this.postCourse.startDate = this.courseForm.getRawValue().startDate;
+    const selectedDate: Date = this.courseForm.getRawValue().startDate;
+
+    // Tworzenie daty z ustawioną godziną na 12:00, aby uniknąć przesunięć stref czasowych
+    const localDate = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate(),
+      12,
+      0,
+      0
+    );
+
+    // Pobranie daty w formacie 'yyyy-MM-dd'
+
+    // Zapis daty do obiektu
+    this.postCourse.startDate = localDate;
+
+    // this.postCourse.startDate = this.courseForm.getRawValue().startDate;
 
     if (this.courseForm.get('participantsLimit')?.dirty) {
       this.postCourse.participantsLimit =
