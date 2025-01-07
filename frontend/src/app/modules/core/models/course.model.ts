@@ -20,7 +20,7 @@ export interface CourseResponse {
   participantsLimit: number;
   participantsNumber: number;
   lessonsLimit: number;
-  startDate: string;
+  startDate: Date;
   endDate: string;
   courseStudents: EnrollemntInfo[];
   courseTeachers: EnrollemntInfo[];
@@ -41,7 +41,7 @@ export class Course implements CourseResponse {
     public participantsLimit: number,
     public participantsNumber: number,
     public lessonsLimit: number,
-    public startDate: string,
+    public startDate: Date,
     public endDate: string,
     public courseStudents: EnrollemntInfo[],
     public courseTeachers: EnrollemntInfo[],
@@ -59,8 +59,7 @@ export interface PostCourseForm {
   language: FormControl<string>;
   participantsLimit: FormControl<number>;
   lessonsLimit: FormControl<number>;
-  startDate: FormControl<Date | ''>;
-  endDate: FormControl<Date | ''>;
+  startDate: FormControl<Date>;
   timeRange: FormControl<string>;
   lessonDuration: FormControl<string>;
   teacherId: FormControl<string>;

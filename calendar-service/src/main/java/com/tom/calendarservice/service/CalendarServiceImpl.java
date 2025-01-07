@@ -406,6 +406,9 @@ public class CalendarServiceImpl implements CalendarService {
             for (DayOfWeek day : preferredDays) {
                 if (!frequency.equals(LessonFrequency.DAILY)) {
                     currentDayStart = moveToNextAvailableDay(startDate, day).withHour(timeRangeStart.getHour()).withMinute(timeRangeStart.getMinute());
+                    logger.info("Current day start: {}", currentDayStart);
+
+
                 }
 
                 if (numberLessonsToCreate == 0) {
@@ -414,7 +417,7 @@ public class CalendarServiceImpl implements CalendarService {
 
                 while (currentDayStart.toLocalTime().isBefore(timeRangeEnd)) {
                     LocalDateTime endDate = currentDayStart.plusMinutes(lessonScheduleRequest.getLessonDuration());
-
+                    logger.info("Checking slot from {} to {}", currentDayStart, currentDayStart.plusMinutes(lessonScheduleRequest.getLessonDuration()));
                     boolean teacherAvailable = isTeacherAvailable(lessonsByTeacher, currentDayStart, endDate);
 
                     if (teacherAvailable) {

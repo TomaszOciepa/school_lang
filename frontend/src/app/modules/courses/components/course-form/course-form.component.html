@@ -28,29 +28,24 @@
             }}</mat-error>
           </mat-form-field>
         </div>
+
         <div>
           <mat-form-field>
-            <mat-label>Data rozpoczęcia i zakończenia</mat-label>
-            <mat-date-range-input [rangePicker]="picker">
-              <input
-                matStartDate
-                placeholder="Start date"
-                formControlName="startDate"
-              />
-              <input
-                matEndDate
-                placeholder="End date"
-                formControlName="endDate"
-              />
-            </mat-date-range-input>
-            <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+            <mat-label>Data rozpoczęcia</mat-label>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              formControlName="startDate"
+            />
+            <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
             <mat-datepicker-toggle
               matIconSuffix
               [for]="picker"
             ></mat-datepicker-toggle>
-            <mat-date-range-picker #picker></mat-date-range-picker>
+            <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
         </div>
+
         <div>
           <mat-form-field>
             <mat-label>Język</mat-label>
@@ -132,7 +127,7 @@
             }}</mat-error>
           </mat-form-field>
         </div>
-        <div *ngIf="isTeacher">
+        <div>
           <mat-form-field>
             <mat-label>Nauczyciel</mat-label>
             <mat-select formControlName="teacherId">

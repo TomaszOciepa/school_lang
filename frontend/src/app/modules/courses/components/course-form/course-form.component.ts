@@ -6,7 +6,6 @@ import { KeycloakProfile } from 'keycloak-js';
 import { Observer } from 'rxjs';
 
 import {
-  EnrollemntInfo,
   PostCourse,
   PostCourseForm,
 } from 'src/app/modules/core/models/course.model';
@@ -125,11 +124,7 @@ export class CourseFormComponent {
           Validators.pattern('[1-9][0-9]*'),
         ],
       }),
-      startDate: new FormControl('', {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
-      endDate: new FormControl('', {
+      startDate: new FormControl(new Date(), {
         nonNullable: true,
         validators: [Validators.required],
       }),
@@ -172,6 +167,7 @@ export class CourseFormComponent {
   onAddCourse() {
     this.generatePostCourseObj();
     this.generateLessons();
+    console.log('send form ' + JSON.stringify(this.postCourse));
     this.courseService.addCourse(this.postCourse).subscribe(this.observer);
   }
 
@@ -188,17 +184,7 @@ export class CourseFormComponent {
       this.postCourse.language = this.courseForm.getRawValue().language;
     }
 
-    if (this.courseForm.get('startDate')?.dirty) {
-      this.postCourse.startDate = this.parseDateToStringFormat(
-        this.courseForm.getRawValue().startDate.toString()
-      );
-    }
-
-    if (this.courseForm.get('endDate')?.dirty) {
-      this.postCourse.endDate = this.parseDateToStringFormat(
-        this.courseForm.getRawValue().endDate.toString()
-      );
-    }
+    this.postCourse.startDate = this.courseForm.getRawValue().startDate;
 
     if (this.courseForm.get('participantsLimit')?.dirty) {
       this.postCourse.participantsLimit =
@@ -207,13 +193,6 @@ export class CourseFormComponent {
 
     if (this.courseForm.get('lessonsLimit')?.dirty) {
       this.postCourse.lessonsLimit = this.courseForm.getRawValue().lessonsLimit;
-    }
-
-    if (this.isTeacher) {
-      const id = this.teacherIdNumber;
-      const teacherInfo: EnrollemntInfo = { id: id };
-      this.postCourse.courseTeachers = [];
-      this.postCourse.courseTeachers.push(teacherInfo);
     }
   }
 
@@ -229,13 +208,11 @@ export class CourseFormComponent {
       );
     }
 
-    if (this.isTeacher) {
-      if (this.courseForm.get('teacherId')?.dirty) {
-        this.postCourse.teacherId = parseInt(
-          this.courseForm.getRawValue().teacherId,
-          10
-        );
-      }
+    if (this.courseForm.get('teacherId')?.dirty) {
+      this.postCourse.teacherId = parseInt(
+        this.courseForm.getRawValue().teacherId,
+        10
+      );
     }
 
     if (this.courseForm.get('lessonFrequency')?.dirty) {

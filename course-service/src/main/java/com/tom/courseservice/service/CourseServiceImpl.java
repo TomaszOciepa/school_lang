@@ -60,15 +60,19 @@ public class CourseServiceImpl implements CourseService {
             throw new CourseException(CourseError.COURSE_PRICE_IS_EMPTY);
         }
 
-        logger.info("Setting the end date of the course.");
-        LocalDateTime endDate = course.getEndDate();
-        course.setEndDate(endDate.plusHours(23).plusMinutes(59));
+//        logger.info("Setting the end date of the course.");
+//        LocalDateTime endDate = course.getEndDate();
+//        course.setEndDate(endDate.plusHours(23).plusMinutes(59));
 
-        logger.info("Checking if start date is after end date.");
-        isCourseStartDateIsAfterCourseEndDate(course.getStartDate(), course.getEndDate());
+//        logger.info("Checking if start date is after end date.");
+//        isCourseStartDateIsAfterCourseEndDate(course.getStartDate(), course.getEndDate());
 
         logger.info("Setting participants number on 0L.");
         course.setParticipantsNumber(0L);
+        LocalDateTime time = LocalDateTime.of(course.getStartDate().getYear(), course.getStartDate().getMonth(), course.getStartDate().getDayOfMonth(), 0, 0);
+        System.out.println(" nowy czas "+ time);
+        course.setStartDate(time);
+        course.setEndDate(time);
 
         List<CourseTeachers> courseTeachers = course.getCourseTeachers();
         courseTeachers.add(new CourseTeachers(course.getTeacherId()));

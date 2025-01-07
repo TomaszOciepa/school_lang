@@ -74,9 +74,7 @@ export class CourseComponent {
       next: (student) => {
         this.students = student;
       },
-      error: (err: HttpErrorResponse) => {
-        console.log(err.error.message);
-      },
+      error: (err: HttpErrorResponse) => {},
       complete: () => {},
     });
   }
