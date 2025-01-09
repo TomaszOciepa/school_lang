@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,7 @@ public class CourseServiceImpl implements CourseService {
         courseTeachers.add(new CourseTeachers(course.getTeacherId()));
         course.setCourseTeachers(courseTeachers);
         lessonScheduleRequest.setTeacherId(course.getTeacherId());
-
+        validateAndAdjustDate(course.getStartDate(), course.getLessonFrequency());
         logger.info("Save course on database.");
         Course courseFromDb = courseRepository.save(course);
 
@@ -457,6 +458,30 @@ public class CourseServiceImpl implements CourseService {
         } else {
             return false;
         }
+    }
+
+    private void validateAndAdjustDate(LocalDateTime startDate, LessonFrequency frequency) {
+        DayOfWeek dayOfWeek = startDate.getDayOfWeek();
+
+        switch (frequency) {
+            case WEEKENDS_ONLY -> {
+                if (dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY) {
+                    throw new CourseException(CourseError.LESSON_START_DATE_IS_NO_WEEKEND_DAY);
+                }
+            }
+
+            case WEEKDAYS_ONLY, FOUR_A_WEEK, THREE_A_WEEK, TWICE_A_WEEK, WEEKLY -> {
+
+                if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+                    throw new CourseException(CourseError.LESSON_START_DATE_IS_NO_WEEK_DAY);
+                }
+            }
+
+            default -> {
+
+            }
+        }
+
     }
 
     private void isCourseStartDateIsAfterCourseEndDate(LocalDateTime startDate, LocalDateTime endDate) {

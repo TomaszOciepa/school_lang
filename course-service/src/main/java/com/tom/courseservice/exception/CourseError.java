@@ -28,7 +28,9 @@ public enum CourseError {
     TEACHER_HAS_LESSONS_IN_COURSE("Teacher has lessons in course"),
     TEACHER_NO_ON_THE_LIST_OF_ENROLL("No teacher on the list of enroll"),
 
-    TEACHER_ALREADY_ENROLLED("Teacher already enrolled on this course");
+    TEACHER_ALREADY_ENROLLED("Teacher already enrolled on this course"),
+    LESSON_START_DATE_IS_NO_WEEKEND_DAY("For WEEKENDS_ONLY, the start date must be a Saturday or Sunday."),
+    LESSON_START_DATE_IS_NO_WEEK_DAY("The start date cannot be a Saturday or Sunday.");
 
     private String message;
 
