@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -46,6 +45,10 @@ export class CourseFormComponent {
   teacherEmail!: string | undefined;
   teacherIdNumber!: number;
   teacherList: User[] = [];
+  lessonPrice: number = 0;
+  courseLessonsLimit: number = 0;
+  teacherSharePercentage: number = 0;
+  regex = /^(?!0(\.0+)?$)(\d+(\.\d+)?|\.\d+)$/;
 
   constructor(
     private formService: FormsService,
@@ -60,6 +63,20 @@ export class CourseFormComponent {
     this.loadUserProfile();
 
     this.initForm();
+
+    this.courseForm.get('pricePerLesson')?.valueChanges.subscribe((value) => {
+      this.lessonPrice = value;
+    });
+
+    this.courseForm.get('lessonsLimit')?.valueChanges.subscribe((value) => {
+      this.courseLessonsLimit = value;
+    });
+
+    this.courseForm
+      .get('teacherSharePercentage')
+      ?.valueChanges.subscribe((value) => {
+        this.teacherSharePercentage = value;
+      });
   }
 
   async loadUserProfile(): Promise<void> {
@@ -96,12 +113,22 @@ export class CourseFormComponent {
           Validators.maxLength(50),
         ],
       }),
-      price: new FormControl<string>('', {
+      pricePerLesson: new FormControl<number>(0, {
         nonNullable: true,
         validators: [
           Validators.required,
           Validators.minLength(1),
           Validators.maxLength(10),
+          Validators.pattern('[1-9][0-9]*'),
+        ],
+      }),
+      teacherSharePercentage: new FormControl<number>(0, {
+        nonNullable: true,
+        validators: [
+          Validators.required,
+          Validators.minLength(1),
+          Validators.maxLength(10),
+          Validators.pattern(this.regex),
         ],
       }),
       participantsLimit: new FormControl(0, {
@@ -177,8 +204,9 @@ export class CourseFormComponent {
       this.postCourse.name = this.courseForm.getRawValue().name;
     }
 
-    if (this.courseForm.get('price')?.dirty) {
-      this.postCourse.price = this.courseForm.getRawValue().price;
+    if (this.courseForm.get('pricePerLesson')?.dirty) {
+      this.postCourse.pricePerLesson =
+        this.courseForm.getRawValue().pricePerLesson;
     }
 
     if (this.courseForm.get('language')?.dirty) {
@@ -202,11 +230,14 @@ export class CourseFormComponent {
     // Zapis daty do obiektu
     this.postCourse.startDate = localDate;
 
-    // this.postCourse.startDate = this.courseForm.getRawValue().startDate;
-
     if (this.courseForm.get('participantsLimit')?.dirty) {
       this.postCourse.participantsLimit =
         this.courseForm.getRawValue().participantsLimit;
+    }
+
+    if (this.courseForm.get('teacherSharePercentage')?.dirty) {
+      this.postCourse.teacherSharePercentage =
+        this.courseForm.getRawValue().teacherSharePercentage;
     }
 
     if (this.courseForm.get('lessonsLimit')?.dirty) {

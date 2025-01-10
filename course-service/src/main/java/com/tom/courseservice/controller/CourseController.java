@@ -167,4 +167,5 @@ public class CourseController {
         logger.info("Get method isStudentEnrolledInCourse()");
         return courseService.isStudentEnrolledInCourse(course, studentId);
     }
+
 }
