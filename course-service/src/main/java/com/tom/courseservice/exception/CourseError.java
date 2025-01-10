@@ -14,7 +14,7 @@ public enum CourseError {
     COURSE_TEACHER_LIST_IS_EMPTY("Course teacher list is empty"),
     COURSE_NAME_ALREADY_EXISTS("Course name is already exists"),
     COURSE_IS_NOT_ACTIVE("Course is not ACTIVE"),
-    COURSE_PRICE_IS_EMPTY("Course price is empty"),
+    COURSE_PRICE_PER_LESSON("Course price per lesson is empty"),
     COURSE_LESSON_LIMIT_REACHED("Course lesson limit reached"),
     STUDENT_OPERATION_FORBIDDEN("Operation is forbidden."),
     STUDENT_IS_NOT_ACTIVE("Student is not ACTIVE"),

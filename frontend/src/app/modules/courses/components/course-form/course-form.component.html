@@ -18,6 +18,25 @@
 <div [ngClass]="">
   <div class="course-form">
     <div class="teacher-form-wrapper mt-3">
+      <div *ngIf="lessonPrice > 0 && courseLessonsLimit > 0">
+        <h2>
+          Cena kursu: {{ lessonPrice * courseLessonsLimit }} zł
+          <p *ngIf="teacherSharePercentage > 0">
+            nauczyciel zarobi
+            {{
+              (lessonPrice * courseLessonsLimit * teacherSharePercentage) / 100
+            }}
+            zł a szkoła
+            {{
+              (lessonPrice *
+                courseLessonsLimit *
+                (100 - teacherSharePercentage)) /
+                100
+            }}
+            zł
+          </p>
+        </h2>
+      </div>
       <form [formGroup]="courseForm">
         <div>
           <mat-form-field>
@@ -28,7 +47,16 @@
             }}</mat-error>
           </mat-form-field>
         </div>
-
+        <div>
+          <mat-form-field>
+            <mat-label>Język</mat-label>
+            <mat-select formControlName="language">
+              <mat-option value="ENGLISH">Angielski</mat-option>
+              <mat-option value="POLISH">Polski</mat-option>
+              <mat-option value="GERMAN">Niemiecki</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
         <div>
           <mat-form-field>
             <mat-label>Data rozpoczęcia</mat-label>
@@ -45,16 +73,40 @@
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
         </div>
-
         <div>
           <mat-form-field>
-            <mat-label>Język</mat-label>
-            <mat-select formControlName="language">
-              <mat-option value="ENGLISH">Angielski</mat-option>
-              <mat-option value="POLISH">Polski</mat-option>
-              <mat-option value="GERMAN">Niemiecki</mat-option>
-            </mat-select>
+            <mat-label>Liczba lekcji</mat-label>
+            <input matInput formControlName="lessonsLimit" />
+            <mat-error *ngIf="controls.lessonsLimit.invalid">{{
+              getErrorMessage(controls.lessonsLimit)
+            }}</mat-error>
           </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field>
+            <mat-label>Cena za lekcję</mat-label>
+            <input matInput formControlName="pricePerLesson" />
+            <mat-error *ngIf="controls.pricePerLesson.invalid"
+              >{{ getErrorMessage(controls.pricePerLesson) }}
+            </mat-error>
+          </mat-form-field>
+
+          <div *ngIf="errMsg" class="alert alert-danger" role="alert">
+            {{ errMsg }}
+          </div>
+        </div>
+        <div>
+          <mat-form-field>
+            <mat-label>% Procent dla nauczyciela</mat-label>
+            <input matInput formControlName="teacherSharePercentage" />
+            <mat-error *ngIf="controls.teacherSharePercentage.invalid"
+              >{{ getErrorMessage(controls.teacherSharePercentage) }}
+            </mat-error>
+          </mat-form-field>
+
+          <div *ngIf="errMsg" class="alert alert-danger" role="alert">
+            {{ errMsg }}
+          </div>
         </div>
         <div>
           <mat-form-field>
@@ -83,15 +135,7 @@
             }}</mat-error>
           </mat-form-field>
         </div>
-        <div>
-          <mat-form-field>
-            <mat-label>Liczba lekcji</mat-label>
-            <input matInput formControlName="lessonsLimit" />
-            <mat-error *ngIf="controls.lessonsLimit.invalid">{{
-              getErrorMessage(controls.lessonsLimit)
-            }}</mat-error>
-          </mat-form-field>
-        </div>
+
         <div>
           <mat-form-field>
             <mat-label>Czas trwania lekcji</mat-label>
@@ -141,18 +185,6 @@
               getErrorMessage(controls.teacherId)
             }}</mat-error>
           </mat-form-field>
-        </div>
-        <div>
-          <mat-form-field>
-            <mat-label>Cena</mat-label>
-            <input matInput formControlName="price" />
-            <mat-error *ngIf="controls.price.invalid">{{
-              getErrorMessage(controls.price)
-            }}</mat-error>
-          </mat-form-field>
-        </div>
-        <div *ngIf="errMsg" class="alert alert-danger" role="alert">
-          {{ errMsg }}
         </div>
         <div class="d-flex justify-content-end">
           <button class="pushable" type="submit" (click)="emitCLoseDialog()">

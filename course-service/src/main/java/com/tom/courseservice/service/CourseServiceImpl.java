@@ -39,9 +39,9 @@ public class CourseServiceImpl implements CourseService {
     private final JwtUtils jwtUtils;
 
 
-    @RabbitListener(queues = "update-course-date")
-    public void updateCourseDate(Course course){
-        logger.info("RabbitMq updateCourseDate {}", course);
+    @RabbitListener(queues = "update-course-data")
+    public void updateCourseDate(Course course) {
+        logger.info("RabbitMq updateCourseData {}", course);
         patchCourse(course.getId(), course);
     }
 
@@ -57,34 +57,33 @@ public class CourseServiceImpl implements CourseService {
             throw new CourseException(CourseError.COURSE_NAME_ALREADY_EXISTS);
         }
 
-        if (course.getPrice() == null) {
-            throw new CourseException(CourseError.COURSE_PRICE_IS_EMPTY);
+        if (course.getPricePerLesson() == null) {
+            throw new CourseException(CourseError.COURSE_PRICE_PER_LESSON);
         }
 
         logger.info("Setting participants number on 0L.");
         course.setParticipantsNumber(0L);
         LocalDateTime time = LocalDateTime.of(course.getStartDate().getYear(), course.getStartDate().getMonth(), course.getStartDate().getDayOfMonth(), 0, 0);
-        System.out.println(" nowy czas "+ time);
+        System.out.println(" nowy czas " + time);
         course.setStartDate(time);
         course.setEndDate(time);
-
         List<CourseTeachers> courseTeachers = course.getCourseTeachers();
         courseTeachers.add(new CourseTeachers(course.getTeacherId()));
         course.setCourseTeachers(courseTeachers);
         lessonScheduleRequest.setTeacherId(course.getTeacherId());
+
         validateAndAdjustDate(course.getStartDate(), course.getLessonFrequency());
+
         logger.info("Save course on database.");
         Course courseFromDb = courseRepository.save(course);
-
         lessonScheduleRequest.setTimeRange(courseFromDb.getTimeRange());
         lessonScheduleRequest.setLessonDuration(courseFromDb.getLessonDuration());
         lessonScheduleRequest.setCourseId(courseFromDb.getId());
         lessonScheduleRequest.setLessonFrequency(courseFromDb.getLessonFrequency());
 
-        Course objWithFirstAndLastLessonDate = calendarServiceClient.generateCourseTimetable(lessonScheduleRequest);
-        System.out.println("Obejt objWithFirstAndLastLessonDate: "+ objWithFirstAndLastLessonDate.toString());
+         calendarServiceClient.generateCourseTimetable(lessonScheduleRequest);
 
-        return courseFromDb;
+        return getCourseById(courseFromDb.getId(), null);
     }
 
     @Override
@@ -177,7 +176,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public String getCourseTotalAmount(String id) {
         Course courseFromDb = getCourseById(id, null);
-        return courseFromDb.getPrice();
+        return Long.toString(courseFromDb.getCoursePrice());
     }
 
     @Override
@@ -196,14 +195,14 @@ public class CourseServiceImpl implements CourseService {
             courseFromDb.setName(course.getName());
         }
 
-        if (course.getPrice() != null) {
-            logger.info("Changing the course price...");
-            courseFromDb.setPrice(course.getPrice());
-        }
-
         if (course.getLanguage() != null) {
             logger.info("Changing the course language...");
             courseFromDb.setLanguage(course.getLanguage());
+        }
+
+        if (course.getCoursePrice() != null) {
+            logger.info("Changing the course price...");
+            courseFromDb.setCoursePrice(course.getCoursePrice());
         }
 
         if (course.getParticipantsLimit() != null) {
@@ -254,6 +253,7 @@ public class CourseServiceImpl implements CourseService {
                 courseFromDb.setEndDate(course.getEndDate());
             }
         }
+        logger.info("Przed zapisem w patch ...{}", courseFromDb.toString());
         return courseRepository.save(courseFromDb);
     }
 

@@ -7,7 +7,6 @@ import com.tom.calendarservice.model.Dto.*;
 import com.tom.calendarservice.repo.CalendarRepository;
 import com.tom.calendarservice.security.AuthenticationContext;
 import com.tom.calendarservice.security.JwtUtils;
-import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -212,22 +210,23 @@ public class CalendarServiceImpl implements CalendarService {
         Calendar savedLesson = calendarRepository.save(lessonFromDB);
 
         if (updateCourseDate) {
-            updateCourseDateTime(lessonFromDB.getCourseId());
+            updateCourseData(lessonFromDB.getCourseId());
         }
 
         return savedLesson;
     }
 
-    private void updateCourseDateTime(String courseId) {
+    private void updateCourseData(String courseId) {
         logger.info("Update Course DateTime for courseId: {}", courseId);
         LocalDateTime earliestLesson = findEarliestLesson(courseId);
         LocalDateTime latestLesson = findLatestLesson(courseId);
-
+        Long coursePrice = updateCoursePrice(courseId);
         CourseDto objUpdateCourseDate = new CourseDto();
         objUpdateCourseDate.setId(courseId);
         objUpdateCourseDate.setStartDate(earliestLesson);
         objUpdateCourseDate.setEndDate(latestLesson);
-        rabbitTemplate.convertAndSend("update-course-date", objUpdateCourseDate);
+        objUpdateCourseDate.setCoursePrice(coursePrice);
+        rabbitTemplate.convertAndSend("update-course-data", objUpdateCourseDate);
     }
 
     @Override
@@ -236,9 +235,9 @@ public class CalendarServiceImpl implements CalendarService {
                 .orElseThrow(() -> new CalendarException(CalendarError.CALENDAR_NOT_FOUND));
         logger.info("Delete lesson lessonId: {}", id);
         calendarRepository.deleteById(id);
-
+        int lessonsNumberByCourseId = getLessonsNumberByCourseId(id);
         if (lessonFromDb.getCourseId() != null) {
-            updateCourseDateTime(lessonFromDb.getCourseId());
+            updateCourseData(lessonFromDb.getCourseId());
         }
     }
 
@@ -397,7 +396,7 @@ public class CalendarServiceImpl implements CalendarService {
 
 
         scheduleLessons(numberLessonsToCreate, lessonsPerWeek, startDate, timeRangeStart, timeRangeEnd, lessonDuration, lessonsByTeacher, courseFromDb, teacherId, preferredDays, frequency);
-        updateCourseDateTime(courseFromDb.getId());
+        updateCourseData(courseFromDb.getId());
 
         return new CourseDto();
     }
@@ -640,7 +639,7 @@ public class CalendarServiceImpl implements CalendarService {
         CourseDto courseFromDb = getCourse(calendar.getCourseId(), null);
 
         if (isLessonExistForThisCourseInCalendar(calendar.getCourseId())) {
-            isLessonLimitReached(courseFromDb.getLessonsLimit(), calendar.getCourseId());
+//            isLessonLimitReached(courseFromDb.getLessonsLimit(), calendar.getCourseId());
             isCourseHaveLessonAvailableOnTimeSlot(calendar.getCourseId(), calendar.getStartDate(), calendar.getEndDate());
         }
 
@@ -656,7 +655,7 @@ public class CalendarServiceImpl implements CalendarService {
         calendar.setAttendanceList(attendanceLists);
         Calendar savedLesson = calendarRepository.save(calendar);
 
-        updateCourseDateTime(savedLesson.getCourseId());
+        updateCourseData(savedLesson.getCourseId());
         return savedLesson;
     }
 
@@ -763,6 +762,12 @@ public class CalendarServiceImpl implements CalendarService {
         return lessons.stream()
                 .max(Comparator.comparing(Calendar::getEndDate))
                 .orElseThrow(() -> new CalendarException(CalendarError.CALENDAR_LESSONS_NOT_FOUND)).getEndDate();
+    }
+
+    private Long updateCoursePrice(String courseId) {
+        int lessonsNumberByCourseId =  getLessonsNumberByCourseId(courseId);
+        CourseDto courseFromDb = courseServiceClient.getCourseById(courseId, null);
+        return courseFromDb.getPricePerLesson() * lessonsNumberByCourseId;
     }
 
 

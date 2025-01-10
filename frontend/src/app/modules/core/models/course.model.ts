@@ -15,7 +15,9 @@ export interface CourseResponse {
   id: string;
   name: string;
   status: string;
-  price: string;
+  coursePrice: number;
+  pricePerLesson: number;
+  teacherSharePercentage: number;
   language: string;
   participantsLimit: number;
   participantsNumber: number;
@@ -36,7 +38,9 @@ export class Course implements CourseResponse {
     public id: string,
     public name: string,
     public status: string,
-    public price: string,
+    public coursePrice: number,
+    public pricePerLesson: number,
+    public teacherSharePercentage: number,
     public language: string,
     public participantsLimit: number,
     public participantsNumber: number,
@@ -55,10 +59,11 @@ export class Course implements CourseResponse {
 
 export interface PostCourseForm {
   name: FormControl<string>;
-  price: FormControl<string>;
+  lessonsLimit: FormControl<number>;
+  pricePerLesson: FormControl<number>;
+  teacherSharePercentage: FormControl<number>;
   language: FormControl<string>;
   participantsLimit: FormControl<number>;
-  lessonsLimit: FormControl<number>;
   startDate: FormControl<Date>;
   timeRange: FormControl<string>;
   lessonDuration: FormControl<string>;
