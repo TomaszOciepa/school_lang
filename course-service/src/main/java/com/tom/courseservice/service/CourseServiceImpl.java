@@ -91,12 +91,12 @@ public class CourseServiceImpl implements CourseService {
         logger.info("getAllByStatus()");
         if (status != null) {
             logger.info("Fetching courses with status: {}.", status);
-            return courseRepository.getAllByStatus(status).stream()
+            return courseRepository.findByStatusSortedByStartDateAsc(status).stream()
                     .map(this::updateCourseStatus)
                     .collect(Collectors.toList());
         }
         logger.info("Fetching courses without status: {}.", status);
-        return courseRepository.findAll().stream()
+        return courseRepository.findAllByOrderByStartDateAsc().stream()
                 .map(this::updateCourseStatus)
                 .collect(Collectors.toList());
     }
@@ -403,7 +403,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> getCourseByTeacherId(Long teacherId) {
         logger.info("getCourseByTeacherId: teacherId: {}", teacherId);
-        List<Course> courses = courseRepository.getCoursesByTeacherId(teacherId);
+        List<Course> courses = courseRepository.findByCourseTeachersIdOrderByStartDateAsc(teacherId);
         if (courses.isEmpty()) {
             logger.info("Courses list is empty.");
             throw new CourseException(CourseError.COURSE_NOT_FOUND);
@@ -414,7 +414,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> getCourseByStudentId(Long studentId) {
         logger.info("getCourseByStudentId: studentId: {}", studentId);
-        List<Course> courses = courseRepository.getCoursesByStudentId(studentId);
+        List<Course> courses = courseRepository.findByCourseStudentsIdOrderByStartDateAsc(studentId);
         if (courses.isEmpty()) {
             logger.info("Courses list is empty.");
             throw new CourseException(CourseError.COURSE_NOT_FOUND);

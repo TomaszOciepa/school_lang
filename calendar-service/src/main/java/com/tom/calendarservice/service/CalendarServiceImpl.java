@@ -50,7 +50,11 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public List<Calendar> getAllLessons() {
         logger.info("Fetching lessons.");
-        return calendarRepository.findAll().stream()
+        List<Calendar> calendars = calendarRepository.findAllByOrderByStartDateAsc();
+        calendars.stream()
+                .forEach(calendar -> System.out.println(calendar));
+
+        return calendarRepository.findAllByOrderByStartDateAsc().stream()
                 .map(this::updateLessonStatus)
                 .collect(Collectors.toList());
     }
@@ -66,7 +70,7 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public List<Calendar> getLessonsByCourseId(String courseId) {
         logger.info("getLessonsByCourseId courseId: {}", courseId);
-        List<Calendar> lessons = calendarRepository.getLessonsByCourseId(courseId).stream()
+        List<Calendar> lessons = calendarRepository.findByCourseIdOrderByStartDateAsc(courseId).stream()
                 .map(this::updateLessonStatus)
                 .collect(Collectors.toList());
         if (lessons.isEmpty()) {
@@ -98,7 +102,7 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public List<Calendar> getLessonsByTeacherId(Long teacherId) {
         logger.info("Fetching lessons by teacher id.");
-        List<Calendar> lessons = calendarRepository.getLessonsByTeacherId(teacherId).stream()
+        List<Calendar> lessons = calendarRepository.findByTeacherIdOrderByStartDateAsc(teacherId).stream()
                 .map(this::updateLessonStatus)
                 .collect(Collectors.toList());
         if (lessons.isEmpty()) {
@@ -110,7 +114,7 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public List<Calendar> getLessonsByStudentId(Long studentId) {
         logger.info("Fetching lessons by student id.");
-        List<Calendar> lessons = calendarRepository.getLessonsByStudentId(studentId);
+        List<Calendar> lessons = calendarRepository.findByAttendanceListStudentIdOrderByStartDateAsc(studentId);
         if (lessons.isEmpty()) {
             logger.info("Teacher lessons list is empty.");
             throw new CalendarException(CalendarError.CALENDAR_LESSONS_NOT_FOUND);

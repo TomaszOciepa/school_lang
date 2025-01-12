@@ -11,16 +11,17 @@ import java.util.Optional;
 
 public interface CourseRepository extends MongoRepository<Course, String> {
 
-    //sprawdzone
+    List<Course> findAllByOrderByStartDateAsc();
+
     boolean existsByName(String name);
-    List<Course> getAllByStatus(Status status);
+
+    List<Course> findByStatusSortedByStartDateAsc(Status status);
+
     Optional<Course> findByIdAndStatus(String id, Status status);
 
-    @Query("{'courseTeachers.id': ?0}")
-    List<Course> getCoursesByTeacherId(Long teacherId);
+    List<Course> findByCourseTeachersIdOrderByStartDateAsc(Long studentId);
 
-    @Query("{'courseStudents.id': ?0}")
-    List<Course> getCoursesByStudentId(Long studentId);
+    List<Course> findByCourseStudentsIdOrderByStartDateAsc(Long studentId);
 
     @Query("{'language': ?0, 'status': ?1}")
     List<Course> getCoursesByLanguage(Language language, Status status);
