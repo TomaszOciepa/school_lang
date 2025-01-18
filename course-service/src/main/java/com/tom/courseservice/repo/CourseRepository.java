@@ -3,6 +3,7 @@ package com.tom.courseservice.repo;
 import com.tom.courseservice.model.Course;
 import com.tom.courseservice.model.Language;
 import com.tom.courseservice.model.Status;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -15,8 +16,8 @@ public interface CourseRepository extends MongoRepository<Course, String> {
 
     boolean existsByName(String name);
 
-    List<Course> findByStatusSortedByStartDateAsc(Status status);
-
+    List<Course> findByStatus(Status status, Sort sort);
+    
     Optional<Course> findByIdAndStatus(String id, Status status);
 
     List<Course> findByCourseTeachersIdOrderByStartDateAsc(Long studentId);

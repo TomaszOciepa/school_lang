@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -91,7 +92,7 @@ public class CourseServiceImpl implements CourseService {
         logger.info("getAllByStatus()");
         if (status != null) {
             logger.info("Fetching courses with status: {}.", status);
-            return courseRepository.findByStatusSortedByStartDateAsc(status).stream()
+            return courseRepository.findByStatus(status, Sort.by(Sort.Direction.ASC, "startDate")).stream()
                     .map(this::updateCourseStatus)
                     .collect(Collectors.toList());
         }
