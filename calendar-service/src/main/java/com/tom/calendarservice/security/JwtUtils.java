@@ -18,4 +18,26 @@ public class JwtUtils {
 
         return null;
     }
+
+    public String getUserFirstName() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof Jwt) {
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            return jwt.getClaimAsString("given_name");
+        }
+
+        return null;
+    }
+
+    public String getUserLastName() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof Jwt) {
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            return jwt.getClaimAsString("family_name");
+        }
+
+        return null;
+    }
 }

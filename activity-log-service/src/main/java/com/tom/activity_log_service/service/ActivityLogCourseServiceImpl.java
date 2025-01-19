@@ -26,10 +26,6 @@ public class ActivityLogCourseServiceImpl implements ActivityLogCourseService {
     public void createLog(ActivityLogCourse log) {
         logger.info("createLog() {}", log.toString());
         repository.save(log);
-        System.out.println("Wszystko: ");
-        repository.findAll().stream()
-                .forEach(System.out::println);
-
     }
 
     @Override
