@@ -3,9 +3,7 @@ package com.tom.courseservice.service;
 import com.tom.courseservice.exception.CourseError;
 import com.tom.courseservice.exception.CourseException;
 import com.tom.courseservice.model.*;
-import com.tom.courseservice.model.dto.CourseStudentDto;
-import com.tom.courseservice.model.dto.StudentDto;
-import com.tom.courseservice.model.dto.TeacherDto;
+import com.tom.courseservice.model.dto.*;
 import com.tom.courseservice.repo.CourseRepository;
 import com.tom.courseservice.security.AuthenticationContext;
 import com.tom.courseservice.security.JwtUtils;
@@ -14,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -34,6 +33,7 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final StudentServiceClient studentServiceClient;
     private final TeacherServiceClient teacherServiceClient;
+    private final RabbitTemplate rabbitTemplate;
 
     private final CalendarServiceClient calendarServiceClient;
     private final AuthenticationContext authenticationContext;
@@ -84,7 +84,27 @@ public class CourseServiceImpl implements CourseService {
 
          calendarServiceClient.generateCourseTimetable(lessonScheduleRequest);
 
+        createActivityLog(courseFromDb, "Utworzenie kursu");
+
         return getCourseById(courseFromDb.getId(), null);
+    }
+
+    private void createActivityLog(Course courseFromDb, String name) {
+        ActivityLogCourse activityLogCourse = new ActivityLogCourse();
+        ActivityLog activityLog  = new ActivityLog();
+        User user = new User();
+
+        activityLogCourse.setActivityLog(activityLog);
+        activityLogCourse.getActivityLog().setActor(user);
+
+        activityLogCourse.setCourseId(courseFromDb.getId());
+        activityLogCourse.getActivityLog().setEventName(name+": "+ courseFromDb.getName() + " język: "+ courseFromDb.getLanguage());
+        activityLogCourse.getActivityLog().setTimestamp(LocalDateTime.now());
+        activityLogCourse.getActivityLog().getActor().setEmail(jwtUtils.getUserEmailFromJwt());
+        activityLogCourse.getActivityLog().getActor().setFirstName(jwtUtils.getUserFirstName());
+        activityLogCourse.getActivityLog().getActor().setLastName(jwtUtils.getUserLastName());
+
+        rabbitTemplate.convertAndSend("create-course-log", activityLogCourse);
     }
 
     @Override
