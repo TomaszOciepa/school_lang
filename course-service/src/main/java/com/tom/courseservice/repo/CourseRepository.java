@@ -17,7 +17,7 @@ public interface CourseRepository extends MongoRepository<Course, String> {
     boolean existsByName(String name);
 
     List<Course> findByStatus(Status status, Sort sort);
-    
+
     Optional<Course> findByIdAndStatus(String id, Status status);
 
     List<Course> findByCourseTeachersIdOrderByStartDateAsc(Long studentId);

@@ -4,6 +4,9 @@ import com.tom.studentservice.exception.StudentError;
 import com.tom.studentservice.exception.StudentException;
 import com.tom.studentservice.model.Status;
 import com.tom.studentservice.model.Student;
+import com.tom.studentservice.model.dto.ActivityLog;
+import com.tom.studentservice.model.dto.ActivityLogStudent;
+import com.tom.studentservice.model.dto.User;
 import com.tom.studentservice.repo.StudentRepository;
 import com.tom.studentservice.security.AuthenticationContext;
 import com.tom.studentservice.security.JwtUtils;
@@ -11,10 +14,12 @@ import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -28,8 +33,8 @@ public class StudentServiceImpl implements StudentService {
     private final CourseServiceClient courseServiceClient;
     private final JwtUtils jwtUtils;
     private final KeycloakServiceClient keycloakServiceClient;
+    private final RabbitTemplate rabbitTemplate;
 
-    //sprawdzone
     @Override
     public List<Student> getStudentsByIdNumbers(List<Long> idNumbers) {
         logger.info("Fetching students by id list numbers.");
@@ -92,14 +97,31 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student addStudent(Student student) {
         logger.info("Trying create new student.");
-//        String emailFromJwt = jwtUtils.getUserEmailFromJwt();
-//        boolean isNotStudent = authenticationContext();
-//        if(!isNotStudent && !emailFromJwt.equals(student.getEmail())){
-//            throw new StudentException(StudentError.STUDENT_OPERATION_FORBIDDEN);
-//        }
+
         validateStudentEmailExists(student.getEmail());
         student.setStatus(Status.ACTIVE);
-        return studentRepository.save(student);
+        Student save = studentRepository.save(student);
+        createActivityLog(save, "Utworzenie konta");
+        return save;
+    }
+
+    private void createActivityLog(Student student, String name) {
+        ActivityLogStudent activityLogStudent = new ActivityLogStudent();
+        ActivityLog activityLog  = new ActivityLog();
+        User user = new User();
+
+        activityLogStudent.setActivityLog(activityLog);
+        activityLogStudent.getActivityLog().setActor(user);
+
+        activityLogStudent.setStudentId(student.getId());
+
+        activityLogStudent.getActivityLog().setEventName(name);
+        activityLogStudent.getActivityLog().setTimestamp(LocalDateTime.now());
+        activityLogStudent.getActivityLog().getActor().setEmail(jwtUtils.getUserEmailFromJwt());
+        activityLogStudent.getActivityLog().getActor().setFirstName(jwtUtils.getUserFirstName());
+        activityLogStudent.getActivityLog().getActor().setLastName(jwtUtils.getUserLastName());
+
+        rabbitTemplate.convertAndSend("create-student-log", activityLogStudent);
     }
 
     @Override

@@ -96,7 +96,32 @@ public class CalendarServiceImpl implements CalendarService {
         } else {
             lesson = createCourseLesson(calendar);
         }
-        return calendarRepository.save(lesson);
+        Calendar saved = calendarRepository.save(lesson);
+
+        createActivityLog(saved, "Utworzenie lekcji");
+
+        return saved;
+    }
+
+    private void createActivityLog(Calendar saved, String name) {
+        ActivityLogCalendar activityLogCalendar = new ActivityLogCalendar();
+        ActivityLog activityLog  = new ActivityLog();
+        User user = new User();
+
+        activityLogCalendar.setActivityLog(activityLog);
+        activityLogCalendar.getActivityLog().setActor(user);
+
+        activityLogCalendar.setCalendarId(saved.getId());
+        if(saved.getCourseId() != null){
+            activityLogCalendar.setCourseId(saved.getCourseId());
+        }
+        activityLogCalendar.getActivityLog().setEventName(name);
+        activityLogCalendar.getActivityLog().setTimestamp(LocalDateTime.now());
+        activityLogCalendar.getActivityLog().getActor().setEmail(jwtUtils.getUserEmailFromJwt());
+        activityLogCalendar.getActivityLog().getActor().setFirstName(jwtUtils.getUserFirstName());
+        activityLogCalendar.getActivityLog().getActor().setLastName(jwtUtils.getUserLastName());
+
+        rabbitTemplate.convertAndSend("create-calendar-log", activityLogCalendar);
     }
 
     @Override
@@ -433,6 +458,7 @@ public class CalendarServiceImpl implements CalendarService {
                     );
 
                     calendarRepository.save(newLesson);
+                    createActivityLog(newLesson, "Automatyczne utworzenie lekcji.");
                     lessonsByTeacher.add(newLesson);
 
                     numberLessonsToCreate--;
