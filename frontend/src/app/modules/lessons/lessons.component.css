@@ -1,0 +1,87 @@
+button {
+  padding: 10px;
+}
+
+mat-icon {
+  font-size: 24px;
+}
+
+.demo-table {
+  width: 100%;
+}
+
+.mat-column-demo-position {
+  width: 32px;
+  border-right: 1px solid currentColor;
+  padding-right: 24px;
+  text-align: center;
+}
+
+.mat-column-demo-name {
+  padding-left: 16px;
+  font-size: 20px;
+}
+
+.mat-column-demo-weight {
+  font-style: italic;
+}
+
+.mat-column-demo-symbol {
+  width: 32px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* style calendar */
+.monthly-view {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.month-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: bold;
+  background-color: #f4f4f4;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+}
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.day-cell {
+  border: 1px solid #ddd;
+  min-height: 100px;
+  padding: 5px;
+  background-color: #fff;
+  position: relative;
+}
+
+.day-number {
+  font-size: 14px;
+  font-weight: bold;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+
+.today {
+  background-color: #e3f2fd;
+  border-color: #2196f3;
+}
+
+.day-cell:nth-child(7n),
+.day-cell:nth-child(7n-1) {
+  background-color: #f9f9f9;
+}
+
+.day-cell:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}

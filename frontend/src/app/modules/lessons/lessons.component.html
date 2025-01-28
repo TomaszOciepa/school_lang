@@ -14,4 +14,90 @@
     </div>
   </div>
 </section>
+
+<div>
+  <h2>{{ monthName }}</h2>
+</div>
+
+<div class="tab-navigation">
+  <button mat-icon-button (click)="goToToday()">
+    <mat-icon>today</mat-icon>
+  </button>
+  <button mat-icon-button (click)="previousTab()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <button mat-icon-button (click)="nextTab()">
+    <mat-icon>arrow_forward</mat-icon>
+  </button>
+  <button mat-button (click)="toggleViewMode()">
+    Przełącz na {{ viewMode === "weekly" ? "Miesięczny" : "Tygodniowy" }} widok
+  </button>
+</div>
+
+<div *ngIf="viewMode === 'weekly'">
+  <mat-tab-group
+    [selectedIndex]="activeDayIndex - weekStartIndex"
+    (selectedTabChange)="onTabClick($event.index)"
+  >
+    <mat-tab
+      *ngFor="let day of weekDays"
+      label="{{ day.name }} {{ day.date | date : 'dd' }}"
+    >
+      <div [ngStyle]="{ 'font-weight': day.isToday ? 'bold' : 'normal' }">
+        {{ day.name }} - {{ day.date | date : "fullDate" }}
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+]
+<div *ngIf="viewMode === 'monthly'" class="monthly-view">
+  <div class="month-header">
+    <div
+      *ngFor="let day of ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']"
+      class="day-header"
+    >
+      {{ day }}
+    </div>
+  </div>
+  <div class="month-grid">
+    <div
+      *ngFor="let day of monthDays"
+      [class.today]="day.isToday"
+      class="day-cell"
+    >
+      <div class="day-number">{{ day.date | date : "d" }}</div>
+    </div>
+  </div>
+</div>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
+  <!-- Position Column -->
+  <ng-container matColumnDef="demo-position">
+    <th mat-header-cell *matHeaderCellDef>No.</th>
+    <td mat-cell *matCellDef="let element">{{ element.position }}</td>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="demo-name">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
+
+  <!-- Weight Column -->
+  <ng-container matColumnDef="demo-weight">
+    <th mat-header-cell *matHeaderCellDef>Weight</th>
+    <td mat-cell *matCellDef="let element">{{ element.weight }}</td>
+  </ng-container>
+
+  <!-- Symbol Column -->
+  <ng-container matColumnDef="demo-symbol">
+    <th mat-header-cell *matHeaderCellDef>Symbol</th>
+    <td mat-cell *matCellDef="let element">{{ element.symbol }}</td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
+
 <app-lesons-table></app-lesons-table>
