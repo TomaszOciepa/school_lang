@@ -29,12 +29,15 @@ export class LessonsComponent implements OnInit {
   allDays: Array<{ name: string; date: Date; isToday: boolean }> = [];
   weekDays: Array<{ name: string; date: Date; isToday: boolean }> = [];
   monthDays: Array<{ name: string; date: Date; isToday: boolean }> = [];
+  yearDays: Array<{ name: string; date: Date; isToday: boolean }> = [];
   startDate: Date = new Date('2020-01-07');
   endDate: Date = new Date('2028-12-31');
   activeDayIndex: number = 0;
   weekStartIndex: number = 0;
   monthName: string = '';
-  viewMode: 'weekly' | 'monthly' = 'weekly';
+  monthIndex: number = new Date().getMonth();
+  // viewMode: 'weekly' | 'monthly' = 'weekly';
+  viewMode: 'weekly' | 'monthly' | 'yearly' = 'weekly';
   months: string[] = [
     'Styczeń',
     'Luty',
@@ -172,6 +175,8 @@ export class LessonsComponent implements OnInit {
       this.updateMonthName();
     } else if (this.viewMode === 'monthly') {
       this.changeMonth(-1);
+    } else if (this.viewMode === 'yearly') {
+      this.changeYear(-1);
     }
   }
 
@@ -185,6 +190,20 @@ export class LessonsComponent implements OnInit {
       this.updateMonthName();
     } else if (this.viewMode === 'monthly') {
       this.changeMonth(1);
+    } else if (this.viewMode === 'yearly') {
+      this.changeYear(1);
+    }
+  }
+
+  changeYear(direction: number): void {
+    const currentYear = this.allDays[this.activeDayIndex]?.date.getFullYear();
+
+    if (currentYear !== undefined) {
+      const newYear = currentYear + direction;
+      this.activeDayIndex = this.allDays.findIndex(
+        (day) => day.date.getFullYear() === newYear
+      );
+      this.updateYearDays();
     }
   }
 
@@ -203,11 +222,24 @@ export class LessonsComponent implements OnInit {
     }
   }
 
+  // toggleViewMode(): void {
+  //   this.viewMode = this.viewMode === 'weekly' ? 'monthly' : 'weekly';
+  //   if (this.viewMode === 'monthly') {
+  //     this.updateMonthDays();
+  //   } else {
+  //     this.updateWeekDays();
+  //   }
+  // }
+
   toggleViewMode(): void {
-    this.viewMode = this.viewMode === 'weekly' ? 'monthly' : 'weekly';
-    if (this.viewMode === 'monthly') {
+    if (this.viewMode === 'weekly') {
+      this.viewMode = 'monthly';
       this.updateMonthDays();
+    } else if (this.viewMode === 'monthly') {
+      this.viewMode = 'yearly';
+      this.updateYearDays();
     } else {
+      this.viewMode = 'weekly';
       this.updateWeekDays();
     }
   }
@@ -277,6 +309,21 @@ export class LessonsComponent implements OnInit {
   getDayName(date: Date): string {
     const dniTygodnia = ['Nd', 'Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob'];
     return dniTygodnia[date.getDay()];
+  }
+  updateYearDays(): void {
+    const currentYear = this.allDays[this.activeDayIndex]?.date.getFullYear();
+    this.yearDays =
+      currentYear !== undefined
+        ? this.allDays.filter((day) => day.date.getFullYear() === currentYear)
+        : [];
+  }
+
+  getDaysForMonth(
+    monthIndex: number
+  ): { name: string; date: Date; isToday: boolean }[] {
+    return (this.yearDays || []).filter(
+      (d) => d.date.getMonth() === monthIndex
+    );
   }
 
   displayedColumns: string[] = [

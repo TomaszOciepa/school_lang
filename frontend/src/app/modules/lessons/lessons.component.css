@@ -32,56 +32,157 @@ mat-icon {
   font-weight: bold;
 }
 
-/* style calendar */
+/* style for monthly view */
 .monthly-view {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 100%; /* Ensure the monthly view takes full width */
+  height: 100vh; /* Ensure it fills the viewport height */
+  overflow: hidden; /* Prevent scrolling of the whole view */
 }
 
 .month-header {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, 1fr); /* 7 columns for days of the week */
   text-align: center;
   font-weight: bold;
   background-color: #f4f4f4;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #e0e0e0;
   padding: 10px 0;
+}
+
+.month-header .day-header {
+  font-size: 14px;
+  color: #616161;
 }
 
 .month-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
+  grid-template-columns: repeat(7, 1fr); /* 7 days per week */
+  grid-template-rows: repeat(6, 1fr); /* maximum of 6 weeks in a month */
+  gap: 5px;
+  height: calc(
+    100vh - 100px
+  ); /* Adjust the height to fit the grid inside the viewport */
 }
 
-.day-cell {
+.monthly-view .day-cell {
   border: 1px solid #ddd;
-  min-height: 100px;
+  border-radius: 5px; /* Rounded corners for the day cells */
+  background-color: #fff;
+  position: relative;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.3s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box; /* Ensure padding doesn't affect the size */
+  height: 100%; /* Make sure it takes up the entire grid cell */
+  width: 100%;
+  min-height: 120px; /* Increased the minimum height of each cell */
+}
+
+.monthly-view .day-number {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.monthly-view .today {
+  background-color: #2196f3; /* kolor tła dla dzisiejszego dnia */
+  color: white;
+  border-radius: 8px; /* Zaokrąglone rogi */
+  z-index: 1;
+}
+
+.monthly-view .day-cell:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+/* style for yearly view */
+.yearly-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.year-header {
+  width: 100%;
+}
+
+.year-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns for 12 months */
+  grid-template-rows: repeat(3, 1fr); /* 3 rows (12 months) */
+  gap: 20px;
+  justify-items: center;
+  padding-top: 10px;
+}
+
+.yearly-view .month-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #fff;
+  min-width: 150px; /* increased width to make space for days */
+  min-height: 200px; /* increased height to fit all the days */
+  transition: background-color 0.3s ease;
+  overflow: hidden; /* ensure no overflow if space is insufficient */
+}
+
+.yearly-view .month-column h3 {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.yearly-view .month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 7 days per week */
+  gap: 5px;
+  width: 100%;
+  height: 100%; /* Ensure that the grid fills the entire month column */
+  overflow-y: auto; /* Allow scrolling if days don't fit */
+}
+
+.yearly-view .day-cell {
+  border: 1px solid #ddd;
+  min-height: 30px;
   padding: 5px;
   background-color: #fff;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.day-number {
+.yearly-view .day-number {
   font-size: 14px;
   font-weight: bold;
   position: absolute;
-  top: 5px;
-  left: 5px;
 }
 
-.today {
+.yearly-view .today {
+  background-color: #2196f3;
+  color: white;
+  border-radius: 50%;
+  padding: 5px;
+}
+
+.yearly-view .month-column:hover {
   background-color: #e3f2fd;
-  border-color: #2196f3;
-}
-
-.day-cell:nth-child(7n),
-.day-cell:nth-child(7n-1) {
-  background-color: #f9f9f9;
-}
-
-.day-cell:hover {
-  background-color: #f1f1f1;
   cursor: pointer;
+}
+
+.yearly-view .month-column:hover {
+  background-color: #f1f1f1;
 }

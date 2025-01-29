@@ -30,7 +30,13 @@
     <mat-icon>arrow_forward</mat-icon>
   </button>
   <button mat-button (click)="toggleViewMode()">
-    Przełącz na {{ viewMode === "weekly" ? "Miesięczny" : "Tygodniowy" }} widok
+    {{
+      viewMode === "weekly"
+        ? "Miesiąc"
+        : viewMode === "monthly"
+        ? "Rok"
+        : "Tydzień"
+    }}
   </button>
 </div>
 
@@ -67,6 +73,29 @@
       (click)="onDayClick(day)"
     >
       <div class="day-number">{{ day.date | date : "d" }}</div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="viewMode === 'yearly'" class="yearly-view">
+  <div class="year-header">
+    <div class="year-grid">
+      <div
+        *ngFor="let month of months; let monthIndex = index"
+        class="month-column"
+      >
+        <h3>{{ month }}</h3>
+        <div class="month-grid">
+          <div
+            *ngFor="let day of getDaysForMonth(monthIndex)"
+            [class.today]="day.isToday"
+            class="day-cell"
+            (click)="onDayClick(day)"
+          >
+            {{ day.date | date : "d" }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
