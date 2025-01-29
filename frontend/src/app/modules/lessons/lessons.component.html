@@ -50,7 +50,6 @@
   </mat-tab-group>
 </div>
 
-]
 <div *ngIf="viewMode === 'monthly'" class="monthly-view">
   <div class="month-header">
     <div
@@ -65,6 +64,7 @@
       *ngFor="let day of monthDays"
       [class.today]="day.isToday"
       class="day-cell"
+      (click)="onDayClick(day)"
     >
       <div class="day-number">{{ day.date | date : "d" }}</div>
     </div>

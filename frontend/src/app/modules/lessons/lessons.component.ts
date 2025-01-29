@@ -29,8 +29,8 @@ export class LessonsComponent implements OnInit {
   allDays: Array<{ name: string; date: Date; isToday: boolean }> = [];
   weekDays: Array<{ name: string; date: Date; isToday: boolean }> = [];
   monthDays: Array<{ name: string; date: Date; isToday: boolean }> = [];
-  startDate: Date = new Date('2024-01-07');
-  endDate: Date = new Date('2025-02-15');
+  startDate: Date = new Date('2020-01-07');
+  endDate: Date = new Date('2028-12-31');
   activeDayIndex: number = 0;
   weekStartIndex: number = 0;
   monthName: string = '';
@@ -237,6 +237,46 @@ export class LessonsComponent implements OnInit {
       this.updateWeekDays();
       this.updateMonthName();
     }
+    console.log('indeks: ', this.activeDayIndex);
+  }
+
+  onDayClick(day: any) {
+    this.setWeekDaysForDate(day.date);
+
+    const newIndex = this.weekDays.findIndex(
+      (d) => d.date.toDateString() === new Date(day.date).toDateString()
+    );
+
+    if (newIndex !== -1) {
+      this.activeDayIndex = this.weekStartIndex + newIndex;
+    } else {
+      console.warn('Błąd: nie znaleziono dnia w weekDays');
+    }
+
+    this.viewMode = 'weekly';
+  }
+
+  setWeekDaysForDate(selectedDate: Date) {
+    const date = new Date(selectedDate);
+    const dayOfWeek = date.getDay();
+
+    const startOfWeek = new Date(date);
+    startOfWeek.setDate(date.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+
+    this.weekDays = Array.from({ length: 7 }, (_, i) => {
+      const day = new Date(startOfWeek);
+      day.setDate(startOfWeek.getDate() + i);
+      return {
+        date: day,
+        name: this.getDayName(day),
+        isToday: day.toDateString() === new Date().toDateString(),
+      };
+    });
+  }
+
+  getDayName(date: Date): string {
+    const dniTygodnia = ['Nd', 'Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob'];
+    return dniTygodnia[date.getDay()];
   }
 
   displayedColumns: string[] = [
