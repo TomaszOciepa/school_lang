@@ -15,128 +15,6 @@
   </div>
 </section>
 
-<div>
-  <h2>{{ monthName }}</h2>
-</div>
-
-<div class="tab-navigation">
-  <button mat-icon-button (click)="goToToday()">
-    <mat-icon>today</mat-icon>
-  </button>
-  <button mat-icon-button (click)="previousTab()">
-    <mat-icon>arrow_back</mat-icon>
-  </button>
-  <button mat-icon-button (click)="nextTab()">
-    <mat-icon>arrow_forward</mat-icon>
-  </button>
-  <button mat-button (click)="toggleViewMode()">
-    {{
-      viewMode === "weekly"
-        ? "Miesiąc"
-        : viewMode === "monthly"
-        ? "Rok"
-        : "Tydzień"
-    }}
-  </button>
-</div>
-
-<div *ngIf="viewMode === 'weekly'">
-  <mat-tab-group
-    [selectedIndex]="activeDayIndex - weekStartIndex"
-    (selectedTabChange)="onTabClick($event.index)"
-  >
-    <mat-tab
-      *ngFor="let day of weekDays"
-      label="{{ day.name }} {{ day.date | date : 'dd' }}"
-    >
-      <div
-        [ngStyle]="{
-          'font-weight': day.isToday ? 'bold' : 'normal'
-        }"
-      >
-        <div class="hours-list">
-          <div *ngFor="let hour of hours">
-            <div class="hour-slot">
-              {{ hour }}:00
-
-              <div *ngFor="let lesson of getLessons(day.date, hour)">
-                {{ lesson.eventName }} ({{ lesson.description }})
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </mat-tab>
-  </mat-tab-group>
-</div>
-
-<div *ngIf="viewMode === 'monthly'" class="monthly-view">
-  <div class="month-header">
-    <div
-      *ngFor="let day of ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']"
-      class="day-header"
-    >
-      {{ day }}
-    </div>
-  </div>
-  <div class="month-grid">
-    <div
-      *ngFor="let day of monthDays"
-      [class.today]="day.isToday"
-      [ngClass]="{ 'has-lessons': hasLessons(day.date) }"
-      class="day-cell"
-      (click)="onDayClick(day)"
-    >
-      <div class="day-number">{{ day.date | date : "d" }}</div>
-    </div>
-  </div>
-</div>
-
-<div *ngIf="viewMode === 'yearly'" class="yearly-view">
-  <div class="year-header">
-    <div class="year-grid">
-      <div
-        *ngFor="let month of months; let monthIndex = index"
-        class="month-column"
-      >
-        <h3>{{ month }}</h3>
-
-        <div class="month-header">
-          <div
-            *ngFor="
-              let day of ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd'];
-              let i = index
-            "
-            class="day-header"
-            [ngClass]="{ weekend: i >= 5 }"
-          >
-            {{ day }}
-          </div>
-        </div>
-
-        <div class="month-grid">
-          <div
-            *ngFor="let empty of getEmptyDaysBeforeMonth(monthIndex)"
-            class="day-cell empty"
-          ></div>
-          <div
-            *ngFor="let day of getDaysForMonth(monthIndex)"
-            [class.today]="day.isToday"
-            [ngClass]="{
-              weekend: isWeekend(day.date),
-              'has-lessons': hasLessons(day.date)
-            }"
-            class="day-cell"
-            (click)="onDayClick(day)"
-          >
-            {{ day.date | date : "d" }}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
   <!-- Position Column -->
   <ng-container matColumnDef="demo-position">
@@ -167,3 +45,6 @@
 </table>
 
 <app-lesons-table></app-lesons-table>
+
+<!-- <app-calendar [lessons]="lessonsList"></app-calendar> -->
+<app-calendar [lessons]="lessonsList"></app-calendar>

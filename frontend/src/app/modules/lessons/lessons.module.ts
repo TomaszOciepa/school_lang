@@ -12,6 +12,7 @@ import { EditLessonDialogComponent } from './components/lesson/edit-lesson-dialo
 import { DeleteLessonDialogComponent } from './components/lesson/delete-lesson-dialog/delete-lesson-dialog.component';
 import { EnrollLessonDialogComponent } from './components/lesson/enroll-lesson-dialog/enroll-lesson-dialog.component';
 import { UnEnrollLessonDialogComponent } from './components/lesson/un-enroll-lesson-dialog/un-enroll-lesson-dialog.component';
+import { CalendarComponent } from './components/calendar/calendar.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { UnEnrollLessonDialogComponent } from './components/lesson/un-enroll-les
     DeleteLessonDialogComponent,
     EnrollLessonDialogComponent,
     UnEnrollLessonDialogComponent,
+    CalendarComponent,
   ],
   imports: [SharedModule, CommonModule, LessonsRoutingModule],
   exports: [LesonsTableComponent],
