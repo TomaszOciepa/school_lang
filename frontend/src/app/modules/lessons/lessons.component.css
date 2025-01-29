@@ -37,14 +37,14 @@ mat-icon {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 100%; /* Ensure the monthly view takes full width */
-  height: 100vh; /* Ensure it fills the viewport height */
-  overflow: hidden; /* Prevent scrolling of the whole view */
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .month-header {
   display: grid;
-  grid-template-columns: repeat(7, 1fr); /* 7 columns for days of the week */
+  grid-template-columns: repeat(7, 1fr);
   text-align: center;
   font-weight: bold;
   background-color: #f4f4f4;
@@ -59,17 +59,15 @@ mat-icon {
 
 .month-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr); /* 7 days per week */
-  grid-template-rows: repeat(6, 1fr); /* maximum of 6 weeks in a month */
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, 1fr);
   gap: 5px;
-  height: calc(
-    100vh - 100px
-  ); /* Adjust the height to fit the grid inside the viewport */
+  height: calc(100vh - 100px);
 }
 
 .monthly-view .day-cell {
   border: 1px solid #ddd;
-  border-radius: 5px; /* Rounded corners for the day cells */
+  border-radius: 5px;
   background-color: #fff;
   position: relative;
   font-size: 14px;
@@ -78,10 +76,10 @@ mat-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box; /* Ensure padding doesn't affect the size */
-  height: 100%; /* Make sure it takes up the entire grid cell */
+  box-sizing: border-box;
+  height: 100%;
   width: 100%;
-  min-height: 120px; /* Increased the minimum height of each cell */
+  min-height: 120px;
 }
 
 .monthly-view .day-number {
@@ -91,9 +89,9 @@ mat-icon {
 }
 
 .monthly-view .today {
-  background-color: #2196f3; /* kolor tła dla dzisiejszego dnia */
+  background-color: #2196f3;
   color: white;
-  border-radius: 8px; /* Zaokrąglone rogi */
+  border-radius: 8px;
   z-index: 1;
 }
 
@@ -117,8 +115,8 @@ mat-icon {
 
 .year-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 columns for 12 months */
-  grid-template-rows: repeat(3, 1fr); /* 3 rows (12 months) */
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
   gap: 20px;
   justify-items: center;
   padding-top: 10px;
@@ -132,10 +130,10 @@ mat-icon {
   border-radius: 8px;
   padding: 10px;
   background-color: #fff;
-  min-width: 150px; /* increased width to make space for days */
-  min-height: 200px; /* increased height to fit all the days */
+  min-width: 150px;
+  min-height: 200px;
   transition: background-color 0.3s ease;
-  overflow: hidden; /* ensure no overflow if space is insufficient */
+  overflow: hidden;
 }
 
 .yearly-view .month-column h3 {
@@ -147,11 +145,11 @@ mat-icon {
 
 .yearly-view .month-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr); /* 7 days per week */
+  grid-template-columns: repeat(7, 1fr);
   gap: 5px;
   width: 100%;
-  height: 100%; /* Ensure that the grid fills the entire month column */
-  overflow-y: auto; /* Allow scrolling if days don't fit */
+  height: 100%;
+  overflow-y: auto;
 }
 
 .yearly-view .day-cell {
@@ -185,4 +183,21 @@ mat-icon {
 
 .yearly-view .month-column:hover {
   background-color: #f1f1f1;
+}
+
+.day-cell.empty {
+  visibility: hidden;
+}
+
+.weekend {
+  background-color: #f2f2f2;
+}
+
+.day-header.weekend {
+  background-color: #e0e0e0;
+  font-weight: bold;
+}
+
+.day-cell.weekend {
+  background-color: #f5f5f5;
 }

@@ -85,10 +85,29 @@
         class="month-column"
       >
         <h3>{{ month }}</h3>
+
+        <div class="month-header">
+          <div
+            *ngFor="
+              let day of ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd'];
+              let i = index
+            "
+            class="day-header"
+            [ngClass]="{ weekend: i >= 5 }"
+          >
+            {{ day }}
+          </div>
+        </div>
+
         <div class="month-grid">
+          <div
+            *ngFor="let empty of getEmptyDaysBeforeMonth(monthIndex)"
+            class="day-cell empty"
+          ></div>
           <div
             *ngFor="let day of getDaysForMonth(monthIndex)"
             [class.today]="day.isToday"
+            [ngClass]="{ weekend: isWeekend(day.date) }"
             class="day-cell"
             (click)="onDayClick(day)"
           >

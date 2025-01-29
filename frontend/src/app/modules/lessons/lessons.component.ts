@@ -36,7 +36,6 @@ export class LessonsComponent implements OnInit {
   weekStartIndex: number = 0;
   monthName: string = '';
   monthIndex: number = new Date().getMonth();
-  // viewMode: 'weekly' | 'monthly' = 'weekly';
   viewMode: 'weekly' | 'monthly' | 'yearly' = 'weekly';
   months: string[] = [
     'Styczeń',
@@ -165,6 +164,15 @@ export class LessonsComponent implements OnInit {
         month: 'long',
         year: 'numeric',
       });
+    } else if (this.viewMode === 'monthly' && this.monthDays.length > 0) {
+      const selectedDate = this.monthDays[0]?.date;
+      this.monthName = selectedDate.toLocaleDateString('default', {
+        month: 'long',
+        year: 'numeric',
+      });
+    } else if (this.viewMode === 'yearly' && this.yearDays.length > 0) {
+      const selectedYear = this.yearDays[0]?.date.getFullYear();
+      this.monthName = selectedYear.toString();
     }
   }
 
@@ -204,6 +212,7 @@ export class LessonsComponent implements OnInit {
         (day) => day.date.getFullYear() === newYear
       );
       this.updateYearDays();
+      this.updateMonthName();
     }
   }
 
@@ -221,15 +230,6 @@ export class LessonsComponent implements OnInit {
       this.updateMonthDays();
     }
   }
-
-  // toggleViewMode(): void {
-  //   this.viewMode = this.viewMode === 'weekly' ? 'monthly' : 'weekly';
-  //   if (this.viewMode === 'monthly') {
-  //     this.updateMonthDays();
-  //   } else {
-  //     this.updateWeekDays();
-  //   }
-  // }
 
   toggleViewMode(): void {
     if (this.viewMode === 'weekly') {
@@ -254,11 +254,15 @@ export class LessonsComponent implements OnInit {
 
     if (todayIndex !== -1) {
       this.activeDayIndex = todayIndex;
+
       if (this.viewMode === 'weekly') {
         this.updateWeekDays();
       } else if (this.viewMode === 'monthly') {
         this.updateMonthDays();
+      } else if (this.viewMode === 'yearly') {
+        this.updateYearDays();
       }
+
       this.updateMonthName();
     }
   }
@@ -324,6 +328,23 @@ export class LessonsComponent implements OnInit {
     return (this.yearDays || []).filter(
       (d) => d.date.getMonth() === monthIndex
     );
+  }
+
+  getEmptyDaysBeforeMonth(monthIndex: number): number[] {
+    const year = this.allDays[this.activeDayIndex]?.date.getFullYear();
+    if (year === undefined) return [];
+
+    const firstDayOfMonth = new Date(year, monthIndex, 1);
+    const weekday = firstDayOfMonth.getDay();
+
+    const adjustedWeekday = weekday === 0 ? 6 : weekday - 1;
+
+    return new Array(adjustedWeekday).fill(0);
+  }
+
+  isWeekend(date: Date): boolean {
+    const dayOfWeek = date.getDay();
+    return dayOfWeek === 0 || dayOfWeek === 6;
   }
 
   displayedColumns: string[] = [
