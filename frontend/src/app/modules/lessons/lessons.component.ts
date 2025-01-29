@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LessonResponse } from '../core/models/lesson.model';
 
 export interface PeriodicElement {
   name: string;
@@ -52,13 +53,70 @@ export class LessonsComponent implements OnInit {
     'Grudzień',
   ];
 
+  lessons: LessonResponse[] = [];
+  dailyLessons: { [key: string]: LessonResponse[] } = {};
+  hours = Array.from({ length: 16 }, (_, i) => i + 7);
+
   ngOnInit(): void {
+    this.loadLessons();
     this.normalizeStartDate();
     this.normalizeEndDate();
     this.generateDays();
     this.setActiveDayToToday();
     this.updateWeekDays();
     this.updateMonthName();
+    this.organizeLessonsByDay();
+  }
+
+  loadLessons() {
+    this.lessons = [
+      {
+        id: '1',
+        eventName: 'Matematyka',
+        startDate: '2025-01-29T08:00:00',
+        endDate: '2025-01-29T09:00:00',
+        teacherId: 1,
+        courseId: 'MATH101',
+        status: 'scheduled',
+        description: 'Lekcja matematyki',
+        attendanceList: [],
+      },
+      {
+        id: '2',
+        eventName: 'Fizyka',
+        startDate: '2025-01-29T10:00:00',
+        endDate: '2025-01-29T11:00:00',
+        teacherId: 2,
+        courseId: 'PHY101',
+        status: 'scheduled',
+        description: 'Lekcja fizyki',
+        attendanceList: [],
+      },
+    ];
+  }
+
+  organizeLessonsByDay() {
+    this.lessons.forEach((lesson) => {
+      const day = this.formatDate(new Date(lesson.startDate));
+      if (!this.dailyLessons[day]) {
+        this.dailyLessons[day] = [];
+      }
+      this.dailyLessons[day].push(lesson);
+    });
+  }
+
+  getLessons(date: Date, hour: number): LessonResponse[] {
+    const formattedDate = this.formatDate(date);
+    return (
+      this.dailyLessons[formattedDate]?.filter((lesson) => {
+        const lessonStart = new Date(lesson.startDate);
+        return lessonStart.getHours() === hour;
+      }) || []
+    );
+  }
+
+  formatDate(date: Date): string {
+    return date.toISOString().split('T')[0];
   }
 
   normalizeStartDate(): void {
@@ -345,6 +403,11 @@ export class LessonsComponent implements OnInit {
   isWeekend(date: Date): boolean {
     const dayOfWeek = date.getDay();
     return dayOfWeek === 0 || dayOfWeek === 6;
+  }
+
+  hasLessons(date: Date): boolean {
+    const formattedDate = this.formatDate(date); // Formatujemy datę na "YYYY-MM-DD"
+    return this.dailyLessons[formattedDate]?.length > 0; // Sprawdzamy, czy są lekcje
   }
 
   displayedColumns: string[] = [

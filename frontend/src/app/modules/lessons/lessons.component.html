@@ -49,8 +49,22 @@
       *ngFor="let day of weekDays"
       label="{{ day.name }} {{ day.date | date : 'dd' }}"
     >
-      <div [ngStyle]="{ 'font-weight': day.isToday ? 'bold' : 'normal' }">
-        {{ day.name }} - {{ day.date | date : "fullDate" }}
+      <div
+        [ngStyle]="{
+          'font-weight': day.isToday ? 'bold' : 'normal'
+        }"
+      >
+        <div class="hours-list">
+          <div *ngFor="let hour of hours">
+            <div class="hour-slot">
+              {{ hour }}:00
+
+              <div *ngFor="let lesson of getLessons(day.date, hour)">
+                {{ lesson.eventName }} ({{ lesson.description }})
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </mat-tab>
   </mat-tab-group>
@@ -69,6 +83,7 @@
     <div
       *ngFor="let day of monthDays"
       [class.today]="day.isToday"
+      [ngClass]="{ 'has-lessons': hasLessons(day.date) }"
       class="day-cell"
       (click)="onDayClick(day)"
     >
@@ -107,7 +122,10 @@
           <div
             *ngFor="let day of getDaysForMonth(monthIndex)"
             [class.today]="day.isToday"
-            [ngClass]="{ weekend: isWeekend(day.date) }"
+            [ngClass]="{
+              weekend: isWeekend(day.date),
+              'has-lessons': hasLessons(day.date)
+            }"
             class="day-cell"
             (click)="onDayClick(day)"
           >
