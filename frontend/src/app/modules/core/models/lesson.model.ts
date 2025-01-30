@@ -17,6 +17,7 @@ export interface LessonResponse {
   status: string;
   description: string;
   attendanceList: AttendanceList[];
+  language: string;
 }
 
 export class Lesson implements LessonResponse {
@@ -29,7 +30,8 @@ export class Lesson implements LessonResponse {
     public courseId: string,
     public status: string,
     public description: string,
-    public attendanceList: AttendanceList[]
+    public attendanceList: AttendanceList[],
+    public language: string
   ) {}
 }
 
@@ -39,7 +41,6 @@ export interface PostLessonForm {
   startTime: FormControl<string>;
   endTime: FormControl<string>;
   teacherId: FormControl<string>;
-  // status: FormControl<string>;
   description: FormControl<string>;
 }
 

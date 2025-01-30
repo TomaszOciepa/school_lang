@@ -5,12 +5,14 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
+import { Course } from 'src/app/modules/core/models/course.model';
 
 import {
   Lesson,
   LessonResponse,
 } from 'src/app/modules/core/models/lesson.model';
 import { User } from 'src/app/modules/core/models/user.model';
+import { CourseService } from 'src/app/modules/core/services/course.service';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 
 @Component({
@@ -21,11 +23,21 @@ import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 export class CalendarComponent implements OnChanges, OnInit {
   @Input() lessons!: Lesson[];
 
-  constructor(private teacherService: TeacherService) {}
+  constructor(
+    private teacherService: TeacherService,
+    private courseService: CourseService
+  ) {}
 
   ngOnInit(): void {
-    this.getTeachers(); // Pobieramy nauczycieli przy ładowaniu komponentu
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 1000);
+
+    this.getTeachers();
+    this.getCourses();
   }
+
+  isLoading = true;
 
   allDays: Array<{ name: string; date: Date; isToday: boolean }> = [];
   weekDays: Array<{ name: string; date: Date; isToday: boolean }> = [];
@@ -37,9 +49,7 @@ export class CalendarComponent implements OnChanges, OnInit {
   }[] = [];
 
   teachersList: User[] = [];
-  // teacherData: { [id: number]: { firstName: string; lastName: string } } = {};
-  // teacherFirstName!: string;
-  // teacherLastName!: string;
+  courseList: Course[] = [];
   yearDays: Array<{ name: string; date: Date; isToday: boolean }> = [];
   startDate: Date = new Date('2020-01-07');
   endDate: Date = new Date('2028-12-31');
@@ -101,10 +111,6 @@ export class CalendarComponent implements OnChanges, OnInit {
         (a, b) =>
           new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
       );
-  }
-
-  formatDate(date: Date): string {
-    return date.toISOString().split('T')[0];
   }
 
   normalizeStartDate(): void {
@@ -399,6 +405,10 @@ export class CalendarComponent implements OnChanges, OnInit {
     return this.dailyLessons[formattedDate]?.length > 0;
   }
 
+  formatDate(date: Date): string {
+    return date.toISOString().split('T')[0];
+  }
+
   getLessonStatus(lesson: any): string {
     switch (lesson.status) {
       case 'INACTIVE':
@@ -425,7 +435,6 @@ export class CalendarComponent implements OnChanges, OnInit {
   }
 
   getTeachers(): void {
-    console.log('pobieram nauczycieli');
     this.teacherService.getTeachers('ACTIVE').subscribe({
       next: (response) => {
         this.teachersList = response;
@@ -440,5 +449,35 @@ export class CalendarComponent implements OnChanges, OnInit {
   // Funkcja do wyszukiwania nauczyciela po id
   getTeacherById(teacherId: number): User | undefined {
     return this.teachersList.find((teacher) => teacher.id === teacherId);
+  }
+
+  getLanguageName(language: string): string {
+    switch (language) {
+      case 'ENGLISH':
+        return 'Angielski';
+      case 'POLISH':
+        return 'Polski';
+      case 'GERMAN':
+        return 'Niemiecki';
+      default:
+        return 'Nieznany';
+    }
+  }
+
+  getCourses(): void {
+    console.log('pobieram kursy');
+    this.courseService.getAllByStatus().subscribe({
+      next: (response) => {
+        this.courseList = response;
+      },
+      error: (err) => {
+        console.log(err);
+      },
+      complete: () => {},
+    });
+  }
+
+  getCourseById(courseId: string): Course | undefined {
+    return this.courseList.find((course) => course.id === courseId);
   }
 }

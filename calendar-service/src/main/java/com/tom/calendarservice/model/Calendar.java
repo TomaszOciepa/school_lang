@@ -28,6 +28,7 @@ public class Calendar {
     private Status status;
     private String description;
     private List<AttendanceList> attendanceList = new ArrayList<>();
+    private Language language;
 
     public Calendar() {
     }

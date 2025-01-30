@@ -1,197 +1,244 @@
-<div>
-  <h2>{{ monthName }}</h2>
-</div>
+<div class="container text-center">
+  <div *ngIf="isLoading" class="spinner-container">
+    <mat-spinner></mat-spinner>
+  </div>
 
-<div class="tab-navigation">
-  <button mat-icon-button (click)="goToToday()">
-    <mat-icon>today</mat-icon>
-  </button>
-  <button mat-icon-button (click)="previousTab()">
-    <mat-icon>arrow_back</mat-icon>
-  </button>
-  <button mat-icon-button (click)="nextTab()">
-    <mat-icon>arrow_forward</mat-icon>
-  </button>
-  <button mat-icon-button (click)="toggleViewMode()">
-    <div *ngIf="viewMode === 'weekly'" class="view-mode-container">
-      Tydzień
-      <mat-icon class="view-icon">expand_more</mat-icon>
-    </div>
-    <div *ngIf="viewMode === 'monthly'" class="view-mode-container">
-      Miesiąc
-      <mat-icon class="view-icon">expand_more</mat-icon>
-    </div>
-    <div *ngIf="viewMode === 'yearly'" class="view-mode-container">
-      Rok
-      <mat-icon class="view-icon">expand_more</mat-icon>
-    </div>
-  </button>
-</div>
-
-<div *ngIf="viewMode === 'weekly'">
-  <mat-tab-group
-    [selectedIndex]="activeDayIndex - weekStartIndex"
-    (selectedTabChange)="onTabClick($event.index)"
-  >
-    <mat-tab
-      *ngFor="let day of weekDays"
-      label="{{ day.name }} {{ day.date | date : 'dd' }}"
-    >
-      <div [ngStyle]="{ 'font-weight': day.isToday ? 'bold' : 'normal' }">
-        <ng-container *ngIf="getLessons(day.date).length > 0; else noEvents">
-          <table
-            mat-table
-            [dataSource]="getLessons(day.date)"
-            class="mat-elevation-z8 lessons-table"
-          >
-            <ng-container matColumnDef="startTime">
-              <th mat-header-cell *matHeaderCellDef class="start-time-column">
-                Godzina
-              </th>
-              <td mat-cell *matCellDef="let lesson" class="start-time-column">
-                {{ lesson.startDate | date : "HH:mm" }} -
-                {{ lesson.endDate | date : "HH:mm" }}
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef>Status</th>
-              <td mat-cell *matCellDef="let lesson" class="status-cell">
-                <span
-                  class="status-indicator"
-                  [ngStyle]="{ 'background-color': getStatusColor(lesson) }"
-                ></span>
-                <span class="status-text">{{ getLessonStatus(lesson) }}</span>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="eventName">
-              <th mat-header-cell *matHeaderCellDef>Lekcja</th>
-              <td mat-cell *matCellDef="let lesson">{{ lesson.eventName }}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="teacher">
-              <th mat-header-cell *matHeaderCellDef>Nauczyciel</th>
-              <td mat-cell *matCellDef="let lesson">
-                <span *ngIf="lesson.teacherId">
-                  <ng-container *ngIf="lesson.teacherId">
-                    <ng-container *ngIf="getTeacherById(lesson.teacherId)">
-                      {{ getTeacherById(lesson.teacherId)?.firstName }}
-                      {{ getTeacherById(lesson.teacherId)?.lastName }}
-                    </ng-container>
-                    <ng-container *ngIf="!getTeacherById(lesson.teacherId)">
-                      Ładowanie...
-                    </ng-container>
-                  </ng-container>
-                </span>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="description">
-              <th mat-header-cell *matHeaderCellDef>Opis</th>
-              <td mat-cell *matCellDef="let lesson">
-                {{ lesson.description }}
-              </td>
-            </ng-container>
-
-            <!-- Nagłówki tabeli -->
-            <tr
-              mat-header-row
-              *matHeaderRowDef="[
-                'startTime',
-                'status',
-                'eventName',
-                'teacher',
-                'description'
-              ]"
-            ></tr>
-
-            <tr
-              mat-row
-              *matRowDef="
-                let lesson;
-                columns: [
-                  'startTime',
-                  'status',
-                  'eventName',
-                  'teacher',
-                  'description'
-                ]
-              "
-              class="clickable-row"
-              [routerLink]="'/lessons/' + lesson.id"
-            ></tr>
-          </table>
-        </ng-container>
-
-        <ng-template #noEvents>
-          <p class="no-events-message">Brak wydarzeń w tym dniu</p>
-        </ng-template>
+  <div *ngIf="!isLoading" class="row">
+    <div class="col-12">
+      <div>
+        <h1>{{ monthName }}</h1>
       </div>
-    </mat-tab>
-  </mat-tab-group>
-</div>
 
-<div *ngIf="viewMode === 'monthly'" class="monthly-view">
-  <div class="month-header">
-    <div
-      *ngFor="let day of ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']"
-      class="day-header"
-    >
-      {{ day }}
-    </div>
-  </div>
-  <div class="month-grid">
-    <div
-      *ngFor="let day of monthDays"
-      [class.today]="day.isToday"
-      [ngClass]="{ 'has-lessons': hasLessons(day.date) }"
-      class="day-cell"
-      (click)="onDayClick(day)"
-    >
-      <div class="day-number">{{ day.date | date : "d" }}</div>
-    </div>
-  </div>
-</div>
+      <div class="tab-navigation">
+        <button mat-icon-button (click)="previousTab()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
 
-<div *ngIf="viewMode === 'yearly'" class="yearly-view">
-  <div class="year-header">
-    <div class="year-grid">
-      <div
-        *ngFor="let month of months; let monthIndex = index"
-        class="month-column"
-      >
-        <h3>{{ month }}</h3>
+        <button mat-icon-button (click)="nextTab()">
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
 
+        <button mat-icon-button (click)="goToToday()">
+          <mat-icon>today</mat-icon>
+        </button>
+
+        <button mat-icon-button (click)="toggleViewMode()">
+          <div *ngIf="viewMode === 'weekly'" class="view-mode-container">
+            Tydzień
+            <mat-icon class="view-icon">expand_more</mat-icon>
+          </div>
+          <div *ngIf="viewMode === 'monthly'" class="view-mode-container">
+            Miesiąc
+            <mat-icon class="view-icon">expand_more</mat-icon>
+          </div>
+          <div *ngIf="viewMode === 'yearly'" class="view-mode-container">
+            Rok
+            <mat-icon class="view-icon">expand_more</mat-icon>
+          </div>
+        </button>
+      </div>
+
+      <div *ngIf="viewMode === 'weekly'">
+        <mat-tab-group
+          [selectedIndex]="activeDayIndex - weekStartIndex"
+          (selectedTabChange)="onTabClick($event.index)"
+        >
+          <mat-tab
+            *ngFor="let day of weekDays"
+            label="{{ day.name }} {{ day.date | date : 'dd' }}"
+          >
+            <div [ngStyle]="{ 'font-weight': day.isToday ? 'bold' : 'normal' }">
+              <ng-container
+                *ngIf="getLessons(day.date).length > 0; else noEvents"
+              >
+                <table
+                  mat-table
+                  [dataSource]="getLessons(day.date)"
+                  class="mat-elevation-z8 lessons-table"
+                >
+                  <ng-container matColumnDef="startTime">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      class="start-time-column"
+                    >
+                      Godzina
+                    </th>
+                    <td
+                      mat-cell
+                      *matCellDef="let lesson"
+                      class="start-time-column"
+                    >
+                      {{ lesson.startDate | date : "HH:mm" }} -
+                      {{ lesson.endDate | date : "HH:mm" }}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef>Status</th>
+                    <td
+                      mat-cell
+                      *matCellDef="let lesson"
+                      class="status-cell status-time-column"
+                    >
+                      <span
+                        class="status-indicator"
+                        [ngStyle]="{
+                          'background-color': getStatusColor(lesson)
+                        }"
+                      ></span>
+                      <span class="status-text">{{
+                        getLessonStatus(lesson)
+                      }}</span>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="teacher">
+                    <th mat-header-cell *matHeaderCellDef>Nauczyciel</th>
+                    <td mat-cell *matCellDef="let lesson">
+                      <span *ngIf="lesson.teacherId">
+                        <ng-container *ngIf="lesson.teacherId">
+                          <ng-container
+                            *ngIf="getTeacherById(lesson.teacherId)"
+                          >
+                            {{ getTeacherById(lesson.teacherId)?.firstName }}
+                            {{ getTeacherById(lesson.teacherId)?.lastName }}
+                          </ng-container>
+                          <ng-container
+                            *ngIf="!getTeacherById(lesson.teacherId)"
+                          >
+                            Ładowanie...
+                          </ng-container>
+                        </ng-container>
+                      </span>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="language">
+                    <th mat-header-cell *matHeaderCellDef>Język</th>
+                    <td mat-cell *matCellDef="let lesson">
+                      {{ getLanguageName(lesson.language) }}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="course">
+                    <th mat-header-cell *matHeaderCellDef>Nazwa kursu</th>
+                    <td mat-cell *matCellDef="let lesson">
+                      <span *ngIf="lesson.courseId">
+                        <ng-container *ngIf="lesson.courseId">
+                          <ng-container *ngIf="getCourseById(lesson.courseId)">
+                            {{ getCourseById(lesson.courseId)?.name }}
+                          </ng-container>
+                          <ng-container *ngIf="!getCourseById(lesson.courseId)">
+                            Ładowanie...
+                          </ng-container>
+                        </ng-container>
+                      </span>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="eventName">
+                    <th mat-header-cell *matHeaderCellDef>Nazwa wydarzenia</th>
+                    <td mat-cell *matCellDef="let lesson">
+                      {{ lesson.eventName }}
+                    </td>
+                  </ng-container>
+
+                  <!-- Nagłówki tabeli -->
+                  <tr
+                    mat-header-row
+                    *matHeaderRowDef="[
+                      'startTime',
+                      'status',
+                      'teacher',
+                      'language',
+                      'eventName',
+                      'course'
+                    ]"
+                  ></tr>
+
+                  <tr
+                    mat-row
+                    *matRowDef="
+                      let lesson;
+                      columns: [
+                        'startTime',
+                        'status',
+                        'teacher',
+                        'language',
+                        'eventName',
+                        'course'
+                      ]
+                    "
+                    class="clickable-row"
+                    [routerLink]="'/lessons/' + lesson.id"
+                  ></tr>
+                </table>
+              </ng-container>
+
+              <ng-template #noEvents>
+                <p class="no-events-message">Brak wydarzeń w tym dniu</p>
+              </ng-template>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+
+      <div *ngIf="viewMode === 'monthly'" class="monthly-view">
         <div class="month-header">
           <div
-            *ngFor="
-              let day of ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd'];
-              let i = index
-            "
+            *ngFor="let day of ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']"
             class="day-header"
-            [ngClass]="{ weekend: i >= 5 }"
           >
             {{ day }}
           </div>
         </div>
-
         <div class="month-grid">
           <div
-            *ngFor="let empty of getEmptyDaysBeforeMonth(monthIndex)"
-            class="day-cell empty"
-          ></div>
-          <div
-            *ngFor="let day of getDaysForMonth(monthIndex)"
+            *ngFor="let day of monthDays"
             [class.today]="day.isToday"
             [ngClass]="{
               weekend: isWeekend(day.date),
-              'has-lessons': hasLessons(day.date)
+              'not-weekend': !isWeekend(day.date)
             }"
             class="day-cell"
             (click)="onDayClick(day)"
           >
-            {{ day.date | date : "d" }}
+            <div class="day-content">
+              <div class="day-number">
+                {{ day.date | date : "d" }}
+              </div>
+            </div>
+            <div *ngIf="getLessons(day.date).length > 0" class="lesson-count">
+              <mat-icon class="view-icon">event_available</mat-icon>
+              Liczba wydarzeń: {{ getLessons(day.date).length }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="viewMode === 'yearly'" class="yearly-view">
+        <div class="year-header"></div>
+        <div class="year-grid">
+          <div
+            *ngFor="let month of months; let monthIndex = index"
+            class="month-column"
+          >
+            <h3>{{ month }}</h3>
+            <div class="month-grid">
+              <div
+                *ngFor="let day of getDaysForMonth(monthIndex)"
+                [ngClass]="{
+                  today: day.isToday,
+                  weekend: isWeekend(day.date),
+                  'has-lessons': hasLessons(day.date)
+                }"
+                class="day-cell"
+                (click)="onDayClick(day)"
+              >
+                {{ day.date | date : "d" }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
