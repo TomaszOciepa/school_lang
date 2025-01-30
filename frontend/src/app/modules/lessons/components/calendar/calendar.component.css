@@ -196,3 +196,88 @@
 .tab-navigation {
   margin-bottom: 10px;
 }
+
+table {
+  width: 100%;
+}
+
+th {
+  font-weight: bold;
+}
+
+.mat-elevation-z8 {
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.lessons-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.start-time-column {
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+  border-right: 2px solid rgba(0, 0, 0, 0.12);
+  width: 100px;
+  min-width: 80px;
+  max-width: 140px;
+}
+
+th {
+  font-weight: bold;
+}
+
+.mat-elevation-z8 {
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.no-events-message {
+  text-align: center;
+  font-style: italic;
+  color: #757575;
+  padding: 10px;
+}
+
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.clickable-row:hover {
+  background-color: #f5f5f5;
+}
+
+/* Styl dla komórek statusu */
+td.mat-cell {
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px solid #e0e0e0 !important;
+  width: 120px;
+  white-space: nowrap;
+}
+
+th.mat-header-cell {
+  width: 120px;
+  text-align: left;
+}
+
+/* LED - okrągły wskaźnik */
+.status-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Styl tekstu statusu */
+.status-text {
+  font-weight: 500;
+  font-size: 14px;
+  white-space: nowrap;
+  padding-left: 8px;
+}

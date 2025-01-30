@@ -14,7 +14,7 @@ export class TeacherService {
 
   // ok
 
-  getTeachers(status: string): Observable<User[]> {
+  getTeachers(status?: string | null): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}?status=${status}`);
   }
 

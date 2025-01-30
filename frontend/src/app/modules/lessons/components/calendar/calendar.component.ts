@@ -1,17 +1,31 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 
 import {
   Lesson,
   LessonResponse,
 } from 'src/app/modules/core/models/lesson.model';
+import { User } from 'src/app/modules/core/models/user.model';
+import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css'],
 })
-export class CalendarComponent implements OnChanges {
+export class CalendarComponent implements OnChanges, OnInit {
   @Input() lessons!: Lesson[];
+
+  constructor(private teacherService: TeacherService) {}
+
+  ngOnInit(): void {
+    this.getTeachers(); // Pobieramy nauczycieli przy ładowaniu komponentu
+  }
 
   allDays: Array<{ name: string; date: Date; isToday: boolean }> = [];
   weekDays: Array<{ name: string; date: Date; isToday: boolean }> = [];
@@ -22,6 +36,10 @@ export class CalendarComponent implements OnChanges {
     isCurrentMonth: boolean;
   }[] = [];
 
+  teachersList: User[] = [];
+  // teacherData: { [id: number]: { firstName: string; lastName: string } } = {};
+  // teacherFirstName!: string;
+  // teacherLastName!: string;
   yearDays: Array<{ name: string; date: Date; isToday: boolean }> = [];
   startDate: Date = new Date('2020-01-07');
   endDate: Date = new Date('2028-12-31');
@@ -46,7 +64,6 @@ export class CalendarComponent implements OnChanges {
   ];
 
   dailyLessons: { [key: string]: LessonResponse[] } = {};
-  hours = Array.from({ length: 16 }, (_, i) => i + 7);
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['lessons'] && changes['lessons'].currentValue) {
@@ -70,14 +87,20 @@ export class CalendarComponent implements OnChanges {
     });
   }
 
-  getLessons(date: Date, hour: number): LessonResponse[] {
-    const formattedDate = this.formatDate(date);
-    return (
-      this.dailyLessons[formattedDate]?.filter((lesson) => {
-        const lessonStart = new Date(lesson.startDate);
-        return lessonStart.getHours() === hour;
-      }) || []
-    );
+  getLessons(dayDate: Date) {
+    return this.lessons
+      .filter((lesson) => {
+        const lessonDate = new Date(lesson.startDate);
+        return (
+          lessonDate.getFullYear() === dayDate.getFullYear() &&
+          lessonDate.getMonth() === dayDate.getMonth() &&
+          lessonDate.getDate() === dayDate.getDate()
+        );
+      })
+      .sort(
+        (a, b) =>
+          new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+      );
   }
 
   formatDate(date: Date): string {
@@ -374,5 +397,48 @@ export class CalendarComponent implements OnChanges {
   hasLessons(date: Date): boolean {
     const formattedDate = this.formatDate(date);
     return this.dailyLessons[formattedDate]?.length > 0;
+  }
+
+  getLessonStatus(lesson: any): string {
+    switch (lesson.status) {
+      case 'INACTIVE':
+        return 'Oczekiwana';
+      case 'ACTIVE':
+        return 'W trakcie';
+      case 'FINISHED':
+        return 'Zakończona';
+      default:
+        return 'Nieznany';
+    }
+  }
+  getStatusColor(lesson: any): string {
+    switch (lesson.status) {
+      case 'INACTIVE':
+        return '#FFD700';
+      case 'ACTIVE':
+        return '#4CAF50';
+      case 'FINISHED':
+        return '#9E9E9E';
+      default:
+        return 'transparent';
+    }
+  }
+
+  getTeachers(): void {
+    console.log('pobieram nauczycieli');
+    this.teacherService.getTeachers('ACTIVE').subscribe({
+      next: (response) => {
+        this.teachersList = response;
+      },
+      error: (err) => {
+        console.log(err);
+      },
+      complete: () => {},
+    });
+  }
+
+  // Funkcja do wyszukiwania nauczyciela po id
+  getTeacherById(teacherId: number): User | undefined {
+    return this.teachersList.find((teacher) => teacher.id === teacherId);
   }
 }

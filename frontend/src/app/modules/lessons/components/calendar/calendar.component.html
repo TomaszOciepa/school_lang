@@ -37,22 +37,96 @@
       *ngFor="let day of weekDays"
       label="{{ day.name }} {{ day.date | date : 'dd' }}"
     >
-      <div
-        [ngStyle]="{
-          'font-weight': day.isToday ? 'bold' : 'normal'
-        }"
-      >
-        <div class="hours-list">
-          <div *ngFor="let hour of hours">
-            <div class="hour-slot">
-              {{ hour }}:00
+      <div [ngStyle]="{ 'font-weight': day.isToday ? 'bold' : 'normal' }">
+        <ng-container *ngIf="getLessons(day.date).length > 0; else noEvents">
+          <table
+            mat-table
+            [dataSource]="getLessons(day.date)"
+            class="mat-elevation-z8 lessons-table"
+          >
+            <ng-container matColumnDef="startTime">
+              <th mat-header-cell *matHeaderCellDef class="start-time-column">
+                Godzina
+              </th>
+              <td mat-cell *matCellDef="let lesson" class="start-time-column">
+                {{ lesson.startDate | date : "HH:mm" }} -
+                {{ lesson.endDate | date : "HH:mm" }}
+              </td>
+            </ng-container>
 
-              <div *ngFor="let lesson of getLessons(day.date, hour)">
-                {{ lesson.eventName }} ({{ lesson.description }})
-              </div>
-            </div>
-          </div>
-        </div>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let lesson" class="status-cell">
+                <span
+                  class="status-indicator"
+                  [ngStyle]="{ 'background-color': getStatusColor(lesson) }"
+                ></span>
+                <span class="status-text">{{ getLessonStatus(lesson) }}</span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="eventName">
+              <th mat-header-cell *matHeaderCellDef>Lekcja</th>
+              <td mat-cell *matCellDef="let lesson">{{ lesson.eventName }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="teacher">
+              <th mat-header-cell *matHeaderCellDef>Nauczyciel</th>
+              <td mat-cell *matCellDef="let lesson">
+                <span *ngIf="lesson.teacherId">
+                  <ng-container *ngIf="lesson.teacherId">
+                    <ng-container *ngIf="getTeacherById(lesson.teacherId)">
+                      {{ getTeacherById(lesson.teacherId)?.firstName }}
+                      {{ getTeacherById(lesson.teacherId)?.lastName }}
+                    </ng-container>
+                    <ng-container *ngIf="!getTeacherById(lesson.teacherId)">
+                      Ładowanie...
+                    </ng-container>
+                  </ng-container>
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="description">
+              <th mat-header-cell *matHeaderCellDef>Opis</th>
+              <td mat-cell *matCellDef="let lesson">
+                {{ lesson.description }}
+              </td>
+            </ng-container>
+
+            <!-- Nagłówki tabeli -->
+            <tr
+              mat-header-row
+              *matHeaderRowDef="[
+                'startTime',
+                'status',
+                'eventName',
+                'teacher',
+                'description'
+              ]"
+            ></tr>
+
+            <tr
+              mat-row
+              *matRowDef="
+                let lesson;
+                columns: [
+                  'startTime',
+                  'status',
+                  'eventName',
+                  'teacher',
+                  'description'
+                ]
+              "
+              class="clickable-row"
+              [routerLink]="'/lessons/' + lesson.id"
+            ></tr>
+          </table>
+        </ng-container>
+
+        <ng-template #noEvents>
+          <p class="no-events-message">Brak wydarzeń w tym dniu</p>
+        </ng-template>
       </div>
     </mat-tab>
   </mat-tab-group>
