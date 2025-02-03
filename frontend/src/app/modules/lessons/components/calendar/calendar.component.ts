@@ -75,6 +75,8 @@ export class CalendarComponent implements OnChanges, OnInit {
 
   dailyLessons: { [key: string]: LessonResponse[] } = {};
 
+  currentYear!: number; // Deklaracja zmiennej currentYear
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['lessons'] && changes['lessons'].currentValue) {
       this.normalizeStartDate();
@@ -375,14 +377,6 @@ export class CalendarComponent implements OnChanges, OnInit {
         : [];
   }
 
-  getDaysForMonth(
-    monthIndex: number
-  ): { name: string; date: Date; isToday: boolean }[] {
-    return (this.yearDays || []).filter(
-      (d) => d.date.getMonth() === monthIndex
-    );
-  }
-
   getEmptyDaysBeforeMonth(monthIndex: number): number[] {
     const year = this.allDays[this.activeDayIndex]?.date.getFullYear();
     if (year === undefined) return [];
@@ -477,7 +471,30 @@ export class CalendarComponent implements OnChanges, OnInit {
     });
   }
 
+  isToday(date: Date): boolean {
+    const today = new Date();
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
+  }
+
+  getDaysForMonth(
+    monthIndex: number
+  ): { name: string; date: Date; isToday: boolean }[] {
+    return (this.yearDays || []).filter(
+      (d) => d.date.getMonth() === monthIndex
+    );
+  }
+
   getCourseById(courseId: string): Course | undefined {
     return this.courseList.find((course) => course.id === courseId);
+  }
+
+  getEmptyDaysForMonth(monthIndex: number): number[] {
+    const firstDay = new Date(new Date().getFullYear(), monthIndex, 1).getDay();
+    // W JavaScript niedziela to 0, więc przesuwamy tak, aby poniedziałek był 0
+    return firstDay === 0 ? Array(6).fill(0) : Array(firstDay - 1).fill(0);
   }
 }

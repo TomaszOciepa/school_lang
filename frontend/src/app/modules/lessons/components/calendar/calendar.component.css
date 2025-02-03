@@ -232,3 +232,105 @@ th.mat-header-cell {
   padding: 20px;
   border-radius: 8px;
 }
+
+/* yearly */
+.yearly-view {
+  padding: 10px;
+}
+
+.yearly-view .year-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+.yearly-view .month-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: transparent;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: none;
+}
+
+.yearly-view .month-title {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #202124;
+}
+
+.yearly-view .month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-top: 5px;
+  min-height: 0px;
+}
+
+.yearly-view .day-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  background-color: transparent;
+  color: #202124;
+  padding: 0 8px;
+  min-width: auto;
+  min-height: auto;
+  height: auto;
+  width: auto;
+}
+
+.yearly-view .day-cell.today {
+  background-color: #4285f4;
+  color: white;
+  font-weight: bold;
+}
+
+.yearly-view .day-cell.weekend {
+  background-color: #f1f3f4;
+}
+
+.yearly-view .day-cell.has-lessons {
+  background-color: #34a853;
+  color: white;
+  font-weight: bold;
+}
+
+.yearly-view .day-cell:hover {
+  background-color: #e8f0fe;
+  transform: scale(1.1);
+}
+
+.yearly-view .day-header {
+  text-align: center;
+  font-weight: bold;
+  color: #5f6368;
+  font-size: 14px;
+}
+
+.yearly-view .week-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.yearly-view .empty-cell {
+  height: 40px;
+}
+
+.yearly-view .today {
+  background-color: #2196f3 !important;
+  color: white;
+  border-radius: 8px;
+  z-index: 1;
+}

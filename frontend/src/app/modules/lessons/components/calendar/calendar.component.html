@@ -218,25 +218,41 @@
       </div>
 
       <div *ngIf="viewMode === 'yearly'" class="yearly-view">
-        <div class="year-header"></div>
         <div class="year-grid">
           <div
             *ngFor="let month of months; let monthIndex = index"
             class="month-column"
           >
-            <h3>{{ month }}</h3>
+            <h3 class="month-title">{{ month }}</h3>
+
+            <div class="week-header">
+              <div
+                *ngFor="
+                  let day of ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd']
+                "
+                class="day-header"
+              >
+                {{ day }}
+              </div>
+            </div>
+
             <div class="month-grid">
+              <div
+                *ngFor="let _ of getEmptyDaysForMonth(monthIndex)"
+                class="empty-cell"
+              ></div>
+
               <div
                 *ngFor="let day of getDaysForMonth(monthIndex)"
                 [ngClass]="{
+                  weekend: day?.date && isWeekend(day.date),
+                  'has-lessons': getLessons(day.date).length > 0,
                   today: day.isToday,
-                  weekend: isWeekend(day.date),
-                  'has-lessons': hasLessons(day.date)
                 }"
                 class="day-cell"
                 (click)="onDayClick(day)"
               >
-                {{ day.date | date : "d" }}
+                {{ day?.date | date : "d" }}
               </div>
             </div>
           </div>
