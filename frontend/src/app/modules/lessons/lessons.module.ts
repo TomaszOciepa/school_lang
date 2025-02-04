@@ -28,6 +28,6 @@ import { CalendarComponent } from './components/calendar/calendar.component';
     CalendarComponent,
   ],
   imports: [SharedModule, CommonModule, LessonsRoutingModule],
-  exports: [LesonsTableComponent],
+  exports: [LesonsTableComponent, CalendarComponent],
 })
 export class LessonsModule {}

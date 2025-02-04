@@ -1,0 +1,25 @@
+.teacher-data {
+  padding-top: 30px;
+}
+
+.teacher-data h2 {
+  text-align: center;
+}
+
+.course-lesson-box {
+  margin-bottom: 30px;
+}
+
+.teacher-icon button {
+  transition: background-color 0.1s ease; /* Płynna zmiana tła */
+}
+
+.teacher-icon:hover button {
+  background-color: rgba(0, 0, 0, 0.38);
+}
+
+.mat-mdc-mini-fab[disabled][disabled] {
+  --mdc-fab-container-color: white;
+  --mdc-fab-icon-color: rgba(0, 0, 0, 0.38);
+  --mat-mdc-fab-color: rgba(0, 0, 0, 0.38);
+}

@@ -1,5 +1,6 @@
 import {
   Component,
+  ErrorHandler,
   Input,
   OnChanges,
   OnInit,
@@ -13,6 +14,7 @@ import {
 } from 'src/app/modules/core/models/lesson.model';
 import { User } from 'src/app/modules/core/models/user.model';
 import { CourseService } from 'src/app/modules/core/services/course.service';
+import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 
 @Component({
@@ -27,6 +29,9 @@ export class CalendarComponent implements OnChanges, OnInit {
     private teacherService: TeacherService,
     private courseService: CourseService
   ) {}
+
+  role!: string;
+  teacherId!: number;
 
   ngOnInit(): void {
     setTimeout(() => {
@@ -340,7 +345,6 @@ export class CalendarComponent implements OnChanges, OnInit {
       this.updateWeekDays();
       this.updateMonthName();
     }
-    console.log('indeks: ', this.activeDayIndex);
   }
 
   onDayClick(day: any) {
@@ -470,7 +474,6 @@ export class CalendarComponent implements OnChanges, OnInit {
   }
 
   getCourses(): void {
-    console.log('pobieram kursy');
     this.courseService.getAllByStatus().subscribe({
       next: (response) => {
         this.courseList = response;

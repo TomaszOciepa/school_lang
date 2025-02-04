@@ -55,10 +55,6 @@ export class LessonsComponent {
     this.lessonsService.getLessonByTeacherId(id).subscribe({
       next: (lesson) => {
         this.lessonsList = lesson;
-        console.log(
-          'Wielkość w getLessonsByTeacherId: ',
-          this.lessonsList.length
-        );
       },
       error: (err: ErrorHandler) => {
         console.log(err);
@@ -70,7 +66,6 @@ export class LessonsComponent {
     this.lessonsService.getAllLessons().subscribe({
       next: (lesson) => {
         this.lessonsList = lesson;
-        console.log('Wielkość w getLessons: ', this.lessonsList.length);
       },
       error: (err: ErrorHandler) => {
         console.log(err);
