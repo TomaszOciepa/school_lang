@@ -1,14 +1,18 @@
-<div class="container text-center">
+<div class="container-fluid text-center">
   <div *ngIf="isLoading" class="spinner-container">
     <mat-spinner></mat-spinner>
   </div>
+  <div class="row top-month-name">
+    <div class="col-3">
+      <div class="month-name">
+        <h1>{{ monthName }}r</h1>
+      </div>
+    </div>
+    <div class="col-9"></div>
+  </div>
 
   <div *ngIf="!isLoading" class="row">
-    <div class="col-12">
-      <div>
-        <h1>{{ monthName }}</h1>
-      </div>
-
+    <div class="col-3 left-menu">
       <div class="tab-navigation">
         <button mat-icon-button (click)="previousTab()">
           <mat-icon>arrow_back</mat-icon>
@@ -22,22 +26,23 @@
           <mat-icon>today</mat-icon>
         </button>
 
-        <button mat-icon-button (click)="toggleViewMode()">
-          <div *ngIf="viewMode === 'weekly'" class="view-mode-container">
+        <select
+          class="form-select"
+          aria-label="Wybierz widok"
+          (change)="onViewModeChange($event)"
+        >
+          <option value="weekly" [selected]="viewMode === 'weekly'">
             Tydzień
-            <mat-icon class="view-icon">expand_more</mat-icon>
-          </div>
-          <div *ngIf="viewMode === 'monthly'" class="view-mode-container">
+          </option>
+          <option value="monthly" [selected]="viewMode === 'monthly'">
             Miesiąc
-            <mat-icon class="view-icon">expand_more</mat-icon>
-          </div>
-          <div *ngIf="viewMode === 'yearly'" class="view-mode-container">
-            Rok
-            <mat-icon class="view-icon">expand_more</mat-icon>
-          </div>
-        </button>
+          </option>
+          <option value="yearly" [selected]="viewMode === 'yearly'">Rok</option>
+        </select>
       </div>
+    </div>
 
+    <div class="col-9">
       <div *ngIf="viewMode === 'weekly'">
         <mat-tab-group
           [selectedIndex]="activeDayIndex - weekStartIndex"
@@ -144,7 +149,6 @@
                     </td>
                   </ng-container>
 
-                  <!-- Nagłówki tabeli -->
                   <tr
                     mat-header-row
                     *matHeaderRowDef="[
@@ -238,7 +242,7 @@
 
             <div class="month-grid">
               <div
-                *ngFor="let _ of getEmptyDaysForMonth(monthIndex)"
+                *ngFor="let _ of getEmptyDaysBeforeMonth(monthIndex)"
                 class="empty-cell"
               ></div>
 

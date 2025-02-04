@@ -75,8 +75,7 @@ export class CalendarComponent implements OnChanges, OnInit {
 
   dailyLessons: { [key: string]: LessonResponse[] } = {};
 
-  currentYear!: number; // Deklaracja zmiennej currentYear
-
+  currentYear!: number;
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['lessons'] && changes['lessons'].currentValue) {
       this.normalizeStartDate();
@@ -227,7 +226,7 @@ export class CalendarComponent implements OnChanges, OnInit {
       });
     } else if (this.viewMode === 'yearly' && this.yearDays.length > 0) {
       const selectedYear = this.yearDays[0]?.date.getFullYear();
-      this.monthName = 'Rok ' + selectedYear.toString();
+      this.monthName = selectedYear.toString();
     }
   }
 
@@ -296,6 +295,19 @@ export class CalendarComponent implements OnChanges, OnInit {
     } else {
       this.viewMode = 'weekly';
       this.updateWeekDays();
+    }
+  }
+
+  onViewModeChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.viewMode = target.value as 'weekly' | 'monthly' | 'yearly';
+
+    if (this.viewMode === 'weekly') {
+      this.updateWeekDays();
+    } else if (this.viewMode === 'monthly') {
+      this.updateMonthDays();
+    } else if (this.viewMode === 'yearly') {
+      this.updateYearDays();
     }
   }
 
@@ -440,7 +452,6 @@ export class CalendarComponent implements OnChanges, OnInit {
     });
   }
 
-  // Funkcja do wyszukiwania nauczyciela po id
   getTeacherById(teacherId: number): User | undefined {
     return this.teachersList.find((teacher) => teacher.id === teacherId);
   }
@@ -494,7 +505,6 @@ export class CalendarComponent implements OnChanges, OnInit {
 
   getEmptyDaysForMonth(monthIndex: number): number[] {
     const firstDay = new Date(new Date().getFullYear(), monthIndex, 1).getDay();
-    // W JavaScript niedziela to 0, więc przesuwamy tak, aby poniedziałek był 0
     return firstDay === 0 ? Array(6).fill(0) : Array(firstDay - 1).fill(0);
   }
 }
