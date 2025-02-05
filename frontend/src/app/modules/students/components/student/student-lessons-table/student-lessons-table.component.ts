@@ -2,6 +2,7 @@ import { Component, ErrorHandler, Input, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { Lesson } from 'src/app/modules/core/models/lesson.model';
 import { LessonsService } from 'src/app/modules/core/services/lessons.service';
 
@@ -13,13 +14,12 @@ import { LessonsService } from 'src/app/modules/core/services/lessons.service';
 export class StudentLessonsTableComponent {
   displayedColumns: string[] = [
     'lp',
-    'eventName',
     'startDate',
-    'endDate',
+    'hour',
+    'language',
     'status',
-    'participantsNumber',
-    'buttons',
   ];
+
   dataSource!: MatTableDataSource<Lesson>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -29,7 +29,7 @@ export class StudentLessonsTableComponent {
   lessonsNumber!: number;
   errMsg!: string;
 
-  constructor(private lessonsService: LessonsService) {}
+  constructor(private lessonsService: LessonsService, private router: Router) {}
 
   async ngOnInit(): Promise<void> {
     this.getLessonsByTeacherId();
@@ -38,8 +38,12 @@ export class StudentLessonsTableComponent {
   private getLessonsByTeacherId() {
     this.lessonsService.getLessonsByStudentId(this.studentId).subscribe({
       next: (lesson) => {
+        const sortedLessons = lesson.sort(
+          (a, b) =>
+            new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+        );
         this.lessonsNumber = lesson.length;
-        this.dataSource = new MatTableDataSource<Lesson>(lesson);
+        this.dataSource = new MatTableDataSource<Lesson>(sortedLessons);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },
@@ -55,6 +59,36 @@ export class StudentLessonsTableComponent {
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
+    }
+  }
+
+  navigateToLesson(lessonId: string) {
+    this.router.navigate(['/lessons', lessonId]);
+  }
+
+  getLanguageName(language: string): string {
+    switch (language) {
+      case 'ENGLISH':
+        return 'Angielski';
+      case 'POLISH':
+        return 'Polski';
+      case 'GERMAN':
+        return 'Niemiecki';
+      default:
+        return 'Nieznany';
+    }
+  }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'green';
+      case 'INACTIVE':
+        return 'orange';
+      case 'FINISHED':
+        return 'gray';
+      default:
+        return '';
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ErrorHandler } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { User } from 'src/app/modules/core/models/user.model';
@@ -8,6 +8,8 @@ import { DeleteStudentDialogComponent } from './delete-student-dialog/delete-stu
 import { DropStudentDialogComponent } from './drop-student-dialog/drop-student-dialog.component';
 import { RestoreStudentDialogComponent } from 'src/app/modules/courses/components/course/restore-student-dialog/restore-student-dialog.component';
 import { RestoreStudentAccountDialogComponent } from './restore-student-account-dialog/restore-student-account-dialog.component';
+import { Lesson } from 'src/app/modules/core/models/lesson.model';
+import { LessonsService } from 'src/app/modules/core/services/lessons.service';
 
 @Component({
   selector: 'app-student',
@@ -17,11 +19,13 @@ import { RestoreStudentAccountDialogComponent } from './restore-student-account-
 export class StudentComponent {
   id!: number;
   student!: User;
+  studentLessons!: Lesson[];
 
   constructor(
     private studentService: StudentService,
     private route: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private lessonsService: LessonsService
   ) {}
 
   ngOnInit(): void {
@@ -31,11 +35,24 @@ export class StudentComponent {
     });
 
     this.getStudent(this.id);
+    this.getLessonsByStudentId(this.id);
   }
 
   getStudent(id: number) {
     this.studentService.getStudentById(id).subscribe((response) => {
       this.student = response;
+    });
+  }
+
+  private getLessonsByStudentId(id: number) {
+    this.lessonsService.getLessonsByStudentId(id).subscribe({
+      next: (lesson) => {
+        this.studentLessons = lesson;
+        console.log('pobieram');
+      },
+      error: (err: ErrorHandler) => {
+        console.log(err);
+      },
     });
   }
 
@@ -72,5 +89,18 @@ export class StudentComponent {
       width: '600px',
       maxWidth: '600px',
     });
+  }
+
+  getStudentStatus(status: any): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'Aktywne';
+      case 'INACTIVE':
+        return 'Niekatywne';
+      case 'REMOVED':
+        return 'Usuniete';
+      default:
+        return '...';
+    }
   }
 }

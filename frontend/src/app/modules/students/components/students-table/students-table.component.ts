@@ -7,6 +7,7 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { User } from 'src/app/modules/core/models/user.model';
 import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 import { StudentService } from 'src/app/modules/core/services/student.service';
@@ -22,14 +23,14 @@ export class StudentsTableComponent {
     'firstName',
     'lastName',
     'email',
-    'buttons',
+    'status',
   ];
   dataSource!: MatTableDataSource<User>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private studentService: StudentService) {}
+  constructor(private studentService: StudentService, private router: Router) {}
 
   async ngOnInit(): Promise<void> {
     this.getStudents();
@@ -55,5 +56,9 @@ export class StudentsTableComponent {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  navigateToStudent(studentId: number) {
+    this.router.navigate(['/students', studentId]);
   }
 }

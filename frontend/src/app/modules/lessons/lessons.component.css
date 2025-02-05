@@ -31,3 +31,7 @@ mat-icon {
   text-align: center;
   font-weight: bold;
 }
+
+.slider-height2 {
+  min-height: 150px;
+}

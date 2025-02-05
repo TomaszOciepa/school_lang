@@ -8,6 +8,7 @@ import { DatePipe } from '@angular/common';
 import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 import { KeycloakService } from 'keycloak-angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-courses-table',
@@ -18,13 +19,12 @@ import { KeycloakService } from 'keycloak-angular';
 export class CoursesTableComponent {
   displayedColumns: string[] = [
     'lp',
-    'name',
-    'language',
     'startDate',
+    'language',
     'status',
+    'name',
     'price',
     'participantsNumber',
-    'buttons',
   ];
   dataSource!: MatTableDataSource<Course>;
 
@@ -38,7 +38,8 @@ export class CoursesTableComponent {
     private readonly keycloak: KeycloakService,
     private courseService: CourseService,
     private userProfileService: LoadUserProfileService,
-    private teacherService: TeacherService
+    private teacherService: TeacherService,
+    private router: Router
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -92,7 +93,12 @@ export class CoursesTableComponent {
   private getCourses() {
     this.courseService.getAllByStatus().subscribe({
       next: (course) => {
-        this.dataSource = new MatTableDataSource<Course>(course);
+        const sortedCourses = course.sort(
+          (a, b) =>
+            new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+        );
+
+        this.dataSource = new MatTableDataSource<Course>(sortedCourses);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },
@@ -113,5 +119,35 @@ export class CoursesTableComponent {
 
   login() {
     this.keycloak.login();
+  }
+
+  navigateToCourse(courseId: string) {
+    this.router.navigate(['/courses', courseId]);
+  }
+
+  getLanguageName(language: string): string {
+    switch (language) {
+      case 'ENGLISH':
+        return 'Angielski';
+      case 'POLISH':
+        return 'Polski';
+      case 'GERMAN':
+        return 'Niemiecki';
+      default:
+        return 'Nieznany';
+    }
+  }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'green';
+      case 'INACTIVE':
+        return 'orange';
+      case 'FINISHED':
+        return 'gray';
+      default:
+        return '';
+    }
   }
 }

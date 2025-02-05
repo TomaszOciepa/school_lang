@@ -14,12 +14,11 @@ import { LessonsService } from 'src/app/modules/core/services/lessons.service';
 export class CourseLessonsTableComponent {
   displayedColumns: string[] = [
     'lp',
-    'eventName',
     'startDate',
-    'endDate',
+    'hours',
     'status',
+    'eventName',
     'participantsNumber',
-    'buttons',
   ];
   dataSource!: MatTableDataSource<Lesson>;
 
@@ -68,6 +67,23 @@ export class CourseLessonsTableComponent {
     //   this.router.navigate(['/lessons/dodaj', { id: this.courseId }]);
     // }
     this.router.navigate(['/lessons/dodaj', { id: this.courseId }]);
+  }
+
+  navigateToLesson(lessonId: string) {
+    this.router.navigate(['/lessons', lessonId]);
+  }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'green';
+      case 'INACTIVE':
+        return 'orange';
+      case 'FINISHED':
+        return 'gray';
+      default:
+        return '';
+    }
   }
 
   private hideErrorMsg() {
