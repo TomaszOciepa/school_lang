@@ -7,6 +7,7 @@ import { User } from 'src/app/modules/core/models/user.model';
 import { KeycloakService } from 'keycloak-angular';
 import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 import { KeycloakProfile } from 'keycloak-js';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-teachers-table',
@@ -20,7 +21,6 @@ export class TeachersTableComponent {
     'lastName',
     'email',
     'status',
-    'buttons',
   ];
   dataSource!: MatTableDataSource<User>;
 
@@ -33,7 +33,8 @@ export class TeachersTableComponent {
   constructor(
     private readonly keycloak: KeycloakService,
     private teacherService: TeacherService,
-    private userProfileService: LoadUserProfileService
+    private userProfileService: LoadUserProfileService,
+    private router: Router
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -54,7 +55,7 @@ export class TeachersTableComponent {
   }
 
   private getTeachers() {
-    this.teacherService.getTeachers('ACTIVE').subscribe({
+    this.teacherService.getTeachers().subscribe({
       next: (clients) => {
         this.dataSource = new MatTableDataSource<User>(clients);
         this.dataSource.paginator = this.paginator;
@@ -77,5 +78,9 @@ export class TeachersTableComponent {
 
   login() {
     this.keycloak.login();
+  }
+
+  navigateToTeacher(teacherId: number) {
+    this.router.navigate(['/teachers', teacherId]);
   }
 }

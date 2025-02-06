@@ -2,6 +2,7 @@ import { Component, ErrorHandler, Input, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { Lesson } from 'src/app/modules/core/models/lesson.model';
 import { LessonsService } from 'src/app/modules/core/services/lessons.service';
 import { StudentAccountService } from 'src/app/modules/core/services/student-account.service';
@@ -14,12 +15,10 @@ import { StudentAccountService } from 'src/app/modules/core/services/student-acc
 export class CourseLessonsTableComponent {
   displayedColumns: string[] = [
     'lp',
-    'eventName',
     'startDate',
-    'endDate',
+    'hours',
     'status',
-    'participantsNumber',
-    'buttons',
+    'eventName',
   ];
   dataSource!: MatTableDataSource<Lesson>;
 
@@ -27,10 +26,12 @@ export class CourseLessonsTableComponent {
   @ViewChild(MatSort) sort!: MatSort;
 
   @Input('course-id') courseId!: string;
+
   userId!: number;
   constructor(
     private lessonsService: LessonsService,
-    private studentAccount: StudentAccountService
+    private studentAccount: StudentAccountService,
+    private router: Router
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -62,6 +63,25 @@ export class CourseLessonsTableComponent {
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
+    }
+  }
+
+  navigateToLesson(lessonId: string) {
+    this.router.navigate([
+      `/account-student/lesson/${lessonId}/s/${this.userId}`,
+    ]);
+  }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'green';
+      case 'INACTIVE':
+        return 'orange';
+      case 'FINISHED':
+        return 'gray';
+      default:
+        return '';
     }
   }
 }

@@ -201,4 +201,43 @@ export class CourseComponent {
       maxWidth: '600px',
     });
   }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'green';
+      case 'INACTIVE':
+        return 'orange';
+      case 'FINISHED':
+        return 'gray';
+      default:
+        return '';
+    }
+  }
+
+  getStatusName(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'Aktywny';
+      case 'INACTIVE':
+        return 'Oczekiwanie';
+      case 'FINISHED':
+        return 'Zakończony';
+      default:
+        return 'Nieznany';
+    }
+  }
+
+  getLanguageName(language: string): string {
+    switch (language) {
+      case 'ENGLISH':
+        return 'Angielski';
+      case 'POLISH':
+        return 'Polski';
+      case 'GERMAN':
+        return 'Niemiecki';
+      default:
+        return 'Nieznany';
+    }
+  }
 }

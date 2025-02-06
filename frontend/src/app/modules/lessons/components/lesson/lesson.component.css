@@ -1,3 +1,11 @@
+.slider-height2 {
+  min-height: 150px;
+}
+
+.my-margin {
+  margin-top: 60px;
+}
+
 .text-start figcaption {
   color: white; /* Ustawia kolor tekstu w figcaption na biały */
   font-size: 2rem;
@@ -7,7 +15,42 @@
   font-size: 1.5rem;
 }
 
-.my-margin {
-  margin-top: 60px;
-  margin-bottom: 60px;
+.top-border {
+  border-top: 1px solid gray;
+}
+
+.text-centre {
+  text-align: center;
+}
+
+.teacher-data h2 {
+  text-align: center;
+}
+
+.status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-left: 8px; /* odstęp od tekstu */
+}
+
+.green {
+  background-color: green;
+}
+
+.orange {
+  background-color: orange;
+}
+
+.gray {
+  background-color: gray;
+}
+
+.lesson-icon button {
+  transition: background-color 0.1s ease; /* Płynna zmiana tła */
+}
+
+.lesson-icon:hover button {
+  background-color: rgba(0, 0, 0, 0.38);
 }

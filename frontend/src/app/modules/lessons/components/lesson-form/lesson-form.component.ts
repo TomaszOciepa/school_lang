@@ -220,10 +220,6 @@ export class LessonFormComponent {
       );
     }
 
-    // if (this.lessonForm.get('status')?.dirty) {
-    //   this.newLesson.status = this.lessonForm.getRawValue().status;
-    // }
-
     if (this.lessonForm.get('description')?.dirty) {
       this.newLesson.description = this.lessonForm.getRawValue().description;
     }

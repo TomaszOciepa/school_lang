@@ -2,6 +2,7 @@ import { Component, ErrorHandler, Input, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { Course } from 'src/app/modules/core/models/course.model';
 import { CourseService } from 'src/app/modules/core/services/course.service';
 
@@ -11,15 +12,7 @@ import { CourseService } from 'src/app/modules/core/services/course.service';
   styleUrls: ['./courses-table.component.css'],
 })
 export class CoursesTableComponent {
-  displayedColumns: string[] = [
-    'lp',
-    'name',
-    'startDate',
-    'status',
-    'participantsNumber',
-    'price',
-    'buttons',
-  ];
+  displayedColumns: string[] = ['lp', 'name', 'startDate', 'status', 'price'];
   dataSource!: MatTableDataSource<Course>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -27,7 +20,7 @@ export class CoursesTableComponent {
 
   @Input('user-id') userId!: number;
 
-  constructor(private courseService: CourseService) {}
+  constructor(private courseService: CourseService, private router: Router) {}
 
   async ngOnInit(): Promise<void> {
     this.getCourseByStudent(this.userId);
@@ -36,7 +29,12 @@ export class CoursesTableComponent {
   private getCourseByStudent(id: number) {
     this.courseService.getCourseByStudentId(id).subscribe({
       next: (course) => {
-        this.dataSource = new MatTableDataSource<Course>(course);
+        const sortedCourses = course.sort(
+          (a, b) =>
+            new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+        );
+
+        this.dataSource = new MatTableDataSource<Course>(sortedCourses);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },
@@ -52,6 +50,23 @@ export class CoursesTableComponent {
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
+    }
+  }
+
+  navigateToCourse(courseId: string) {
+    this.router.navigate(['/account-student/course/', courseId]);
+  }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'green';
+      case 'INACTIVE':
+        return 'orange';
+      case 'FINISHED':
+        return 'gray';
+      default:
+        return '';
     }
   }
 }

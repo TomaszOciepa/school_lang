@@ -98,4 +98,43 @@ export class LessonComponent implements OnInit {
       maxWidth: '600px',
     });
   }
+
+  getLanguageName(language: string): string {
+    switch (language) {
+      case 'ENGLISH':
+        return 'Angielski';
+      case 'POLISH':
+        return 'Polski';
+      case 'GERMAN':
+        return 'Niemiecki';
+      default:
+        return 'Nieznany';
+    }
+  }
+
+  getStatusName(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'Aktywna';
+      case 'INACTIVE':
+        return 'Oczekiwana';
+      case 'FINISHED':
+        return 'Zakończona';
+      default:
+        return 'Nieznany';
+    }
+  }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'green';
+      case 'INACTIVE':
+        return 'orange';
+      case 'FINISHED':
+        return 'gray';
+      default:
+        return '';
+    }
+  }
 }

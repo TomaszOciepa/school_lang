@@ -1,112 +1,94 @@
 <section class="mt-4">
-  <div class="container">
-    <mat-form-field>
-      <mat-label>Wyszukaj...</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="..." #input />
-    </mat-form-field>
+  <div class="course-header">
+    <h2>Płatności</h2>
+  </div>
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="lp">
+        <th class="my-table-bg-color" mat-header-cell *matHeaderCellDef>Lp.</th>
+        <td mat-cell *matCellDef="let row; index as i">{{ i + 1 }}</td>
+      </ng-container>
 
-    <div class="mat-elevation-z8">
-      <table mat-table [dataSource]="dataSource" matSort>
-        <ng-container matColumnDef="lp">
-          <th class="my-table-bg-color" mat-header-cell *matHeaderCellDef>
-            Lp.
-          </th>
-          <td mat-cell *matCellDef="let row; index as i">{{ i + 1 }}</td>
-        </ng-container>
+      <ng-container matColumnDef="createDate">
+        <th
+          class="my-table-bg-color"
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+        >
+          data utworzenia
+        </th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.createDate | date : "dd-MM-yyyy HH:mm" }}
+        </td>
+      </ng-container>
 
-        <ng-container matColumnDef="createDate">
-          <th
-            class="my-table-bg-color"
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-          >
-            data utworzenia
-          </th>
-          <td mat-cell *matCellDef="let row">
-            {{ row.createDate | date : "dd-MM-yyyy HH:mm" }}
-          </td>
-        </ng-container>
+      <ng-container matColumnDef="courseId">
+        <th
+          class="my-table-bg-color"
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+        >
+          usługa
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <a [href]="'/courses/' + row.courseId"> kurs</a>
+        </td>
+      </ng-container>
 
-        <ng-container matColumnDef="courseId">
-          <th
-            class="my-table-bg-color"
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-          >
-            usługa
-          </th>
-          <td mat-cell *matCellDef="let row">
-            <a [href]="'/courses/' + row.courseId"> kurs</a>
-          </td>
-        </ng-container>
+      <ng-container matColumnDef="orderNumber">
+        <th
+          class="my-table-bg-color"
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+        >
+          numer zamówienia
+        </th>
+        <td mat-cell *matCellDef="let row">{{ row.orderNumber }}</td>
+      </ng-container>
 
-        <ng-container matColumnDef="orderNumber">
-          <th
-            class="my-table-bg-color"
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-          >
-            numer zamówienia
-          </th>
-          <td mat-cell *matCellDef="let row">{{ row.orderNumber }}</td>
-        </ng-container>
+      <ng-container matColumnDef="status">
+        <th
+          class="my-table-bg-color"
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+        >
+          status
+        </th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.status }}
+        </td>
+      </ng-container>
 
-        <ng-container matColumnDef="status">
-          <th
-            class="my-table-bg-color"
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-          >
-            status
-          </th>
-          <td mat-cell *matCellDef="let row">
-            {{ row.status }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="totalAmount">
-          <th
-            class="my-table-bg-color"
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-          >
-            cena
-          </th>
-          <td mat-cell *matCellDef="let row">{{ row.totalAmount }} zł</td>
-        </ng-container>
-        <ng-container matColumnDef="paymentServiceNumber">
-          <th
-            class="my-table-bg-color"
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-          >
-            numer płatności
-          </th>
-          <td mat-cell *matCellDef="let row">
-            {{ row.paymentServiceNumber }}
-          </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-
-        <!-- Row shown when there is no matching data. -->
-        <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" colspan="4">
-            Brak pasujących danych "{{ input.value }}"
-          </td>
-        </tr>
-      </table>
-
-      <mat-paginator
-        [pageSizeOptions]="[5, 10, 25, 100]"
-        aria-label="Wybierz stronę"
-      ></mat-paginator>
-    </div>
+      <ng-container matColumnDef="totalAmount">
+        <th
+          class="my-table-bg-color"
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+        >
+          cena
+        </th>
+        <td mat-cell *matCellDef="let row">{{ row.totalAmount }} zł</td>
+      </ng-container>
+      <ng-container matColumnDef="paymentServiceNumber">
+        <th
+          class="my-table-bg-color"
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+        >
+          numer płatności
+        </th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.paymentServiceNumber }}
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
   </div>
 </section>

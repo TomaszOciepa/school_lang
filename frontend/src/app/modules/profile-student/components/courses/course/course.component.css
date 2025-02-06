@@ -10,3 +10,87 @@
 .my-margin {
   margin-top: 60px;
 }
+
+.status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-left: 8px; /* odstęp od tekstu */
+}
+
+.green {
+  background-color: green;
+}
+
+.orange {
+  background-color: orange;
+}
+
+.gray {
+  background-color: gray;
+}
+
+.course-info {
+  border-top: 1px solid gray;
+}
+
+.slider-height2 {
+  min-height: 150px;
+}
+
+.teacher-data {
+  padding-top: 30px;
+}
+
+.teacher-data h2 {
+  text-align: center;
+}
+
+.course-lesson-box {
+  margin-bottom: 30px;
+}
+
+.teacher-icon button {
+  transition: background-color 0.1s ease; /* Płynna zmiana tła */
+}
+
+.teacher-icon:hover button {
+  background-color: rgba(0, 0, 0, 0.38);
+}
+
+.mat-mdc-mini-fab[disabled][disabled] {
+  --mdc-fab-container-color: white;
+  --mdc-fab-icon-color: rgba(0, 0, 0, 0.38);
+  --mat-mdc-fab-color: rgba(0, 0, 0, 0.38);
+}
+
+.top-border {
+  border-top: 1px solid gray;
+}
+
+.text-centre {
+  text-align: center;
+}
+
+.add-course-icon button {
+  transition: background-color 0.1s ease; /* Płynna zmiana tła */
+}
+
+.add-course-icon:hover button {
+  background-color: rgba(0, 0, 0, 0.38);
+}
+
+.table {
+  margin: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Efekt podniesienia */
+  border-radius: 8px; /* Zaokrąglenie rogów */
+  overflow: hidden; /* Zapobiega wyjściu elementów poza krawędzie */
+}
+
+.my-box {
+  display: flex; /* Ustawienie flexboxa */
+  justify-content: center; /* Wyśrodkowanie poziome */
+  align-items: center; /* Wyśrodkowanie pionowe */
+  width: 100%; /* Zajmuje całą dostępną szerokość */
+}

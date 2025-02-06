@@ -28,7 +28,8 @@ export class RestoreTeacherAccountDialogComponent implements OnInit {
     this.teacherService.restoreTeacherAccount(this.teacher.id).subscribe({
       next: () => {
         this.dialogRef.close();
-        this.router.navigate(['/settings/teachers']);
+        // this.router.navigate([`/teachers/${this.teacher.id}`]);
+        window.location.reload();
       },
       error: (err) => {
         this.errorMessage = err;

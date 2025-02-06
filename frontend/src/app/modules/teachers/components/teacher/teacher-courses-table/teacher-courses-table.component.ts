@@ -2,6 +2,7 @@ import { Component, ErrorHandler, Input, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { Course } from 'src/app/modules/core/models/course.model';
 import { CourseService } from 'src/app/modules/core/services/course.service';
 import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
@@ -14,11 +15,10 @@ import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-
 export class TeacherCoursesTableComponent {
   displayedColumns: string[] = [
     'lp',
-    'name',
     'startDate',
+    'language',
     'status',
-    'participantsNumber',
-    'buttons',
+    'name',
   ];
   dataSource!: MatTableDataSource<Course>;
 
@@ -30,14 +30,20 @@ export class TeacherCoursesTableComponent {
 
   constructor(
     private userProfileService: LoadUserProfileService,
-    private courseService: CourseService
+    private courseService: CourseService,
+    private router: Router
   ) {}
 
   async ngOnInit(): Promise<void> {
     this.loadUserProfile();
     this.courseService.getCourseByTeacherId(this.teacherId).subscribe({
       next: (course) => {
-        this.dataSource = new MatTableDataSource<Course>(course);
+        const sortedCourses = course.sort(
+          (a, b) =>
+            new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+        );
+
+        this.dataSource = new MatTableDataSource<Course>(sortedCourses);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },
@@ -54,12 +60,33 @@ export class TeacherCoursesTableComponent {
     }
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  navigateToCourse(courseId: string) {
+    this.router.navigate(['/courses', courseId]);
+  }
 
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+  getLanguageName(language: string): string {
+    switch (language) {
+      case 'ENGLISH':
+        return 'Angielski';
+      case 'POLISH':
+        return 'Polski';
+      case 'GERMAN':
+        return 'Niemiecki';
+      default:
+        return 'Nieznany';
+    }
+  }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'green';
+      case 'INACTIVE':
+        return 'orange';
+      case 'FINISHED':
+        return 'gray';
+      default:
+        return '';
     }
   }
 }

@@ -231,6 +231,11 @@ public class CalendarServiceImpl implements CalendarService {
             lessonFromDB.setDescription(lesson.getDescription());
         }
 
+        if (lesson.getLanguage() != null) {
+            logger.info("Changing language");
+            lessonFromDB.setLanguage(lesson.getLanguage());
+        }
+
         if (lesson.getAttendanceList() != null && !lesson.getAttendanceList().isEmpty()) {
             logger.info("Changing attendance list");
             lessonFromDB.setAttendanceList(lesson.getAttendanceList());
@@ -451,7 +456,6 @@ public class CalendarServiceImpl implements CalendarService {
 
                 if (isTeacherAvailableCreateLesson && currentDayStart.isAfter(courseStartDate)) {
                     Calendar newLesson = generateNewLesson(
-                            (int) (courseFromDb.getLessonsLimit() - numberLessonsToCreate + 1),
                             currentDayStart, endDate,
                             teacherId,
                             courseFromDb
@@ -603,14 +607,15 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
 
-    private Calendar generateNewLesson(int counter, LocalDateTime startDate, LocalDateTime endDate, Long teacherId, CourseDto courseFromDb) {
+    private Calendar generateNewLesson(LocalDateTime startDate, LocalDateTime endDate, Long teacherId, CourseDto courseFromDb) {
         Calendar newLesson = new Calendar();
-        newLesson.setEventName("Lekcja " + counter);
+        newLesson.setEventName("Lekcja");
         newLesson.setStartDate(startDate);
         newLesson.setEndDate(endDate);
         newLesson.setTeacherId(teacherId);
         newLesson.setCourseId(courseFromDb.getId());
-        newLesson.setDescription("Lekcja " + counter + ". Została wygenerowana automatycznie.");
+        newLesson.setLanguage(courseFromDb.getLanguage());
+        newLesson.setDescription("Lekcja została wygenerowana automatycznie.");
         List<AttendanceList> attendanceLists = addStudentsToAttendanceList(courseFromDb.getCourseStudents());
         newLesson.setAttendanceList(attendanceLists);
         return newLesson;
@@ -683,6 +688,7 @@ public class CalendarServiceImpl implements CalendarService {
 
         List<AttendanceList> attendanceLists = addStudentsToAttendanceList(courseFromDb.getCourseStudents());
         calendar.setAttendanceList(attendanceLists);
+        calendar.setLanguage(courseFromDb.getLanguage());
         Calendar savedLesson = calendarRepository.save(calendar);
 
         updateCourseData(savedLesson.getCourseId());

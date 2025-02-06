@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ErrorHandler, OnInit } from '@angular/core';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 import { User } from 'src/app/modules/core/models/user.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,6 +8,8 @@ import { EditTeacherDialogComponent } from './edit-teacher-dialog/edit-teacher-d
 import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 import { DropTeacherDialogComponent } from './drop-teacher-dialog/drop-teacher-dialog.component';
 import { RestoreTeacherAccountDialogComponent } from './restore-teacher-account-dialog/restore-teacher-account-dialog.component';
+import { LessonsService } from 'src/app/modules/core/services/lessons.service';
+import { Lesson } from 'src/app/modules/core/models/lesson.model';
 
 @Component({
   selector: 'app-teacher-details',
@@ -18,10 +20,12 @@ export class TeacherDetailsComponent implements OnInit {
   id!: number;
   teacher!: User;
   role!: string;
+  teacherLessons!: Lesson[];
 
   constructor(
     private userProfileService: LoadUserProfileService,
     private teacherService: TeacherService,
+    private lessonsService: LessonsService,
     private route: ActivatedRoute,
     private dialog: MatDialog
   ) {}
@@ -34,6 +38,7 @@ export class TeacherDetailsComponent implements OnInit {
     });
 
     this.getTeacher(this.id);
+    this.getLessonsByTeacherId(this.id);
   }
 
   async loadUserProfile(): Promise<void> {
@@ -83,5 +88,29 @@ export class TeacherDetailsComponent implements OnInit {
       width: '600px',
       maxWidth: '600px',
     });
+  }
+
+  private getLessonsByTeacherId(id: number) {
+    this.lessonsService.getLessonByTeacherId(id).subscribe({
+      next: (lesson) => {
+        this.teacherLessons = lesson;
+      },
+      error: (err: ErrorHandler) => {
+        console.log(err);
+      },
+    });
+  }
+
+  getTeacherStatus(status: any): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'Aktywne';
+      case 'INACTIVE':
+        return 'Niekatywne';
+      case 'REMOVED':
+        return 'Usuniete';
+      default:
+        return '...';
+    }
   }
 }

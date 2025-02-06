@@ -15,12 +15,10 @@ import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-
 export class TeacherLessonsTableComponent {
   displayedColumns: string[] = [
     'lp',
-    'eventName',
     'startDate',
-    'endDate',
+    'hours',
+    'language',
     'status',
-    'participantsNumber',
-    'buttons',
   ];
   dataSource!: MatTableDataSource<Lesson>;
 
@@ -53,8 +51,12 @@ export class TeacherLessonsTableComponent {
   private getLessonsByTeacherId() {
     this.lessonsService.getLessonByTeacherId(this.teacherId).subscribe({
       next: (lesson) => {
+        const sortedLessons = lesson.sort(
+          (a, b) =>
+            new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+        );
         this.lessonsNumber = lesson.length;
-        this.dataSource = new MatTableDataSource<Lesson>(lesson);
+        this.dataSource = new MatTableDataSource<Lesson>(sortedLessons);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },
@@ -75,5 +77,35 @@ export class TeacherLessonsTableComponent {
 
   addLesson() {
     this.router.navigate(['/lessons/dodaj', { teacherId: this.teacherId }]);
+  }
+
+  navigateToLesson(lessonId: string) {
+    this.router.navigate(['/lessons', lessonId]);
+  }
+
+  getLanguageName(language: string): string {
+    switch (language) {
+      case 'ENGLISH':
+        return 'Angielski';
+      case 'POLISH':
+        return 'Polski';
+      case 'GERMAN':
+        return 'Niemiecki';
+      default:
+        return 'Nieznany';
+    }
+  }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'green';
+      case 'INACTIVE':
+        return 'orange';
+      case 'FINISHED':
+        return 'gray';
+      default:
+        return '';
+    }
   }
 }
