@@ -60,12 +60,6 @@ export class CourseLessonsTableComponent {
   }
 
   addLesson() {
-    // if (this.lessonsLimit == this.lessonsNumber) {
-    //   this.errMsg = 'Course Lesson Limit Reached.';
-    //   this.hideErrorMsg();
-    // } else {
-    //   this.router.navigate(['/lessons/dodaj', { id: this.courseId }]);
-    // }
     this.router.navigate(['/lessons/dodaj', { id: this.courseId }]);
   }
 

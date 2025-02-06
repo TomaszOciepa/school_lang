@@ -2,6 +2,15 @@
   <div class="container-fluid">
     <div class="course-header">
       <h2>Kursy</h2>
+      <a routerLink="/courses/dodaj" class="add-course-icon">
+        <button
+          mat-mini-fab
+          disabled
+          aria-label="Example icon button with a home icon"
+        >
+          <mat-icon>add_circle</mat-icon>
+        </button>
+      </a>
     </div>
     <mat-form-field>
       <mat-label>Wyszukaj...</mat-label>
@@ -17,15 +26,7 @@
       <table mat-table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="lp">
           <th class="my-table-bg-color" mat-header-cell *matHeaderCellDef>
-            <a routerLink="/courses/dodaj" class="add-course-icon">
-              <button
-                mat-mini-fab
-                disabled
-                aria-label="Example icon button with a home icon"
-              >
-                <mat-icon>add_circle</mat-icon>
-              </button>
-            </a>
+            Lp.
           </th>
           <td mat-cell *matCellDef="let row; index as i">{{ i + 1 }}.</td>
         </ng-container>
@@ -72,28 +73,6 @@
             ></span>
           </td>
         </ng-container>
-        <!-- 
-        <ng-container matColumnDef="status">
-          <th
-            class="my-table-bg-color"
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-          >
-            Status
-          </th>
-          <td mat-cell *matCellDef="let row">
-            <ng-container *ngIf="row.status === 'ACTIVE'">
-              Aktywny
-            </ng-container>
-            <ng-container *ngIf="row.status === 'FINISHED'">
-              Zakończony
-            </ng-container>
-            <ng-container *ngIf="row.status === 'INACTIVE'">
-              Oczekiwany
-            </ng-container>
-          </td>
-        </ng-container> -->
 
         <ng-container matColumnDef="startDate">
           <th

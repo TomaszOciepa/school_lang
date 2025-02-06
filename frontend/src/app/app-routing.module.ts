@@ -87,18 +87,6 @@ const routes: Routes = [
     title: 'moje konto',
   },
   {
-    path: 'settings',
-    loadChildren: () =>
-      import('./modules/settings/settings.module').then(
-        (m) => m.SettingsModule
-      ),
-    canActivate: [AuthGuard],
-    data: {
-      roles: ['admin'],
-    },
-    title: 'ustawienia',
-  },
-  {
     path: 'account-student',
     loadChildren: () =>
       import('./modules/profile-student/profile-student.module').then(

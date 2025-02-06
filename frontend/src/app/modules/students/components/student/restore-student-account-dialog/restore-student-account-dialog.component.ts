@@ -28,7 +28,7 @@ export class RestoreStudentAccountDialogComponent {
     this.studentService.restoreStudentAccount(this.student.id).subscribe({
       next: () => {
         this.dialogRef.close();
-        this.router.navigate(['/students']);
+        window.location.reload();
       },
       error: (err) => {
         this.errorMessage = err;

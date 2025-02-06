@@ -14,8 +14,16 @@ export class TeacherService {
 
   // ok
 
+  // getTeachers(status?: string | null): Observable<User[]> {
+  //   return this.http.get<User[]>(`${this.apiUrl}?status=${status}`);
+  // }
+
   getTeachers(status?: string | null): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}?status=${status}`);
+    let url = this.apiUrl;
+    if (status) {
+      url += `?status=${status}`;
+    }
+    return this.http.get<User[]>(url);
   }
 
   getTeacherById(id: number): Observable<User> {

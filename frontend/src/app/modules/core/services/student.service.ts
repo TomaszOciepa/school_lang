@@ -12,8 +12,16 @@ export class StudentService {
   constructor(private http: HttpClient) {}
 
   //ok
-  getStudents(status: string): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}?status=${status}`);
+  // getStudents(status?: string | null): Observable<User[]> {
+  //   return this.http.get<User[]>(`${this.apiUrl}?status=${status}`);
+  // }
+
+  getStudents(status?: string | null): Observable<User[]> {
+    let url = this.apiUrl;
+    if (status) {
+      url += `?status=${status}`;
+    }
+    return this.http.get<User[]>(url);
   }
 
   getStudentsByIdNumberNotEqual(id: number[]): Observable<User[]> {

@@ -1,79 +1,109 @@
 <section class="slider-area slider-area2" *ngIf="lesson">
   <div class="slider-active">
     <!-- Single Slider -->
-    <div class="single-slider slider-height2">
-      <div class="container">
+    <div class="single-slider slider-height2"></div>
+  </div>
+</section>
+
+<div class="container my-margin" *ngIf="lesson && teacher">
+  <div class="row text-start">
+    <div class="col-6">
+      <div class="teacher-data">
+        <h2>Lekcja</h2>
         <div class="row">
-          <div class="col-xl-8 col-lg-11 col-md-12">
-            <div class="hero__caption hero__caption2">
-              <figure class="text-start">
-                <blockquote class="blockquote">
-                  <h1 data-animation="bounceIn" data-delay="0.2s">
-                    {{ lesson.eventName }}
-                  </h1>
-                </blockquote>
-                <figcaption class="blockquote-footer">
-                  <cite title="Source Title">{{ lesson.description }}</cite>
-                </figcaption>
-              </figure>
-            </div>
+          <div class="col-12"></div>
+        </div>
+        <div class="row top-border text-centre">
+          <div class="col-6">
+            <mat-list>
+              <mat-list-item>
+                <span matListItemTitle>{{
+                  getLanguageName(lesson.language)
+                }}</span>
+                <span>język</span>
+              </mat-list-item>
+              <mat-list-item>
+                <span matListItemTitle
+                  ><a [routerLink]="'/account-student/course/' + course.id">{{
+                    course.name
+                  }}</a></span
+                >
+                <span matListItemLine>nazwa kursu</span>
+              </mat-list-item>
+              <mat-list>
+                <mat-list-item>
+                  <span matListItemTitle>
+                    {{ teacher.firstName }} {{ teacher.lastName }}</span
+                  >
+
+                  <span matListItemLine>nauczyciel</span>
+                </mat-list-item>
+              </mat-list>
+              <mat-list-item>
+                <span matListItemTitle>{{ lesson.eventName }}</span>
+                <span>nazwa wydarzenia</span>
+              </mat-list-item>
+            </mat-list>
+          </div>
+          <div class="col-6">
+            <mat-list>
+              <mat-list-item>
+                <span matListItemTitle>
+                  {{ getStatusName(lesson.status) }}
+                  <span
+                    class="status-indicator"
+                    [ngClass]="getStatusClass(lesson.status)"
+                  ></span>
+                </span>
+
+                <span>status</span>
+              </mat-list-item>
+
+              <mat-list-item>
+                <span matListItemTitle>
+                  {{ lesson.startDate | date : "d MMMM yyyy" }}r.</span
+                >
+                <span>początek</span>
+              </mat-list-item>
+              <mat-list-item>
+                <span matListItemTitle>
+                  {{ lesson.startDate | date : "HH:mm" }} -
+                  {{ lesson.endDate | date : "HH:mm" }}</span
+                >
+                <span matListItemLine>czas</span>
+              </mat-list-item>
+              <mat-list-item>
+                <span matListItemTitle>
+                  <ng-container *ngIf="this.lessonAttendance">
+                    obecny
+                  </ng-container>
+                  <ng-container *ngIf="this.lessonAttendance == false">
+                    nieobecny
+                  </ng-container>
+                </span>
+                <span>obecność</span>
+              </mat-list-item>
+            </mat-list>
+          </div>
+        </div>
+        <div class="row top-border text-centre">
+          <div class="col-12">
+            <mat-list>
+              opis wydarzenia
+              <mat-list-item>
+                <span matListItemTitle> {{ lesson.description }}</span>
+              </mat-list-item>
+            </mat-list>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
-
-<div class="container text-center" *ngIf="lesson && teacher">
-  <!-- Stack the columns on mobile by making one full-width and the other half-width -->
-
-  <div class="row my-margin">
-    <div class="col text-start">
-      <h3>
-        <small class="text-body-secondary"> data rozpoczęcia: </small>
-        {{ lesson.startDate | date : "EEEE, d MMMM yyyy" }}
-      </h3>
-      <h3>
-        <small class="text-body-secondary"> czas: </small>
-        {{ lesson.startDate | date : "HH:mm" }} -
-        {{ lesson.endDate | date : "HH:mm" }}
-      </h3>
-      <h3 *ngIf="course">
-        <small class="text-body-secondary"> kurs: </small>
-        <a [routerLink]="'/account-student/course/' + course.id">{{
-          course.name
-        }}</a>
-      </h3>
-    </div>
-    <div class="col">
-      <ul
-        class="list-group list-group-flush text-start"
-        style="font-size: medium"
-      >
-        <li class="list-group-item">
-          <small class="text-body-secondary">nauczyciel: </small>
-          {{ teacher.firstName }} {{ teacher.lastName }}
-        </li>
-        <li class="list-group-item">
-          <small class="text-body-secondary">status: </small>
-          <ng-container *ngIf="lesson.status === 'ACTIVE'">
-            Aktywna
-          </ng-container>
-          <ng-container *ngIf="lesson.status === 'FINISHED'">
-            Zakończona
-          </ng-container>
-          <ng-container *ngIf="lesson.status === 'INACTIVE'">
-            Oczekiwana
-          </ng-container>
-        </li>
-        <li class="list-group-item">
-          <small class="text-body-secondary">obecność: </small>
-          <ng-container *ngIf="this.lessonAttendance"> obecny </ng-container>
-          <ng-container *ngIf="this.lessonAttendance == false">
-            nieobecny
-          </ng-container>
-        </li>
-      </ul>
+    <div class="col-6 my-box">
+      <!-- <app-attendance-list
+        [lesson]="lesson"
+        [attendance-list]="lesson.attendanceList"
+        [courseId]="lesson.courseId"
+      ></app-attendance-list> -->
     </div>
   </div>
 </div>

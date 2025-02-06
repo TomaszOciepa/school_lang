@@ -52,4 +52,17 @@ export class MyAccountComponent implements OnInit {
       maxWidth: '600px',
     });
   }
+
+  getStudentStatus(status: any): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'Aktywne';
+      case 'INACTIVE':
+        return 'Niekatywne';
+      case 'REMOVED':
+        return 'Usuniete';
+      default:
+        return '...';
+    }
+  }
 }

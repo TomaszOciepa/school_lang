@@ -32,7 +32,7 @@ public class CourseController {
         return courseService.addCourse(course);
     }
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @GetMapping
     List<Course> getAllByStatus(@RequestParam(required = false) Status status) {
         logger.info("Get method getAllByStatus().");

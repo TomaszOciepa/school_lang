@@ -1,114 +1,112 @@
 <section class="slider-area slider-area2" *ngIf="course">
   <div class="slider-active">
     <!-- Single Slider -->
-    <div class="single-slider slider-height2">
-      <div class="container">
-        <div class="row">
-          <div class="col-xl-8 col-lg-11 col-md-12">
-            <div class="hero__caption hero__caption2">
-              <figure class="text-start">
-                <blockquote class="blockquote">
-                  <h1 data-animation="bounceIn" data-delay="0.2s">
-                    {{ course.name }}
-                  </h1>
-                </blockquote>
-                <figcaption class="blockquote-footer">
-                  kurs języka
-                  <cite title="Source Title">{{ course.language }}</cite>
-                </figcaption>
-              </figure>
-            </div>
+    <div class="single-slider slider-height2"></div>
+  </div>
+</section>
+
+<div class="container-fluid" *ngIf="course">
+  <div class="row text-start">
+    <div class="col-4">
+      <div class="teacher-data">
+        <h2>Kurs</h2>
+      </div>
+      <div class="row top-border text-centre">
+        <div class="col-6">
+          <mat-list>
+            <mat-list-item>
+              <span matListItemTitle>{{
+                getLanguageName(course.language)
+              }}</span>
+              <span>język</span>
+            </mat-list-item>
+            <mat-list-item>
+              <span matListItemTitle>{{ course.name }}</span>
+              <span matListItemLine>nazwa</span>
+            </mat-list-item>
+            <mat-list-item>
+              <span matListItemTitle> {{ course.coursePrice || 0 }} zł</span>
+              <span matListItemLine>cena</span>
+            </mat-list-item>
+          </mat-list>
+        </div>
+
+        <div class="col-6">
+          <mat-list>
+            <mat-list-item>
+              <span matListItemTitle>
+                {{ getStatusName(course.status) }}
+                <span
+                  class="status-indicator"
+                  [ngClass]="getStatusClass(course.status)"
+                ></span>
+              </span>
+
+              <span>status</span>
+            </mat-list-item>
+
+            <mat-list-item>
+              <span matListItemTitle>
+                {{ course.startDate | date : "d MMMM yyyy" }}r.</span
+              >
+              <span>początek</span>
+            </mat-list-item>
+            <mat-list-item>
+              <span matListItemTitle
+                >{{ course.endDate | date : "d MMMM yyyy" }}r.</span
+              >
+              <span matListItemLine>koniec</span>
+            </mat-list-item>
+          </mat-list>
+        </div>
+        <div class="row top-border text-centre">
+          <div class="col-3">
+            <mat-list>
+              <mat-list-item>
+                <span matListItemTitle>{{ course.lessonsLimit }}</span>
+                <span matListItemLine>lekcje</span>
+              </mat-list-item>
+            </mat-list>
+          </div>
+          <div class="col-3">
+            <mat-list>
+              <mat-list-item>
+                <span matListItemTitle>{{ teachers.length }}</span>
+                <span matListItemLine>nauczyciele</span>
+              </mat-list-item>
+            </mat-list>
+          </div>
+          <div class="col-3">
+            <mat-list>
+              <mat-list-item>
+                <span matListItemTitle>{{ course.participantsNumber }}</span>
+                <span matListItemLine>uczniowie</span>
+              </mat-list-item>
+            </mat-list>
+          </div>
+          <div class="col-3">
+            <mat-list>
+              <mat-list-item>
+                <span matListItemTitle>{{ course.participantsLimit }}</span>
+                <span matListItemLine>limit uczniów</span>
+              </mat-list-item>
+            </mat-list>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
-
-<div class="container text-center my-margin" *ngIf="course">
-  <!-- Stack the columns on mobile by making one full-width and the other half-width -->
-
-  <div class="row">
-    <div class="col text-start">
-      <h3>
-        Start kursu:
-        <small class="text-body-secondary">
-          {{ course.startDate | date : "EEEE, d MMMM yyyy" }}
-        </small>
-      </h3>
-      <h3>
-        Koniec kursu:
-        <small class="text-body-secondary">
-          {{ course.endDate | date : "EEEE, d MMMM yyyy" }}
-        </small>
-      </h3>
-
-      <h3>
-        Status:
-        <small class="text-body-secondary">
-          <ng-container *ngIf="course.status === 'ACTIVE'">
-            Aktywny
-          </ng-container>
-          <ng-container *ngIf="course.status === 'FINISHED'">
-            Zakończony
-          </ng-container>
-          <ng-container *ngIf="course.status === 'INACTIVE'">
-            Oczekiwany
-          </ng-container>
-        </small>
-      </h3>
-
-      <h3>
-        Cena:
-        <small class="text-body-secondary">
-          {{ course.coursePrice || 0 }} zł
-        </small>
-      </h3>
-    </div>
-    <div class="col">
-      <ul class="list-group list-group-flush text-start course-details">
-        <li class="list-group-item">
-          maksymalna liczba lekcji:
-          <small class="text-body-secondary">{{ course.lessonsLimit }}</small>
-        </li>
-        <li class="list-group-item">
-          liczba studentów:
-          <small class="text-body-secondary">{{
-            course.participantsNumber
-          }}</small>
-        </li>
-        <li class="list-group-item">
-          maksymalna liczba studentów:
-          <small class="text-body-secondary">{{
-            course.participantsLimit
-          }}</small>
-        </li>
-        <li class="list-group-item">
-          liczba nauczycieli:
-          <small *ngIf="teachers" class="text-body-secondary">{{
-            teachers.length
-          }}</small>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col text-start p-3">
-      <h2>Lekcje</h2>
-
+    <div class="col-8">
       <app-course-lessons-table
         [course-id]="course.id"
       ></app-course-lessons-table>
     </div>
   </div>
 
-  <!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->
-  <div class="row">
-    <div class="col text-start" style="font-size: medium; margin-top: 30px">
+  <div class="row my-margin my-box">
+    <div class="col-6 text-start">
       <div *ngIf="teachers">
         <h2>Nauczyciele</h2>
-        <table class="table">
+        <table class="table" style="font-size: medium">
           <thead>
             <tr>
               <th scope="col">lp.</th>
@@ -126,5 +124,6 @@
         </table>
       </div>
     </div>
+    <div class="col-6 text-start"></div>
   </div>
 </div>

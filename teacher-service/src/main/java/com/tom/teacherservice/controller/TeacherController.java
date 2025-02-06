@@ -37,7 +37,7 @@ public class TeacherController {
     }
 
 
-    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @GetMapping
     public List<Teacher> getTeachers(@RequestParam(required = false) Status status) {
         logger.info("Get method getTeachers()");

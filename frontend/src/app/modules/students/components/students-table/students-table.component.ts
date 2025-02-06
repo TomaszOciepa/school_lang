@@ -37,7 +37,7 @@ export class StudentsTableComponent {
   }
 
   private getStudents() {
-    this.studentService.getStudents('ACTIVE').subscribe({
+    this.studentService.getStudents().subscribe({
       next: (clients) => {
         this.dataSource = new MatTableDataSource<User>(clients);
         this.dataSource.paginator = this.paginator;

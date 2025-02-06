@@ -26,18 +26,7 @@ export class UserAccountComponent implements OnInit {
   async loadUserProfile(): Promise<void> {
     await this.userProfileService.loadUserProfile();
 
-    // if (this.userProfileService.isLoggedIn && this.userProfileService.isAdmin) {
-    //   this.user.email = this.userProfileService.userProfile?.email ?? '';
-    //   this.user.firstName =
-    //     this.userProfileService.userProfile?.firstName ?? '';
-    //   this.user.lastName = this.userProfileService.userProfile?.lastName ?? '';
-    // }
-
-    if (
-      this.userProfileService.isLoggedIn
-      //  &&
-      // this.userProfileService.isTeacher
-    ) {
+    if (this.userProfileService.isLoggedIn) {
       this.getTeacher(this.userProfileService.userProfile?.email);
     }
   }
@@ -59,5 +48,18 @@ export class UserAccountComponent implements OnInit {
       width: '600px',
       maxWidth: '600px',
     });
+  }
+
+  getStudentStatus(status: any): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'Aktywne';
+      case 'INACTIVE':
+        return 'Niekatywne';
+      case 'REMOVED':
+        return 'Usuniete';
+      default:
+        return '...';
+    }
   }
 }

@@ -80,7 +80,12 @@ export class CoursesTableComponent {
   private getCourseByTeacher(id: number) {
     this.courseService.getCourseByTeacherId(id).subscribe({
       next: (course) => {
-        this.dataSource = new MatTableDataSource<Course>(course);
+        const sortedCourses = course.sort(
+          (a, b) =>
+            new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+        );
+
+        this.dataSource = new MatTableDataSource<Course>(sortedCourses);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },

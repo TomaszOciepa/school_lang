@@ -15,6 +15,7 @@ import { CourseLessonsTableComponent } from './components/courses/course-lessons
 import { EnrollToCourseComponent } from './components/enroll-to-course/enroll-to-course.component';
 import { PaymentsComponent } from './components/payments/payments.component';
 import { PaymentsTableComponent } from './components/payments/payments-table/payments-table.component';
+import { CalendarStudentComponent } from './components/calendar-student/calendar-student.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { PaymentsTableComponent } from './components/payments/payments-table/pay
     EnrollToCourseComponent,
     PaymentsComponent,
     PaymentsTableComponent,
+    CalendarStudentComponent,
   ],
   imports: [SharedModule, CommonModule, ProfileStudentRoutingModule],
 })

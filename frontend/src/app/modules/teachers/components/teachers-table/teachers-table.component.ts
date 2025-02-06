@@ -55,7 +55,7 @@ export class TeachersTableComponent {
   }
 
   private getTeachers() {
-    this.teacherService.getTeachers('ACTIVE').subscribe({
+    this.teacherService.getTeachers().subscribe({
       next: (clients) => {
         this.dataSource = new MatTableDataSource<User>(clients);
         this.dataSource.paginator = this.paginator;
