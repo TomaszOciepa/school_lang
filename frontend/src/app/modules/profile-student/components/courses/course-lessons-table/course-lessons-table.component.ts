@@ -3,7 +3,10 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Lesson } from 'src/app/modules/core/models/lesson.model';
+import {
+  AttendanceList,
+  Lesson,
+} from 'src/app/modules/core/models/lesson.model';
 import { LessonsService } from 'src/app/modules/core/services/lessons.service';
 import { StudentAccountService } from 'src/app/modules/core/services/student-account.service';
 
@@ -19,6 +22,7 @@ export class CourseLessonsTableComponent {
     'hours',
     'status',
     'eventName',
+    'present',
   ];
   dataSource!: MatTableDataSource<Lesson>;
 
@@ -28,6 +32,9 @@ export class CourseLessonsTableComponent {
   @Input('course-id') courseId!: string;
 
   userId!: number;
+  lessonsList: Lesson[] = [];
+  averageAttendance!: number;
+
   constructor(
     private lessonsService: LessonsService,
     private studentAccount: StudentAccountService,
@@ -47,12 +54,19 @@ export class CourseLessonsTableComponent {
   private getLessonsByCourseId(id: string) {
     this.lessonsService.getLessonsByCourseId(id).subscribe({
       next: (lesson) => {
+        this.lessonsList = lesson;
         this.dataSource = new MatTableDataSource<Lesson>(lesson);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },
       error: (err: ErrorHandler) => {
         console.log(err);
+      },
+      complete: () => {
+        this.averageAttendance = this.getAverageAttendance(
+          this.lessonsList,
+          this.userId
+        );
       },
     });
   }
@@ -83,5 +97,50 @@ export class CourseLessonsTableComponent {
       default:
         return '';
     }
+  }
+
+  getStatusAttendance(present: boolean): string {
+    switch (present) {
+      case true:
+        return 'green';
+      case false:
+        return 'red';
+      default:
+        return 'red';
+    }
+  }
+
+  getAttendance(attendanceList: AttendanceList[]): boolean {
+    const attendance = attendanceList.find(
+      (item) => item.studentId === this.userId
+    );
+    return attendance ? attendance.present : false;
+  }
+
+  getAverageAttendance(lessons: Lesson[], studentId: number): number {
+    // Filtrowanie lekcji, które mają status FINISHED
+    const finishedLessons = lessons.filter(
+      (lesson) => lesson.status === 'FINISHED'
+    );
+
+    // Pobranie obecności studenta na tych lekcjach
+    const studentAttendances = finishedLessons
+      .map((lesson) =>
+        lesson.attendanceList.find(
+          (attendance) => attendance.studentId === studentId
+        )
+      )
+      .filter((attendance) => attendance !== undefined) as AttendanceList[];
+
+    // Jeśli student nie miał żadnych lekcji FINISHED, zwracamy 0
+    if (studentAttendances.length === 0) {
+      return 0;
+    }
+
+    // Obliczenie średniej obecności (liczba obecności / liczba lekcji FINISHED)
+    const presentCount = studentAttendances.filter(
+      (attendance) => attendance.present
+    ).length;
+    return (presentCount / studentAttendances.length) * 100; // Zwracamy procent
   }
 }

@@ -3,7 +3,10 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Lesson } from 'src/app/modules/core/models/lesson.model';
+import {
+  AttendanceList,
+  Lesson,
+} from 'src/app/modules/core/models/lesson.model';
 import { LessonsService } from 'src/app/modules/core/services/lessons.service';
 
 @Component({
@@ -18,6 +21,7 @@ export class StudentLessonsTableComponent {
     'hour',
     'language',
     'status',
+    'present',
   ];
 
   dataSource!: MatTableDataSource<Lesson>;
@@ -38,12 +42,12 @@ export class StudentLessonsTableComponent {
   private getLessonsByTeacherId() {
     this.lessonsService.getLessonsByStudentId(this.studentId).subscribe({
       next: (lesson) => {
-        const sortedLessons = lesson.sort(
-          (a, b) =>
-            new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-        );
+        // const sortedLessons = lesson.sort(
+        //   (a, b) =>
+        //     new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+        // );
         this.lessonsNumber = lesson.length;
-        this.dataSource = new MatTableDataSource<Lesson>(sortedLessons);
+        this.dataSource = new MatTableDataSource<Lesson>(lesson);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },
@@ -90,5 +94,23 @@ export class StudentLessonsTableComponent {
       default:
         return '';
     }
+  }
+
+  getStatusAttendance(present: boolean): string {
+    switch (present) {
+      case true:
+        return 'green';
+      case false:
+        return 'red';
+      default:
+        return 'red';
+    }
+  }
+
+  getAttendance(attendanceList: AttendanceList[]): boolean {
+    const attendance = attendanceList.find(
+      (item) => item.studentId === this.studentId
+    );
+    return attendance ? attendance.present : false;
   }
 }
