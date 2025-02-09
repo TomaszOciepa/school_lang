@@ -7,6 +7,8 @@ export interface AttendanceList {
   present: boolean;
 }
 
+export type AttendanceListDto = Omit<AttendanceList, 'firstName' | 'lastName'>;
+
 export interface LessonResponse {
   id: string;
   eventName: string;
@@ -16,7 +18,7 @@ export interface LessonResponse {
   courseId: string;
   status: string;
   description: string;
-  attendanceList: AttendanceList[];
+  attendanceList: AttendanceListDto[];
   language: string;
 }
 
@@ -30,7 +32,7 @@ export class Lesson implements LessonResponse {
     public courseId: string,
     public status: string,
     public description: string,
-    public attendanceList: AttendanceList[],
+    public attendanceList: AttendanceListDto[],
     public language: string
   ) {}
 }

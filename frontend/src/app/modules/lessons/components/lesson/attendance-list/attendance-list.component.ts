@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
   AttendanceList,
+  AttendanceListDto,
   Lesson,
 } from 'src/app/modules/core/models/lesson.model';
 import { StudentService } from 'src/app/modules/core/services/student.service';
@@ -16,9 +17,10 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class AttendanceListComponent implements OnInit {
   @Input('lesson') lesson!: Lesson;
-  @Input('attendance-list') attendanceList: AttendanceList[] = [];
+  @Input('attendance-list') attendanceListDto: AttendanceListDto[] = [];
   @Input('courseId') courseId!: string;
 
+  attendanceList: AttendanceList[] = [];
   idList: number[] = [];
   newLesson: Lesson = {} as Lesson;
   students!: User[];
@@ -30,10 +32,10 @@ export class AttendanceListComponent implements OnInit {
     private dialog: MatDialog
   ) {}
   ngOnInit(): void {
-    this.createIdList(this.attendanceList);
+    this.createIdList(this.attendanceListDto);
   }
 
-  createIdList(attendanceList: AttendanceList[]) {
+  createIdList(attendanceList: AttendanceListDto[]) {
     if (attendanceList.length > 0) {
       for (let item of attendanceList) {
         this.idList.push(item.studentId);
@@ -47,12 +49,23 @@ export class AttendanceListComponent implements OnInit {
     this.studentService.getStudentsByIdNumbers(idList).subscribe({
       next: (students) => {
         this.students = students;
-        this.attendanceList.forEach((attendance) => {
+
+        this.attendanceList = this.attendanceListDto.map((attendance) => {
           const student = students.find((s) => s.id === attendance.studentId);
           if (student) {
-            attendance.firstName = student.firstName;
-            attendance.lastName = student.lastName;
+            return {
+              studentId: attendance.studentId,
+              firstName: student.firstName,
+              lastName: student.lastName,
+              present: attendance.present,
+            } as AttendanceList;
           }
+          return {
+            studentId: attendance.studentId,
+            firstName: '',
+            lastName: '',
+            present: attendance.present,
+          } as AttendanceList;
         });
       },
       error: (err) => {
@@ -67,7 +80,15 @@ export class AttendanceListComponent implements OnInit {
   }
 
   save() {
-    this.newLesson.attendanceList = this.lesson.attendanceList;
+    const attendanceListDto: AttendanceListDto[] = this.attendanceList.map(
+      ({ studentId, present }) => ({
+        studentId,
+        present,
+      })
+    );
+
+    this.newLesson.attendanceList = attendanceListDto;
+
     this.lessonsService.patchLesson(this.lesson.id, this.newLesson).subscribe({
       next: (lesson) => {},
       error: (err) => {
