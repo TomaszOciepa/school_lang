@@ -63,3 +63,8 @@ tr:hover {
   --mdc-fab-icon-color: rgba(0, 0, 0, 0.38);
   --mat-mdc-fab-color: rgba(0, 0, 0, 0.38);
 }
+
+.average-present {
+  text-align: right;
+  margin-top: 20px;
+}

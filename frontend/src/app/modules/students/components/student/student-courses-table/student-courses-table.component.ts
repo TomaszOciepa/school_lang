@@ -1,4 +1,12 @@
-import { Component, ErrorHandler, Input, ViewChild } from '@angular/core';
+import { SelectionModel } from '@angular/cdk/collections';
+import {
+  Component,
+  ErrorHandler,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -12,14 +20,26 @@ import { CourseService } from 'src/app/modules/core/services/course.service';
   styleUrls: ['./student-courses-table.component.css'],
 })
 export class StudentCoursesTableComponent {
+  emiter = new EventEmitter();
+
+  @Output() selectedCourseId = new EventEmitter<string>();
+
+  getSelectedCourseId(id: string): void {
+    this.selectedCourseId.emit(id);
+    console.log('Odebrany ID:', id, 'Typ:', typeof id);
+  }
+
   displayedColumns: string[] = [
     'lp',
     'startDate',
     'language',
     'status',
     'name',
+    'select',
   ];
   dataSource!: MatTableDataSource<Course>;
+
+  selection = new SelectionModel<any>(false, []);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -83,5 +103,18 @@ export class StudentCoursesTableComponent {
       default:
         return 'Nieznany';
     }
+  }
+
+  showLesson(id: string) {
+    console.log('kurs id: ', id);
+    if (!this.selection.isSelected(id)) {
+      this.selection.clear();
+      this.selection.select(id);
+      this.selectedCourseId.emit(id);
+    } else {
+      this.selection.deselect(id);
+      this.selectedCourseId.emit('close');
+    }
+    console.log('Wybrany wiersz:', id);
   }
 }

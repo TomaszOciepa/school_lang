@@ -1,6 +1,7 @@
 <section class="mt-4">
   <div class="course-header">
     <h2>Lekcje</h2>
+    <!-- <h2>{{ selectCourseId }}</h2> -->
   </div>
   <div class="mat-elevation-z8 table-container">
     <table mat-table [dataSource]="dataSource" matSort>
@@ -100,6 +101,6 @@
     </table>
   </div>
   <div class="average-present">
-    <h2>{{ averageAttendance }} % obecności na lekcjach</h2>
+    <h2>{{ averageAttendance | number : "1.1-1" }} % obecności na lekcjach</h2>
   </div>
 </section>

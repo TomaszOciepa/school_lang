@@ -118,12 +118,10 @@ export class CourseLessonsTableComponent {
   }
 
   getAverageAttendance(lessons: Lesson[], studentId: number): number {
-    // Filtrowanie lekcji, które mają status FINISHED
     const finishedLessons = lessons.filter(
       (lesson) => lesson.status === 'FINISHED'
     );
 
-    // Pobranie obecności studenta na tych lekcjach
     const studentAttendances = finishedLessons
       .map((lesson) =>
         lesson.attendanceList.find(
@@ -132,15 +130,13 @@ export class CourseLessonsTableComponent {
       )
       .filter((attendance) => attendance !== undefined) as AttendanceList[];
 
-    // Jeśli student nie miał żadnych lekcji FINISHED, zwracamy 0
     if (studentAttendances.length === 0) {
       return 0;
     }
 
-    // Obliczenie średniej obecności (liczba obecności / liczba lekcji FINISHED)
     const presentCount = studentAttendances.filter(
       (attendance) => attendance.present
     ).length;
-    return (presentCount / studentAttendances.length) * 100; // Zwracamy procent
+    return (presentCount / studentAttendances.length) * 100;
   }
 }

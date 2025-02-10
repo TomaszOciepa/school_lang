@@ -6,7 +6,6 @@ import { StudentService } from 'src/app/modules/core/services/student.service';
 import { EditStudentDialogComponent } from './edit-student-dialog/edit-student-dialog.component';
 import { DeleteStudentDialogComponent } from './delete-student-dialog/delete-student-dialog.component';
 import { DropStudentDialogComponent } from './drop-student-dialog/drop-student-dialog.component';
-import { RestoreStudentDialogComponent } from 'src/app/modules/courses/components/course/restore-student-dialog/restore-student-dialog.component';
 import { RestoreStudentAccountDialogComponent } from './restore-student-account-dialog/restore-student-account-dialog.component';
 import { Lesson } from 'src/app/modules/core/models/lesson.model';
 import { LessonsService } from 'src/app/modules/core/services/lessons.service';
@@ -17,6 +16,8 @@ import { LessonsService } from 'src/app/modules/core/services/lessons.service';
   styleUrls: ['./student.component.css'],
 })
 export class StudentComponent {
+  selectCourseId!: string;
+
   id!: number;
   student!: User;
   studentLessons!: Lesson[];
@@ -36,6 +37,11 @@ export class StudentComponent {
 
     this.getStudent(this.id);
     this.getLessonsByStudentId(this.id);
+  }
+
+  selectedCourse(courseId: string) {
+    this.selectCourseId = courseId;
+    console.log('Wybrany kurs:', courseId);
   }
 
   getStudent(id: number) {
