@@ -15,7 +15,7 @@
       <div class="teacher-data">
         <h2>Nauczyciel</h2>
 
-        <div class="row">
+        <div *ngIf="teacher" class="row">
           <div class="col-6">
             <mat-list>
               <mat-list-item>
@@ -107,11 +107,13 @@
     <div class="col-6">
       <app-teacher-courses-table
         [teacherId]="teacher.id"
+        (selectedCourseId)="selectedCourse($event)"
       ></app-teacher-courses-table>
     </div>
     <div class="col-6">
       <app-teacher-lessons-table
         [teacher-id]="teacher.id"
+        [select-course-id]="selectCourseId"
       ></app-teacher-lessons-table>
     </div>
   </div>

@@ -33,6 +33,11 @@ tr:hover {
   box-shadow: 0 0 8px 2px rgba(0, 255, 0, 0.6); /* Zielona poświata */
 }
 
+.red {
+  background-color: red;
+  box-shadow: 0 0 8px 2px rgba(255, 0, 0, 0.6); /* Zielona poświata */
+}
+
 .orange {
   background-color: orange;
   box-shadow: 0 0 8px 2px rgba(255, 165, 0, 0.6); /* Pomarańczowa poświata */
@@ -57,4 +62,10 @@ tr:hover {
   --mdc-fab-container-color: white;
   --mdc-fab-icon-color: rgba(0, 0, 0, 0.38);
   --mat-mdc-fab-color: rgba(0, 0, 0, 0.38);
+}
+
+.average-present {
+  text-align: right;
+  margin-top: 20px;
+  margin-right: 20px;
 }

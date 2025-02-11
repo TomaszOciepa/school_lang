@@ -1,7 +1,7 @@
 import { Component, ErrorHandler, OnInit } from '@angular/core';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 import { User } from 'src/app/modules/core/models/user.model';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteTeacherDialogComponent } from './delete-teacher-dialog/delete-teacher-dialog.component';
 import { EditTeacherDialogComponent } from './edit-teacher-dialog/edit-teacher-dialog.component';
@@ -17,6 +17,7 @@ import { Lesson } from 'src/app/modules/core/models/lesson.model';
   styleUrls: ['./teacher.component.css'],
 })
 export class TeacherDetailsComponent implements OnInit {
+  selectCourseId!: string;
   id!: number;
   teacher!: User;
   role!: string;
@@ -46,6 +47,10 @@ export class TeacherDetailsComponent implements OnInit {
     if (this.userProfileService.isAdmin) {
       this.role = 'ADMIN';
     }
+  }
+
+  selectedCourse(courseId: string) {
+    this.selectCourseId = courseId;
   }
 
   getTeacher(id: number) {

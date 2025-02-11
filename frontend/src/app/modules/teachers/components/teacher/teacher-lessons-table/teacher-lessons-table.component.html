@@ -2,13 +2,20 @@
   <div class="course-header">
     <h2>Lekcje</h2>
   </div>
-
+  <ng-container *ngIf="!dataSource || selectCourseId === 'close'">
+    <h2>nie wybrano kursu :(</h2>
+  </ng-container>
   <div *ngIf="errMsg" class="alert alert-danger" role="alert">
     {{ errMsg }}
   </div>
 
   <div class="mat-elevation-z8 table-container">
-    <table mat-table [dataSource]="dataSource" matSort>
+    <table
+      *ngIf="dataSource && selectCourseId != 'close'"
+      mat-table
+      [dataSource]="dataSource"
+      matSort
+    >
       <ng-container matColumnDef="lp">
         <th class="my-table-bg-color" mat-header-cell *matHeaderCellDef>
           <a (click)="addLesson()" class="add-course-icon">

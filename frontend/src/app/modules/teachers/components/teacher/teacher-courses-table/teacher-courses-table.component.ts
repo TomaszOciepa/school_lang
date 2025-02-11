@@ -1,4 +1,12 @@
-import { Component, ErrorHandler, Input, ViewChild } from '@angular/core';
+import { SelectionModel } from '@angular/cdk/collections';
+import {
+  Component,
+  ErrorHandler,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -13,13 +21,22 @@ import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-
   styleUrls: ['./teacher-courses-table.component.css'],
 })
 export class TeacherCoursesTableComponent {
+  @Output() selectedCourseId = new EventEmitter<string>();
+
+  getSelectedCourseId(id: string): void {
+    this.selectedCourseId.emit(id);
+  }
+
   displayedColumns: string[] = [
     'lp',
     'startDate',
     'language',
     'status',
     'name',
+    'select',
   ];
+
+  selection = new SelectionModel<any>(false, []);
   dataSource!: MatTableDataSource<Course>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -87,6 +104,17 @@ export class TeacherCoursesTableComponent {
         return 'gray';
       default:
         return '';
+    }
+  }
+
+  showLesson(id: string) {
+    if (!this.selection.isSelected(id)) {
+      this.selection.clear();
+      this.selection.select(id);
+      this.selectedCourseId.emit(id);
+    } else {
+      this.selection.deselect(id);
+      this.selectedCourseId.emit('close');
     }
   }
 }
