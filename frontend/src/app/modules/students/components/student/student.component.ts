@@ -41,7 +41,6 @@ export class StudentComponent {
 
   selectedCourse(courseId: string) {
     this.selectCourseId = courseId;
-    console.log('Wybrany kurs:', courseId);
   }
 
   getStudent(id: number) {
@@ -54,7 +53,6 @@ export class StudentComponent {
     this.lessonsService.getLessonsByStudentId(id).subscribe({
       next: (lesson) => {
         this.studentLessons = lesson;
-        console.log('pobieram');
       },
       error: (err: ErrorHandler) => {
         console.log(err);

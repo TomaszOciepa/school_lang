@@ -1,4 +1,11 @@
-import { Component, ErrorHandler, Input, ViewChild } from '@angular/core';
+import {
+  Component,
+  ErrorHandler,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -12,7 +19,15 @@ import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-
   templateUrl: './teacher-lessons-table.component.html',
   styleUrls: ['./teacher-lessons-table.component.css'],
 })
-export class TeacherLessonsTableComponent {
+export class TeacherLessonsTableComponent implements OnChanges {
+  @Input('select-course-id') selectCourseId!: string;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['selectCourseId'] && changes['selectCourseId'].currentValue) {
+      this.getLessonsById(changes['selectCourseId'].currentValue);
+    }
+  }
+
   displayedColumns: string[] = [
     'lp',
     'startDate',
@@ -27,6 +42,7 @@ export class TeacherLessonsTableComponent {
   @Input('teacher-id') teacherId!: number;
 
   lessonsNumber!: number;
+  groupLessonsMap!: Map<string, Lesson[]>;
   errMsg!: string;
   role!: string;
 
@@ -51,14 +67,8 @@ export class TeacherLessonsTableComponent {
   private getLessonsByTeacherId() {
     this.lessonsService.getLessonByTeacherId(this.teacherId).subscribe({
       next: (lesson) => {
-        const sortedLessons = lesson.sort(
-          (a, b) =>
-            new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-        );
         this.lessonsNumber = lesson.length;
-        this.dataSource = new MatTableDataSource<Lesson>(sortedLessons);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+        this.groupLessonsByCourse(lesson);
       },
       error: (err: ErrorHandler) => {
         console.log(err);
@@ -107,5 +117,23 @@ export class TeacherLessonsTableComponent {
       default:
         return '';
     }
+  }
+
+  getLessonsById(courseId: string) {
+    const lessons: Lesson[] = this.groupLessonsMap.get(courseId) || [];
+    this.dataSource = new MatTableDataSource<Lesson>(lessons);
+  }
+
+  groupLessonsByCourse(lessons: Lesson[]) {
+    const lessonsMap = new Map<string, Lesson[]>();
+
+    lessons.forEach((lesson) => {
+      if (!lessonsMap.has(lesson.courseId)) {
+        lessonsMap.set(lesson.courseId, []);
+      }
+      lessonsMap.get(lesson.courseId)?.push(lesson);
+    });
+
+    this.groupLessonsMap = lessonsMap;
   }
 }

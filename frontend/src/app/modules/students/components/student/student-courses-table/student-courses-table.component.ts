@@ -20,13 +20,10 @@ import { CourseService } from 'src/app/modules/core/services/course.service';
   styleUrls: ['./student-courses-table.component.css'],
 })
 export class StudentCoursesTableComponent {
-  emiter = new EventEmitter();
-
   @Output() selectedCourseId = new EventEmitter<string>();
 
   getSelectedCourseId(id: string): void {
     this.selectedCourseId.emit(id);
-    console.log('Odebrany ID:', id, 'Typ:', typeof id);
   }
 
   displayedColumns: string[] = [
@@ -106,7 +103,6 @@ export class StudentCoursesTableComponent {
   }
 
   showLesson(id: string) {
-    console.log('kurs id: ', id);
     if (!this.selection.isSelected(id)) {
       this.selection.clear();
       this.selection.select(id);
@@ -115,6 +111,5 @@ export class StudentCoursesTableComponent {
       this.selection.deselect(id);
       this.selectedCourseId.emit('close');
     }
-    console.log('Wybrany wiersz:', id);
   }
 }

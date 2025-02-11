@@ -17,6 +17,7 @@ import { Lesson } from 'src/app/modules/core/models/lesson.model';
   styleUrls: ['./teacher.component.css'],
 })
 export class TeacherDetailsComponent implements OnInit {
+  selectCourseId!: string;
   id!: number;
   teacher!: User;
   role!: string;
@@ -46,6 +47,10 @@ export class TeacherDetailsComponent implements OnInit {
     if (this.userProfileService.isAdmin) {
       this.role = 'ADMIN';
     }
+  }
+
+  selectedCourse(courseId: string) {
+    this.selectCourseId = courseId;
   }
 
   getTeacher(id: number) {
