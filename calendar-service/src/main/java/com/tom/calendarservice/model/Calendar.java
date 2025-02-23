@@ -29,6 +29,7 @@ public class Calendar {
     private String description;
     private List<AttendanceList> attendanceList = new ArrayList<>();
     private Language language;
+    private Long price;
 
     public Calendar() {
     }

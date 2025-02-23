@@ -18,4 +18,6 @@ export const environment = {
   // keycloakClientService: 'http://localhost:8095/keycloak-client-service/keycloak',
   keycloakClientService:
     'http://localhost:9000/keycloak-client-service/keycloak',
+
+  apiUrlSalary: 'http://localhost:9000/salary-service/salary',
 };
