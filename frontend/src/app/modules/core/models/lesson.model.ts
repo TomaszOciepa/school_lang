@@ -20,6 +20,7 @@ export interface LessonResponse {
   description: string;
   attendanceList: AttendanceListDto[];
   language: string;
+  price: number;
 }
 
 export class Lesson implements LessonResponse {
@@ -33,7 +34,8 @@ export class Lesson implements LessonResponse {
     public status: string,
     public description: string,
     public attendanceList: AttendanceListDto[],
-    public language: string
+    public language: string,
+    public price: number
   ) {}
 }
 

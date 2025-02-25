@@ -117,4 +117,13 @@
       ></app-teacher-lessons-table>
     </div>
   </div>
+
+  <div class="row" *ngIf="teacher">
+    <div class="col-6">
+      <app-teacher-salary [teacher-id]="teacher.id"></app-teacher-salary>
+    </div>
+    <div class="col-6"></div>
+  </div>
+
+  <!-- <a (click)="createSalary(teacher.id)"> salary :)</a> -->
 </div>

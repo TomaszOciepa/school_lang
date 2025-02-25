@@ -10,6 +10,7 @@ import { DropTeacherDialogComponent } from './drop-teacher-dialog/drop-teacher-d
 import { RestoreTeacherAccountDialogComponent } from './restore-teacher-account-dialog/restore-teacher-account-dialog.component';
 import { LessonsService } from 'src/app/modules/core/services/lessons.service';
 import { Lesson } from 'src/app/modules/core/models/lesson.model';
+import { SalaryService } from 'src/app/modules/core/services/salary.service';
 
 @Component({
   selector: 'app-teacher-details',
@@ -27,6 +28,7 @@ export class TeacherDetailsComponent implements OnInit {
     private userProfileService: LoadUserProfileService,
     private teacherService: TeacherService,
     private lessonsService: LessonsService,
+    private salaryService: SalaryService,
     private route: ActivatedRoute,
     private dialog: MatDialog
   ) {}
@@ -118,4 +120,12 @@ export class TeacherDetailsComponent implements OnInit {
         return '...';
     }
   }
+
+  // createSalary(id: number) {
+  //   console.log('create salary id: ' + id);
+  //   this.salaryService.createSalary(id).subscribe({
+  //     next: () => console.log('poszło'),
+  //     error: (error) => console.error('Error creating salary', error),
+  //   });
+  // }
 }

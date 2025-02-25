@@ -11,5 +11,5 @@ public interface CalendarServiceClient {
     void deactivateStudent(@PathVariable Long id);
 
     @DeleteMapping("/calendar/remove-student-with-lessons/{id}")
-    public void deleteStudentWithAllLessons(@PathVariable Long id);
+   void deleteStudentWithAllLessons(@PathVariable Long id);
 }

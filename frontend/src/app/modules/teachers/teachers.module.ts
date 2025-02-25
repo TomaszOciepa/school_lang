@@ -13,6 +13,8 @@ import { TeacherCoursesTableComponent } from './components/teacher/teacher-cours
 import { TeacherLessonsTableComponent } from './components/teacher/teacher-lessons-table/teacher-lessons-table.component';
 import { DropTeacherDialogComponent } from './components/teacher/drop-teacher-dialog/drop-teacher-dialog.component';
 import { RestoreTeacherAccountDialogComponent } from './components/teacher/restore-teacher-account-dialog/restore-teacher-account-dialog.component';
+import { TeacherSalaryComponent } from './components/teacher/teacher-salary/teacher-salary.component';
+import { TeacherSalaryDetailsComponent } from './components/teacher/teacher-salary-details/teacher-salary-details.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,8 @@ import { RestoreTeacherAccountDialogComponent } from './components/teacher/resto
     TeacherLessonsTableComponent,
     DropTeacherDialogComponent,
     RestoreTeacherAccountDialogComponent,
+    TeacherSalaryComponent,
+    TeacherSalaryDetailsComponent,
   ],
   imports: [SharedModule, TeachersRoutingModule, LessonsModule],
 })

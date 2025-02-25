@@ -462,7 +462,7 @@ public class CalendarServiceImpl implements CalendarService {
                     );
 
                     calendarRepository.save(newLesson);
-                    createActivityLog(newLesson, "Automatyczne utworzenie lekcji.");
+//                    createActivityLog(newLesson, "Automatyczne utworzenie lekcji.");
                     lessonsByTeacher.add(newLesson);
 
                     numberLessonsToCreate--;
@@ -616,6 +616,8 @@ public class CalendarServiceImpl implements CalendarService {
         newLesson.setCourseId(courseFromDb.getId());
         newLesson.setLanguage(courseFromDb.getLanguage());
         newLesson.setDescription("Lekcja została wygenerowana automatycznie.");
+        Long price = calculateTeacherEarningsForLesson(courseFromDb.getPricePerLesson(), courseFromDb.getTeacherSharePercentage());
+        newLesson.setPrice(price);
         List<AttendanceList> attendanceLists = addStudentsToAttendanceList(courseFromDb.getCourseStudents());
         newLesson.setAttendanceList(attendanceLists);
         return newLesson;
@@ -689,10 +691,23 @@ public class CalendarServiceImpl implements CalendarService {
         List<AttendanceList> attendanceLists = addStudentsToAttendanceList(courseFromDb.getCourseStudents());
         calendar.setAttendanceList(attendanceLists);
         calendar.setLanguage(courseFromDb.getLanguage());
+
+        Long price = calculateTeacherEarningsForLesson(courseFromDb.getPricePerLesson(), courseFromDb.getTeacherSharePercentage());
+        calendar.setPrice(price);
+
         Calendar savedLesson = calendarRepository.save(calendar);
 
         updateCourseData(savedLesson.getCourseId());
         return savedLesson;
+    }
+
+    private Long calculateTeacherEarningsForLesson(Long price, Long percent) {
+        System.out.println("cena: "+price);
+        System.out.println("procent: "+percent);
+        if (price == null || percent == null || price < 0 || percent < 0) {
+            throw new IllegalArgumentException("Cena i procent nie mogą być null lub ujemne");
+        }
+        return (price * percent) / 100;
     }
 
     private boolean isTeacherHaveLessons(Long teacherId) {
