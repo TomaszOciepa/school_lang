@@ -18,13 +18,7 @@ export class TeacherSalaryDetailsComponent implements OnInit {
   id!: string;
   salary!: Salary;
 
-  displayedColumns: string[] = [
-    'lp',
-    'wartość',
-    'status',
-    'startDate',
-    'language',
-  ];
+  displayedColumns: string[] = ['lp', 'wartość', 'status', 'startDate'];
   dataSource!: MatTableDataSource<LessonResponse>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
