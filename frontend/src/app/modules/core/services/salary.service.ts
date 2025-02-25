@@ -15,4 +15,8 @@ export class SalaryService {
   getSalary(id: number): Observable<Salary[]> {
     return this.http.get<Salary[]>(this.apiUrl + '/' + id);
   }
+
+  getSalaryById(id: string): Observable<Salary> {
+    return this.http.get<Salary>(this.apiUrl + '/details/' + id);
+  }
 }

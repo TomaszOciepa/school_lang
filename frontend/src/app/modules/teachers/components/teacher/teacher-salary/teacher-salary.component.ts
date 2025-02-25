@@ -2,6 +2,7 @@ import { Component, ErrorHandler, Input, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { Salary } from 'src/app/modules/core/models/salary.model';
 import { SalaryService } from 'src/app/modules/core/services/salary.service';
 
@@ -20,7 +21,7 @@ export class TeacherSalaryComponent {
 
   @Input('teacher-id') teacherId!: number;
 
-  constructor(private salaryService: SalaryService) {}
+  constructor(private salaryService: SalaryService, private router: Router) {}
 
   async ngOnInit(): Promise<void> {
     this.salaryService.getSalary(this.teacherId).subscribe({
@@ -78,5 +79,10 @@ export class TeacherSalaryComponent {
       default:
         return 'transparent';
     }
+  }
+
+  navigateToDetails(salary: Salary) {
+    console.log(salary || JSON);
+    this.router.navigate(['/teachers/salary', salary.id]);
   }
 }

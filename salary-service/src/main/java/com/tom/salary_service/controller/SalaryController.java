@@ -26,4 +26,10 @@ public class SalaryController {
     public List<Salary> getSalary(@PathVariable Long id) {
        return salaryService.getSalaryByTeacherId(id);
     }
+
+    @PreAuthorize("hasRole('admin') or hasRole('teacher')")
+    @GetMapping("/details/{id}")
+    public Salary getSalaryById(@PathVariable String id) {
+        return salaryService.getSalaryById(id);
+    }
 }

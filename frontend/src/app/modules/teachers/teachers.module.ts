@@ -14,6 +14,7 @@ import { TeacherLessonsTableComponent } from './components/teacher/teacher-lesso
 import { DropTeacherDialogComponent } from './components/teacher/drop-teacher-dialog/drop-teacher-dialog.component';
 import { RestoreTeacherAccountDialogComponent } from './components/teacher/restore-teacher-account-dialog/restore-teacher-account-dialog.component';
 import { TeacherSalaryComponent } from './components/teacher/teacher-salary/teacher-salary.component';
+import { TeacherSalaryDetailsComponent } from './components/teacher/teacher-salary-details/teacher-salary-details.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { TeacherSalaryComponent } from './components/teacher/teacher-salary/teac
     DropTeacherDialogComponent,
     RestoreTeacherAccountDialogComponent,
     TeacherSalaryComponent,
+    TeacherSalaryDetailsComponent,
   ],
   imports: [SharedModule, TeachersRoutingModule, LessonsModule],
 })

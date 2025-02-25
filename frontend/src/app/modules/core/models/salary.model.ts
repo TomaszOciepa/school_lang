@@ -3,7 +3,6 @@ export interface SalaryResponse {
   date: Date;
   teacherId?: number;
   payoutAmount?: number;
-  studentId: number;
   courseId: string;
   status: string;
   lessons: LessonResponse[];
@@ -15,7 +14,6 @@ export class Salary implements SalaryResponse {
     public date: Date,
     public teacherId: number,
     public payoutAmount: number,
-    public studentId: number,
     public courseId: string,
     public status: string,
     public lessons: LessonResponse[]

@@ -5,7 +5,10 @@ import com.tom.salary_service.model.Status;
 import com.tom.salary_service.model.dto.CalendarDto;
 import com.tom.salary_service.repo.SalaryRepository;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.ErrorResponseException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.YearMonth;
 import java.util.*;
@@ -33,6 +36,13 @@ public class SalaryServiceImpl implements SalaryService {
             System.out.println(salaryList.get(i).toString());
         }
         return salaryList;
+    }
+
+    @Override
+    public Salary getSalaryById(String id) {
+        return salaryRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Salary not found with id: " + id));
     }
 
 
