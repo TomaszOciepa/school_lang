@@ -1,0 +1,67 @@
+.table-container {
+  max-height: 400px;
+  overflow-y: auto;
+  display: block;
+}
+
+.course-header {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Odstęp między elementami */
+  padding: 10px;
+}
+
+table {
+  width: 100%;
+}
+
+tr:hover {
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+}
+
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.2); /* Domyślna poświata */
+}
+
+/* add course button */
+
+.add-course-icon button {
+  transition: background-color 0.1s ease; /* Płynna zmiana tła */
+}
+
+.add-course-icon:hover button {
+  background-color: rgba(0, 0, 0, 0.38);
+}
+
+.mat-mdc-mini-fab[disabled][disabled] {
+  --mdc-fab-container-color: white;
+  --mdc-fab-icon-color: rgba(0, 0, 0, 0.38);
+  --mat-mdc-fab-color: rgba(0, 0, 0, 0.38);
+}
+
+.status-time-column {
+  font-weight: bold;
+  white-space: nowrap;
+  border-right: 2px solid rgba(0, 0, 0, 0.12);
+}
+
+/* LED indicator */
+.status-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+.status-text {
+  font-weight: 500;
+  font-size: 14px;
+  white-space: nowrap;
+  padding-left: 8px;
+}

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
+import { Salary } from '../models/salary.model';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ export class SalaryService {
 
   constructor(private http: HttpClient) {}
 
-  createSalary(id: number): Observable<any> {
-    return this.http.get(this.apiUrl + '/create-salary/' + id);
+  getSalary(id: number): Observable<Salary[]> {
+    return this.http.get<Salary[]>(this.apiUrl + '/' + id);
   }
 }

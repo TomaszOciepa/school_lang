@@ -121,11 +121,11 @@ export class TeacherDetailsComponent implements OnInit {
     }
   }
 
-  createSalary(id: number) {
-    console.log('create salary id: ' + id);
-    this.salaryService.createSalary(id).subscribe({
-      next: () => console.log('poszło'),
-      error: (error) => console.error('Error creating salary', error),
-    });
-  }
+  // createSalary(id: number) {
+  //   console.log('create salary id: ' + id);
+  //   this.salaryService.createSalary(id).subscribe({
+  //     next: () => console.log('poszło'),
+  //     error: (error) => console.error('Error creating salary', error),
+  //   });
+  // }
 }

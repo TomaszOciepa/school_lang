@@ -22,9 +22,23 @@ public class SalaryServiceImpl implements SalaryService {
         this.salaryRepo = salaryRepo;
     }
 
+
     @Override
-    public void createSalary(Long teacherId) {
-        List<Salary> salaryList = getSalaryByTeacherId(teacherId);
+    public List<Salary> getSalaryByTeacherId(Long teacherId) {
+        createSalary(teacherId);
+
+        List<Salary> salaryList = salaryRepo.findByTeacherIdOrderByDateAsc(teacherId);
+
+        for (int i = 0; i < salaryList.size(); i++) {
+            System.out.println(salaryList.get(i).toString());
+        }
+        return salaryList;
+    }
+
+
+    private void createSalary(Long teacherId) {
+        System.out.println("siema");
+        List<Salary> salaryList = salaryRepo.findByTeacherIdOrderByDateAsc(teacherId);
         List<CalendarDto> lessonsList = calendarServiceClient.getLessonByTeacherId(teacherId);
 
         Map<YearMonth, List<CalendarDto>> lessonsByMonth = groupLessonsByMonth(lessonsList);
@@ -111,12 +125,6 @@ public class SalaryServiceImpl implements SalaryService {
         saveSalary(newSalary);
     }
 
-
-
-    @Override
-    public List<Salary> getSalaryByTeacherId(Long teacherId) {
-        return salaryRepo.findByTeacherIdOrderByDateAsc(teacherId);
-    }
 
     @Override
     public Salary saveSalary(Salary salary) {
