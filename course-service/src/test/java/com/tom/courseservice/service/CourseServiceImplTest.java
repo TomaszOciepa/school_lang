@@ -67,7 +67,7 @@ class CourseServiceImplTest {
     }
 
     TeacherDto prepareTeacher() {
-        return new TeacherDto(1L, "Klaudia", "Nowak", "kla@wp.pl", Status.ACTIVE);
+        return new TeacherDto(1L, "Klaudia", "Nowak", "kla@wp.pl", Status.ACTIVE, "");
     }
 
     @Test

@@ -28,7 +28,7 @@ export class DropTeacherDialogComponent implements OnInit {
     this.teacherService.deleteTeacherById(this.teacher.id).subscribe({
       next: () => {
         this.dialogRef.close();
-        this.router.navigate(['/settings/teachers']);
+        this.router.navigate(['/teachers']);
       },
       error: (err) => {
         this.errorMessage = err;

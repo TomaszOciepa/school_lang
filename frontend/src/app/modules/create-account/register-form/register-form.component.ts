@@ -94,6 +94,7 @@ export class RegisterFormComponent implements OnInit {
   }
 
   public login() {
-    this.keycloak.login();
+    this.keycloak.login({ redirectUri: 'http://localhost:4200/' });
+    // this.keycloak.login();
   }
 }
