@@ -48,7 +48,7 @@ const routes: Routes = [
       ),
     canActivate: [AuthGuard],
     data: {
-      roles: ['admin', 'teacher'],
+      roles: ['admin'],
     },
     title: 'nauczyciele',
   },

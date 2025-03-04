@@ -10,6 +10,7 @@ import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 import { EditLessonDialogComponent } from './edit-lesson-dialog/edit-lesson-dialog.component';
 import { DeleteLessonDialogComponent } from './delete-lesson-dialog/delete-lesson-dialog.component';
 import { EnrollLessonDialogComponent } from './enroll-lesson-dialog/enroll-lesson-dialog.component';
+import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 
 @Component({
   selector: 'app-lesson',
@@ -21,8 +22,10 @@ export class LessonComponent implements OnInit {
   lesson!: Lesson;
   teacher!: User;
   course!: Course;
+  role!: string;
 
   constructor(
+    private userProfileService: LoadUserProfileService,
     private lessonsService: LessonsService,
     private teacherService: TeacherService,
     private courseService: CourseService,
@@ -30,12 +33,21 @@ export class LessonComponent implements OnInit {
     private dialog: MatDialog
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.route.params;
     this.route.params.subscribe((params) => {
       this.id = params['id'];
     });
+    this.loadUserProfile();
     this.getLesson(this.id);
+  }
+
+  async loadUserProfile(): Promise<void> {
+    await this.userProfileService.loadUserProfile();
+
+    if (this.userProfileService.isAdmin) {
+      this.role = 'ADMIN';
+    }
   }
 
   getLesson(id: string) {

@@ -290,10 +290,13 @@
           <tbody>
             <tr *ngFor="let teacher of teachers; index as i">
               <th scope="row">{{ i + 1 }}</th>
-              <td>
+              <td *ngIf="role === 'ADMIN'">
                 <a [routerLink]="'/teachers/' + teacher.id">
                   {{ teacher.firstName }} {{ teacher.lastName }}
                 </a>
+              </td>
+              <td *ngIf="role !== 'ADMIN'">
+                {{ teacher.firstName }} {{ teacher.lastName }}
               </td>
               <td>
                 <ng-container *ngIf="teacher.status === 'ACTIVE'">

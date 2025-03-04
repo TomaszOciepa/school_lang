@@ -54,13 +54,20 @@
                 <span matListItemLine>nazwa kursu</span>
               </mat-list-item>
               <mat-list>
-                <mat-list-item>
+                <mat-list-item *ngIf="role === 'ADMIN'">
                   <span matListItemTitle>
                     <a [routerLink]="'/teachers/' + teacher.id"
                       >{{ teacher.firstName }} {{ teacher.lastName }}</a
                     ></span
                   >
 
+                  <span matListItemLine>nauczyciel</span>
+                </mat-list-item>
+
+                <mat-list-item *ngIf="role !== 'ADMIN'">
+                  <span matListItemTitle>
+                    {{ teacher.firstName }} {{ teacher.lastName }}</span
+                  >
                   <span matListItemLine>nauczyciel</span>
                 </mat-list-item>
               </mat-list>
