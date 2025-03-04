@@ -3,6 +3,8 @@ package com.tom.payment_service.model.dto;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -19,4 +21,9 @@ public class CourseDto {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String price;
+    private Status status;
+    private Long coursePrice;
+    private Long pricePerLesson;
+    private Long teacherSharePercentage;
+
 }

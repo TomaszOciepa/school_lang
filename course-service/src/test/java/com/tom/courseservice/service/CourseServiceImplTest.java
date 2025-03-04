@@ -57,12 +57,12 @@ class CourseServiceImplTest {
 //    }
 
     StudentDto prepareStudent() {
-        return new StudentDto(1L, "Tomek", "Kowalski", "kow@wp.pl", Status.ACTIVE);
+        return new StudentDto(1L, "Tomek", "Kowalski", "kow@wp.pl", Status.ACTIVE, "");
     }
 
     List<StudentDto> prepareStudentList(){
         return Arrays.asList(
-                new StudentDto(1L, "Tomek", "Kowalski", "kow@wp.pl", Status.ACTIVE)
+                new StudentDto(1L, "Tomek", "Kowalski", "kow@wp.pl", Status.ACTIVE, "")
         );
     }
 

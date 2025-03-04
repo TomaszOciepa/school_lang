@@ -22,7 +22,7 @@ public class PaymentController {
     @PreAuthorize("hasRole('admin') or hasRole('teacher') or hasRole('student')")
     @PostMapping("/create")
     OrderResponse createPayment(@RequestBody OrderDto orderDto){
-        logger.info("Post method createPayment()");
+        logger.info("Post method createPayment(), {}", orderDto.toString());
         return paymentService.createPayment(orderDto);
     }
 }

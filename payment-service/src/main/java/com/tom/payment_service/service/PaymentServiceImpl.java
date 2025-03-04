@@ -44,7 +44,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public OrderResponse createPayment(OrderDto orderDto) {
         Order order = new Order();
-
         order.setNotifyUrl("");
         order.setCustomerIp(customerIp);
         order.setMerchantPosId(clientId);
@@ -77,7 +76,7 @@ public class PaymentServiceImpl implements PaymentService {
         Product product = new Product();
         product.setName(courseFromDB.getName());
         product.setQuantity("1");
-        product.setUnitPrice(convertZlotyToGrosze(courseFromDB.getPrice()));
+        product.setUnitPrice(convertZlotyToGrosze(courseFromDB.getCoursePrice()));
 
         List<Product> productList = new ArrayList<>();
         productList.add(product);
@@ -97,6 +96,12 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         return orderResponse;
+    }
+
+    private String convertZlotyToGrosze(Long price) {
+
+        Long multipliedPrice = price * 100;
+        return String.valueOf(multipliedPrice);
     }
 
     private String convertZlotyToGrosze(String price) {

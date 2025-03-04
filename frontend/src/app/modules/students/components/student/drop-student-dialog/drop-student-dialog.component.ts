@@ -28,7 +28,7 @@ export class DropStudentDialogComponent {
     this.studentService.deleteStudentById(this.student.id).subscribe({
       next: () => {
         this.dialogRef.close();
-        this.router.navigate(['/settings/students']);
+        this.router.navigate(['/students']);
       },
       error: (err) => {
         this.errorMessage = err;
