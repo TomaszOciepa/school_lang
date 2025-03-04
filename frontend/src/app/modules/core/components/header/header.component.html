@@ -36,6 +36,9 @@
                     <li *ngIf="isAdmin || isTeacher">
                       <a routerLink="students">Studenci</a>
                     </li>
+                    <li *ngIf="isTeacher">
+                      <a routerLink="salary">Wynagrodzenie</a>
+                    </li>
 
                     <li *ngIf="isAdmin || isTeacher">
                       <a routerLink="user-account">Moje konto</a>
