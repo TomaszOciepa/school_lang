@@ -87,6 +87,16 @@ const routes: Routes = [
     title: 'moje konto',
   },
   {
+    path: 'salary',
+    loadChildren: () =>
+      import('./modules/salary/salary.module').then((m) => m.SalaryModule),
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['admin', 'teacher'],
+    },
+    title: 'wynagrodzenie',
+  },
+  {
     path: 'account-student',
     loadChildren: () =>
       import('./modules/profile-student/profile-student.module').then(
