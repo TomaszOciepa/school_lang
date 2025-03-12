@@ -1,121 +1,145 @@
-<section class="slider-area slider-area2">
+<div class="slider-area slider-area2">
   <div class="slider-active">
     <!-- Single Slider -->
     <div class="single-slider slider-height2"></div>
   </div>
-</section>
-
-<div class="container-fluid text-center">
-  <div class="row text-start">
-    <div class="col-4">
-      <div class="teacher-data">
-        <h2>Student</h2>
-
-        <div class="row" *ngIf="student">
-          <div class="col-6">
-            <mat-list>
-              <mat-list-item>
-                <span matListItemTitle
-                  >{{ student.firstName }} {{ student.lastName }}</span
-                >
-                <span matListItemLine>imię i nazwisko</span>
-              </mat-list-item>
-              <mat-list-item>
-                <span matListItemTitle> {{ student.email }}</span>
-                <span>adres e-mail</span>
-              </mat-list-item>
-            </mat-list>
-          </div>
-          <div class="col-6">
-            <audio
-              #deleteSound
-              src="../../../../../assets/sound/windows_98_error.mp3"
-              preload="auto"
-            ></audio>
-            <mat-list>
-              <mat-list-item>
-                <a (click)="openEditDialog()" class="teacher-icon">
-                  <button
-                    mat-mini-fab
-                    disabled
-                    aria-label="Example icon button with a home icon"
-                  >
-                    <mat-icon>edite</mat-icon>
-                  </button>
-                </a>
-
-                <a
-                  *ngIf="student && student.status == 'ACTIVE'"
-                  class="teacher-icon"
-                  (click)="openDialog()"
-                >
-                  <button
-                    mat-mini-fab
-                    disabled
-                    aria-label="Example icon button with a home icon"
-                  >
-                    <mat-icon>person_remove</mat-icon>
-                  </button>
-                </a>
-                <a
-                  *ngIf="student && student.status == 'INACTIVE'"
-                  (click)="openRestoreDialog()"
-                  class="teacher-icon"
-                >
-                  <button
-                    mat-mini-fab
-                    disabled
-                    aria-label="Example icon button with a home icon"
-                  >
-                    <mat-icon>person_add</mat-icon>
-                  </button>
-                </a>
-                <a (click)="openDropDialog(deleteSound)" class="teacher-icon">
-                  <button
-                    mat-mini-fab
-                    disabled
-                    aria-label="Example icon button with a home icon"
-                  >
-                    <mat-icon>delete_forever</mat-icon>
-                  </button>
-                </a>
-              </mat-list-item>
-              <mat-list-item>
-                <span matListItemTitle>
-                  {{ getStudentStatus(student.status) }}</span
-                >
-                status konta
-              </mat-list-item>
-            </mat-list>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-8">
-      <app-calendar [lessons]="studentLessons"></app-calendar>
-    </div>
-  </div>
 </div>
 
-<div class="row course-lesson-box" *ngIf="student">
-  <div class="col-6">
-    <div class="row">
-      <app-student-courses-table
-        [studentId]="student.id"
-        (selectedCourseId)="selectedCourse($event)"
-      ></app-student-courses-table>
-    </div>
-    <div class="row">
-      <app-student-payments-table
-        [student-id]="student.id"
-      ></app-student-payments-table>
-    </div>
-  </div>
+<audio
+  #deleteSound
+  src="../../../../../assets/sound/windows_98_error.mp3"
+  preload="auto"
+></audio>
 
-  <div class="col-6">
-    <app-student-lessons-table
-      [student-id]="student.id"
-      [select-course-id]="selectCourseId"
-    ></app-student-lessons-table>
+<div class="container-fluid text-center bg-color">
+  <div class="row">
+    <!-- Sidebar Menu -->
+    <div class="col-3 sidebar p-3 bg-light">
+      <div class="user-info">
+        <h2 class="teacher-title">Student</h2>
+        <hr class="separator" />
+        <div class="options-menu">
+          <a
+            (click)="openEditDialog()"
+            class="teacher-icon"
+            matTooltip="edytuj uzytkownika"
+          >
+            <button
+              mat-mini-fab
+              disabled
+              aria-label="Example icon button with a home icon"
+            >
+              <mat-icon>edite</mat-icon>
+            </button>
+          </a>
+          <a
+            *ngIf="student && student.status == 'ACTIVE'"
+            class="teacher-icon"
+            matTooltip="dezaktywuj konto"
+            (click)="openDialog()"
+          >
+            <button
+              mat-mini-fab
+              disabled
+              aria-label="Example icon button with a home icon"
+            >
+              <mat-icon>person_remove</mat-icon>
+            </button>
+          </a>
+          <a
+            *ngIf="student && student.status == 'INACTIVE'"
+            (click)="openRestoreDialog()"
+            class="teacher-icon"
+            matTooltip="aktywuj konto"
+          >
+            <button
+              mat-mini-fab
+              disabled
+              aria-label="Example icon button with a home icon"
+            >
+              <mat-icon>person_add</mat-icon>
+            </button>
+          </a>
+          <a
+            (click)="openDropDialog(deleteSound)"
+            class="teacher-icon"
+            matTooltip="usuń uzytkownika"
+          >
+            <button
+              mat-mini-fab
+              disabled
+              aria-label="Example icon button with a home icon"
+            >
+              <mat-icon>delete_forever</mat-icon>
+            </button>
+          </a>
+        </div>
+
+        <p class="teacher-info">
+          <span class="label">Imię i nazwisko:</span>
+          {{ student.firstName }} {{ student.lastName }}
+        </p>
+
+        <p class="teacher-info">
+          <span class="label">Email:</span>
+          {{ student.email }}
+        </p>
+
+        <p class="teacher-info">
+          <span class="label">Status konta:</span>
+          {{ student.status }}
+        </p>
+      </div>
+      <hr class="separator" />
+
+      <nav class="nav flex-column">
+        <a
+          class="nav-link"
+          [ngClass]="{ active: activeSection === 'schedule' }"
+          (click)="scrollToSection('schedule')"
+        >
+          Harmonogram
+        </a>
+        <a
+          class="nav-link"
+          [ngClass]="{ active: activeSection === 'courses' }"
+          (click)="scrollToSection('courses')"
+        >
+          Kursy
+        </a>
+        <a
+          class="nav-link"
+          [ngClass]="{ active: activeSection === 'payment' }"
+          (click)="scrollToSection('payment')"
+        >
+          Płatności
+        </a>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-9 text-start p-3 content-scroll">
+      <section id="schedule">
+        <app-calendar [lessons]="studentLessons"></app-calendar>
+      </section>
+
+      <section id="courses">
+        <app-student-courses-table
+          [studentId]="student.id"
+          (selectedCourseId)="selectedCourse($event)"
+        ></app-student-courses-table>
+
+        <app-student-lessons-table
+          [student-id]="student.id"
+          [select-course-id]="selectCourseId"
+        ></app-student-lessons-table>
+      </section>
+
+      <section id="payment">
+        <app-student-payments-table
+          [student-id]="student.id"
+        ></app-student-payments-table>
+      </section>
+    </div>
   </div>
 </div>

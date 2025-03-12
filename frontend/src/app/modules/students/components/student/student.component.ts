@@ -1,4 +1,4 @@
-import { Component, ErrorHandler } from '@angular/core';
+import { Component, ErrorHandler, HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { User } from 'src/app/modules/core/models/user.model';
@@ -106,5 +106,41 @@ export class StudentComponent {
       default:
         return '...';
     }
+  }
+
+  activeSection: string = 'schedule';
+
+  scrollToSection(sectionId: string): void {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const menuHeight = 0;
+
+      window.scrollTo({
+        top: element.offsetTop - menuHeight,
+        behavior: 'smooth',
+      });
+    }
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll(): void {
+    const sections = ['schedule', 'courses', 'salary'];
+    const offset = window.scrollY;
+    let active = '';
+
+    sections.forEach((section) => {
+      const element = document.getElementById(section);
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        if (
+          rect.top <= window.innerHeight / 2 &&
+          rect.bottom >= window.innerHeight / 2
+        ) {
+          active = section;
+        }
+      }
+    });
+
+    this.activeSection = active;
   }
 }

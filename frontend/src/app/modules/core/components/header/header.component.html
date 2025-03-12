@@ -40,17 +40,11 @@
                       <a routerLink="salary">Wynagrodzenie</a>
                     </li>
 
+                    <li *ngIf="isAdmin">
+                      <a routerLink="payments">Płatności</a>
+                    </li>
                     <li *ngIf="isAdmin || isTeacher">
                       <a routerLink="user-account">Moje konto</a>
-                    </li>
-
-                    <li *ngIf="isAdmin">
-                      <a href="#">Ustawienia</a>
-                      <ul class="submenu">
-                        <li>
-                          <a routerLink="payments">Płatności</a>
-                        </li>
-                      </ul>
                     </li>
 
                     <ng-container *ngIf="isLoggedIn && isStudent">
