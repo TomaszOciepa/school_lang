@@ -15,7 +15,7 @@
 }
 
 .teacher-icon button {
-  transition: background-color 0.1s ease; /* Płynna zmiana tła */
+  transition: background-color 0.1s ease;
 }
 
 .teacher-icon:hover button {
@@ -29,6 +29,82 @@
 }
 
 .bg-color {
-  /* background-color: #f4f4f5; */
   background-color: #e9e9f0;
+}
+
+.content-scroll {
+  overflow-y: auto;
+}
+
+.nav-link {
+  font-size: 18px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  background-color: #ddd;
+  border-radius: 5px;
+}
+
+.nav-link.active {
+  background-color: #2196f3;
+  color: white;
+  border-radius: 5px;
+}
+
+.teacher-title {
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.teacher-info {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: left;
+  background-color: #f8f9fa;
+  padding: 8px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.teacher-info {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: left;
+  background-color: #f8f9fa;
+  padding: 8px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: normal;
+  color: #555;
+}
+
+.separator {
+  border: 2px solid #333;
+  margin: 20px 0;
+}
+
+section {
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.sidebar {
+  position: sticky;
+  top: 150px;
+  height: 100vh;
+  z-index: 1000;
+}
+
+.options-menu {
+  text-align: left;
 }
