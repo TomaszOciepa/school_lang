@@ -27,3 +27,8 @@
   --mdc-fab-icon-color: rgba(0, 0, 0, 0.38);
   --mat-mdc-fab-color: rgba(0, 0, 0, 0.38);
 }
+
+.bg-color {
+  /* background-color: #f4f4f5; */
+  background-color: #e9e9f0;
+}

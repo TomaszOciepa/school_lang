@@ -11,9 +11,8 @@ import { LessonsService } from '../../core/services/lessons.service';
   styleUrls: ['./lessons-table.component.css'],
 })
 export class LessonsTableComponent {
-  displayedColumns: string[] = ['lp', 'eventName', 'startDate', 'endDate'];
+  displayedColumns: string[] = ['lp', 'startDate', 'endDate'];
   dataSource!: MatTableDataSource<Lesson>;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @Input('course-id') courseId!: string;
 
@@ -27,7 +26,6 @@ export class LessonsTableComponent {
     this.lessonsService.getLessonsByCourseId(this.courseId).subscribe({
       next: (lesson) => {
         this.dataSource = new MatTableDataSource<Lesson>(lesson);
-        this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },
       error: (err: ErrorHandler) => {

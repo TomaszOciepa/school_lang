@@ -3,7 +3,6 @@ import { CourseService } from '../../core/services/course.service';
 import { ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Course } from '../../core/models/course.model';
-import { User } from '../../core/models/user.model';
 import { LoadUserProfileService } from '../../core/services/load-user-profile.service';
 import { StudentService } from '../../core/services/student.service';
 
@@ -15,7 +14,6 @@ import { StudentService } from '../../core/services/student.service';
 export class CourseDetailsComponent {
   courseId!: string;
   course!: Course;
-  teachers!: User[];
 
   isLoggedIn = false;
   isStudent: boolean = false;
@@ -38,7 +36,7 @@ export class CourseDetailsComponent {
     });
 
     this.getCourseById();
-    this.getCourseTeachers();
+
     await this.loadUserProfile();
     if (this.isLoggedIn) {
       this.getStudent(this.studentEmail);
@@ -52,18 +50,6 @@ export class CourseDetailsComponent {
         if (result.participantsLimit === result.participantsNumber) {
           this.courseIsFull = true;
         }
-      },
-      error: (err: HttpErrorResponse) => {
-        console.log(err);
-      },
-      complete: () => {},
-    });
-  }
-
-  getCourseTeachers() {
-    this.courseService.getCourseTeachers(this.courseId).subscribe({
-      next: (teacher) => {
-        this.teachers = teacher;
       },
       error: (err: HttpErrorResponse) => {
         console.log(err);
@@ -105,5 +91,18 @@ export class CourseDetailsComponent {
         },
         complete: () => {},
       });
+  }
+
+  getLanguageName(language: string): string {
+    switch (language) {
+      case 'ENGLISH':
+        return 'Angielskiego';
+      case 'POLISH':
+        return 'Polskiego';
+      case 'GERMAN':
+        return 'Niemieckiego';
+      default:
+        return 'Nieznany';
+    }
   }
 }
