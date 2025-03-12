@@ -1,5 +1,5 @@
 <!-- Header Start -->
-<div class="header-area header-transparent">
+<div class="header-area header-transparent high">
   <div class="main-header">
     <div class="header-bottom header-sticky">
       <div class="container-fluid">
@@ -40,17 +40,11 @@
                       <a routerLink="salary">Wynagrodzenie</a>
                     </li>
 
+                    <li *ngIf="isAdmin">
+                      <a routerLink="payments">Płatności</a>
+                    </li>
                     <li *ngIf="isAdmin || isTeacher">
                       <a routerLink="user-account">Moje konto</a>
-                    </li>
-
-                    <li *ngIf="isAdmin">
-                      <a href="#">Ustawienia</a>
-                      <ul class="submenu">
-                        <li>
-                          <a routerLink="payments">Płatności</a>
-                        </li>
-                      </ul>
                     </li>
 
                     <ng-container *ngIf="isLoggedIn && isStudent">

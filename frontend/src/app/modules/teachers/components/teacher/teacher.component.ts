@@ -1,4 +1,4 @@
-import { Component, ErrorHandler, OnInit } from '@angular/core';
+import { Component, ErrorHandler, HostListener, OnInit } from '@angular/core';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 import { User } from 'src/app/modules/core/models/user.model';
 import { ActivatedRoute } from '@angular/router';
@@ -10,7 +10,6 @@ import { DropTeacherDialogComponent } from './drop-teacher-dialog/drop-teacher-d
 import { RestoreTeacherAccountDialogComponent } from './restore-teacher-account-dialog/restore-teacher-account-dialog.component';
 import { LessonsService } from 'src/app/modules/core/services/lessons.service';
 import { Lesson } from 'src/app/modules/core/models/lesson.model';
-import { SalaryService } from 'src/app/modules/core/services/salary.service';
 
 @Component({
   selector: 'app-teacher-details',
@@ -28,7 +27,6 @@ export class TeacherDetailsComponent implements OnInit {
     private userProfileService: LoadUserProfileService,
     private teacherService: TeacherService,
     private lessonsService: LessonsService,
-    private salaryService: SalaryService,
     private route: ActivatedRoute,
     private dialog: MatDialog
   ) {}
@@ -121,11 +119,39 @@ export class TeacherDetailsComponent implements OnInit {
     }
   }
 
-  // createSalary(id: number) {
-  //   console.log('create salary id: ' + id);
-  //   this.salaryService.createSalary(id).subscribe({
-  //     next: () => console.log('poszło'),
-  //     error: (error) => console.error('Error creating salary', error),
-  //   });
-  // }
+  activeSection: string = 'schedule';
+
+  scrollToSection(sectionId: string): void {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const menuHeight = 0;
+
+      window.scrollTo({
+        top: element.offsetTop - menuHeight,
+        behavior: 'smooth',
+      });
+    }
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll(): void {
+    const sections = ['schedule', 'courses', 'salary'];
+    const offset = window.scrollY;
+    let active = '';
+
+    sections.forEach((section) => {
+      const element = document.getElementById(section);
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        if (
+          rect.top <= window.innerHeight / 2 &&
+          rect.bottom >= window.innerHeight / 2
+        ) {
+          active = section;
+        }
+      }
+    });
+
+    this.activeSection = active;
+  }
 }

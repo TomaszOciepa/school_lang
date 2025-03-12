@@ -9,12 +9,11 @@
               <figure class="text-start">
                 <blockquote class="blockquote">
                   <h1 data-animation="bounceIn" data-delay="0.2s">
-                    {{ course.name }}
+                    Kurs {{ getLanguageName(course.language) }}
                   </h1>
                 </blockquote>
                 <figcaption class="blockquote-footer">
-                  kurs języka
-                  <cite title="Source Title">{{ course.language }}</cite>
+                  <cite title="Source Title">{{ course.name }}</cite>
                 </figcaption>
               </figure>
             </div>
@@ -58,7 +57,7 @@
   </div>
 </section>
 
-<div class="container text-center my-margin" *ngIf="course">
+<div class="container-fluid my-padding bg-color" *ngIf="course">
   <!-- Stack the columns on mobile by making one full-width and the other half-width -->
   <div class="row">
     <div class="col-md-8"></div>
@@ -87,63 +86,25 @@
         </small>
       </h3>
       <h3>
+        Liczba lekcji:
+        <small class="text-body-secondary">
+          {{ course.lessonsLimit }}
+        </small>
+      </h3>
+      <h3>
         Cena:
         <small class="text-body-secondary">
           {{ course.coursePrice || 0 }} zł
         </small>
       </h3>
     </div>
-    <div class="col">
-      <ul class="list-group list-group-flush text-start course-details">
-        <li class="list-group-item">
-          liczba przewidzianych lekcji:
-          <small class="text-body-secondary">{{ course.lessonsLimit }}</small>
-        </li>
-        <li class="list-group-item">
-          liczba studentów:
-          <small class="text-body-secondary"
-            >{{ course.participantsNumber }}/{{
-              course.participantsLimit
-            }}</small
-          >
-        </li>
-      </ul>
-    </div>
   </div>
 
   <div class="row">
-    <div class="col text-start p-3">
-      <h3>Lekcje</h3>
+    <div class="col text-start p-3 text-center">
+      <h3>Harmonogram kursu</h3>
 
       <app-lessons-table [course-id]="course.id"></app-lessons-table>
-    </div>
-  </div>
-
-  <!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->
-  <div class="row">
-    <div class="col text-start" style="font-size: medium">
-      <div *ngIf="!teachers">
-        <h2>Lista nauczycieli jest pusta...</h2>
-      </div>
-      <div *ngIf="teachers">
-        <h3>Nauczyciele</h3>
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col"></th>
-              <th scope="col"></th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let teacher of teachers; index as i">
-              <td>
-                {{ i + 1 }}. {{ teacher.firstName }} {{ teacher.lastName }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   </div>
 </div>

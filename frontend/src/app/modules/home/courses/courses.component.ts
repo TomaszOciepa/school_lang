@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CourseService } from '../../core/services/course.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { Course } from '../../core/models/course.model';
 import { MatPaginator } from '@angular/material/paginator';
@@ -13,18 +13,9 @@ import { LoadUserProfileService } from '../../core/services/load-user-profile.se
   styleUrls: ['./courses.component.css'],
 })
 export class CoursesComponent implements OnInit {
-  displayedColumns: string[] = [
-    'lp',
-    'name',
-    'language',
-    'date',
-    'price',
-    'buttons',
-  ];
+  displayedColumns: string[] = ['lp', 'name', 'language', 'date', 'price'];
 
   dataSource!: MatTableDataSource<Course>;
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   language!: string;
@@ -38,7 +29,8 @@ export class CoursesComponent implements OnInit {
   constructor(
     private userProfileService: LoadUserProfileService,
     private courseService: CourseService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -73,7 +65,6 @@ export class CoursesComponent implements OnInit {
     this.courseService.getCoursesByLanguage(this.language).subscribe({
       next: (course) => {
         this.dataSource = new MatTableDataSource<Course>(course);
-        this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },
       error: (err: Error) => {
@@ -97,6 +88,23 @@ export class CoursesComponent implements OnInit {
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
+    }
+  }
+
+  navigateToCourse(courseId: string) {
+    this.router.navigate(['/course/', courseId]);
+  }
+
+  getLanguageName(language: string): string {
+    switch (language) {
+      case 'ENGLISH':
+        return 'Angielski';
+      case 'POLISH':
+        return 'Polski';
+      case 'GERMAN':
+        return 'Niemiecki';
+      default:
+        return 'Nieznany';
     }
   }
 }
