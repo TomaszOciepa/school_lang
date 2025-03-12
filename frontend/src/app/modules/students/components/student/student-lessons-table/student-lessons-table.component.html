@@ -2,6 +2,9 @@
   <div class="course-header">
     <h2>Lekcje</h2>
   </div>
+  <div *ngIf="dataSource && selectCourseId != 'close'" class="average-present">
+    <h2>{{ averageAttendance | number : "1.1-1" }} % obecności</h2>
+  </div>
   <div class="mat-elevation-z8 table-container">
     <ng-container *ngIf="!dataSource || selectCourseId === 'close'">
       <h2>nie wybrano kursu :(</h2>
@@ -109,8 +112,5 @@
         style="cursor: pointer"
       ></tr>
     </table>
-  </div>
-  <div *ngIf="dataSource && selectCourseId != 'close'" class="average-present">
-    <h2>{{ averageAttendance | number : "1.1-1" }} % obecności</h2>
   </div>
 </section>
