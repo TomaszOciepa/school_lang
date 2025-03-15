@@ -3,282 +3,298 @@ package com.tom.calendarservice.service;
 import com.tom.calendarservice.exception.CalendarError;
 import com.tom.calendarservice.exception.CalendarException;
 import com.tom.calendarservice.model.Calendar;
-import com.tom.calendarservice.model.Dto.CourseDto;
-import com.tom.calendarservice.model.Dto.CourseTeachersDto;
+import com.tom.calendarservice.model.Language;
 import com.tom.calendarservice.model.Status;
 import com.tom.calendarservice.repo.CalendarRepository;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 
+@ExtendWith(MockitoExtension.class)
 class CalendarServiceImplTest {
-    private static Logger logger = LoggerFactory.getLogger(CalendarServiceImplTest.class);
+
+    @InjectMocks
+    private CalendarServiceImpl calendarService;
+
     @Mock
     private CalendarRepository calendarRepository;
-    @Mock
-    private CourseServiceClient courseServiceClient;
+
     @Mock
     private TeacherServiceClient teacherServiceClient;
-    @InjectMocks
-    private CalendarServiceImpl calendarServiceImpl;
 
-//    List<Calendar> prepareCalendarData() {
-//        return Arrays.asList(
-//                new Calendar("1111D", "Lekcja Angielskiego",
-//                        LocalDateTime.of(2023, 12, 5, 16, 00),
-//                        LocalDateTime.of(2023, 12, 5, 17, 00),
-//                        1L, "212", Status.ACTIVE, "opis lekcji", new ArrayList<>()),
-//                new Calendar("1111D", "Lekcja Niemieckiego",
-//                        LocalDateTime.of(2023, 12, 15, 16, 00),
-//                        LocalDateTime.of(2023, 12, 15, 17, 00),
-//                        1L, "212", Status.ACTIVE, "opis lekcji", new ArrayList<>())
-//        );
-//    }
+    private Calendar lesson1;
+    private Calendar lesson2;
 
-//    Calendar prepareCalendar() {
-//        return new Calendar("65e7277467307d687b635b3c", "Lekcja Angielskiego",
-//                LocalDateTime.of(2023, 12, 5, 16, 00),
-//                LocalDateTime.of(2023, 12, 5, 17, 00),
-//                1L, "65db2e090f93ba7046abef53", Status.ACTIVE, "opis lekcji", new ArrayList<>());
-//    }
-
-//    @Test
-//    void getAllLessons() {
-//        MockitoAnnotations.openMocks(this);
-//        //given
-//        List<Calendar> mockCalendarList = prepareCalendarData();
-//        given(calendarRepository.findAll()).willReturn(mockCalendarList);
-//        //when
-//        List<Calendar> result = calendarServiceImpl.getAllLessons();
-//        //then
-//        assertEquals(mockCalendarList.size(), result.size());
-//        verify(calendarRepository).findAll();
-//    }
-
-//    @Test
-//    void getLessonById_shouldReturnLesson_whenExists() {
-//        MockitoAnnotations.openMocks(this);
-//        //given
-//        String lessonId = "65e7277467307d687b635b3c";
-//        Calendar mockCalendar = prepareCalendar();
-//        given(calendarRepository.findById(lessonId)).willReturn(Optional.of(mockCalendar));
-//        //when
-//        Calendar result = calendarServiceImpl.getLessonById(lessonId);
-//        //then
-//        assertNotNull(result);
-//        assertEquals(mockCalendar, result);
-//        verify(calendarRepository).findById(lessonId);
-//    }
-
-    @Test
-    void getLessonById_shouldThrowException_whenNotExists() {
-        MockitoAnnotations.openMocks(this);
-        // given
-        String lessonId = "nonExistingId";
-        when(calendarRepository.findById(lessonId)).thenThrow(CalendarException.class);
-
-        // then
-        assertThrows(CalendarException.class, () -> calendarServiceImpl.getLessonById(lessonId));
-        verify(calendarRepository).findById(lessonId);
+    @BeforeEach
+    void setUp() {
+        lesson1 = createLesson("1", "Lekcja 1");
+        lesson2 = createLesson("2", "Lekcja 2");
     }
 
-//    @Test
-//    void addLessonWhenCourseIdExists_shouldBeReturn_newLesson() {
-//        MockitoAnnotations.openMocks(this);
-//        //given
-//        Calendar newLesson = prepareCalendar();
-//        String courseId = "65db2e090f93ba7046abef53";
-//        CourseDto courseMock = new CourseDto("65db2e090f93ba7046abef53", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
-//                LocalDateTime.of(2023, 12, 5, 00, 00),
-//                LocalDateTime.of(2024, 03, 6, 00, 00),
-//                Arrays.asList(), Arrays.asList(new CourseTeachersDto(1L,  LocalDateTime.of(2023, 12, 5, 16, 00), Status.ACTIVE)));
-//
-//        given(calendarRepository.save(newLesson)).willReturn(newLesson);
-//        given(courseServiceClient.getCourseById(courseId, null)).willReturn(courseMock);
-//
-//        //when
-//        Calendar result = calendarServiceImpl.addLesson(newLesson);
-//        //then
-//        assertEquals(newLesson, result);
-//        verify(courseServiceClient).getCourseById(courseId, null);
-//        verify(teacherServiceClient).teacherIsActive(1L);
-//    }
+    @Test
+    void getAllLessons_ShouldReturnSortedAndUpdatedLessons() {
+        // GIVEN
+        List<Calendar> mockLessons = Arrays.asList(lesson1, lesson2);
 
-//    @Test
-//    void addLessonWhenCourseIdNotExists_shouldBeReturn_newLesson() {
-//        MockitoAnnotations.openMocks(this);
-//        //given
-//        Calendar newLesson = new Calendar("65e7277467307d687b635b3c", "Lekcja Angielskiego",
-//                LocalDateTime.of(2023, 12, 5, 16, 00),
-//                LocalDateTime.of(2023, 12, 5, 17, 00),
-//                1L, "", Status.ACTIVE, "opis lekcji", new ArrayList<>());
-//
-//
-//        given(calendarRepository.save(newLesson)).willReturn(newLesson);
-//        //when
-//        Calendar result = calendarServiceImpl.addLesson(newLesson);
-//        //then
-//        assertEquals(newLesson, result);;
-//        verify(teacherServiceClient).teacherIsActive(1L);
-//    }
+        when(calendarRepository.findAllByOrderByStartDateAsc()).thenReturn(mockLessons);
 
-//    @Test
-//    void addLessonWhenStartDateIsAfterEndDate_shouldBeReturn_Exception() {
-//        MockitoAnnotations.openMocks(this);
-//        //given
-//        Calendar newLesson = new Calendar("65e7277467307d687b635b3c", "Lekcja Angielskiego",
-//                LocalDateTime.of(2023, 12, 5, 18, 00),
-//                LocalDateTime.of(2023, 12, 5, 17, 00),
-//                1L, "", Status.ACTIVE, "opis lekcji", new ArrayList<>());
-//
-//
-//        given(calendarRepository.save(newLesson)).willThrow(CalendarException.class);
-//
-//        //when & then
-//        assertThrows(CalendarException.class, ()->calendarServiceImpl.addLesson(newLesson));
-//    }
-//    @Test
-//    void patchLesson_shouldBeReturn_lesson() {
-//        MockitoAnnotations.openMocks(this);
-//        //given
-//        Calendar mockCalendar = prepareCalendar();
-//        String lessonId = "1111D";
-//        String courseId = "65db2e090f93ba7046abef53";
-//        CourseDto courseMock = new CourseDto("65db2e090f93ba7046abef53", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
-//                LocalDateTime.of(2023, 12, 5, 00, 00),
-//                LocalDateTime.of(2024, 03, 6, 00, 00),
-//                Arrays.asList(), Arrays.asList(new CourseTeachersDto(1L,  LocalDateTime.of(2023, 12, 5, 16, 00), Status.ACTIVE)));
-//
-//        given(calendarRepository.findById(lessonId)).willReturn(Optional.ofNullable(mockCalendar));
-//        given(courseServiceClient.getCourseById(courseId, null)).willReturn(courseMock);
-//        given(calendarRepository.save(mockCalendar)).willReturn(mockCalendar);
-//        //when
-//        Calendar result = calendarServiceImpl.patchLesson(lessonId, mockCalendar);
-//        //then
-//        assertEquals(mockCalendar, result);
-//        verify(courseServiceClient, times(3)).getCourseById(courseId, null);
-//    }
+        // WHEN
+        List<Calendar> result = calendarService.getAllLessons();
 
-//    @Test
-//    void patchLesson_WhenLessonStartIsBeforeCourseStartDate_shouldBeReturn_Exception() {
-//        MockitoAnnotations.openMocks(this);
-//        //given
-//        Calendar mockCalendar = new Calendar("65e7277467307d687b635b3c", "Lekcja Angielskiego",
-//                LocalDateTime.of(2023, 12, 4, 16, 00),
-//                LocalDateTime.of(2023, 12, 5, 17, 00),
-//                1L, "65db2e090f93ba7046abef53", Status.ACTIVE, "opis lekcji", new ArrayList<>());
-//        String lessonId = "65e7277467307d687b635b3c";
-//        String courseId = "65db2e090f93ba7046abef53";
-//        CourseDto courseMock = new CourseDto("65db2e090f93ba7046abef53", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
-//                LocalDateTime.of(2023, 12, 5, 00, 00),
-//                LocalDateTime.of(2024, 03, 6, 00, 00),
-//                Arrays.asList(), Arrays.asList(new CourseTeachersDto(1L,  LocalDateTime.of(2023, 12, 5, 16, 00), Status.ACTIVE)));
-//
-//        given(calendarRepository.findById(lessonId)).willReturn(Optional.ofNullable(mockCalendar));
-//        given(courseServiceClient.getCourseById(courseId, null)).willReturn(courseMock);
-//        given(calendarRepository.save(mockCalendar)).willReturn(mockCalendar).willThrow(CalendarException.class);
-//
-//
-//        //then
-//        assertThrows(CalendarException.class, ()->calendarServiceImpl.patchLesson(lessonId, mockCalendar));
-//    }
+        // THEN
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(2, result.size());
+        Assertions.assertEquals("1", result.get(0).getId());
+        Assertions.assertEquals("2", result.get(1).getId());
 
-//    @Test
-//    void patchLesson_WhenLessonStartIsAfterCourseEndDate_shouldBeReturn_Exception() {
-//        MockitoAnnotations.openMocks(this);
-//        //given
-//        Calendar mockCalendar = new Calendar("65e7277467307d687b635b3c", "Lekcja Angielskiego",
-//                LocalDateTime.of(2024, 03, 7, 16, 00),
-//                LocalDateTime.of(2024, 03, 7, 17, 00),
-//                1L, "65db2e090f93ba7046abef53", Status.ACTIVE, "opis lekcji", new ArrayList<>());
-//        String lessonId = "65e7277467307d687b635b3c";
-//        String courseId = "65db2e090f93ba7046abef53";
-//        CourseDto courseMock = new CourseDto("65db2e090f93ba7046abef53", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
-//                LocalDateTime.of(2023, 12, 5, 00, 00),
-//                LocalDateTime.of(2024, 03, 6, 23, 59),
-//                Arrays.asList(), Arrays.asList(new CourseTeachersDto(1L,  LocalDateTime.of(2023, 12, 5, 16, 00), Status.ACTIVE)));
-//
-//        given(calendarRepository.findById(lessonId)).willReturn(Optional.ofNullable(mockCalendar));
-//        given(courseServiceClient.getCourseById(courseId, null)).willReturn(courseMock);
-//        given(calendarRepository.save(mockCalendar)).willReturn(mockCalendar).willThrow(CalendarException.class);
-//
-//        //then
-//        assertThrows(CalendarException.class, ()->calendarServiceImpl.patchLesson(lessonId, mockCalendar));
-//    }
+        verify(calendarRepository, times(1)).findAllByOrderByStartDateAsc();
+    }
 
-//    @Test
-//    void patchLesson_WhenLessonStartDateIsAfterLessonEndDate_shouldBeReturn_Exception() {
-//        MockitoAnnotations.openMocks(this);
-//        //given
-//        Calendar mockCalendar = new Calendar("65e7277467307d687b635b3c", "Lekcja Angielskiego",
-//                LocalDateTime.of(2023, 12, 6, 16, 00),
-//                LocalDateTime.of(2023, 12, 4, 17, 00),
-//                1L, "65db2e090f93ba7046abef53", Status.ACTIVE, "opis lekcji", new ArrayList<>());
-//        String lessonId = "65e7277467307d687b635b3c";
-//        String courseId = "65db2e090f93ba7046abef53";
-//        CourseDto courseMock = new CourseDto("65db2e090f93ba7046abef53", "Kurs Angielski-B2", Status.ACTIVE, 20L, 0L, 10L,
-//                LocalDateTime.of(2023, 12, 5, 00, 00),
-//                LocalDateTime.of(2024, 03, 6, 23, 59),
-//                Arrays.asList(), Arrays.asList(new CourseTeachersDto(1L,  LocalDateTime.of(2023, 12, 5, 16, 00), Status.ACTIVE)));
-//
-//        given(calendarRepository.findById(lessonId)).willReturn(Optional.ofNullable(mockCalendar));
-//        given(courseServiceClient.getCourseById(courseId, null)).willReturn(courseMock);
-//        given(calendarRepository.save(mockCalendar)).willReturn(mockCalendar).willThrow(CalendarException.class);
-//
-//        //then
-//        assertThrows(CalendarException.class, ()->calendarServiceImpl.patchLesson(lessonId, mockCalendar));
-//    }
-//    @Test
-//    void patchLessonShouldBeReturnCalendarNotFound() {
-//        MockitoAnnotations.openMocks(this);
-//        //given
-//        String mockId = "1111D";
-//        Calendar mockCalendar = prepareCalendar();
-//        CalendarException mockException = new CalendarException(CalendarError.CALENDAR_NOT_FOUND);
-//        given(calendarRepository.findById(mockId)).willThrow(mockException);
-//        //when
-//        //then
-//        assertThrows(CalendarException.class, () -> calendarServiceImpl.patchLesson(mockId, mockCalendar));
-//    }
-//
-//    @Test
-//    void deleteLessonVerifyMethod() {
-//        MockitoAnnotations.openMocks(this);
-//        //given
-//        String mockId = "1111D";
-//        Calendar mockCalendar = prepareCalendar();
-//        given(calendarRepository.findById(mockId)).willReturn(Optional.ofNullable(mockCalendar));
-//        //when
-//        calendarServiceImpl.deleteLessonsById(mockId);
-//        //then
-//        verify(calendarRepository, times(1)).findById(mockId);
-//        verify(calendarRepository, times(1)).deleteById(mockId);
-//    }
-//
-//    @Test
-//    void deleteLessonShouldBeReturnCalenderNotFound() {
-//        MockitoAnnotations.openMocks(this);
-//        //given
-//        String mockId = "1111D";
-//        Calendar mockCalendar = prepareCalendar();
-//        CalendarException mockException = new CalendarException(CalendarError.CALENDAR_NOT_FOUND);
-//        given(calendarRepository.findById(mockId)).willThrow(mockException);
-//        //when
-//        //then
-//        assertThrows(CalendarException.class, () -> calendarServiceImpl.deleteLessonsById(mockId));
-//    }
+    @Test
+    void getLessonById_ShouldReturnLesson_WhenLessonExists() {
+        // GIVEN
+        String lessonId = "1";
+
+        when(calendarRepository.findById(lessonId)).thenReturn(Optional.of(lesson1));
+
+        // WHEN
+        Calendar result = calendarService.getLessonById(lessonId);
+
+        // THEN
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(lesson1.getId(), result.getId());
+        Assertions.assertEquals(lesson1.getEventName(), result.getEventName());
+
+        verify(calendarRepository, times(1)).findById(lessonId);
+    }
+
+    @Test
+    void getLessonById_ShouldThrowCalendarException_WhenLessonDoesNotExist() {
+        // GIVEN
+        String lessonId = "999";
+
+        // WHEN
+        when(calendarRepository.findById(lessonId)).thenReturn(Optional.empty());
+
+        // THEN
+        Assertions.assertThrows(CalendarException.class, () -> {
+            calendarService.getLessonById(lessonId);
+        });
+    }
+
+    @Test
+    void getLessonsByCourseId_ShouldReturnLessons_WhenLessonsExist() {
+        // GIVEN
+        String courseId = "1233";
+
+        when(calendarRepository.findByCourseIdOrderByStartDateAsc(courseId)).thenReturn(Arrays.asList(lesson1, lesson2));
+
+        // WHEN
+        List<Calendar> result = calendarService.getLessonsByCourseId(courseId);
+
+        // THEN
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(2, result.size());
+        Assertions.assertEquals(lesson1.getId(), result.get(0).getId());
+        Assertions.assertEquals(lesson2.getId(), result.get(1).getId());
+
+        verify(calendarRepository, times(1)).findByCourseIdOrderByStartDateAsc(courseId);
+    }
+
+    @Test
+    void getLessonsByCourseId_ShouldReturnEmptyList_WhenNoLessonsExist() {
+        // GIVEN
+        String courseId = "9999";
+
+        when(calendarRepository.findByCourseIdOrderByStartDateAsc(courseId)).thenReturn(Collections.emptyList());
+
+        // WHEN
+        List<Calendar> result = calendarService.getLessonsByCourseId(courseId);
+
+        // THEN
+        Assertions.assertNotNull(result);
+        Assertions.assertTrue(result.isEmpty(), "The list should be empty when no lessons exist.");
+
+        verify(calendarRepository, times(1)).findByCourseIdOrderByStartDateAsc(courseId);
+    }
+
+    @Test
+    void getLessonsNumberByCourseId_ShouldReturnNumberOfLessons_WhenLessonsExist() {
+        // GIVEN
+        String courseId = "1233";
+
+        when(calendarRepository.findByCourseIdOrderByStartDateAsc(courseId)).thenReturn(Arrays.asList(lesson1, lesson2));
+
+        // WHEN
+        int result = calendarService.getLessonsNumberByCourseId(courseId);
+
+        // THEN
+        Assertions.assertEquals(2, result);
+
+        verify(calendarRepository, times(1)).findByCourseIdOrderByStartDateAsc(courseId);
+    }
+
+    @Test
+    void getLessonsNumberByCourseId_ShouldReturnZero_WhenNoLessonsExist() {
+        // GIVEN
+        String courseId = "9999";
+
+        when(calendarRepository.findByCourseIdOrderByStartDateAsc(courseId)).thenReturn(Collections.emptyList());
+
+        // WHEN
+        int result = calendarService.getLessonsNumberByCourseId(courseId);
+
+        // THEN
+        Assertions.assertEquals(0, result);
+
+        verify(calendarRepository, times(1)).findByCourseIdOrderByStartDateAsc(courseId);
+    }
+
+    @Test
+    void getLessonsByTeacherId_ShouldReturnLessons_WhenLessonsExist() {
+        // GIVEN
+        Long teacherId = 1L;
+
+        List<Calendar> mockLessons = Arrays.asList(lesson1, lesson2);
+
+        when(calendarRepository.findByTeacherIdOrderByStartDateAsc(teacherId)).thenReturn(mockLessons);
+
+        // WHEN
+        List<Calendar> result = calendarService.getLessonsByTeacherId(teacherId);
+
+        // THEN
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(2, result.size());
+        Assertions.assertEquals(lesson1.getId(), result.get(0).getId());
+        Assertions.assertEquals(lesson2.getId(), result.get(1).getId());
+
+        verify(calendarRepository, times(1)).findByTeacherIdOrderByStartDateAsc(teacherId);
+    }
+
+    @Test
+    void getLessonsByTeacherId_ShouldReturnEmptyList_WhenNoLessonsFound() {
+        // GIVEN
+        Long teacherId = 1L;
+        List<Calendar> emptyLessons = Collections.emptyList();
+
+        when(calendarRepository.findByTeacherIdOrderByStartDateAsc(teacherId)).thenReturn(emptyLessons);
+
+        // WHEN
+        List<Calendar> result = calendarService.getLessonsByTeacherId(teacherId);
+
+        // THEN
+        Assertions.assertNotNull(result);
+        Assertions.assertTrue(result.isEmpty());
+
+        verify(calendarRepository, times(1)).findByTeacherIdOrderByStartDateAsc(teacherId);
+    }
+
+    @Test
+    void getLessonsByStudentId_ShouldReturnLessons_WhenLessonsExist() {
+        // GIVEN
+        Long studentId = 1L;
+        List<Calendar> mockLessons = Arrays.asList(lesson1, lesson2);
+
+        when(calendarRepository.findByAttendanceListStudentIdOrderByStartDateAsc(studentId)).thenReturn(mockLessons);
+
+        // WHEN
+        List<Calendar> result = calendarService.getLessonsByStudentId(studentId);
+
+        // THEN
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(2, result.size());
+        Assertions.assertEquals(lesson1.getId(), result.get(0).getId());
+        Assertions.assertEquals(lesson2.getId(), result.get(1).getId());
+
+        verify(calendarRepository, times(1)).findByAttendanceListStudentIdOrderByStartDateAsc(studentId);
+    }
+
+    @Test
+    void getLessonsByStudentId_ShouldThrowException_WhenNoLessonsFound() {
+        // GIVEN
+        Long studentId = 1L;
+
+        when(calendarRepository.findByAttendanceListStudentIdOrderByStartDateAsc(studentId)).thenReturn(Collections.emptyList());
+
+        // WHEN & THEN
+        CalendarException thrownException = Assertions.assertThrows(CalendarException.class, () -> {
+            calendarService.getLessonsByStudentId(studentId);
+        });
+
+        Assertions.assertEquals(CalendarError.CALENDAR_LESSONS_NOT_FOUND, thrownException.getCalendarError());
+
+        verify(calendarRepository, times(1)).findByAttendanceListStudentIdOrderByStartDateAsc(studentId);
+    }
+
+    @Test
+    void isTeacherAssignedToLessonInCourse_ShouldReturnTrue_WhenTeacherIsAssignedToLesson() {
+        // GIVEN
+        String courseId = "course123";
+        Long teacherId = 1L;
+
+        when(calendarRepository.findByCourseIdOrderByStartDateAsc(courseId)).thenReturn(Arrays.asList(lesson1, lesson2));
+
+        // WHEN
+        boolean result = calendarService.isTeacherAssignedToLessonInCourse(courseId, teacherId);
+
+        // THEN
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void isTeacherAssignedToLessonInCourse_ShouldReturnFalse_WhenTeacherIsNotAssignedToAnyLesson() {
+        // GIVEN
+        String courseId = "course123";
+        Long teacherId = 2L;
+
+        when(calendarRepository.findByCourseIdOrderByStartDateAsc(courseId)).thenReturn(Arrays.asList(lesson1, lesson2));
+
+        // WHEN
+        boolean result = calendarService.isTeacherAssignedToLessonInCourse(courseId, teacherId);
+
+        // THEN
+
+        Assertions.assertFalse(result);
+    }
+
+    @Test
+    void isTeacherAssignedToLessonInCourse_ShouldReturnFalse_WhenNoLessonsExistForCourse() {
+        // GIVEN
+        String courseId = "course123";
+        Long teacherId = 1L;
+
+        when(calendarRepository.findByCourseIdOrderByStartDateAsc(courseId)).thenReturn(Collections.emptyList());
+
+        // WHEN
+        boolean result = calendarService.isTeacherAssignedToLessonInCourse(courseId, teacherId);
+
+        // THEN
+        Assertions.assertFalse(result);
+    }
+
+
+    private Calendar createLesson(String id, String eventName) {
+        Calendar lesson = new Calendar();
+        lesson.setId(id);
+        lesson.setEventName(eventName);
+        lesson.setStartDate(LocalDateTime.now());
+        lesson.setEndDate(LocalDateTime.now().plusHours(1));
+        lesson.setTeacherId(1L);
+        lesson.setCourseId("1233");
+        lesson.setStatus(Status.ACTIVE);
+        lesson.setDescription("some description");
+        lesson.setLanguage(Language.POLISH);
+        lesson.setPrice(120L);
+        return lesson;
+    }
 }
