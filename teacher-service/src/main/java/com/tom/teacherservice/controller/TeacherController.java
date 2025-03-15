@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-//@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PATCH})
 @AllArgsConstructor
 @RequestMapping("/teacher")
 public class TeacherController {
@@ -22,7 +21,6 @@ public class TeacherController {
     private static Logger logger = LoggerFactory.getLogger(TeacherController.class);
     private final TeacherService teacherService;
 
-    //sprawdzone
     @PostMapping("/idNumbers")
     public List<Teacher> getTeachersByIdNumber(@RequestBody List<Long> idNumbers) {
         logger.info("Post method getTeachersByIdNumber()");
@@ -97,8 +95,6 @@ public class TeacherController {
     public void deleteTeacherById(@PathVariable Long id) {
         teacherService.deleteTeacherById(id);
     }
-
-    //    nie sprawdzone
 
     @PreAuthorize("hasRole('admin')")
     @PutMapping("/{id}")

@@ -11,18 +11,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-//@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PATCH})
 @AllArgsConstructor
 @RequestMapping("/calendar")
 public class CalendarController {
     private static final Logger logger = LoggerFactory.getLogger(CalendarController.class);
     private final CalendarService calendarService;
 
-    //sprawdzone
     @PreAuthorize("hasRole('admin')")
     @GetMapping
     public List<Calendar> getAllLessons() {
@@ -156,7 +153,7 @@ public class CalendarController {
     @PostMapping("/generate-course-timetable")
     public CourseDto generateCourseTimetable(@RequestBody LessonScheduleRequest lessonScheduleRequest) {
         logger.info("Post method generateCourseTimetable().");
-         return calendarService.generateCourseTimetable(lessonScheduleRequest);
+        return calendarService.generateCourseTimetable(lessonScheduleRequest);
 
     }
 

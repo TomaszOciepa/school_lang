@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface StudentService {
-    //sprawdzone
+
     List<Student> getStudentsByIdNumbers(List<Long> idNumbers);
     List<Student> getStudents(Status status);
     List<Student> getStudentsByIdNumberNotEqual(List<Long> idNumbers);
@@ -19,7 +19,5 @@ public interface StudentService {
     void deleteStudentById(Long id);
     void studentIsActive(Long id);
     void restoreStudentAccount(Long id);
-    //nie sprawdzone
-
     List<Student> getStudentsByEmails(List<String> emails);
 }

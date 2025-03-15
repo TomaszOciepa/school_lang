@@ -3,6 +3,8 @@ package com.tom.salary_service.controller;
 
 import com.tom.salary_service.model.Salary;
 import com.tom.salary_service.service.SalaryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import java.util.List;
 @RequestMapping("/salary")
 public class SalaryController {
 
+    private static Logger logger = LoggerFactory.getLogger(SalaryController.class);
     private final SalaryService salaryService;
 
     public SalaryController(SalaryService salaryService) {

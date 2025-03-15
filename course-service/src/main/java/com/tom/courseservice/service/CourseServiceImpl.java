@@ -82,29 +82,9 @@ public class CourseServiceImpl implements CourseService {
         lessonScheduleRequest.setCourseId(courseFromDb.getId());
         lessonScheduleRequest.setLessonFrequency(courseFromDb.getLessonFrequency());
 
-         calendarServiceClient.generateCourseTimetable(lessonScheduleRequest);
-
-        createActivityLog(courseFromDb, "Utworzenie kursu");
+        calendarServiceClient.generateCourseTimetable(lessonScheduleRequest);
 
         return getCourseById(courseFromDb.getId(), null);
-    }
-
-    private void createActivityLog(Course courseFromDb, String name) {
-        ActivityLogCourse activityLogCourse = new ActivityLogCourse();
-        ActivityLog activityLog  = new ActivityLog();
-        User user = new User();
-
-        activityLogCourse.setActivityLog(activityLog);
-        activityLogCourse.getActivityLog().setActor(user);
-
-        activityLogCourse.setCourseId(courseFromDb.getId());
-        activityLogCourse.getActivityLog().setEventName(name+": "+ courseFromDb.getName() + " język: "+ courseFromDb.getLanguage());
-        activityLogCourse.getActivityLog().setTimestamp(LocalDateTime.now());
-        activityLogCourse.getActivityLog().getActor().setEmail(jwtUtils.getUserEmailFromJwt());
-        activityLogCourse.getActivityLog().getActor().setFirstName(jwtUtils.getUserFirstName());
-        activityLogCourse.getActivityLog().getActor().setLastName(jwtUtils.getUserLastName());
-
-        rabbitTemplate.convertAndSend("create-course-log", activityLogCourse);
     }
 
     @Override
@@ -618,32 +598,5 @@ public class CourseServiceImpl implements CourseService {
         }
         return result;
     }
-//    nie sprawdzone
-
-//    private void validateCourseStatus(Course course) {
-//        if (!Status.ACTIVE.equals(course.getStatus())) {
-//            throw new CourseException(CourseError.COURSE_IS_NOT_ACTIVE);
-//        }
-//    }
-//
-//    @Override
-//    public void changeCourseMemberStatus(String courseId, Long studentId, Status status) {
-//
-//        Course courseFromDb = getCourseById(courseId, null);
-//
-//        courseFromDb.getCourseStudents().stream().map(student -> {
-//            if (student.getStudentId().equals(studentId)) {
-//                student.setStatus(status);
-//            }
-//            return student;
-//        }).collect(Collectors.toList());
-//        courseRepository.save(courseFromDb);
-//
-//        if (status.equals(Status.ACTIVE)) {
-//            enrollStudentToLessons(courseId, studentId);
-//        }
-//
-//    }
-
 
 }

@@ -46,7 +46,7 @@ public class CalendarServiceImpl implements CalendarService {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    //sprawdzone
+
     @Override
     public List<Calendar> getAllLessons() {
         logger.info("Fetching lessons.");
@@ -96,32 +96,7 @@ public class CalendarServiceImpl implements CalendarService {
         } else {
             lesson = createCourseLesson(calendar);
         }
-        Calendar saved = calendarRepository.save(lesson);
-
-        createActivityLog(saved, "Utworzenie lekcji");
-
-        return saved;
-    }
-
-    private void createActivityLog(Calendar saved, String name) {
-        ActivityLogCalendar activityLogCalendar = new ActivityLogCalendar();
-        ActivityLog activityLog  = new ActivityLog();
-        User user = new User();
-
-        activityLogCalendar.setActivityLog(activityLog);
-        activityLogCalendar.getActivityLog().setActor(user);
-
-        activityLogCalendar.setCalendarId(saved.getId());
-        if(saved.getCourseId() != null){
-            activityLogCalendar.setCourseId(saved.getCourseId());
-        }
-        activityLogCalendar.getActivityLog().setEventName(name);
-        activityLogCalendar.getActivityLog().setTimestamp(LocalDateTime.now());
-        activityLogCalendar.getActivityLog().getActor().setEmail(jwtUtils.getUserEmailFromJwt());
-        activityLogCalendar.getActivityLog().getActor().setFirstName(jwtUtils.getUserFirstName());
-        activityLogCalendar.getActivityLog().getActor().setLastName(jwtUtils.getUserLastName());
-
-        rabbitTemplate.convertAndSend("create-calendar-log", activityLogCalendar);
+        return calendarRepository.save(lesson);
     }
 
     @Override
@@ -294,7 +269,6 @@ public class CalendarServiceImpl implements CalendarService {
 
         lessonsList.forEach(lesson -> {
             logger.info("Delete lesson id: {}", lesson.getId());
-//            deleteLessonsById(lesson.getId());
             calendarRepository.deleteById(lesson.getId());
         });
     }
@@ -517,7 +491,7 @@ public class CalendarServiceImpl implements CalendarService {
         }
 
     }
-    
+
     private List<DayOfWeek> setPreferredDays(LessonFrequency frequency) {
 
         return switch (frequency) {
@@ -676,7 +650,6 @@ public class CalendarServiceImpl implements CalendarService {
         CourseDto courseFromDb = getCourse(calendar.getCourseId(), null);
 
         if (isLessonExistForThisCourseInCalendar(calendar.getCourseId())) {
-//            isLessonLimitReached(courseFromDb.getLessonsLimit(), calendar.getCourseId());
             isCourseHaveLessonAvailableOnTimeSlot(calendar.getCourseId(), calendar.getStartDate(), calendar.getEndDate());
         }
 
@@ -702,8 +675,8 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     private Long calculateTeacherEarningsForLesson(Long price, Long percent) {
-        System.out.println("cena: "+price);
-        System.out.println("procent: "+percent);
+        System.out.println("cena: " + price);
+        System.out.println("procent: " + percent);
         if (price == null || percent == null || price < 0 || percent < 0) {
             throw new IllegalArgumentException("Cena i procent nie mogą być null lub ujemne");
         }
@@ -816,7 +789,7 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     private Long updateCoursePrice(String courseId) {
-        int lessonsNumberByCourseId =  getLessonsNumberByCourseId(courseId);
+        int lessonsNumberByCourseId = getLessonsNumberByCourseId(courseId);
         CourseDto courseFromDb = courseServiceClient.getCourseById(courseId, null);
         return courseFromDb.getPricePerLesson() * lessonsNumberByCourseId;
     }

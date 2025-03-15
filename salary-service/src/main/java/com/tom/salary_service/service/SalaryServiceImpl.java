@@ -7,7 +7,6 @@ import com.tom.salary_service.repo.SalaryRepository;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.ErrorResponseException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.YearMonth;
@@ -30,12 +29,7 @@ public class SalaryServiceImpl implements SalaryService {
     public List<Salary> getSalaryByTeacherId(Long teacherId) {
         createSalary(teacherId);
 
-        List<Salary> salaryList = salaryRepo.findByTeacherIdOrderByDateAsc(teacherId);
-
-        for (int i = 0; i < salaryList.size(); i++) {
-            System.out.println(salaryList.get(i).toString());
-        }
-        return salaryList;
+        return salaryRepo.findByTeacherIdOrderByDateAsc(teacherId);
     }
 
     @Override
@@ -47,7 +41,6 @@ public class SalaryServiceImpl implements SalaryService {
 
 
     private void createSalary(Long teacherId) {
-        System.out.println("siema");
         List<Salary> salaryList = salaryRepo.findByTeacherIdOrderByDateAsc(teacherId);
         List<CalendarDto> lessonsList = calendarServiceClient.getLessonByTeacherId(teacherId);
 

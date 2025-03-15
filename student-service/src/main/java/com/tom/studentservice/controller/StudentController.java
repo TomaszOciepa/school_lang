@@ -10,11 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
-//@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PATCH})
 @AllArgsConstructor
 @RequestMapping("/student")
 public class StudentController {
@@ -22,7 +20,6 @@ public class StudentController {
     private static Logger logger = LoggerFactory.getLogger(StudentController.class);
     private final StudentService studentService;
 
-    //    sprawdzone
     @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PostMapping("/idNumbers")
     public List<Student> getStudentsByIdNumbers(@RequestBody List<Long> idNumbers) {
@@ -98,7 +95,7 @@ public class StudentController {
         logger.info("Patch method restoreStudentAccount()");
         studentService.restoreStudentAccount(id);
     }
-    //    nie sprawdzone
+
     @PreAuthorize("hasRole('admin') or hasRole('teacher')")
     @PostMapping("/emails")
     public List<Student> getStudentsByEmails(@RequestBody List<String> emails) {

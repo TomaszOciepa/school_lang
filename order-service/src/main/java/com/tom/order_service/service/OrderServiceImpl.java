@@ -10,7 +10,6 @@ import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
@@ -23,7 +22,6 @@ public class OrderServiceImpl implements OrderService {
     private static Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
     private final OrderRepository orderRepo;
     private final OrderNumberGenerator orderNumberGenerator;
-    private final StudentServiceClient studentServiceClient;
     private final CourseServiceClient courseServiceClient;
     private final  PaymentServiceClient paymentServiceClient;
 
@@ -66,7 +64,6 @@ public class OrderServiceImpl implements OrderService {
         String totalAmount = null;
 
         try {
-            System.out.println("siema w getCourseTotalAmount");
            totalAmount = courseServiceClient.getCourseTotalAmount(courseId);
         } catch (FeignException ex) {
             logger.error("FeignException occurred: {}", ex.getMessage());
@@ -77,7 +74,6 @@ public class OrderServiceImpl implements OrderService {
         }
 
         try {
-            System.out.println("siema w assignStudentToCourse");
             courseServiceClient.assignStudentToCourse(courseId, studentId);
         } catch (FeignException ex) {
             logger.error("FeignException occurred: {}", ex.getMessage());
@@ -93,7 +89,6 @@ public class OrderServiceImpl implements OrderService {
 
 
         String redirectUri = "";
-        System.out.println("tworze order: "+ order.toString());
         try {
             OrderResponse orderResponse = paymentServiceClient.createPayment(order);
             order.setPaymentServiceNumber(orderResponse.getOrderId());

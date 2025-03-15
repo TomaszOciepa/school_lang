@@ -4,9 +4,6 @@ import com.tom.teacherservice.exception.TeacherError;
 import com.tom.teacherservice.exception.TeacherException;
 import com.tom.teacherservice.model.Status;
 import com.tom.teacherservice.model.Teacher;
-import com.tom.teacherservice.model.dto.ActivityLog;
-import com.tom.teacherservice.model.dto.ActivityLogTeacher;
-import com.tom.teacherservice.model.dto.User;
 import com.tom.teacherservice.repo.TeacherRepository;
 import com.tom.teacherservice.security.AuthenticationContext;
 import com.tom.teacherservice.security.JwtUtils;
@@ -14,12 +11,10 @@ import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -32,10 +27,8 @@ public class TeacherServiceImpl implements TeacherService {
     private final CalendarServiceClient calendarServiceClient;
     private final CourseServiceClient courseServiceClient;
     private final KeycloakServiceClient keycloakServiceClient;
-    private final RabbitTemplate rabbitTemplate;
     private static Logger logger = LoggerFactory.getLogger(TeacherServiceImpl.class);
 
-    //sprawdzone
     @Override
     public List<Teacher> getTeachers(Status status) {
         if (status != null) {
@@ -94,27 +87,7 @@ public class TeacherServiceImpl implements TeacherService {
         validateTeacherEmailExists(teacher.getEmail());
         teacher.setStatus(Status.INACTIVE);
         Teacher save = teacherRepository.save(teacher);
-        createActivityLog(save, "Utworzenie konta");
         return save;
-    }
-
-    private void createActivityLog(Teacher teacher, String name) {
-        ActivityLogTeacher activityLogTeacher = new ActivityLogTeacher();
-        ActivityLog activityLog  = new ActivityLog();
-        User user = new User();
-
-        activityLogTeacher.setActivityLog(activityLog);
-        activityLogTeacher.getActivityLog().setActor(user);
-
-        activityLogTeacher.setTeacherId(teacher.getId());
-
-        activityLogTeacher.getActivityLog().setEventName(name);
-        activityLogTeacher.getActivityLog().setTimestamp(LocalDateTime.now());
-        activityLogTeacher.getActivityLog().getActor().setEmail(jwtUtils.getUserEmailFromJwt());
-        activityLogTeacher.getActivityLog().getActor().setFirstName(jwtUtils.getUserFirstName());
-        activityLogTeacher.getActivityLog().getActor().setLastName(jwtUtils.getUserLastName());
-
-        rabbitTemplate.convertAndSend("create-teacher-log", activityLogTeacher);
     }
 
     @Override

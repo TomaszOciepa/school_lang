@@ -7,7 +7,6 @@ import com.tom.calendarservice.model.Dto.LessonScheduleRequest;
 import java.util.List;
 
 public interface CalendarService {
-    //sprawdzone
     List<Calendar> getAllLessons();
 
     Calendar getLessonById(String id);
