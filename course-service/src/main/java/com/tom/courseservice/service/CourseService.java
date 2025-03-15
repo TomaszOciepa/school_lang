@@ -2,7 +2,6 @@ package com.tom.courseservice.service;
 
 import com.tom.courseservice.model.Course;
 import com.tom.courseservice.model.Language;
-import com.tom.courseservice.model.LessonScheduleRequest;
 import com.tom.courseservice.model.Status;
 import com.tom.courseservice.model.dto.CourseStudentDto;
 import com.tom.courseservice.model.dto.TeacherDto;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 public interface CourseService {
 
-    //sprawdzone
     Course addCourse(Course course);
     List<Course> getAllByStatus(Status status);
     Course getCourseById(String id, Status status);
@@ -32,8 +30,5 @@ public interface CourseService {
     void deactivateStudent(Long studentId);
     void removeTeacherWithAllCourses(Long teacherId);
     void removeStudentWithAllCourses(Long studentId);
-
-//    nie sprawdzone
-//    void changeCourseMemberStatus(String courseId, Long studentId, Status status);
 
 }

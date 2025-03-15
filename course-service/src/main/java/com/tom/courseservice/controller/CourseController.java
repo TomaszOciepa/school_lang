@@ -2,7 +2,6 @@ package com.tom.courseservice.controller;
 
 import com.tom.courseservice.model.Course;
 import com.tom.courseservice.model.Language;
-import com.tom.courseservice.model.LessonScheduleRequest;
 import com.tom.courseservice.model.Status;
 import com.tom.courseservice.model.dto.CourseStudentDto;
 import com.tom.courseservice.model.dto.TeacherDto;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-//@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PATCH})
 @RequestMapping("/course")
 @AllArgsConstructor
 public class CourseController {
@@ -88,7 +86,6 @@ public class CourseController {
     public void assignTeacherToCourse(@PathVariable String courseId, @PathVariable Long teacherId) {
         logger.info("Post method assignTeacherToCourse()");
         courseService.assignTeacherToCourse(courseId, teacherId);
-//        return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('admin')")
