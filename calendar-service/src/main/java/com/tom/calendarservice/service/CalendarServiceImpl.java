@@ -50,10 +50,7 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public List<Calendar> getAllLessons() {
         logger.info("Fetching lessons.");
-        List<Calendar> calendars = calendarRepository.findAllByOrderByStartDateAsc();
-        calendars.stream()
-                .forEach(calendar -> System.out.println(calendar));
-
+        
         return calendarRepository.findAllByOrderByStartDateAsc().stream()
                 .map(this::updateLessonStatus)
                 .collect(Collectors.toList());
