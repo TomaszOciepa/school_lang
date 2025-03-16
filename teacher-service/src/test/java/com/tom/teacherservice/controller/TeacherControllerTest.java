@@ -7,9 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,14 +26,14 @@ class TeacherControllerTest {
 
     private List<Teacher> prepareTeachersData() {
         List<Teacher> mockTeachers = Arrays.asList(
-                new Teacher(1L, "Robert", "Kubica", "rob@wp.pl", Status.ACTIVE),
-                new Teacher(2L, "Krzysztof", "Hołowczyc", "hol@wp.pl", Status.INACTIVE)
+                new Teacher(1L, "Robert", "Kubica", "rob@wp.pl", Status.ACTIVE, "pass"),
+                new Teacher(2L, "Krzysztof", "Hołowczyc", "hol@wp.pl", Status.INACTIVE, "pass")
         );
         return mockTeachers;
     }
 
     private Teacher prepareTeacher() {
-        Teacher mockStudent = new Teacher(1L, "Robert", "Kubica", "rob@wp.pl", Status.ACTIVE);
+        Teacher mockStudent = new Teacher(1L, "Robert", "Kubica", "rob@wp.pl", Status.ACTIVE, "pass");
         return mockStudent;
     }
 
@@ -116,18 +114,6 @@ class TeacherControllerTest {
         assertEquals(mockTeacher, result);
     }
 
-//    @Test
-//    void patchTeacherShouldBeReturnTeacher() {
-//        MockitoAnnotations.openMocks(this);
-//        //given
-//        ResponseEntity mockTeacher = ResponseEntity.ok().build();
-//        Long mockId = mockTeacher.getId();
-//        given(teacherService.patchTeacher(mockId, mockTeacher)).willReturn(mockTeacher);
-//        //when
-//        ResponseEntity result = teacherController.patchTeacher(mockId, mockTeacher);
-//        //then
-//        assertEquals(mockTeacher, result);
-//    }
 
     @Test
     void deleteTeacherVerifyMethod() {
