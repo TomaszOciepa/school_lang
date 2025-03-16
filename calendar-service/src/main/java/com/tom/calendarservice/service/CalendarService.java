@@ -40,5 +40,5 @@ public interface CalendarService {
     void deleteStudentWithAllLessons(Long studentId);
 
     CourseDto generateCourseTimetable(LessonScheduleRequest lessonScheduleRequest);
-
+    Calendar updateLessonStatus(Calendar lesson);
 }

@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +17,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+
 
 class StudentServiceImplTest {
 
@@ -105,19 +104,6 @@ class StudentServiceImplTest {
         assertThrows(StudentException.class, () -> studentServiceImpl.getStudentByEmail(mockEmail));
     }
 
-//    @Test
-//    void patchStudentShouldBEReturnStudent() {
-//        MockitoAnnotations.openMocks(this);
-//        //given
-//        Student mockStudent = prepareStudent();
-//        Long mockId = 1L;
-//        given(studentRepository.findById(mockId)).willReturn(Optional.of(mockStudent));
-//        given(studentRepository.save(mockStudent)).willReturn(mockStudent);
-//        //when
-//        Student result = studentServiceImpl.patchStudent(mockId, mockStudent);
-//        //then
-//        assertEquals(mockStudent, result);
-//    }
 
     @Test
     void patchStudentShouldBEReturnStudentNotFound() {

@@ -10,7 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -18,8 +18,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+
 
 class TeacherServiceImplTest {
 
@@ -30,14 +29,14 @@ class TeacherServiceImplTest {
 
     private List<Teacher> prepareTeachersData() {
         List<Teacher> mockTeachers = Arrays.asList(
-                new Teacher(1L, "Robert", "Kubica", "rob@wp.pl", Status.ACTIVE),
-                new Teacher(2L, "Krzysztof", "Hołowczyc", "hol@wp.pl", Status.INACTIVE)
+                new Teacher(1L, "Robert", "Kubica", "rob@wp.pl", Status.ACTIVE, "pass"),
+                new Teacher(2L, "Krzysztof", "Hołowczyc", "hol@wp.pl", Status.INACTIVE, "pass")
         );
         return mockTeachers;
     }
 
     private Teacher prepareTeacher() {
-        Teacher mockStudent = new Teacher(1L, "Robert", "Kubica", "rob@wp.pl", Status.ACTIVE);
+        Teacher mockStudent = new Teacher(1L, "Robert", "Kubica", "rob@wp.pl", Status.ACTIVE, "pass");
         return mockStudent;
     }
 
@@ -169,19 +168,6 @@ class TeacherServiceImplTest {
         assertThrows(TeacherException.class, () -> teacherServiceImpl.putTeacher(mockId, mockTeacher));
     }
 
-//    @Test
-//    void patchTeacherShouldBeReturnTeacher() {
-//        MockitoAnnotations.openMocks(this);
-//        //given
-//        Teacher mockTeacher = prepareTeacher();
-//        Long mockId = 1L;
-//        given(teacherRepository.findById(mockId)).willReturn(Optional.of(mockTeacher));
-//        given(teacherRepository.save(mockTeacher)).willReturn(mockTeacher);
-//        //when
-//        Teacher result = teacherServiceImpl.patchTeacher(mockId, mockTeacher);
-//        //then
-//        assertEquals(mockTeacher, result);
-//    }
 
     @Test
     void patchTeacherShouldBeReturnExceptionTeacherNotFound() {
@@ -196,20 +182,6 @@ class TeacherServiceImplTest {
         assertThrows(TeacherException.class, ()->teacherServiceImpl.patchTeacher(mockId, mockTeacher));
     }
 
-//    @Test
-//    void deleteTeacherVerifyMethod() {
-//        MockitoAnnotations.openMocks(this);
-//        //given
-//        Teacher mockTeacher = prepareTeacher();
-//        Long mockId = mockTeacher.getId();
-//        given(teacherRepository.findById(mockId)).willReturn(Optional.of(mockTeacher));
-//        //when
-//        teacherServiceImpl.deactivateTeacherById(mockId);
-//        //then
-//        verify(teacherRepository, times(1)).findById(mockId);
-//        verify(teacherRepository, times(1)).save(mockTeacher);
-//        assertEquals(Status.INACTIVE, mockTeacher.getStatus());
-//    }
 
     @Test
     void getTeachersByIdNumber() {

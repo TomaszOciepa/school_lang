@@ -50,7 +50,7 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public List<Calendar> getAllLessons() {
         logger.info("Fetching lessons.");
-        
+
         return calendarRepository.findAllByOrderByStartDateAsc().stream()
                 .map(this::updateLessonStatus)
                 .collect(Collectors.toList());
@@ -241,7 +241,6 @@ public class CalendarServiceImpl implements CalendarService {
                 .orElseThrow(() -> new CalendarException(CalendarError.CALENDAR_NOT_FOUND));
         logger.info("Delete lesson lessonId: {}", id);
         calendarRepository.deleteById(id);
-        int lessonsNumberByCourseId = getLessonsNumberByCourseId(id);
         if (lessonFromDb.getCourseId() != null) {
             updateCourseData(lessonFromDb.getCourseId());
         }
@@ -433,7 +432,6 @@ public class CalendarServiceImpl implements CalendarService {
                     );
 
                     calendarRepository.save(newLesson);
-//                    createActivityLog(newLesson, "Automatyczne utworzenie lekcji.");
                     lessonsByTeacher.add(newLesson);
 
                     numberLessonsToCreate--;
@@ -605,7 +603,11 @@ public class CalendarServiceImpl implements CalendarService {
         return true;
     }
 
-    private Calendar updateLessonStatus(Calendar lesson) {
+    public Calendar updateLessonStatus(Calendar lesson) {
+
+        if (lesson == null) {
+            throw new IllegalArgumentException("Calendar object cannot be null");
+        }
 
         if (lesson.getStartDate().isAfter(LocalDateTime.now())) {
             lesson.setStatus(Status.INACTIVE);
@@ -631,7 +633,7 @@ public class CalendarServiceImpl implements CalendarService {
         }
     }
 
-    private Calendar createSingleLesson(Calendar calendar) {
+    public Calendar createSingleLesson(Calendar calendar) {
         logger.info("Creating single lesson.");
         isTeacherActive(calendar.getTeacherId());
         if (isTeacherHaveLessons(calendar.getTeacherId())) {
@@ -641,7 +643,7 @@ public class CalendarServiceImpl implements CalendarService {
         return calendar;
     }
 
-    private Calendar createCourseLesson(Calendar calendar) {
+    public Calendar createCourseLesson(Calendar calendar) {
         logger.info("Creating course lesson");
 
         CourseDto courseFromDb = getCourse(calendar.getCourseId(), null);

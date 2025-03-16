@@ -33,7 +33,7 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final StudentServiceClient studentServiceClient;
     private final TeacherServiceClient teacherServiceClient;
-    private final RabbitTemplate rabbitTemplate;
+
 
     private final CalendarServiceClient calendarServiceClient;
     private final AuthenticationContext authenticationContext;
@@ -133,6 +133,8 @@ public class CourseServiceImpl implements CourseService {
         return courses;
     }
 
+
+
     @Override
     public List<CourseStudentDto> getCourseMembers(String courseId) {
         logger.info("Fetching courses by id: {}.", courseId);
@@ -149,9 +151,7 @@ public class CourseServiceImpl implements CourseService {
                 .collect(Collectors.toList());
         logger.info("Fetching students by id number.");
         List<StudentDto> studentsFromDb = studentServiceClient.getStudentsByIdNumbers(idNumbers);
-        List<CourseStudentDto> courseStudentList = createCourseStudentList(courseStudents, studentsFromDb);
-
-        return courseStudentList;
+        return createCourseStudentList(courseStudents, studentsFromDb);
     }
 
     @Override
