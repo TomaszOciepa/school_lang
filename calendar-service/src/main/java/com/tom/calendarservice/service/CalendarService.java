@@ -1,11 +1,12 @@
 package com.tom.calendarservice.service;
 
 import com.tom.calendarservice.model.Calendar;
+import com.tom.calendarservice.model.Dto.CourseDto;
+import com.tom.calendarservice.model.Dto.LessonScheduleRequest;
 
 import java.util.List;
 
 public interface CalendarService {
-    //sprawdzone
     List<Calendar> getAllLessons();
 
     Calendar getLessonById(String id);
@@ -25,7 +26,7 @@ public interface CalendarService {
     Calendar patchLesson(String id, Calendar calendar);
 
     void deleteLessonsById(String id);
-
+    void deleteLessonsByTeacherId(Long teacherId);
     boolean isTeacherAssignedToLessonInCourse(String courseId, Long teacherId);
 
     void enrollStudent(String courseId, Long studentId);
@@ -33,12 +34,11 @@ public interface CalendarService {
     public boolean unEnrollStudent(String courseId, Long studentId);
 
     void enrollStudentLesson(String lessonId, Long studentId);
-
+    void deactivateStudent(Long studentId);
     void unEnrollStudentLesson(String lessonId, Long studentId);
 
-//    nie sprawdzone
+    void deleteStudentWithAllLessons(Long studentId);
 
-    //    Calendar addEvent(EventRequest eventRequest);
-
-
+    CourseDto generateCourseTimetable(LessonScheduleRequest lessonScheduleRequest);
+    Calendar updateLessonStatus(Calendar lesson);
 }

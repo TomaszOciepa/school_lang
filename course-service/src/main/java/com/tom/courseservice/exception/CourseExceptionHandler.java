@@ -37,6 +37,8 @@ public class CourseExceptionHandler {
                 || CourseError.STUDENT_IS_NOT_ACTIVE.equals(e.getCourseError())
                 || CourseError.TEACHER_IS_NOT_ACTIVE.equals(e.getCourseError())) {
             httpStatus = HttpStatus.BAD_REQUEST;
+        } else if (CourseError.STUDENT_OPERATION_FORBIDDEN.equals(e.getCourseError())) {
+            httpStatus = HttpStatus.FORBIDDEN;
         }
 
         return ResponseEntity.status(httpStatus).body(new ErrorInfo(e.getCourseError().getMessage()));
@@ -45,5 +47,6 @@ public class CourseExceptionHandler {
     @ExceptionHandler(FeignException.class)
     public ResponseEntity<?> handleFeignException(FeignException e) {
         return ResponseEntity.status(e.status()).body(new JSONObject(e.contentUTF8()).toMap());
+
     }
 }

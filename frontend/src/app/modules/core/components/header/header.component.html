@@ -1,40 +1,102 @@
-<nav>
-  <mat-toolbar color="primary">
-    <span>Lang School</span>
-    <span class="spacer"></span>
-    <button mat-button routerLink="/">Strona główna</button>
-    <button
-      mat-button
-      routerLink="courses"
-      *ngIf="(isLoggedIn && isAdmin) || (isLoggedIn && isUser)"
-    >
-      Kursy
-    </button>
-    <button
-      mat-button
-      routerLink="lessons"
-      *ngIf="(isLoggedIn && isAdmin) || (isLoggedIn && isUser)"
-    >
-      Lekcje
-    </button>
-    <button
-      mat-button
-      routerLink="teachers"
-      *ngIf="(isLoggedIn && isAdmin) || (isLoggedIn && isUser)"
-    >
-      Nauczyciele
-    </button>
-    <button
-      mat-button
-      routerLink="students"
-      *ngIf="(isLoggedIn && isAdmin) || (isLoggedIn && isUser)"
-    >
-      Uczniowie
-    </button>
-    <button *ngIf="!isLoggedIn" mat-button (click)="login()">Logowanie</button>
-    <p *ngIf="isLoggedIn">
-      {{ userProfile?.firstName }} {{ userProfile?.lastName }}
-    </p>
-    <button *ngIf="isLoggedIn" mat-button (click)="logout()">Wyloguj</button>
-  </mat-toolbar>
-</nav>
+<!-- Header Start -->
+<div class="header-area header-transparent high">
+  <div class="main-header">
+    <div class="header-bottom header-sticky">
+      <div class="container-fluid">
+        <div class="row align-items-center">
+          <!-- Logo -->
+          <div class="col-xl-2 col-lg-2">
+            <div class="logo">
+              <a href="index.html"
+                ><img src="assets/img/logo/logo.png" alt=""
+              /></a>
+            </div>
+          </div>
+          <div class="col-xl-10 col-lg-10">
+            <div
+              class="menu-wrapper d-flex align-items-center justify-content-end"
+            >
+              <!-- Main-menu -->
+              <div class="main-menu d-none d-lg-block">
+                <nav>
+                  <ul id="navigation">
+                    <li class="active"><a routerLink="/">Home</a></li>
+                    <li class="active">
+                      <a routerLink="course-offering">Oferta</a>
+                    </li>
+                    <li *ngIf="isAdmin || isTeacher">
+                      <a routerLink="courses">Kursy</a>
+                    </li>
+                    <li *ngIf="isAdmin || isTeacher">
+                      <a routerLink="lessons">Harmonogram</a>
+                    </li>
+                    <li *ngIf="isAdmin">
+                      <a routerLink="teachers">Nauczyciele</a>
+                    </li>
+                    <li *ngIf="isAdmin || isTeacher">
+                      <a routerLink="students">Studenci</a>
+                    </li>
+                    <li *ngIf="isTeacher">
+                      <a routerLink="salary">Wynagrodzenie</a>
+                    </li>
+
+                    <li *ngIf="isAdmin">
+                      <a routerLink="payments">Płatności</a>
+                    </li>
+                    <li *ngIf="isAdmin || isTeacher">
+                      <a routerLink="user-account">Moje konto</a>
+                    </li>
+
+                    <ng-container *ngIf="isLoggedIn && isStudent">
+                      <li>
+                        <a routerLink="account-student/my-courses">Kursy</a>
+                      </li>
+                      <li>
+                        <a routerLink="account-student/my-lessons"
+                          >Harmonogram</a
+                        >
+                      </li>
+                      <li>
+                        <a href="#">Moje konto</a>
+                        <ul class="submenu">
+                          <li>
+                            <a routerLink="account-student/my-account"
+                              >moje dane</a
+                            >
+                          </li>
+                          <li>
+                            <a routerLink="account-student/my-payments"
+                              >Płatności</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                    </ng-container>
+                    <li *ngIf="!isLoggedIn"><a routerLink="">Kontakt</a></li>
+                    <!-- Button -->
+                    <li *ngIf="!isLoggedIn" class="button-header margin-left">
+                      <a routerLink="register" class="btn">Dołącz</a>
+                    </li>
+                    <li *ngIf="!isLoggedIn" class="button-header">
+                      <a (click)="login()" class="btn btn3">Zaloguj</a>
+                    </li>
+                    <li *ngIf="isLoggedIn" class="button-header">
+                      <a (click)="logout()" class="btn btn3"
+                        >Wyloguj ({{ userProfile?.firstName }})</a
+                      >
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+          <!-- Mobile Menu -->
+          <div class="col-12">
+            <div class="mobile_menu d-block d-lg-none"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Header End -->

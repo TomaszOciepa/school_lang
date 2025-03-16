@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Czy napewno chcesz usunąć konto studenta?</h1>
+<div mat-dialog-content>
+  <p>Imię i nazwisko:</p>
+  <p>{{ student.firstName }} {{ student.lastName }}</p>
+  <p>Usuniesz studenta ze wszystkich lekcji.</p>
+  <p>Usuniesz studenta ze wszystkich kursów do których jest przypisany.</p>
+  <p>Usuniesz konto studenta z systemu.</p>
+  <app-alert *ngIf="errorMessage">{{ errorMessage }}</app-alert>
+</div>
+<div mat-dialog-actions>
+  <button color="accent" mat-button mat-dialog-close>Anuluj</button>
+  <button color="warn" mat-button (click)="onDrop()" cdkFocusInitial>
+    usuń konto
+  </button>
+</div>

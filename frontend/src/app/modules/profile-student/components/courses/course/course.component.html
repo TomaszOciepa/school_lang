@@ -1,0 +1,129 @@
+<section class="slider-area slider-area2" *ngIf="course">
+  <div class="slider-active">
+    <!-- Single Slider -->
+    <div class="single-slider slider-height2"></div>
+  </div>
+</section>
+
+<div class="container-fluid" *ngIf="course">
+  <div class="row text-start">
+    <div class="col-4">
+      <div class="teacher-data">
+        <h2>Kurs</h2>
+      </div>
+      <div class="row top-border text-centre">
+        <div class="col-6">
+          <mat-list>
+            <mat-list-item>
+              <span matListItemTitle>{{
+                getLanguageName(course.language)
+              }}</span>
+              <span>język</span>
+            </mat-list-item>
+            <mat-list-item>
+              <span matListItemTitle>{{ course.name }}</span>
+              <span matListItemLine>nazwa</span>
+            </mat-list-item>
+            <mat-list-item>
+              <span matListItemTitle> {{ course.coursePrice || 0 }} zł</span>
+              <span matListItemLine>cena</span>
+            </mat-list-item>
+          </mat-list>
+        </div>
+
+        <div class="col-6">
+          <mat-list>
+            <mat-list-item>
+              <span matListItemTitle>
+                {{ getStatusName(course.status) }}
+                <span
+                  class="status-indicator"
+                  [ngClass]="getStatusClass(course.status)"
+                ></span>
+              </span>
+
+              <span>status</span>
+            </mat-list-item>
+
+            <mat-list-item>
+              <span matListItemTitle>
+                {{ course.startDate | date : "d MMMM yyyy" }}r.</span
+              >
+              <span>początek</span>
+            </mat-list-item>
+            <mat-list-item>
+              <span matListItemTitle
+                >{{ course.endDate | date : "d MMMM yyyy" }}r.</span
+              >
+              <span matListItemLine>koniec</span>
+            </mat-list-item>
+          </mat-list>
+        </div>
+        <div class="row top-border text-centre">
+          <div class="col-3">
+            <mat-list>
+              <mat-list-item>
+                <span matListItemTitle>{{ course.lessonsLimit }}</span>
+                <span matListItemLine>lekcje</span>
+              </mat-list-item>
+            </mat-list>
+          </div>
+          <div class="col-3">
+            <mat-list>
+              <mat-list-item>
+                <span matListItemTitle>{{ teachers.length }}</span>
+                <span matListItemLine>nauczyciele</span>
+              </mat-list-item>
+            </mat-list>
+          </div>
+          <div class="col-3">
+            <mat-list>
+              <mat-list-item>
+                <span matListItemTitle>{{ course.participantsNumber }}</span>
+                <span matListItemLine>uczniowie</span>
+              </mat-list-item>
+            </mat-list>
+          </div>
+          <div class="col-3">
+            <mat-list>
+              <mat-list-item>
+                <span matListItemTitle>{{ course.participantsLimit }}</span>
+                <span matListItemLine>limit uczniów</span>
+              </mat-list-item>
+            </mat-list>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-8">
+      <app-course-lessons-table
+        [course-id]="course.id"
+      ></app-course-lessons-table>
+    </div>
+  </div>
+
+  <div class="row my-margin my-box">
+    <div class="col-6 text-start">
+      <div *ngIf="teachers">
+        <h2>Nauczyciele</h2>
+        <table class="table" style="font-size: medium">
+          <thead>
+            <tr>
+              <th scope="col">lp.</th>
+              <th scope="col">imię i nazwisko</th>
+              <th scope="col">email</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let teacher of teachers; index as i">
+              <th scope="row">{{ i + 1 }}</th>
+              <td>{{ teacher.firstName }} {{ teacher.lastName }}</td>
+              <td>{{ teacher.email }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-6 text-start"></div>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+.text-red {
+  color: red;
+}
+
+.text-start figcaption {
+  color: white; /* Ustawia kolor tekstu w figcaption na biały */
+  font-size: 2rem;
+}
+
+.course-details {
+  font-size: 1.5rem;
+}
+
+.my-padding {
+  padding-top: 60px;
+}
+
+.bg-color {
+  background-color: #f4f4f5;
+}
+
+.text-center h3 {
+  text-align: center;
+}

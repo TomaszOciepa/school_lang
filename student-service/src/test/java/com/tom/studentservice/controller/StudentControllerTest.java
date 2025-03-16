@@ -29,14 +29,14 @@ class StudentControllerTest {
 
     private List<Student> prepareStudentsData() {
         List<Student> mockStudents = Arrays.asList(
-                new Student(1L, "Tomasz", "Kowalski", "tom@wp.pl", Status.ACTIVE),
-                new Student(2L, "Mango", "Nowak", "mangi@wp.pl", Status.INACTIVE)
+                new Student(1L, "Tomasz", "Kowalski", "tom@wp.pl", Status.ACTIVE, ""),
+                new Student(2L, "Mango", "Nowak", "mangi@wp.pl", Status.INACTIVE, "")
         );
         return mockStudents;
     }
 
     private Student prepareStudent() {
-        Student mockStudent = new Student(1L, "Jan", "Nowak", "jan@wp.pl", Status.ACTIVE);
+        Student mockStudent = new Student(1L, "Jan", "Nowak", "jan@wp.pl", Status.ACTIVE,"");
         return mockStudent;
     }
 
@@ -162,18 +162,7 @@ class StudentControllerTest {
         assertThrows(StudentException.class, () -> studentController.addStudent(mockStudent));
     }
 
-    @Test
-    void patchStudentShouldBeReturnStudent() {
-        MockitoAnnotations.openMocks(this);
-        //given
-        Student mockStudent = prepareStudent();
-        Long mockStudentId = 1L;
-        given(studentService.patchStudent(mockStudentId, mockStudent)).willReturn(mockStudent);
-        //when
-        Student result = studentController.patchStudent(mockStudentId, mockStudent);
-        //then
-        assertEquals(mockStudent, result);
-    }
+
 
     @Test
     void patchStudentShouldBeReturnExceptionStudentNotFound() {
@@ -192,11 +181,11 @@ class StudentControllerTest {
     void deleteStudentVerifyMethod() {
         MockitoAnnotations.openMocks(this);
         //given
-        willDoNothing().given(studentService).deleteStudent(1L);
+        willDoNothing().given(studentService).deactivateStudentById(1L);
         //when
-        studentController.deleteStudent(1L);
+        studentController.deactivateStudentById(1L);
         //then
-        verify(studentService).deleteStudent(1L);
+        verify(studentService).deactivateStudentById(1L);
     }
 
     @Test

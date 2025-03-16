@@ -16,7 +16,11 @@ public enum CalendarError {
     LESSON_END_DATE_IS_BEFORE_COURSE_START_DATE("Lesson end date is before course start date"),
     LESSON_START_DATE_IS_AFTER_COURSE_END_DATE("Lesson start date is after course end date"),
     LESSON_END_DATE_IS_AFTER_COURSE_END_DATE("Lesson end date is after course end date"),
-    STUDENT_ALREADY_ENROLLED("Student is already enrolled in the lesson");
+    LESSON_START_DATE_IS_NO_WEEKEND_DAY("For WEEKENDS_ONLY, the start date must be a Saturday or Sunday."),
+    LESSON_START_DATE_IS_NO_WEEK_DAY("The start date cannot be a Saturday or Sunday."),
+
+    STUDENT_ALREADY_ENROLLED("Student is already enrolled in the lesson"),
+    STUDENT_OPERATION_FORBIDDEN("Operation is forbidden.");
 
 
     private String message;

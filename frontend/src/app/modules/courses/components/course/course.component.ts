@@ -13,6 +13,7 @@ import { EnrollCourseDialogComponent } from './enroll-course-dialog/enroll-cours
 import { UnenrollCourseDialogComponent } from './unenroll-course-dialog/unenroll-course-dialog.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RestoreStudentDialogComponent } from './restore-student-dialog/restore-student-dialog.component';
+import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 
 @Component({
   selector: 'app-course',
@@ -27,23 +28,33 @@ export class CourseComponent {
 
   listUserId!: number[];
   errMsg!: string;
+  role!: string;
 
   constructor(
+    private userProfileService: LoadUserProfileService,
     private courseService: CourseService,
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private router: Router
   ) {}
 
-  async ngAfterViewInit(): Promise<void> {
+  async ngOnInit(): Promise<void> {
     this.route.params;
     this.route.params.subscribe((params) => {
       this.id = params['id'];
     });
-
+    this.loadUserProfile();
     this.getCourseById(this.id);
     this.getCourseMembers(this.id);
     this.getCourseTeachers(this.id);
+  }
+
+  async loadUserProfile(): Promise<void> {
+    await this.userProfileService.loadUserProfile();
+
+    if (this.userProfileService.isAdmin) {
+      this.role = 'ADMIN';
+    }
   }
 
   getCourseById(id: string) {
@@ -63,9 +74,7 @@ export class CourseComponent {
       next: (student) => {
         this.students = student;
       },
-      error: (err: HttpErrorResponse) => {
-        console.log(err.error.message);
-      },
+      error: (err: HttpErrorResponse) => {},
       complete: () => {},
     });
   }
@@ -83,7 +92,8 @@ export class CourseComponent {
     });
   }
 
-  openDialog() {
+  openDialog(deleteSound: HTMLAudioElement) {
+    deleteSound.play();
     const dialogRef = this.dialog.open(DeleteCourseDialogComponent, {
       data: {
         course: this.course,
@@ -143,7 +153,12 @@ export class CourseComponent {
     }
   }
 
-  openUnEnrollStudentDialog(user: CourseMembers, studentIsEnabled: boolean) {
+  openUnEnrollStudentDialog(
+    user: CourseMembers,
+    studentIsEnabled: boolean,
+    deleteSound: HTMLAudioElement
+  ) {
+    deleteSound.play();
     const dialogRef = this.dialog.open(UnenrollCourseDialogComponent, {
       data: {
         studentIsEnabled: studentIsEnabled,
@@ -155,7 +170,12 @@ export class CourseComponent {
     });
   }
 
-  openUnEnrollTeacherDialog(user: User, studentIsEnabled: boolean) {
+  openUnEnrollTeacherDialog(
+    user: User,
+    studentIsEnabled: boolean,
+    deleteSound: HTMLAudioElement
+  ) {
+    deleteSound.play();
     const dialogRef = this.dialog.open(UnenrollCourseDialogComponent, {
       data: {
         studentIsEnabled: studentIsEnabled,
@@ -180,5 +200,44 @@ export class CourseComponent {
       width: '600px',
       maxWidth: '600px',
     });
+  }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'green';
+      case 'INACTIVE':
+        return 'orange';
+      case 'FINISHED':
+        return 'gray';
+      default:
+        return '';
+    }
+  }
+
+  getStatusName(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'Aktywny';
+      case 'INACTIVE':
+        return 'Oczekiwanie';
+      case 'FINISHED':
+        return 'Zakończony';
+      default:
+        return 'Nieznany';
+    }
+  }
+
+  getLanguageName(language: string): string {
+    switch (language) {
+      case 'ENGLISH':
+        return 'Angielski';
+      case 'POLISH':
+        return 'Polski';
+      case 'GERMAN':
+        return 'Niemiecki';
+      default:
+        return 'Nieznany';
+    }
   }
 }

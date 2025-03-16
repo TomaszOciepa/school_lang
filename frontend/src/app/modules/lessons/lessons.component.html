@@ -1,5 +1,8 @@
-<h2>Lekcje</h2>
-<!-- <button mat-raised-button color="primary" routerLink="/lessons/dodaj">
-  Dodaj lekcje
-</button> -->
-<app-lesons-table></app-lesons-table>
+<section class="slider-area slider-area2">
+  <div class="slider-active">
+    <!-- Single Slider -->
+    <div class="single-slider slider-height2"></div>
+  </div>
+</section>
+
+<app-calendar [lessons]="lessonsList"></app-calendar>

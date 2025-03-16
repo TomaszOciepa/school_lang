@@ -1,115 +1,173 @@
-<div class="container text-center" *ngIf="course">
-  <!-- Stack the columns on mobile by making one full-width and the other half-width -->
-  <div class="row">
-    <div class="col-md-8"></div>
-    <div class="col-6 col-md-4">
-      <div class="row row-cols-2">
-        <div class="col p-3">
-          <button mat-raised-button color="primary" (click)="openEditDialog()">
-            Edytuj kurs
-          </button>
+<section class="slider-area slider-area2" *ngIf="course">
+  <div class="slider-active">
+    <!-- Single Slider -->
+    <div class="single-slider slider-height2"></div>
+  </div>
+</section>
+
+<div class="container-fluid" *ngIf="course">
+  <audio
+    #deleteSound
+    src="../../../../../assets/sound/windows_98_error.mp3"
+    preload="auto"
+  ></audio>
+  <div class="row text-start">
+    <div class="col-4">
+      <div class="teacher-data">
+        <h2>Kurs</h2>
+        <div class="row">
+          <div class="col-12">
+            <a (click)="openDialog(deleteSound)" class="teacher-icon">
+              <button
+                mat-mini-fab
+                disabled
+                aria-label="Example icon button with a home icon"
+              >
+                <mat-icon>delete_forever</mat-icon>
+              </button>
+            </a>
+            <a (click)="openEditDialog()" class="teacher-icon">
+              <button
+                mat-mini-fab
+                disabled
+                aria-label="Example icon button with a home icon"
+              >
+                <mat-icon>edite</mat-icon>
+              </button>
+            </a>
+          </div>
         </div>
-        <div class="col p-3">
-          <button mat-raised-button color="warn" (click)="openDialog()">
-            Usuń kurs
-          </button>
+        <div class="row top-border text-centre">
+          <div class="col-6">
+            <mat-list>
+              <mat-list-item>
+                <span matListItemTitle>{{
+                  getLanguageName(course.language)
+                }}</span>
+                <span>język</span>
+              </mat-list-item>
+              <mat-list-item>
+                <span matListItemTitle>{{ course.name }}</span>
+                <span matListItemLine>nazwa</span>
+              </mat-list-item>
+              <mat-list-item>
+                <span matListItemTitle> {{ course.coursePrice || 0 }} zł</span>
+                <span matListItemLine>cena</span>
+              </mat-list-item>
+            </mat-list>
+          </div>
+          <div class="col-6">
+            <mat-list>
+              <mat-list-item>
+                <span matListItemTitle>
+                  {{ getStatusName(course.status) }}
+                  <span
+                    class="status-indicator"
+                    [ngClass]="getStatusClass(course.status)"
+                  ></span>
+                </span>
+
+                <span>status</span>
+              </mat-list-item>
+
+              <mat-list-item>
+                <span matListItemTitle>
+                  {{ course.startDate | date : "d MMMM yyyy" }}r.</span
+                >
+                <span>początek</span>
+              </mat-list-item>
+              <mat-list-item>
+                <span matListItemTitle
+                  >{{ course.endDate | date : "d MMMM yyyy" }}r.</span
+                >
+                <span matListItemLine>koniec</span>
+              </mat-list-item>
+            </mat-list>
+          </div>
+
+          <div class="row top-border text-centre">
+            <div class="col-3">
+              <mat-list>
+                <mat-list-item>
+                  <span matListItemTitle>{{ course.lessonsLimit }}</span>
+                  <span matListItemLine>lekcje</span>
+                </mat-list-item>
+              </mat-list>
+            </div>
+            <div class="col-3">
+              <mat-list>
+                <mat-list-item>
+                  <span matListItemTitle>{{
+                    course.courseTeachers.length
+                  }}</span>
+                  <span matListItemLine>nauczyciele</span>
+                </mat-list-item>
+              </mat-list>
+            </div>
+            <div class="col-3">
+              <mat-list>
+                <mat-list-item>
+                  <span matListItemTitle>{{ course.participantsNumber }}</span>
+                  <span matListItemLine>uczniowie</span>
+                </mat-list-item>
+              </mat-list>
+            </div>
+            <div class="col-3">
+              <mat-list>
+                <mat-list-item>
+                  <span matListItemTitle>{{ course.participantsLimit }}</span>
+                  <span matListItemLine>limit uczniów</span>
+                </mat-list-item>
+              </mat-list>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-
-  <div class="row">
-    <div class="col">
-      <figure class="text-start">
-        <blockquote class="blockquote">
-          <h2>{{ course.name }}</h2>
-        </blockquote>
-        <figcaption class="blockquote-footer">
-          nazwa kursu <cite title="Source Title">Lang school</cite>
-        </figcaption>
-      </figure>
-    </div>
-    <div class="col text-start">
-      <h3>
-        Start kursu:
-        <small class="text-body-secondary">
-          {{ course.startDate | date : "EEEE, d MMMM yyyy" }}
-        </small>
-      </h3>
-      <h3>
-        Koniec kursu:
-        <small class="text-body-secondary">
-          {{ course.endDate | date : "EEEE, d MMMM yyyy" }}
-        </small>
-      </h3>
-
-      <h3>
-        Status:
-        <small class="text-body-secondary">
-          {{ course.status }}
-        </small>
-      </h3>
-    </div>
-    <div class="col">
-      <ul class="list-group list-group-flush text-start">
-        <li class="list-group-item">
-          maksymalna liczba lekcji:
-          <small class="text-body-secondary">{{ course.lessonsLimit }}</small>
-        </li>
-        <li class="list-group-item">
-          liczba studentów:
-          <small class="text-body-secondary">{{
-            course.participantsNumber
-          }}</small>
-        </li>
-        <li class="list-group-item">
-          maksymalna liczba studentów:
-          <small class="text-body-secondary">{{
-            course.participantsLimit
-          }}</small>
-        </li>
-        <li class="list-group-item">
-          liczba nauczycieli:
-          <small *ngIf="teachers" class="text-body-secondary">{{
-            teachers.length
-          }}</small>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col text-start p-3">
-      <h2>Lekcje</h2>
-      <app-lesons-table
+    <div class="col-8">
+      <app-course-lessons-table
         [course-id]="course.id"
         [lessons-limit]="course.lessonsLimit"
-        [switch]="'course'"
-      ></app-lesons-table>
+      ></app-course-lessons-table>
     </div>
   </div>
 
   <!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->
-  <div class="row">
-    <div class="col text-start">
+  <div class="row my-margin my-box">
+    <div class="col-6 text-start">
       <div *ngIf="!students">
         <h2>Lista studentów jest pusta...</h2>
-        <button class="btn btn-outline-info" (click)="openEnrollDialog(true)">
-          dodaj studenta
-        </button>
+
+        <a (click)="openEnrollDialog(true)" class="add-course-icon">
+          <button
+            mat-mini-fab
+            disabled
+            aria-label="Example icon button with a home icon"
+          >
+            <mat-icon>add_circle</mat-icon>
+          </button>
+        </a>
       </div>
       <div *ngIf="students">
         <h2>Studenci</h2>
         <div *ngIf="errMsg" class="alert alert-danger" role="alert">
           {{ errMsg }}
         </div>
-        <button class="btn btn-outline-info" (click)="openEnrollDialog(true)">
-          dodaj studenta
-        </button>
-        <table class="table">
+
+        <table class="table" style="font-size: medium">
           <thead>
             <tr>
-              <th scope="col">lp.</th>
+              <th scope="col">
+                <a (click)="openEnrollDialog(true)" class="add-course-icon">
+                  <button
+                    mat-mini-fab
+                    disabled
+                    aria-label="Example icon button with a home icon"
+                  >
+                    <mat-icon>add_circle</mat-icon>
+                  </button>
+                </a>
+              </th>
               <th scope="col">imię i nazwisko</th>
               <th scope="col">status</th>
               <th scope="col"></th>
@@ -117,27 +175,67 @@
           </thead>
           <tbody>
             <tr *ngFor="let student of students; index as i">
-              <th scope="row">{{ i + 1 }}</th>
+              <th scope="row">{{ i + 1 }}.</th>
               <td>
                 <a [routerLink]="'/students/' + student.id">
                   {{ student.firstName }} {{ student.lastName }}
                 </a>
               </td>
-              <td>{{ student.status }}</td>
               <td>
-                <button
+                <ng-container *ngIf="student.status === 'ACTIVE'">
+                  Aktywny
+                </ng-container>
+                <ng-container *ngIf="student.status === 'INACTIVE'">
+                  Nieaktywny
+                </ng-container>
+                <ng-container *ngIf="student.status === 'REMOVED'">
+                  Usunięty
+                </ng-container>
+              </td>
+              <td>
+                <audio
+                  #deleteSound
+                  src="../../../../../assets/sound/windows_98_error.mp3"
+                  preload="auto"
+                ></audio>
+                <a
                   *ngIf="student.status != 'REMOVED'"
-                  class="btn btn-outline-danger"
-                  (click)="openUnEnrollStudentDialog(student, true)"
+                  (click)="
+                    openUnEnrollStudentDialog(student, true, deleteSound)
+                  "
+                  class="add-course-icon"
                 >
-                  usuń
-                </button>
+                  <button
+                    mat-mini-fab
+                    disabled
+                    aria-label="Example icon button with a home icon"
+                  >
+                    <mat-icon>delete_forever</mat-icon>
+                  </button>
+                </a>
+
+                <a
+                  *ngIf="student.status == 'REMOVED'"
+                  (click)="restoreStudentToCourseDialog(student)"
+                  class="add-course-icon"
+                >
+                  <button
+                    mat-mini-fab
+                    disabled
+                    aria-label="Example icon button with a home icon"
+                  >
+                    <mat-icon>person_addr</mat-icon>
+                  </button>
+                </a>
+
                 <button
                   *ngIf="student.status == 'REMOVED'"
-                  class="btn btn-outline-primary"
+                  class="pushable"
                   (click)="restoreStudentToCourseDialog(student)"
                 >
-                  przywróć
+                  <span class="shadow"></span>
+                  <span class="edge"></span>
+                  <span class="front">przywróć</span>
                 </button>
               </td>
             </tr>
@@ -145,22 +243,45 @@
         </table>
       </div>
     </div>
-    <div class="col text-start">
+    <div class="col-6 text-start">
       <div *ngIf="!teachers">
         <h2>Lista nauczycieli jest pusta...</h2>
-        <button class="btn btn-outline-info" (click)="openEnrollDialog(false)">
-          dodaj nauczyciela
-        </button>
+
+        <a
+          *ngIf="role === 'ADMIN'"
+          (click)="openEnrollDialog(false)"
+          class="add-course-icon"
+        >
+          <button
+            mat-mini-fab
+            disabled
+            aria-label="Example icon button with a home icon"
+          >
+            <mat-icon>add_circle</mat-icon>
+          </button>
+        </a>
       </div>
       <div *ngIf="teachers">
         <h2>Nauczyciele</h2>
-        <button class="btn btn-outline-info" (click)="openEnrollDialog(false)">
-          dodaj nauczyciela
-        </button>
-        <table class="table">
+
+        <table class="table" style="font-size: medium">
           <thead>
             <tr>
-              <th scope="col">lp.</th>
+              <th scope="col">
+                <a
+                  *ngIf="role === 'ADMIN'"
+                  (click)="openEnrollDialog(false)"
+                  class="add-course-icon"
+                >
+                  <button
+                    mat-mini-fab
+                    disabled
+                    aria-label="Example icon button with a home icon"
+                  >
+                    <mat-icon>add_circle</mat-icon>
+                  </button>
+                </a>
+              </th>
               <th scope="col">imię i nazwisko</th>
               <th scope="col">status</th>
               <th scope="col"></th>
@@ -169,19 +290,48 @@
           <tbody>
             <tr *ngFor="let teacher of teachers; index as i">
               <th scope="row">{{ i + 1 }}</th>
-              <td>
+              <td *ngIf="role === 'ADMIN'">
                 <a [routerLink]="'/teachers/' + teacher.id">
                   {{ teacher.firstName }} {{ teacher.lastName }}
                 </a>
               </td>
-              <td>{{ teacher.status }}</td>
+              <td *ngIf="role !== 'ADMIN'">
+                {{ teacher.firstName }} {{ teacher.lastName }}
+              </td>
               <td>
-                <button
-                  class="btn btn-outline-danger"
-                  (click)="openUnEnrollTeacherDialog(teacher, false)"
+                <ng-container *ngIf="teacher.status === 'ACTIVE'">
+                  Aktywny
+                </ng-container>
+                <ng-container *ngIf="teacher.status === 'INACTIVE'">
+                  Nieaktywny
+                </ng-container>
+                <ng-container *ngIf="teacher.status === 'REMOVED'">
+                  Usunięty
+                </ng-container>
+              </td>
+
+              <td>
+                <audio
+                  #deleteSound
+                  src="../../../../../assets/sound/windows_98_error.mp3"
+                  preload="auto"
+                ></audio>
+
+                <a
+                  *ngIf="role === 'ADMIN'"
+                  (click)="
+                    openUnEnrollTeacherDialog(teacher, false, deleteSound)
+                  "
+                  class="add-course-icon"
                 >
-                  usuń
-                </button>
+                  <button
+                    mat-mini-fab
+                    disabled
+                    aria-label="Example icon button with a home icon"
+                  >
+                    <mat-icon>delete_forever</mat-icon>
+                  </button>
+                </a>
               </td>
             </tr>
           </tbody>

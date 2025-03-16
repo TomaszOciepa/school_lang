@@ -1,0 +1,110 @@
+<section class="slider-area slider-area2" *ngIf="course">
+  <div class="slider-active">
+    <!-- Single Slider -->
+    <div class="single-slider slider-height2">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-8 col-lg-11 col-md-12">
+            <div class="hero__caption hero__caption2">
+              <figure class="text-start">
+                <blockquote class="blockquote">
+                  <h1 data-animation="bounceIn" data-delay="0.2s">
+                    Kurs {{ getLanguageName(course.language) }}
+                  </h1>
+                </blockquote>
+                <figcaption class="blockquote-footer">
+                  <cite title="Source Title">{{ course.name }}</cite>
+                </figcaption>
+              </figure>
+            </div>
+            <ng-container *ngIf="isLoggedIn">
+              <button
+                class="pushable"
+                *ngIf="!isStudentEnrolled"
+                [routerLink]="'/account-student/enroll-to-course/' + courseId"
+              >
+                <span class="shadow"></span>
+                <span class="edge"></span>
+                <span class="front">Zapisz się</span>
+              </button>
+
+              <button
+                [disabled]="true"
+                class="pushable"
+                *ngIf="isStudentEnrolled"
+              >
+                <span class="shadow"></span>
+                <span class="edge"></span>
+                <span class="front">Zapisz się</span>
+              </button>
+            </ng-container>
+            <ng-container *ngIf="!isLoggedIn">
+              <button
+                [disabled]="courseIsFull"
+                class="pushable"
+                *ngIf="!isStudentEnrolled"
+                [routerLink]="'/account-student/enroll-to-course/' + courseId"
+              >
+                <span class="shadow"></span>
+                <span class="edge"></span>
+                <span class="front">Zapisz się</span>
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container-fluid my-padding bg-color" *ngIf="course">
+  <!-- Stack the columns on mobile by making one full-width and the other half-width -->
+  <div class="row">
+    <div class="col-md-8"></div>
+    <div class="col-6 col-md-4">
+      <ng-container *ngIf="courseIsFull">
+        <h4 class="text-red">Liczba uczestników osiągnięta</h4>
+      </ng-container>
+      <ng-container *ngIf="isStudentEnrolled">
+        <h4 class="text-red">Jesteś zapisany na ten kurs.</h4>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col text-start">
+      <h3>
+        Start kursu:
+        <small class="text-body-secondary">
+          {{ course.startDate | date : "EEEE, d MMMM yyyy" }}
+        </small>
+      </h3>
+      <h3>
+        Koniec kursu:
+        <small class="text-body-secondary">
+          {{ course.endDate | date : "EEEE, d MMMM yyyy" }}
+        </small>
+      </h3>
+      <h3>
+        Liczba lekcji:
+        <small class="text-body-secondary">
+          {{ course.lessonsLimit }}
+        </small>
+      </h3>
+      <h3>
+        Cena:
+        <small class="text-body-secondary">
+          {{ course.coursePrice || 0 }} zł
+        </small>
+      </h3>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col text-start p-3 text-center">
+      <h3>Harmonogram kursu</h3>
+
+      <app-lessons-table [course-id]="course.id"></app-lessons-table>
+    </div>
+  </div>
+</div>

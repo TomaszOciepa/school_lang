@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Czy napewno chcesz aktywować studenta?</h1>
+<div mat-dialog-content>
+  <p>{{ student.firstName }} {{ student.lastName }}</p>
+  <app-alert *ngIf="errorMessage">{{ errorMessage }}</app-alert>
+</div>
+<div mat-dialog-actions>
+  <button color="accent" mat-button mat-dialog-close>Anuluj</button>
+  <button color="warn" mat-button (click)="onRestore()" cdkFocusInitial>
+    aktywuj
+  </button>
+</div>

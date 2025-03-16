@@ -13,4 +13,9 @@ public interface StudentServiceClient {
     List<StudentDto> getStudentsByIdNumbers(@RequestBody List<Long> idNumbers);
     @GetMapping("/student/{id}")
     StudentDto getStudentById(@PathVariable Long id);
+
+    @GetMapping("/student/student-is-active/{studentId}")
+    void studentIsActive(@PathVariable Long studentId);
 }
+
+

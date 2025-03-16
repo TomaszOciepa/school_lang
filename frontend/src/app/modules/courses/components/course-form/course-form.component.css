@@ -1,0 +1,19 @@
+.course-form {
+  width: 50%;
+  min-width: 350px; /* Minimalna szerokość 350px */
+  /* background-color: pink; Różowy kolor tła */
+  margin: 0 auto; /* Wyśrodkowanie formularza */
+  padding: 20px; /* Dodanie odstępu wewnątrz formularza */
+  box-sizing: border-box; /* Uwzględnienie paddingu w szerokości formularza */
+}
+
+.full-width {
+  width: 100%; /* Szerokość 100% gdy !editMode */
+}
+
+.my-form-container {
+  /* background: linear-gradient(to bottom, #bd6bed 0%, #5274ff 3%); */
+  background: linear-gradient(to bottom, #c054ff 0%, #5274ff 20%);
+  margin: 0; /* Usuwa domyślne marginesy */
+  color: whitesmoke;
+}

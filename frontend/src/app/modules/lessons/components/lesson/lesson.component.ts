@@ -10,6 +10,7 @@ import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 import { EditLessonDialogComponent } from './edit-lesson-dialog/edit-lesson-dialog.component';
 import { DeleteLessonDialogComponent } from './delete-lesson-dialog/delete-lesson-dialog.component';
 import { EnrollLessonDialogComponent } from './enroll-lesson-dialog/enroll-lesson-dialog.component';
+import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 
 @Component({
   selector: 'app-lesson',
@@ -21,8 +22,10 @@ export class LessonComponent implements OnInit {
   lesson!: Lesson;
   teacher!: User;
   course!: Course;
+  role!: string;
 
   constructor(
+    private userProfileService: LoadUserProfileService,
     private lessonsService: LessonsService,
     private teacherService: TeacherService,
     private courseService: CourseService,
@@ -30,12 +33,21 @@ export class LessonComponent implements OnInit {
     private dialog: MatDialog
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.route.params;
     this.route.params.subscribe((params) => {
       this.id = params['id'];
     });
+    this.loadUserProfile();
     this.getLesson(this.id);
+  }
+
+  async loadUserProfile(): Promise<void> {
+    await this.userProfileService.loadUserProfile();
+
+    if (this.userProfileService.isAdmin) {
+      this.role = 'ADMIN';
+    }
   }
 
   getLesson(id: string) {
@@ -77,7 +89,8 @@ export class LessonComponent implements OnInit {
     });
   }
 
-  openDialog() {
+  openDialog(deleteSound: HTMLAudioElement) {
+    deleteSound.play();
     const dialogRef = this.dialog.open(DeleteLessonDialogComponent, {
       data: {
         lesson: this.lesson,
@@ -96,5 +109,44 @@ export class LessonComponent implements OnInit {
       width: '600px',
       maxWidth: '600px',
     });
+  }
+
+  getLanguageName(language: string): string {
+    switch (language) {
+      case 'ENGLISH':
+        return 'Angielski';
+      case 'POLISH':
+        return 'Polski';
+      case 'GERMAN':
+        return 'Niemiecki';
+      default:
+        return 'Nieznany';
+    }
+  }
+
+  getStatusName(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'Aktywna';
+      case 'INACTIVE':
+        return 'Oczekiwana';
+      case 'FINISHED':
+        return 'Zakończona';
+      default:
+        return 'Nieznany';
+    }
+  }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'green';
+      case 'INACTIVE':
+        return 'orange';
+      case 'FINISHED':
+        return 'gray';
+      default:
+        return '';
+    }
   }
 }

@@ -21,6 +21,7 @@ public class Teacher {
     @Email
     private String email;
     private Status status;
+    private String password;
 
     public Teacher() {
     }

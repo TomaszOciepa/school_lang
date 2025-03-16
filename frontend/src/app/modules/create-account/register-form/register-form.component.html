@@ -1,0 +1,91 @@
+<section class="slider-area slider-area2">
+  <div class="slider-active">
+    <!-- Single Slider -->
+    <div class="single-slider slider-height2">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-8 col-lg-11 col-md-12">
+            <div class="hero__caption hero__caption2">
+              <h1 data-animation="bounceIn" data-delay="0.2s">
+                Utwórz Konto
+                {{ userType === "student" ? "Studenta" : "Nauczyciela" }}
+              </h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container" style="margin-bottom: 20px">
+  <div class="teacher-form-wrapper mt-3">
+    <form
+      *ngIf="isFormActive"
+      [formGroup]="userForm"
+      (ngSubmit)="createAccount()"
+    >
+      <div>
+        <div *ngIf="errMsg" class="alert alert-danger" role="alert">
+          {{ errMsg }}
+        </div>
+        <mat-form-field>
+          <mat-label>Imię</mat-label>
+          <input matInput formControlName="firstName" />
+          <mat-error *ngIf="controls.firstName.invalid">{{
+            getErrorMessage(controls.firstName)
+          }}</mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Nazwisko</mat-label>
+          <input matInput formControlName="lastName" />
+          <mat-error *ngIf="controls.lastName.invalid">{{
+            getErrorMessage(controls.lastName)
+          }}</mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Adres e-mail</mat-label>
+          <input
+            matInput
+            placeholder="test@gmail.com"
+            formControlName="email"
+          />
+          <mat-error *ngIf="controls.email.invalid">{{
+            getErrorMessage(controls.email)
+          }}</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button
+          class="mx-1"
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="userForm.invalid"
+        >
+          {{ "Wyślij" }}
+        </button>
+      </div>
+      <!-- <app-alert *ngIf="errorMessage" [text]="errorMessage"></app-alert> -->
+    </form>
+    <div *ngIf="!isFormActive">
+      <figure class="text-start">
+        <blockquote class="blockquote">
+          <h2>Dziękujemy za rejestracje.</h2>
+        </blockquote>
+        <figcaption class="blockquote-footer">
+          <cite title="Source Title"
+            >Sprawdz wiadomość email. Następnie zaloguj się.</cite
+          >
+        </figcaption>
+      </figure>
+      <button mat-raised-button color="primary" (click)="login()">
+        zaloguj się
+      </button>
+    </div>
+  </div>
+</div>

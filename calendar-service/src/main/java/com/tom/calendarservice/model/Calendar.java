@@ -16,23 +16,22 @@ import java.util.List;
 @Setter
 @ToString
 @AllArgsConstructor
-public class Calendar {
+    public class Calendar {
 
-    @Id
-    private String id;
-    private String eventName;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
-    private Long teacherId;
-    private String courseId;
-    private Status status;
-    private String description;
-    private List<AttendanceList> attendanceList = new ArrayList<>();
+        @Id
+        private String id;
+        private String eventName;
+        private LocalDateTime startDate;
+        private LocalDateTime endDate;
+        private Long teacherId;
+        private String courseId;
+        private Status status;
+        private String description;
+        private List<AttendanceList> attendanceList = new ArrayList<>();
+        private Language language;
+        private Long price;
 
-    public Calendar() {
+        public Calendar() {
+        }
+
     }
-
-
-
-
-}

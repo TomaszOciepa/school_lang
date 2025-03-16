@@ -1,9 +1,6 @@
 package com.tom.courseservice.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class Course {
 
@@ -22,6 +20,10 @@ public class Course {
     private String id;
     private String name;
     private Status status;
+    private Long coursePrice;
+    private Long pricePerLesson;
+    private Long teacherSharePercentage;
+    private Language language;
     private Long participantsLimit;
     private Long participantsNumber;
     private Long lessonsLimit;
@@ -29,6 +31,10 @@ public class Course {
     private LocalDateTime endDate;
     private List<CourseStudents> courseStudents = new ArrayList<>();
     private List<CourseTeachers> courseTeachers = new ArrayList<>();
+    private TimeRange timeRange;
+    private Long lessonDuration;
+    private Long teacherId;
+    private LessonFrequency lessonFrequency;
 
     public void incrementParticipantsNumber(){
         participantsNumber++;
@@ -38,6 +44,4 @@ public class Course {
         participantsNumber--;
     }
 
-    public Course() {
-    }
 }

@@ -1,19 +1,22 @@
 package com.tom.courseservice.model;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class CourseTeachers {
 
-    private Long teacherId;
-    private LocalDateTime enrollmentData;
+    private Long id;
+    private LocalDateTime enrollmentData = LocalDateTime.now();
+    private Status status = Status.ACTIVE;
 
-    public CourseTeachers(@NotNull Long teacherId) {
-        this.teacherId = teacherId;
-        this.enrollmentData = LocalDateTime.now();
+    public CourseTeachers(@NotNull Long id) {
+        this.id = id;
     }
+
 }

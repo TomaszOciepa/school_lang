@@ -21,6 +21,12 @@ export class CourseService {
     return this.http.get<Course[]>(this.apiUrl);
   }
 
+  getCoursesByLanguage(language: string): Observable<Course[]> {
+    return this.http.get<Course[]>(
+      `${this.apiUrl}/course-offering/${language}`
+    );
+  }
+
   getCourseById(id: string): Observable<Course> {
     return this.http.get<Course>(`${this.apiUrl}/${id}`);
   }
@@ -97,6 +103,16 @@ export class CourseService {
   getCourseByStudentId(studentId: number): Observable<Course[]> {
     return this.http.get<Course[]>(
       `${this.apiUrl}/student-courses/${studentId}`
+    );
+  }
+
+  isStudentEnrolledInCourse(
+    course: Course,
+    studentId: number
+  ): Observable<boolean> {
+    return this.http.post<boolean>(
+      `${this.apiUrl}/is-student/${studentId}/enroll-course`,
+      course
     );
   }
 }

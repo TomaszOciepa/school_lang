@@ -119,7 +119,7 @@ export class EnrollCourseDialogComponent implements OnInit {
           console.log('next: ' + response);
         },
         error: (err: HttpErrorResponse) => {
-          console.log('error: ' + err.error.message);
+          console.log('error: ' + err.status);
         },
         complete: () => {
           window.location.reload();
@@ -132,7 +132,6 @@ export class EnrollCourseDialogComponent implements OnInit {
       .getStudentsByIdNumberNotEqual(this.usersIdEnrolled)
       .subscribe({
         next: (clients) => {
-          console.log(clients);
           this.dataSource = new MatTableDataSource<User>(clients);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
@@ -144,7 +143,7 @@ export class EnrollCourseDialogComponent implements OnInit {
   }
 
   getStudents() {
-    this.studentServices.getStudents().subscribe({
+    this.studentServices.getStudents('ACTIVE').subscribe({
       next: (clients) => {
         console.log(clients);
         this.dataSource = new MatTableDataSource<User>(clients);
@@ -158,7 +157,7 @@ export class EnrollCourseDialogComponent implements OnInit {
   }
 
   getTeachers() {
-    this.teacherService.getTeachers().subscribe({
+    this.teacherService.getTeachers('ACTIVE').subscribe({
       next: (clients) => {
         this.dataSource = new MatTableDataSource<User>(clients);
         this.dataSource.paginator = this.paginator;

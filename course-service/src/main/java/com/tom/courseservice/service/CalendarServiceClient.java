@@ -1,11 +1,11 @@
 package com.tom.courseservice.service;
 
+import com.tom.courseservice.model.Course;
+import com.tom.courseservice.model.LessonScheduleRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
 
 @FeignClient(name = "CALENDAR-SERVICE")
 public interface CalendarServiceClient {
@@ -24,4 +24,7 @@ public interface CalendarServiceClient {
 
     @GetMapping("/calendar/un-enroll-lessons/{courseId}/{studentId}")
     public boolean unEnrollStudent(@PathVariable String courseId, @PathVariable Long studentId);
+
+    @PostMapping("/calendar/generate-course-timetable")
+    public Course generateCourseTimetable(@RequestBody LessonScheduleRequest lessonScheduleRequest);
 }

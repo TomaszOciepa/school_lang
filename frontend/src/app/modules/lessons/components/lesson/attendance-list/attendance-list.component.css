@@ -1,0 +1,6 @@
+.table {
+  margin: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Efekt podniesienia */
+  border-radius: 8px; /* Zaokrąglenie rogów */
+  overflow: hidden; /* Zapobiega wyjściu elementów poza krawędzie */
+}

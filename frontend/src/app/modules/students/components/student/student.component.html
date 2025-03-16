@@ -1,75 +1,145 @@
-<div class="container text-center">
-  <div class="row">
-    <div class="col-md-8"></div>
-    <div class="col-6 col-md-4">
-      <div class="row row-cols-2">
-        <div class="col p-3">
-          <button mat-raised-button color="primary" (click)="openEditDialog()">
-            Edycja
-          </button>
-        </div>
-        <div class="col p-3">
-          <button mat-raised-button color="warn" (click)="openDialog()">
-            Usuń
-          </button>
-        </div>
-      </div>
-    </div>
+<div class="slider-area slider-area2">
+  <div class="slider-active">
+    <!-- Single Slider -->
+    <div class="single-slider slider-height2"></div>
   </div>
+</div>
 
-  <div class="row" *ngIf="student">
-    <div class="col">
-      <figure class="text-start">
-        <blockquote class="blockquote">
-          <h2>student</h2>
-        </blockquote>
-        <figcaption class="blockquote-footer">
-          w szkole... <cite title="Source Title">Lang school</cite>
-        </figcaption>
-      </figure>
-    </div>
-    <div class="col text-start">
-      <h3>
-        <small class="text-body-secondary"> imię i nazwisko: </small>
-        {{ student.firstName }} {{ student.lastName }}
-      </h3>
-      <h3>
-        <small class="text-body-secondary"> adress email;</small>
-        {{ student.email }}
-      </h3>
+<audio
+  #deleteSound
+  src="../../../../../assets/sound/windows_98_error.mp3"
+  preload="auto"
+></audio>
 
-      <h3>
-        <small class="text-body-secondary">status:</small>
-        {{ student.status }}
-      </h3>
-    </div>
-    <div class="col">
-      <ul class="list-group list-group-flush text-start">
-        <li class="list-group-item">
-          liczba kursów:
-          <small class="text-body-secondary"></small>
-        </li>
-        <li class="list-group-item">
-          Liczba lekcji:
-          <small class="text-body-secondary"></small>
-        </li>
-      </ul>
+<div class="container-fluid text-center bg-color">
+  <div class="row">
+    <!-- Sidebar Menu -->
+    <div class="col-3 sidebar p-3 bg-light">
+      <div class="user-info">
+        <h2 class="teacher-title">Student</h2>
+        <hr class="separator" />
+        <div class="options-menu">
+          <a
+            (click)="openEditDialog()"
+            class="teacher-icon"
+            matTooltip="edytuj uzytkownika"
+          >
+            <button
+              mat-mini-fab
+              disabled
+              aria-label="Example icon button with a home icon"
+            >
+              <mat-icon>edite</mat-icon>
+            </button>
+          </a>
+          <a
+            *ngIf="student && student.status == 'ACTIVE'"
+            class="teacher-icon"
+            matTooltip="dezaktywuj konto"
+            (click)="openDialog()"
+          >
+            <button
+              mat-mini-fab
+              disabled
+              aria-label="Example icon button with a home icon"
+            >
+              <mat-icon>person_remove</mat-icon>
+            </button>
+          </a>
+          <a
+            *ngIf="student && student.status == 'INACTIVE'"
+            (click)="openRestoreDialog()"
+            class="teacher-icon"
+            matTooltip="aktywuj konto"
+          >
+            <button
+              mat-mini-fab
+              disabled
+              aria-label="Example icon button with a home icon"
+            >
+              <mat-icon>person_add</mat-icon>
+            </button>
+          </a>
+          <a
+            (click)="openDropDialog(deleteSound)"
+            class="teacher-icon"
+            matTooltip="usuń uzytkownika"
+          >
+            <button
+              mat-mini-fab
+              disabled
+              aria-label="Example icon button with a home icon"
+            >
+              <mat-icon>delete_forever</mat-icon>
+            </button>
+          </a>
+        </div>
+
+        <p class="teacher-info">
+          <span class="label">Imię i nazwisko:</span>
+          {{ student.firstName }} {{ student.lastName }}
+        </p>
+
+        <p class="teacher-info">
+          <span class="label">Email:</span>
+          {{ student.email }}
+        </p>
+
+        <p class="teacher-info">
+          <span class="label">Status konta:</span>
+          {{ student.status }}
+        </p>
+      </div>
+      <hr class="separator" />
+
+      <nav class="nav flex-column">
+        <a
+          class="nav-link"
+          [ngClass]="{ active: activeSection === 'schedule' }"
+          (click)="scrollToSection('schedule')"
+        >
+          Harmonogram
+        </a>
+        <a
+          class="nav-link"
+          [ngClass]="{ active: activeSection === 'courses' }"
+          (click)="scrollToSection('courses')"
+        >
+          Kursy
+        </a>
+        <a
+          class="nav-link"
+          [ngClass]="{ active: activeSection === 'payment' }"
+          (click)="scrollToSection('payment')"
+        >
+          Płatności
+        </a>
+      </nav>
     </div>
 
-    <div class="row text-start p-md-3">
-      <h2>Kursy</h2>
-      <app-courses-table
-        [switch]="'student'"
-        [studentId]="student.id"
-      ></app-courses-table>
-    </div>
+    <!-- Main Content -->
+    <div class="col-9 text-start p-3 content-scroll">
+      <section id="schedule">
+        <app-calendar [lessons]="studentLessons"></app-calendar>
+      </section>
 
-    <div class="row text-start p-md-3">
-      <h2>Lekcje</h2>
-      <app-lesons-table
-        [switch]="'student'"
-        [student-id]="student.id"
-      ></app-lesons-table>
+      <section id="courses">
+        <app-student-courses-table
+          [studentId]="student.id"
+          (selectedCourseId)="selectedCourse($event)"
+        ></app-student-courses-table>
+
+        <app-student-lessons-table
+          [student-id]="student.id"
+          [select-course-id]="selectCourseId"
+        ></app-student-lessons-table>
+      </section>
+
+      <section id="payment">
+        <app-student-payments-table
+          [student-id]="student.id"
+        ></app-student-payments-table>
+      </section>
     </div>
   </div>
 </div>

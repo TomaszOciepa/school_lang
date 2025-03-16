@@ -1,78 +1,144 @@
-<div class="container text-center">
-  <div class="row">
-    <div class="col-md-8"></div>
-    <div class="col-6 col-md-4">
-      <div class="row row-cols-2">
-        <div class="col p-3">
-          <button mat-raised-button color="primary" (click)="openEditDialog()">
-            Edycja
-          </button>
-        </div>
-        <div class="col p-3">
-          <button mat-raised-button color="warn" (click)="openDialog()">
-            Usuń
-          </button>
-        </div>
-      </div>
-    </div>
+<div class="slider-area slider-area2">
+  <div class="slider-active">
+    <div class="single-slider slider-height2"></div>
   </div>
+</div>
 
-  <div class="row" *ngIf="teacher">
-    <div class="col">
-      <figure class="text-start">
-        <blockquote class="blockquote">
-          <h2>nauczyciel</h2>
-        </blockquote>
-        <figcaption class="blockquote-footer">
-          w szkole... <cite title="Source Title">Lang school</cite>
-        </figcaption>
-      </figure>
-    </div>
-    <div class="col text-start">
-      <h3>
-        <small class="text-body-secondary"> imię i nazwisko: </small>
-        {{ teacher.firstName }} {{ teacher.lastName }}
-      </h3>
-      <h3>
-        <small class="text-body-secondary"> adress email;</small>
-        {{ teacher.email }}
-      </h3>
+<audio
+  #deleteSound
+  src="../../../../../assets/sound/windows_98_error.mp3"
+  preload="auto"
+></audio>
 
-      <h3>
-        <small class="text-body-secondary">status:</small>
-        {{ teacher.status }}
-      </h3>
-    </div>
-    <div class="col">
-      <ul class="list-group list-group-flush text-start">
-        <li class="list-group-item">
-          Liczba studentów:
-          <small class="text-body-secondary"></small>
-        </li>
-        <li class="list-group-item">
-          liczba kursów:
-          <small class="text-body-secondary"></small>
-        </li>
-        <li class="list-group-item">
-          Liczba lekcji:
-          <small class="text-body-secondary"></small>
-        </li>
-      </ul>
-    </div>
-    <div class="row text-start p-md-3">
-      <h2>Kursy</h2>
-      <app-courses-table
-        [switch]="'teacher'"
-        [teacherId]="teacher.id"
-      ></app-courses-table>
+<div class="container-fluid text-center bg-color">
+  <div class="row">
+    <!-- Sidebar Menu -->
+    <div class="col-3 sidebar p-3 bg-light">
+      <div class="user-info">
+        <h2 class="teacher-title">Nauczyciel</h2>
+        <hr class="separator" />
+        <div class="options-menu">
+          <a
+            (click)="openEditDialog()"
+            class="teacher-icon"
+            matTooltip="edytuj uzytkownika"
+          >
+            <button
+              mat-mini-fab
+              disabled
+              aria-label="Example icon button with a home icon"
+            >
+              <mat-icon>edite</mat-icon>
+            </button>
+          </a>
+          <a
+            *ngIf="teacher && teacher.status == 'ACTIVE' && role == 'ADMIN'"
+            (click)="openDialog()"
+            class="teacher-icon"
+            matTooltip="dezaktywuj konto"
+          >
+            <button
+              mat-mini-fab
+              disabled
+              aria-label="Example icon button with a home icon"
+            >
+              <mat-icon>person_remove</mat-icon>
+            </button>
+          </a>
+          <a
+            *ngIf="teacher && teacher.status == 'INACTIVE' && role == 'ADMIN'"
+            (click)="openRestoreDialog()"
+            class="teacher-icon"
+            matTooltip="aktywuj konto"
+          >
+            <button
+              mat-mini-fab
+              disabled
+              aria-label="Example icon button with a home icon"
+            >
+              <mat-icon>person_add</mat-icon>
+            </button>
+          </a>
+          <a
+            *ngIf="role == 'ADMIN'"
+            (click)="openDropDialog(deleteSound)"
+            class="teacher-icon"
+            matTooltip="usuń uzytkownika"
+          >
+            <button
+              mat-mini-fab
+              disabled
+              aria-label="Example icon button with a home icon"
+            >
+              <mat-icon>delete_forever</mat-icon>
+            </button>
+          </a>
+        </div>
+
+        <p class="teacher-info">
+          <span class="label">Imię i nazwisko:</span>
+          {{ teacher.firstName }} {{ teacher.lastName }}
+        </p>
+
+        <p class="teacher-info">
+          <span class="label">Email:</span>
+          {{ teacher.email }}
+        </p>
+
+        <p class="teacher-info">
+          <span class="label">Status konta:</span>
+          {{ teacher.status }}
+        </p>
+      </div>
+
+      <hr class="separator" />
+
+      <nav class="nav flex-column">
+        <a
+          class="nav-link"
+          [ngClass]="{ active: activeSection === 'schedule' }"
+          (click)="scrollToSection('schedule')"
+        >
+          Harmonogram
+        </a>
+        <a
+          class="nav-link"
+          [ngClass]="{ active: activeSection === 'courses' }"
+          (click)="scrollToSection('courses')"
+        >
+          Kursy
+        </a>
+        <a
+          class="nav-link"
+          [ngClass]="{ active: activeSection === 'salary' }"
+          (click)="scrollToSection('salary')"
+        >
+          Wynagrodzenie
+        </a>
+      </nav>
     </div>
 
-    <div class="row text-start p-md-3">
-      <h2>Lekcje</h2>
-      <app-lesons-table
-        [switch]="'teacher'"
-        [teacher-id]="teacher.id"
-      ></app-lesons-table>
+    <!-- Main Content -->
+    <div class="col-9 text-start p-3 content-scroll">
+      <section id="schedule">
+        <app-calendar [lessons]="teacherLessons"></app-calendar>
+      </section>
+
+      <section id="courses">
+        <app-teacher-courses-table
+          [teacherId]="teacher.id"
+          (selectedCourseId)="selectedCourse($event)"
+        ></app-teacher-courses-table>
+
+        <app-teacher-lessons-table
+          [teacher-id]="teacher.id"
+          [select-course-id]="selectCourseId"
+        ></app-teacher-lessons-table>
+      </section>
+
+      <section id="salary">
+        <app-teacher-salary [teacher-id]="teacher.id"></app-teacher-salary>
+      </section>
     </div>
   </div>
 </div>

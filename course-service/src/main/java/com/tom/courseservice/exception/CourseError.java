@@ -14,7 +14,9 @@ public enum CourseError {
     COURSE_TEACHER_LIST_IS_EMPTY("Course teacher list is empty"),
     COURSE_NAME_ALREADY_EXISTS("Course name is already exists"),
     COURSE_IS_NOT_ACTIVE("Course is not ACTIVE"),
+    COURSE_PRICE_PER_LESSON("Course price per lesson is empty"),
     COURSE_LESSON_LIMIT_REACHED("Course lesson limit reached"),
+    STUDENT_OPERATION_FORBIDDEN("Operation is forbidden."),
     STUDENT_IS_NOT_ACTIVE("Student is not ACTIVE"),
     STUDENT_IS_ACTIVE("Student is ACTIVE"),
     STUDENT_IS_NOT_FOUND("Student is not Found"),
@@ -26,7 +28,9 @@ public enum CourseError {
     TEACHER_HAS_LESSONS_IN_COURSE("Teacher has lessons in course"),
     TEACHER_NO_ON_THE_LIST_OF_ENROLL("No teacher on the list of enroll"),
 
-    TEACHER_ALREADY_ENROLLED("Teacher already enrolled on this course");
+    TEACHER_ALREADY_ENROLLED("Teacher already enrolled on this course"),
+    LESSON_START_DATE_IS_NO_WEEKEND_DAY("For WEEKENDS_ONLY, the start date must be a Saturday or Sunday."),
+    LESSON_START_DATE_IS_NO_WEEK_DAY("The start date cannot be a Saturday or Sunday.");
 
     private String message;
 

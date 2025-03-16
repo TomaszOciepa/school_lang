@@ -1,0 +1,4 @@
+FROM --platform=linux/amd64 mysql:5.7
+ENV MYSQL_ROOT_PASSWORD=pass123
+ENV MYSQL_DATABASE=teacher
+EXPOSE 3307

@@ -1,0 +1,83 @@
+<section class="slider-area slider-area2">
+  <div class="slider-active">
+    <!-- Single Slider -->
+    <div class="single-slider slider-height2">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-8 col-lg-11 col-md-12">
+            <div class="hero__caption hero__caption2">
+              <h1 data-animation="fadeInLeft" data-delay="0.2s">
+                Dziękujemy {{ student.firstName }}
+              </h1>
+              <h2 style="color: white">Wybrany kurs:</h2>
+              <figcaption
+                class="blockquote-footer"
+                style="color: wheat; font-size: medium"
+              >
+                <cite title="Source Title">{{ course.name }}</cite>
+              </figcaption>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-container>
+  <div *ngIf="isEnrollmentSuccessful" class="alert alert-success" role="alert">
+    <h3>
+      Gratulacje :)
+      <small class="text-body-secondary">Zapis potwierdzony</small>
+    </h3>
+    <button
+      mat-raised-button
+      color="primary"
+      [routerLink]="'/account-student/course/' + course.id"
+    >
+      zobacz kurs
+    </button>
+  </div>
+  <div *ngIf="errMsg" class="alert alert-danger" role="alert">
+    <h3>
+      {{ student.firstName }}
+      <small class="text-body-secondary">jesteś juz na tym kursie :)</small>
+    </h3>
+    <button
+      mat-raised-button
+      color="primary"
+      [routerLink]="'/account-student/course/' + course.id"
+    >
+      zobacz kurs
+    </button>
+  </div>
+</ng-container>
+
+<ng-container> </ng-container>
+
+<h3>
+  <small class="text-body-secondary">Podsumowanie:</small>
+  {{ course.name }}
+</h3>
+<h3>
+  <small class="text-body-secondary">Data rozpoczęcia:</small>
+  {{ course.startDate | date : "EEEE, d MMMM yyyy" }}
+</h3>
+<h3>
+  <small class="text-body-secondary">Data zakończenia:</small>
+  {{ course.endDate | date : "EEEE, d MMMM yyyy" }}
+</h3>
+<h3>
+  <small class="text-body-secondary">Liczba lekcji:</small>
+  {{ course.lessonsLimit }}
+</h3>
+<h3>
+  <small class="text-body-secondary">Cena:</small>
+  {{ course.coursePrice }}
+</h3>
+
+<ng-container *ngIf="button">
+  <button mat-raised-button color="primary" (click)="enrollToCourse()">
+    Płatność
+  </button>
+</ng-container>

@@ -1,75 +1,130 @@
-<div class="container text-center" *ngIf="lesson && teacher">
-  <!-- Stack the columns on mobile by making one full-width and the other half-width -->
-  <div class="row">
-    <div class="col-md-8"></div>
-    <div class="col-6 col-md-4">
-      <div class="row row-cols-2">
-        <div class="col p-3">
-          <button mat-raised-button color="primary" (click)="openEditDialog()">
-            Edytuj
-          </button>
+<section class="slider-area slider-area2" *ngIf="lesson">
+  <div class="slider-active">
+    <div class="single-slider slider-height2"></div>
+  </div>
+</section>
+
+<div class="container my-margin" *ngIf="lesson && teacher">
+  <div class="row text-start">
+    <div class="col-6">
+      <div class="teacher-data">
+        <h2>Lekcja</h2>
+        <div class="row">
+          <div class="col-12">
+            <a (click)="openDialog(deleteSound)" class="lesson-icon">
+              <button
+                mat-mini-fab
+                disabled
+                aria-label="Example icon button with a home icon"
+              >
+                <mat-icon>delete_forever</mat-icon>
+              </button>
+            </a>
+            <a (click)="openEditDialog()" class="lesson-icon">
+              <button
+                mat-mini-fab
+                disabled
+                aria-label="Example icon button with a home icon"
+              >
+                <mat-icon>edite</mat-icon>
+              </button>
+            </a>
+            <audio
+              #deleteSound
+              src="../../../../../assets/sound/windows_98_error.mp3"
+              preload="auto"
+            ></audio>
+          </div>
         </div>
-        <div class="col p-3">
-          <button mat-raised-button color="warn" (click)="openDialog()">
-            Usuń
-          </button>
+        <div class="row top-border text-centre">
+          <div class="col-6">
+            <mat-list>
+              <mat-list-item>
+                <span matListItemTitle>{{
+                  getLanguageName(lesson.language)
+                }}</span>
+                <span>język</span>
+              </mat-list-item>
+              <mat-list-item>
+                <span matListItemTitle
+                  ><a [routerLink]="'/courses/' + course.id">{{
+                    course.name
+                  }}</a></span
+                >
+                <span matListItemLine>nazwa kursu</span>
+              </mat-list-item>
+              <mat-list>
+                <mat-list-item *ngIf="role === 'ADMIN'">
+                  <span matListItemTitle>
+                    <a [routerLink]="'/teachers/' + teacher.id"
+                      >{{ teacher.firstName }} {{ teacher.lastName }}</a
+                    ></span
+                  >
+
+                  <span matListItemLine>nauczyciel</span>
+                </mat-list-item>
+
+                <mat-list-item *ngIf="role !== 'ADMIN'">
+                  <span matListItemTitle>
+                    {{ teacher.firstName }} {{ teacher.lastName }}</span
+                  >
+                  <span matListItemLine>nauczyciel</span>
+                </mat-list-item>
+              </mat-list>
+              <mat-list-item>
+                <span matListItemTitle>{{ lesson.eventName }}</span>
+                <span>nazwa wydarzenia</span>
+              </mat-list-item>
+            </mat-list>
+          </div>
+          <div class="col-6">
+            <mat-list>
+              <mat-list-item>
+                <span matListItemTitle>
+                  {{ getStatusName(lesson.status) }}
+                  <span
+                    class="status-indicator"
+                    [ngClass]="getStatusClass(lesson.status)"
+                  ></span>
+                </span>
+
+                <span>status</span>
+              </mat-list-item>
+
+              <mat-list-item>
+                <span matListItemTitle>
+                  {{ lesson.startDate | date : "d MMMM yyyy" }}r.</span
+                >
+                <span>początek</span>
+              </mat-list-item>
+              <mat-list-item>
+                <span matListItemTitle>
+                  {{ lesson.startDate | date : "HH:mm" }} -
+                  {{ lesson.endDate | date : "HH:mm" }}</span
+                >
+                <span matListItemLine>czas</span>
+              </mat-list-item>
+            </mat-list>
+          </div>
+        </div>
+        <div class="row top-border text-centre">
+          <div class="col-12">
+            <mat-list>
+              opis wydarzenia
+              <mat-list-item>
+                <span matListItemTitle> {{ lesson.description }}</span>
+              </mat-list-item>
+            </mat-list>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-
-  <div class="row">
-    <div class="col">
-      <figure class="text-start">
-        <blockquote class="blockquote">
-          <h2>{{ lesson.eventName }}</h2>
-        </blockquote>
-        <figcaption class="blockquote-footer">
-          <cite title="Source Title">{{ lesson.description }}</cite>
-        </figcaption>
-      </figure>
+    <div class="col-6 my-box">
+      <app-attendance-list
+        [lesson]="lesson"
+        [attendance-list]="lesson.attendanceList"
+        [courseId]="lesson.courseId"
+      ></app-attendance-list>
     </div>
-    <div class="col text-start">
-      <h3>
-        <small class="text-body-secondary"> data rozpoczęcia: </small>
-        {{ lesson.startDate | date : "EEEE, d MMMM yyyy" }}
-      </h3>
-      <h3>
-        <small class="text-body-secondary"> czas: </small>
-        {{ lesson.startDate | date : "HH:mm" }} -
-        {{ lesson.endDate | date : "HH:mm" }}
-      </h3>
-      <h3 *ngIf="course">
-        <small class="text-body-secondary"> kurs: </small>
-        <a [routerLink]="'/courses/' + course.id">{{ course.name }}</a>
-      </h3>
-    </div>
-    <div class="col">
-      <ul class="list-group list-group-flush text-start">
-        <li class="list-group-item">
-          <small class="text-body-secondary">nauczyciel: </small>
-          <a [routerLink]="'/teachers/' + teacher.id"
-            >{{ teacher.firstName }} {{ teacher.lastName }}</a
-          >
-        </li>
-        <li class="list-group-item">
-          <small class="text-body-secondary">status: </small>
-          {{ lesson.status }}
-        </li>
-      </ul>
-    </div>
-  </div>
-  <div class="row text-start">
-    <div *ngIf="!lesson.courseId">
-      <button mat-raised-button color="primary" (click)="openEnrollDialog()">
-        dodaj studenta
-      </button>
-    </div>
-
-    <app-attendance-list
-      [lesson]="lesson"
-      [attendance-list]="lesson.attendanceList"
-      [courseId]="lesson.courseId"
-    ></app-attendance-list>
   </div>
 </div>

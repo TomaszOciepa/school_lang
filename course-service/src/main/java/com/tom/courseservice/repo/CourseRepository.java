@@ -1,7 +1,9 @@
 package com.tom.courseservice.repo;
 
 import com.tom.courseservice.model.Course;
+import com.tom.courseservice.model.Language;
 import com.tom.courseservice.model.Status;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -10,14 +12,19 @@ import java.util.Optional;
 
 public interface CourseRepository extends MongoRepository<Course, String> {
 
-    //sprawdzone
+    List<Course> findAllByOrderByStartDateAsc();
+
     boolean existsByName(String name);
-    List<Course> getAllByStatus(Status status);
+
+    List<Course> findByStatus(Status status, Sort sort);
+
     Optional<Course> findByIdAndStatus(String id, Status status);
 
-    @Query("{'courseTeachers.teacherId': ?0}")
-    List<Course> getCoursesByTeacherId(Long teacherId);
+    List<Course> findByCourseTeachersIdOrderByStartDateAsc(Long studentId);
 
-    @Query("{'courseStudents.studentId': ?0}")
-    List<Course> getCoursesByStudentId(Long studentId);
+    List<Course> findByCourseStudentsIdOrderByStartDateAsc(Long studentId);
+
+    @Query("{'language': ?0, 'status': ?1}")
+    List<Course> getCoursesByLanguage(Language language, Status status);
+
 }

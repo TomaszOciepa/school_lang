@@ -1,51 +1,63 @@
 <h2>Lista obecności</h2>
-<button mat-raised-button color="warn" *ngIf="checked" (click)="save()">
-  Zapisz zmiany
-</button>
-<table class="table table-info table-striped">
-  <thead>
-    <tr>
-      <th scope="col">lp.</th>
-      <th scope="col">Imię i Nazwisko</th>
-      <th scope="col">Obecność</th>
-      <th scope="col"></th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let attendance of attendanceList; index as i">
-      <th scope="row">{{ i + 1 }}</th>
-      <td>
-        <a [routerLink]="'/students/' + attendance.studentId"
-          >{{ attendance.firstName }} {{ attendance.lastName }}</a
-        >
-      </td>
-      <ng-container *ngIf="attendance.present">
-        <td>obecny</td>
-      </ng-container>
+<ng-container *ngIf="attendanceList.length == 0">
+  <p>Jest pusta.... Brak studentów :(</p>
+</ng-container>
 
-      <ng-container *ngIf="!attendance.present">
-        <td>nieobecny</td>
-      </ng-container>
-      <td>
-        <input
-          class="form-check-input me-1 m-1"
-          type="checkbox"
-          [checked]="attendance.present"
-          (change)="changeAttendance(i)"
-          id="{{ 'checkbox-' + i }}"
-        />
-      </td>
-      <td>
-        <button
-          mat-raised-button
-          color="warn"
-          *ngIf="!courseId"
-          (click)="openUnEnrollDialog(attendance)"
-        >
-          Usuń
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<ng-container *ngIf="attendanceList.length >= 1">
+  <button mat-raised-button color="warn" *ngIf="checked" (click)="save()">
+    Zapisz zmiany
+  </button>
+
+  <table class="table" style="font-size: medium">
+    <thead>
+      <tr>
+        <th scope="col">lp.</th>
+        <th scope="col">Imię i Nazwisko</th>
+        <th scope="col">Obecność</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let attendance of attendanceList; index as i">
+        <th scope="row">{{ i + 1 }}</th>
+        <td>
+          <a [routerLink]="'/students/' + attendance.studentId"
+            >{{ attendance.firstName }} {{ attendance.lastName }}</a
+          >
+        </td>
+        <ng-container *ngIf="attendance.present">
+          <td>obecny</td>
+        </ng-container>
+
+        <ng-container *ngIf="!attendance.present">
+          <td>nieobecny</td>
+        </ng-container>
+        <td>
+          <input
+            class="form-check-input me-1 m-1"
+            type="checkbox"
+            [checked]="attendance.present"
+            (change)="changeAttendance(i)"
+            id="{{ 'checkbox-' + i }}"
+          />
+        </td>
+        <td>
+          <audio
+            #deleteSound
+            src="../../../../../assets/sound/windows_98_error.mp3"
+            preload="auto"
+          ></audio>
+          <button
+            mat-raised-button
+            color="warn"
+            *ngIf="!courseId"
+            (click)="openUnEnrollDialog(attendance, deleteSound)"
+          >
+            Usuń
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</ng-container>

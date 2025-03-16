@@ -12,11 +12,20 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatCardModule } from '@angular/material/card';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatListModule } from '@angular/material/list';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [],
   exports: [
     MatToolbarModule,
+    MatTabsModule,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
@@ -29,6 +38,13 @@ import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
     MatDatepickerModule,
     MatNativeDateModule,
     NgxMatTimepickerModule,
+    MatMenuModule,
+    MatCardModule,
+    MatButtonToggleModule,
+    MatProgressSpinnerModule,
+    MatListModule,
+    MatCheckboxModule,
+    MatTooltipModule,
   ],
 })
 export class MaterialModule {}

@@ -1,0 +1,54 @@
+<section class="mt-4">
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="lp">
+        <th class="my-table-bg-color" mat-header-cell *matHeaderCellDef>Lp.</th>
+        <td mat-cell *matCellDef="let row; index as i">{{ i + 1 }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="eventName">
+        <th
+          class="my-table-bg-color"
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+        >
+          Nazwa
+        </th>
+        <td mat-cell *matCellDef="let row">{{ row.eventName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="startDate">
+        <th
+          class="my-table-bg-color"
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+        >
+          Data
+        </th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.startDate | date : "dd-MM-yyyy" }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="endDate">
+        <th
+          class="my-table-bg-color"
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+        >
+          Czas
+        </th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.startDate | date : "HH:mm" }} -
+          {{ row.endDate | date : "HH:mm" }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</section>

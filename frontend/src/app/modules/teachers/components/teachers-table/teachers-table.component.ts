@@ -1,37 +1,60 @@
-import {
-  AfterViewInit,
-  Component,
-  ErrorHandler,
-  ViewChild,
-} from '@angular/core';
+import { Component, ErrorHandler, ViewChild } from '@angular/core';
 import { TeacherService } from 'src/app/modules/core/services/teacher.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { User } from 'src/app/modules/core/models/user.model';
+import { KeycloakService } from 'keycloak-angular';
+import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
+import { KeycloakProfile } from 'keycloak-js';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-teachers-table',
   templateUrl: './teachers-table.component.html',
   styleUrls: ['./teachers-table.component.css'],
 })
-export class TeachersTableComponent implements AfterViewInit {
+export class TeachersTableComponent {
   displayedColumns: string[] = [
     'lp',
     'firstName',
     'lastName',
     'email',
     'status',
-    'buttons',
   ];
   dataSource!: MatTableDataSource<User>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private teacherService: TeacherService) {}
+  status!: string;
+  role!: string;
 
-  async ngAfterViewInit(): Promise<void> {
+  constructor(
+    private readonly keycloak: KeycloakService,
+    private teacherService: TeacherService,
+    private userProfileService: LoadUserProfileService,
+    private router: Router
+  ) {}
+
+  async ngOnInit(): Promise<void> {
+    this.loadUserProfile();
+    this.getTeachers();
+  }
+
+  async loadUserProfile(): Promise<void> {
+    await this.userProfileService.loadUserProfile();
+
+    if (!this.userProfileService.isLoggedIn) {
+      this.login();
+    }
+
+    if (this.userProfileService.isAdmin) {
+      this.role = 'ADMIN';
+    }
+  }
+
+  private getTeachers() {
     this.teacherService.getTeachers().subscribe({
       next: (clients) => {
         this.dataSource = new MatTableDataSource<User>(clients);
@@ -51,5 +74,13 @@ export class TeachersTableComponent implements AfterViewInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  login() {
+    this.keycloak.login();
+  }
+
+  navigateToTeacher(teacherId: number) {
+    this.router.navigate(['/teachers', teacherId]);
   }
 }

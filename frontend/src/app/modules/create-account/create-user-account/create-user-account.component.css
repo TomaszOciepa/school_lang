@@ -1,0 +1,29 @@
+.fixed-size-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  position: relative; /* Aby pseudo-element był względem obrazu */
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Przyciemnienie na 50% */
+  z-index: 1; /* Warstwa nad obrazem */
+}
+
+.topic-img {
+  position: relative;
+}
+
+.topic-content-box {
+  position: relative;
+  z-index: 2; /* Tekst i inne elementy nad przyciemnieniem */
+}
+
+.title-text {
+  color: black;
+}

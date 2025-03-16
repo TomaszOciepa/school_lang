@@ -7,7 +7,9 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { User } from 'src/app/modules/core/models/user.model';
+import { LoadUserProfileService } from 'src/app/modules/core/services/load-user-profile.service';
 import { StudentService } from 'src/app/modules/core/services/student.service';
 
 @Component({
@@ -15,22 +17,26 @@ import { StudentService } from 'src/app/modules/core/services/student.service';
   templateUrl: './students-table.component.html',
   styleUrls: ['./students-table.component.css'],
 })
-export class StudentsTableComponent implements AfterViewInit {
+export class StudentsTableComponent {
   displayedColumns: string[] = [
     'lp',
     'firstName',
     'lastName',
     'email',
-    'buttons',
+    'status',
   ];
   dataSource!: MatTableDataSource<User>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private studentService: StudentService) {}
+  constructor(private studentService: StudentService, private router: Router) {}
 
-  async ngAfterViewInit(): Promise<void> {
+  async ngOnInit(): Promise<void> {
+    this.getStudents();
+  }
+
+  private getStudents() {
     this.studentService.getStudents().subscribe({
       next: (clients) => {
         this.dataSource = new MatTableDataSource<User>(clients);
@@ -50,5 +56,9 @@ export class StudentsTableComponent implements AfterViewInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  navigateToStudent(studentId: number) {
+    this.router.navigate(['/students', studentId]);
   }
 }

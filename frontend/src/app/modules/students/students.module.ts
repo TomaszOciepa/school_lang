@@ -9,8 +9,12 @@ import { EditStudentDialogComponent } from './components/student/edit-student-di
 import { StudentComponent } from './components/student/student.component';
 import { StudentFormComponent } from './components/student-form/student-form.component';
 import { DeleteStudentDialogComponent } from './components/student/delete-student-dialog/delete-student-dialog.component';
-import { CoursesModule } from '../courses/courses.module';
 import { LessonsModule } from '../lessons/lessons.module';
+import { StudentCoursesTableComponent } from './components/student/student-courses-table/student-courses-table.component';
+import { StudentLessonsTableComponent } from './components/student/student-lessons-table/student-lessons-table.component';
+import { DropStudentDialogComponent } from './components/student/drop-student-dialog/drop-student-dialog.component';
+import { RestoreStudentAccountDialogComponent } from './components/student/restore-student-account-dialog/restore-student-account-dialog.component';
+import { StudentPaymentsTableComponent } from './components/student/student-payments-table/student-payments-table.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +24,12 @@ import { LessonsModule } from '../lessons/lessons.module';
     EditStudentDialogComponent,
     StudentFormComponent,
     DeleteStudentDialogComponent,
+    StudentCoursesTableComponent,
+    StudentLessonsTableComponent,
+    DropStudentDialogComponent,
+    RestoreStudentAccountDialogComponent,
+    StudentPaymentsTableComponent,
   ],
-  imports: [SharedModule, StudentsRoutingModule, CoursesModule, LessonsModule],
+  imports: [SharedModule, StudentsRoutingModule, LessonsModule],
 })
 export class StudentsModule {}
