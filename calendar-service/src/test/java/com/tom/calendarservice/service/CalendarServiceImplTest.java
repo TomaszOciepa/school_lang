@@ -29,9 +29,6 @@ class CalendarServiceImplTest {
     @Mock
     private CalendarRepository calendarRepository;
 
-    @Mock
-    private TeacherServiceClient teacherServiceClient;
-
     private Calendar lesson1;
     private Calendar lesson2;
 
