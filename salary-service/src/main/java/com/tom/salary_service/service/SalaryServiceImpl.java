@@ -71,10 +71,13 @@ public class SalaryServiceImpl implements SalaryService {
                 .filter(s -> YearMonth.from(s.getDate()).equals(yearMonth))
                 .findFirst();
     }
-
+    
     private void updateExistingSalary(Salary existingSalary, List<CalendarDto> monthlyLessons) {
-        if (existingSalary.getStatus() == Status.FINISHED) {
-            return;
+        YearMonth currentMonth = YearMonth.now();
+        YearMonth salaryMonth = YearMonth.from(existingSalary.getDate());
+
+        if (salaryMonth.isBefore(currentMonth)) {
+            existingSalary.setStatus(Status.FINISHED);
         }
 
         Set<String> existingLessonIds = existingSalary.getLessons().stream()
@@ -96,6 +99,7 @@ public class SalaryServiceImpl implements SalaryService {
 
         saveSalary(existingSalary);
     }
+
 
     private List<CalendarDto> findNewLessons(Set<String> existingLessonIds, List<CalendarDto> monthlyLessons) {
         return monthlyLessons.stream()
