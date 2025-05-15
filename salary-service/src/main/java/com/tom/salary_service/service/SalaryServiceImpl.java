@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -73,8 +75,11 @@ public class SalaryServiceImpl implements SalaryService {
     }
 
     private void updateExistingSalary(Salary existingSalary, List<CalendarDto> monthlyLessons) {
-        if (existingSalary.getStatus() == Status.FINISHED) {
-            return;
+        YearMonth currentMonth = YearMonth.now();
+        YearMonth salaryMonth = YearMonth.from(existingSalary.getDate());
+
+        if (salaryMonth.isBefore(currentMonth)) {
+            existingSalary.setStatus(Status.FINISHED);
         }
 
         Set<String> existingLessonIds = existingSalary.getLessons().stream()
@@ -91,11 +96,14 @@ public class SalaryServiceImpl implements SalaryService {
         existingSalary.getLessons().removeAll(removedLessons);
         existingSalary.getLessons().addAll(newLessons);
 
+        updateLessonStatuses(existingSalary.getLessons());
+
         long newPayoutAmount = calculateTotalPayout(existingSalary.getLessons());
         existingSalary.setPayoutAmount(newPayoutAmount);
 
         saveSalary(existingSalary);
     }
+
 
     private List<CalendarDto> findNewLessons(Set<String> existingLessonIds, List<CalendarDto> monthlyLessons) {
         return monthlyLessons.stream()
@@ -120,6 +128,7 @@ public class SalaryServiceImpl implements SalaryService {
         newSalary.setId(UUID.randomUUID().toString());
         newSalary.setTeacherId(teacherId);
         newSalary.setDate(yearMonth.atDay(1).atStartOfDay());
+        updateLessonStatuses(monthlyLessons);
         newSalary.setLessons(new ArrayList<>(monthlyLessons));
 
         newSalary.setPayoutAmount(calculateTotalPayout(monthlyLessons));
@@ -128,6 +137,19 @@ public class SalaryServiceImpl implements SalaryService {
         saveSalary(newSalary);
     }
 
+    private void updateLessonStatuses(List<CalendarDto> lessons) {
+        LocalDateTime now = LocalDateTime.now();
+
+        for (CalendarDto lesson : lessons) {
+            LocalDateTime end = lesson.getEndDate();
+
+            if (end.isBefore(now)) {
+                lesson.setStatus(Status.FINISHED);
+            } else {
+                lesson.setStatus(Status.INACTIVE);
+            }
+        }
+    }
 
     @Override
     public Salary saveSalary(Salary salary) {
