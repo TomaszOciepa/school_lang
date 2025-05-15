@@ -141,7 +141,6 @@ public class SalaryServiceImpl implements SalaryService {
         LocalDateTime now = LocalDateTime.now();
 
         for (CalendarDto lesson : lessons) {
-            LocalDateTime start = lesson.getStartDate();
             LocalDateTime end = lesson.getEndDate();
 
             if (end.isBefore(now)) {

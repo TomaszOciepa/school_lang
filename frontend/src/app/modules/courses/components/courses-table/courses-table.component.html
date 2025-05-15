@@ -100,18 +100,6 @@
           <td mat-cell *matCellDef="let row">{{ row.coursePrice || 0 }} zł</td>
         </ng-container>
 
-        <ng-container matColumnDef="participantsNumber">
-          <th
-            class="my-table-bg-color"
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-          >
-            Liczba studentów
-          </th>
-          <td mat-cell *matCellDef="let row">{{ row.participantsNumber }}</td>
-        </ng-container>
-
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr
           mat-row

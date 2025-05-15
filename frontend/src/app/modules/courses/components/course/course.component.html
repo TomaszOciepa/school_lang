@@ -54,6 +54,14 @@
                 <span matListItemTitle> {{ course.coursePrice || 0 }} zł</span>
                 <span matListItemLine>cena</span>
               </mat-list-item>
+              <mat-list-item>
+                <span matListItemTitle
+                  >{{ course.participantsNumber }}/{{
+                    course.participantsLimit
+                  }}</span
+                >
+                <span matListItemLine>uczniowie</span>
+              </mat-list-item>
             </mat-list>
           </div>
           <div class="col-6">
@@ -83,43 +91,6 @@
                 <span matListItemLine>koniec</span>
               </mat-list-item>
             </mat-list>
-          </div>
-
-          <div class="row top-border text-centre">
-            <div class="col-3">
-              <mat-list>
-                <mat-list-item>
-                  <span matListItemTitle>{{ course.lessonsLimit }}</span>
-                  <span matListItemLine>lekcje</span>
-                </mat-list-item>
-              </mat-list>
-            </div>
-            <div class="col-3">
-              <mat-list>
-                <mat-list-item>
-                  <span matListItemTitle>{{
-                    course.courseTeachers.length
-                  }}</span>
-                  <span matListItemLine>nauczyciele</span>
-                </mat-list-item>
-              </mat-list>
-            </div>
-            <div class="col-3">
-              <mat-list>
-                <mat-list-item>
-                  <span matListItemTitle>{{ course.participantsNumber }}</span>
-                  <span matListItemLine>uczniowie</span>
-                </mat-list-item>
-              </mat-list>
-            </div>
-            <div class="col-3">
-              <mat-list>
-                <mat-list-item>
-                  <span matListItemTitle>{{ course.participantsLimit }}</span>
-                  <span matListItemLine>limit uczniów</span>
-                </mat-list-item>
-              </mat-list>
-            </div>
           </div>
         </div>
       </div>
