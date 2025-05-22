@@ -48,6 +48,11 @@ tr:hover {
   box-shadow: 0 0 8px 2px rgba(128, 128, 128, 0.6);
 }
 
+.blue {
+  background-color: rgb(34, 40, 219);
+  /* box-shadow: 0 0 8px 2px rgba(0, 255, 0, 0.6); */
+}
+
 /* add course button */
 
 .add-course-icon button {

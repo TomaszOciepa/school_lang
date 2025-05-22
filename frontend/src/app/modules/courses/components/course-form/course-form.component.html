@@ -22,11 +22,13 @@
         <h2>
           Cena kursu: {{ lessonPrice * courseLessonsLimit }} zł
           <p *ngIf="teacherSharePercentage > 0">
-            nauczyciel zarobi
+            wynagrodzenie nauczyciela:
             {{
               (lessonPrice * courseLessonsLimit * teacherSharePercentage) / 100
             }}
-            zł a szkoła
+            zł
+            <br />
+            zysk szkoły:
             {{
               (lessonPrice *
                 courseLessonsLimit *

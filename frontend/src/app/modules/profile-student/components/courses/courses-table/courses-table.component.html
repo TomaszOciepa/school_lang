@@ -24,6 +24,20 @@
           <td mat-cell *matCellDef="let row">{{ row.name }}</td>
         </ng-container>
 
+        <ng-container matColumnDef="language">
+          <th
+            class="my-table-bg-color"
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+          >
+            Język
+          </th>
+          <td mat-cell *matCellDef="let row">
+            {{ getLanguageName(row.language) }}
+          </td>
+        </ng-container>
+
         <ng-container matColumnDef="startDate">
           <th
             class="my-table-bg-color"

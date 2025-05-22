@@ -12,7 +12,14 @@ import { CourseService } from 'src/app/modules/core/services/course.service';
   styleUrls: ['./courses-table.component.css'],
 })
 export class CoursesTableComponent {
-  displayedColumns: string[] = ['lp', 'name', 'startDate', 'status', 'price'];
+  displayedColumns: string[] = [
+    'lp',
+    'name',
+    'language',
+    'startDate',
+    'status',
+    'price',
+  ];
   dataSource!: MatTableDataSource<Course>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -55,6 +62,19 @@ export class CoursesTableComponent {
 
   navigateToCourse(courseId: string) {
     this.router.navigate(['/account-student/course/', courseId]);
+  }
+
+  getLanguageName(language: string): string {
+    switch (language) {
+      case 'ENGLISH':
+        return 'Angielski';
+      case 'POLISH':
+        return 'Polski';
+      case 'GERMAN':
+        return 'Niemiecki';
+      default:
+        return 'Nieznany';
+    }
   }
 
   getStatusClass(status: string): string {

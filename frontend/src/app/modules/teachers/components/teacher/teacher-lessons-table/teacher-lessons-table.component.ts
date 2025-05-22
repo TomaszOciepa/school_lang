@@ -119,6 +119,19 @@ export class TeacherLessonsTableComponent implements OnChanges {
     }
   }
 
+  getStatusName(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'W trakcie';
+      case 'INACTIVE':
+        return 'Oczekiwana';
+      case 'FINISHED':
+        return 'Zakończona';
+      default:
+        return '';
+    }
+  }
+
   getLessonsById(courseId: string) {
     const lessons: Lesson[] = this.groupLessonsMap.get(courseId) || [];
     this.dataSource = new MatTableDataSource<Lesson>(lessons);
