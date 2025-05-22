@@ -107,12 +107,36 @@ export class StudentLessonsTableComponent implements OnChanges {
     }
   }
 
+  getStatusName(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'W trakcie';
+      case 'INACTIVE':
+        return 'Oczekiwana';
+      case 'FINISHED':
+        return 'Zakończona';
+      default:
+        return '';
+    }
+  }
+
   getStatusAttendance(present: boolean): string {
     switch (present) {
       case true:
-        return 'green';
+        return 'blue';
       case false:
         return 'red';
+      default:
+        return 'red';
+    }
+  }
+
+  getStatusAttendanceText(present: boolean): string {
+    switch (present) {
+      case true:
+        return 'obecny';
+      case false:
+        return 'nieobecny';
       default:
         return 'red';
     }

@@ -80,6 +80,19 @@ export class CourseLessonsTableComponent {
     }
   }
 
+  getStatusName(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'W trakcie';
+      case 'INACTIVE':
+        return 'Oczekiwana';
+      case 'FINISHED':
+        return 'Zakończona';
+      default:
+        return '';
+    }
+  }
+
   private hideErrorMsg() {
     setTimeout(() => {
       this.errMsg = '';

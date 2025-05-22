@@ -88,6 +88,7 @@
             class="status-indicator"
             [ngClass]="getStatusClass(row.status)"
           ></span>
+          {{ getStatusName(row.status) }}
         </td>
       </ng-container>
 

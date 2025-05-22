@@ -102,6 +102,19 @@ export class StudentCoursesTableComponent {
     }
   }
 
+  getStatusName(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'W trakcie';
+      case 'INACTIVE':
+        return 'Oczekiwany';
+      case 'FINISHED':
+        return 'Zakończony';
+      default:
+        return '';
+    }
+  }
+
   showLesson(id: string) {
     if (!this.selection.isSelected(id)) {
       this.selection.clear();

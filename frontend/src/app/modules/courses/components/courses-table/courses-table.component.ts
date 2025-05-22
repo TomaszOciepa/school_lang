@@ -154,4 +154,17 @@ export class CoursesTableComponent {
         return '';
     }
   }
+
+  getStatusName(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'W trakcie';
+      case 'INACTIVE':
+        return 'Oczekiwany';
+      case 'FINISHED':
+        return 'Zakończony';
+      default:
+        return '';
+    }
+  }
 }

@@ -78,6 +78,7 @@
             class="status-indicator"
             [ngClass]="getStatusClass(row.status)"
           ></span>
+          {{ getStatusName(row.status) }}
         </td>
       </ng-container>
 
@@ -91,15 +92,18 @@
           Obecność
         </th>
         <td mat-cell *matCellDef="let row">
-          <ng-container *ngIf="row.status === 'FINISHED'">
+          <ng-container
+            *ngIf="row.status === 'FINISHED' || row.status === 'ACTIVE'"
+          >
             <span
               class="status-indicator"
               [ngClass]="getStatusAttendance(getAttendance(row.attendanceList))"
             ></span>
+            {{ getStatusAttendanceText(getAttendance(row.attendanceList)) }}
           </ng-container>
 
           <ng-container *ngIf="row.status === 'INACTIVE'">
-            <span class="status-indicator orange"></span>
+            <span class="status-indicator"></span>
           </ng-container>
         </td>
       </ng-container>
