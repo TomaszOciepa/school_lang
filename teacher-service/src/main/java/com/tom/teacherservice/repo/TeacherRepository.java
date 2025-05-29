@@ -15,7 +15,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
     @Query("SELECT t FROM Teacher t WHERE t.id NOT IN :idNumbers AND t.status = :status")
     List<Teacher> findAllByIdNotInAndStatus(@Param("idNumbers") List<Long> idNumbers, @Param("status") Status status);
-
+    List<Teacher> findAllByOrderByLastNameAsc();
     boolean existsByEmail(String email);
 
     List<Teacher> findAllByStatus(Status status);

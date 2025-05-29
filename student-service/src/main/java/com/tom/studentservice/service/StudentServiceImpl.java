@@ -46,7 +46,7 @@ public class StudentServiceImpl implements StudentService {
             return studentRepository.findAllByStatus(status);
         }
         logger.info("Fetching all students without status.");
-        return studentRepository.findAll();
+        return studentRepository.findAllByOrderByLastNameAsc();
     }
 
     @Override

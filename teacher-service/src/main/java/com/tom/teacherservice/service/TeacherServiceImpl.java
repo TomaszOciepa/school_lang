@@ -36,7 +36,7 @@ public class TeacherServiceImpl implements TeacherService {
             return teacherRepository.findAllByStatus(status);
         }
         logger.info("Fetching teachers without status.");
-        return teacherRepository.findAll();
+        return teacherRepository.findAllByOrderByLastNameAsc();
     }
 
     @Override
